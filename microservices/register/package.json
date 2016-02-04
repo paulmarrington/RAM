@@ -1,0 +1,13 @@
+{
+    "name":         "ram_microservice_register",
+    "version":      "1.0.0",
+    "description":  "All microservices on a server register here",
+    "author":       "Paul Marrington <paul.marrington@ato.gov.au",
+    "main":         "service.js",
+    "files":        ["service.js"],
+    "scripts":      { "start": "node service.js" },
+    "license":      "Apache-2.0",
+    "dependencies": {
+        "redbird":  ">=0.4.14"
+    }
+}

@@ -1,0 +1,3 @@
+[begin] (b l a c k b o x )
+    [exec] (xterm) {xterm -ls}
+[end]

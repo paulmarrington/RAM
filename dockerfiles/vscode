@@ -1,0 +1,6 @@
+FROM       ram_x11
+MAINTAINER ATO
+RUN        apt-get install -y libgtk2.0-0 libgconf2-4 libnss3  libxtst6 libcanberra-gtk-module libgl1-mesa-glx
+RUN        rm -rf /var/lib/apt/lists/*
+RUN        curl -O https://az764295.vo.msecnd.net/public/0.10.6-release/VSCode-linux64.zip
+CMD        /ram/dockerfiles/vscode.sh

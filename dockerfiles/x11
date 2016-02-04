@@ -1,0 +1,4 @@
+FROM       ram_node
+MAINTAINER ATO
+RUN        apt-get -y install xterm
+CMD        /ram/dockerfiles/x11.sh

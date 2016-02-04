@@ -1,0 +1,4 @@
+FROM       ram_node
+MAINTAINER ATO
+RUN        apt-get -y install x11vnc xvfb xterm blackbox blackbox-themes
+CMD        /ram/dockerfiles/vnc.sh

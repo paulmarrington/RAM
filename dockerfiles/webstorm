@@ -1,0 +1,5 @@
+FROM       ram_vnc
+MAINTAINER ATO
+volume /ram
+WORKDIR    /ram/microservices
+CMD        tail -f /dev/null

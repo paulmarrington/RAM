@@ -1,0 +1,4 @@
+FROM       ram_node
+MAINTAINER ATO
+WORKDIR    /ram/microservices
+CMD        tail -f /dev/null
