@@ -8,7 +8,7 @@
 * On Windows or OS X it is beneficial to install the GitHub desktop from https://desktop.github.com/. For Windows is provides also provides a bash shell and many Unix commands so that common shell-scripts can be written. In both cases, the GUI will provide seamless access to GitHub.
 * Fork and Clone https://github.com/atogov/RAM. Read https://help.github.com/articles/fork-a-repo/ for instructions. This will give you a repository in your own account that synchronises from the ATO RAM repository. As you make changes, use pull requests to update the main repository.
 * Go to the RAM root directory with from a command prompt and type _docker-compose build_ then wait while containers and their contents are downloaded and built. This will take a long time - once per installation. It is also possible to publish the containers to share them between developer platforms.
-* To use SourceTree for reviewing / merging pull requests, you need to modifty _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247)
+* To use SourceTree for reviewing / merging pull requests, you need to modify _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247)
 
 ## Docker Containers
 
@@ -30,6 +30,7 @@ Microservice source is kept in RAM/microservices/. To create a new one, say _fre
 * __spec/__ is a directory to tell Jasmine how to do it's job. The contents remain unchanged between microservices.
 * __Dockerfile__ tells _docker-compose_ how to build the microservice container. It will normally remain unchanged from the template copy. If, however a specific microservice requires additional configuration, it is done here. This can take the form of _apt-get_ for OS packaged, special start-up scripts or other specific details.
 * __package.json__ is the first file that requires changing. Correct the microservice name on the first line, the description on the third and the author on the fourth. The first is the only critical change.
+* __ecosystem.json__ is used by pm2. No changes needed unless/until we want more advanced pm2 features.
 * __README.md__ needs to be updated with a description of what a microservice provides. It constitutes core documentation for the system.
 * __service.js__ is the service distributor. For each action the service is to provide is a dictionary entry pointing to the function to call. The template version provides a clear example of the functionality.
 * __spec.js__ contains the jasmine specification to be run against the code for validation. It can contain multiple describe statements each containing multiple detailed specifications. Change it to exercise the new service.
@@ -113,3 +114,9 @@ Library modules are kept in RAM/microservices/node_modules/ram. Add directories 
     docker run -it --link ram_mongo_1:mongo --rm mongo sh -c 'exec mongo "$MONGO_PORT_27017_TCP_ADDR:$MONGO_PORT_27017_TCP_PORT/test"'
     # Spawn a mongo shell in Windows
     docker run -it --link ram_mongo_1:mongo --rm mongo sh -c 'exec mongo "%MONGO_PORT_27017_TCP_ADDR%:%$MONGO_PORT_27017_TCP_PORT%/test"'
+
+### PM2 - Production Process Manager
+Full use has yet to be explored. For development the watch can be set to restart on file changes. To do this we need to set up environments so that it only does so on development. This is a matter of setting and using environent variable within _ecosystem.json_.
+
+    # Restart microservice without restarting container
+    docker exec -it ram_microservice_nnn pm2 restart ecosystem.json
