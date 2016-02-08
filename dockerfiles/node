@@ -8,5 +8,7 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
   && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
   && rm "node-v$NODE_VERSION-linux-x64.tar.gz"
 RUN        npm install -g jasmine
+RUN        npm install -g typescript
+RUN        npm install -g gulp
 
-CMD [ "node" ]
+CMD pm2 ecosystem.json
