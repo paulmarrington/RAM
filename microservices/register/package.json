@@ -6,7 +6,7 @@
     "main":         "service.js",
     "files":        ["service.js"],
     "scripts":      { "start": "node service.js" },
-    "license":      "Apache-2.0",
+    "license":      "MIT",
     "dependencies": {
         "redbird":  ">=0.4.14"
     }
