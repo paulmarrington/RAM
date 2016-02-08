@@ -114,3 +114,9 @@ Library modules are kept in RAM/microservices/node_modules/ram. Add directories 
     docker run -it --link ram_mongo_1:mongo --rm mongo sh -c 'exec mongo "$MONGO_PORT_27017_TCP_ADDR:$MONGO_PORT_27017_TCP_PORT/test"'
     # Spawn a mongo shell in Windows
     docker run -it --link ram_mongo_1:mongo --rm mongo sh -c 'exec mongo "%MONGO_PORT_27017_TCP_ADDR%:%$MONGO_PORT_27017_TCP_PORT%/test"'
+
+### PM2 - Production Process Manager
+Full use has yet to be explored. For development the watch can be set to restart on file changes. To do this we need to set up environments so that it only does so on development. This is a matter of setting and using environent variable within _ecosystem.json_.
+
+    # Restart microservice without restarting container
+    docker exec -it ram_microservice_nnn pm2 restart ecosystem.json
