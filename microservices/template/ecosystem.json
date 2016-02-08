@@ -1,8 +1,0 @@
-{
-  "apps": [{
-    "name":       process.env.service_name,
-    "cwd":        ".",
-    "script":     "service.js",
-    "node_args": process.env.node_switches
-  }]
-}

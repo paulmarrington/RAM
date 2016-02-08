@@ -1,4 +1,5 @@
 FROM       ram_node
 MAINTAINER ATO
-CMD        pm2 ecosystem.json
+CMD        npm start
 EXPOSE     80
+

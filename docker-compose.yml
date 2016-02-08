@@ -98,12 +98,6 @@ microservice_register:
   volumes:        [".:/ram","/var/run:/var/run"]
   working_dir:    /ram/microservices/register
   volumes_from:   ["node"]
-  # Items below are for development/debugging
-  # --debug allows remote debugging, --debug-brk will wait
-  # at start of execution for debugger to connect.
-  environment:    {node_switches: --debug, service_name: register}
-  # Change the first port to that needed for debugging
-  ports:          ["5859:5858"]
 
 ## Microservice template - copy to make your own service
 microservice_template:
@@ -117,6 +111,6 @@ microservice_template:
   # Items below are for development/debugging
   # --debug allows remote debugging, --debug-brk will wait
   # at start of execution for debugger to connect.
-  environment:    {node_switches: --debug, service_name: template}
+  environment:    {node_switches: --debug}
   # Change the first port to that needed for debugging
   ports:          ["5860:5858"]
