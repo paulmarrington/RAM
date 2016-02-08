@@ -29,6 +29,7 @@ Microservice source is kept in RAM/microservices/. To create a new one, say _fre
 * __spec/__ is a directory to tell Jasmine how to do it's job. The contents remain unchanged between microservices.
 * __Dockerfile__ tells _docker-compose_ how to build the microservice container. It will normally remain unchanged from the template copy. If, however a specific microservice requires additional configuration, it is done here. This can take the form of _apt-get_ for OS packaged, special start-up scripts or other specific details.
 * __package.json__ is the first file that requires changing. Correct the microservice name on the first line, the description on the third and the author on the fourth. The first is the only critical change.
+* __ecosystem.json__ is used by pm2. No changes needed unless/until we want more advanced pm2 features.
 * __README.md__ needs to be updated with a description of what a microservice provides. It constitutes core documentation for the system.
 * __service.js__ is the service distributor. For each action the service is to provide is a dictionary entry pointing to the function to call. The template version provides a clear example of the functionality.
 * __spec.js__ contains the jasmine specification to be run against the code for validation. It can contain multiple describe statements each containing multiple detailed specifications. Change it to exercise the new service.
