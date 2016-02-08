@@ -1,4 +1,4 @@
-var service = require("ram/register.js");
+var service = require("ram/service/register.js");
 
 service.register({
   plus: (packet) => {
