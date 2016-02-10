@@ -1,0 +1,59 @@
+{
+  "name": "ram-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for the RAM (relationship authorisation manager) project",
+  "main": "index.html",
+  "dependencies": {
+    "typescript": "^1.8.0"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.11.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-ignore": "^2.0.1",
+    "gulp-rimraf": "^0.2.0",
+    "gulp-sass": "^2.2.0",
+    "gulp-sequence": "^0.4.4",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-tslint": "^4.3.1",
+    "gulp-typescript": "^2.10.0",
+    "gulp-uglify": "^1.5.2",
+    "merge2": "^1.0.1",
+    "tslint": "^3.3.0"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atogov/RAM.git"
+  },
+  "keywords": [
+    "angular",
+    "bootstrap",
+    "typescript",
+    "gulp",
+    "system.js"
+  ],
+  "author": "Ali Salehi, Paul Marrington",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/atogov/RAM/issues"
+  },
+  "homepage": "https://github.com/atogov/RAM#readme",
+  "jspm": {
+    "dependencies": {
+      "angular": "npm:angular@^1.5.0",
+      "angular-filter": "npm:angular-filter@^0.5.8",
+      "angular-loading-bar": "npm:angular-loading-bar@^0.8.0",
+      "angular-ui-router": "npm:angular-ui-router@^0.2.18",
+      "jquery": "npm:jquery@^2.2.0",
+      "lodash": "npm:lodash@^4.3.0",
+      "restangular": "npm:restangular@^1.5.1"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
+  }
+}
