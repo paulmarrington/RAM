@@ -1,2 +1,13 @@
 frontend/node_modules/
 frontend/stylesheets/.sass-cache/
+frontend/scss/.sass-cache/
+frontend/typings/tsd.d.ts
+frontend/css/app.css
+frontend/css/app.css.map
+frontend/.vscode/settings.json
+frontend/typings/
+frontend/javascript/app.js
+frontend/javascript/app.js.map
+frontend/jspm_packages/
+javascript/app.js
+javascript/app.js.map
