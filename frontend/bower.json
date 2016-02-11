@@ -1,0 +1,34 @@
+{
+  "name": "ram-frontend",
+  "description": "Frontend for the RAM (relationship authorisation manager) project",
+  "main": "index.html",
+  "authors": [
+    "Ali Salehi",
+    "Paul Marrington"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "bootstrap",
+    "typescript",
+    "gulp",
+    "bower"
+  ],
+  "homepage": "https://github.com/sundriver/RAM",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "*",
+    "angular-ui-router": "^0.2.18",
+    "angular-filter": "^0.5.8",
+    "angular-loading-bar": "^0.8.0",
+    "restangular": "^1.5.1"
+  }
+}
