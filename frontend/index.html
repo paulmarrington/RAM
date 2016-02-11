@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-framework="typescript">
+<html lang="en" data-framework="typescript" ng-app="ram">
 
 <head>
     <meta charset="utf-8">
@@ -25,17 +25,6 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <script type="text/javascript" src="jspm_packages/system.js"></script>
-    <script type="text/javascript" src="config.js"></script>
-    <script type="text/javascript">
-        // System.import("angular").then(function(){
-        //    System.import("javascript/app");
-        // });
-        // System.import("javascript/app");
-        // .then(function(){
-            System.import("javascript/boot");
-        // }, console.error.bind(console));
-    </script>
 </head>
 
 <body>
@@ -43,7 +32,13 @@
     <a ui-sref="layout.page1">Page 1</a>
     <a ui-sref="layout.page2">Page 2</a>
     <ui-view></ui-view>
-    <script src="/javascript/lib/ie10-viewport-bug-workaround.js"></script>
+    <script src="/js/lib/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- bower:js -->
+    <!-- endinject -->
+    <script src="js/templates.js"></script>
+    <script src="js/app.js"></script>
+
 </body>
 
 </html>

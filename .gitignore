@@ -11,3 +11,5 @@ frontend/javascript/app.js.map
 frontend/jspm_packages/
 javascript/app.js
 javascript/app.js.map
+frontend/bower_components/
+frontend/dist/
