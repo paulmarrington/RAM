@@ -21,7 +21,7 @@ gulp.task("copy:font", function () {
 });
 
 gulp.task("copy:data",  function () {
-    return gulp.src(["data/**/*.{json}"],{base:"./"}).pipe(gulp.dest("dist"));
+    return gulp.src(["data/**/*.json"],{base:"./"}).pipe(gulp.dest("dist"));
 });
 
 gulp.task("copy:jslib", function () {
@@ -95,11 +95,11 @@ gulp.task("bower:watch", ["copy:bower"], function () {
 });
 
 gulp.task("data:watch", function () {
-    gulp.watch(["data/**/*.{json}"], "copy:data");
+    gulp.watch(["data/**/*.{json}"], ["copy:data"]);
 });
 
 gulp.task("ts:watch", ["ts:compile"], function () {
-    gulp.watch("typescript/**/*.ts", seq("ts:compile"));
+    gulp.watch(["typescript/**/*.ts"],["ts:compile"]);
 });
 
 

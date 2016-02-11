@@ -1,7 +1,7 @@
 /// <reference path="../../_all.ts" />
 
 namespace ram {
-    export class Page1Ctrl {
+    export class FourOFourCtrl {
         public static $inject = [
             "$scope"
         ];
