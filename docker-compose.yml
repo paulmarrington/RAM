@@ -15,7 +15,7 @@ nginx:
   build:          dockerfiles
   dockerfile:     nginx
   volumes:        [".:/ram"]
-  working_dir:    /ram/frontend/dist
+  working_dir:    /ram/frontend
   volumes_from:   ["ubuntu"]
   ports:          ["8080:80"]
 
