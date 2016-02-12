@@ -3,4 +3,7 @@
 /// <reference path="controllers/LayoutCtrl.ts" />
 /// <reference path="controllers/page1/Page1Ctrl.ts" />
 /// <reference path="controllers/page2/Page2Ctrl.ts" />
+/// <reference path="controllers/home/HomeCtrl.ts" />
+/// <reference path="controllers/404/FourOFourCtrl.ts" />
+/// <reference path="helpers/Enums.ts" />
 /// <reference path="app.ts" />
