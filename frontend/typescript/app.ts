@@ -8,6 +8,7 @@ namespace ram {
         "angular-loading-bar",
         "angular.filter",
         "restangular",
+        "ui.bootstrap",
         "templates"
     ]);
 
