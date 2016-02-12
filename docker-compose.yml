@@ -10,15 +10,6 @@ ubuntu:
   dockerfile:     ubuntu
   command:        /bin/bash
 
-nginx:
-  container_name: ram_nginx
-  build:          dockerfiles
-  dockerfile:     nginx
-  volumes:        [".:/ram"]
-  working_dir:    /ram/frontend
-  volumes_from:   ["ubuntu"]
-  ports:          ["8080:80"]
-
 node:
   container_name: ram_node
   build:          dockerfiles
@@ -26,6 +17,15 @@ node:
   volumes:        [".:/ram"]
   working_dir:    /ram/microservices
   volumes_from:   ["ubuntu"]
+
+nginx:
+  container_name: ram_nginx
+  build:          dockerfiles
+  dockerfile:     nginx
+  volumes:        [".:/ram"]
+  working_dir:    /ram/frontend
+  volumes_from:   ["node"]
+  ports:          ["8080:80"]
 
 #vnc: # Base OS with xterm and other useful X11 utilities
 #  container_name: ram_vnc
