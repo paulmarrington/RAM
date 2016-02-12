@@ -8,7 +8,40 @@
 * On Windows or OS X it is beneficial to install the GitHub desktop from https://desktop.github.com/. For Windows is provides also provides a bash shell and many Unix commands so that common shell-scripts can be written. In both cases, the GUI will provide seamless access to GitHub.
 * Fork and Clone https://github.com/atogov/RAM. Read https://help.github.com/articles/fork-a-repo/ for instructions. This will give you a repository in your own account that synchronises from the ATO RAM repository. As you make changes, use pull requests to update the main repository.
 * Go to the RAM root directory with from a command prompt and type _docker-compose build_ then wait while containers and their contents are downloaded and built. This will take a long time - once per installation. It is also possible to publish the containers to share them between developer platforms.
-* To use SourceTree for reviewing / merging pull requests, you need to modify _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247)
+* To use SourceTree for reviewing / merging pull requests, you need to modify _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247). In short, add the following:
+    [remote "atogov"]
+        fetch = +refs/pull/\*/head:refs/remotes/origin/pr/\*
+        
+### Ports
+Any instance started with docker-compose (dev thru AWS test) will expose static files on 8080 and services on 8081.
+
+## AWS Install
+* SSH to the server
+  * host name: _ubuntu@ramvm01.expoctest.com_
+  * ssh/auth: add reference to RAM ppk (private key)
+  * **sudo apt-get update**
+  * **sudo apt-get install -y git**
+* See https://help.github.com/articles/generating-a-new-ssh-key/ for instructions. Use an empty passphrase.
+  * **ssh-keygen -t rsa -b 4096**
+  * **cat ~/.ssh/id_rsa.pub**
+  * copy results to clipboard
+  * On your git account
+    * _Your profile_ from top-right ddl
+    * _Edit Profile_ button
+    * _SSH keys__ from Personal settings on left
+    * _New SSH key_ button on top right
+    * Give name and paste in copy if _id_rsa.pub_
+  * Link between GitHub and local git
+    * **eval "$(ssh-agent -s)"**
+    * **ssh-add ~/.ssh/id_rsa"**
+* Clone source
+  * **git clone git@github.com:atogov/RAM.git**
+  * **cd RAM**
+* Now we can automate much if the rest of the install
+  * **bash aws-install.sh**
+    * installs Docker
+    * creates a fresh build of all containers
+    * uses _docker_compose_ to start all containers
 
 ## Docker Containers
 
@@ -16,6 +49,7 @@
   * __mongo__ - downloaded from https://hub.docker.com/_/mongo/. This is a base reference container for the mongo containers created for RAM. This container is never left running.
   * __busybox__ - a minimal Linux distribution used as base for data specific containers. It contains useful Unix command to manipulate the data directories directly if needed. This container is never left running.
   * __ram_ubuntu__ - is created from _ubuntu_, adding any common packages that are convenient. Currently that includes curl, unzip and git. This container is never left running.
+  * __ram_nginx__ - web server used for serving static content. It has it's configuration files in /ram/dockerfiles
   * __ram_mongo__ - is created from _mongo_ with any RAM specifics added. This container is kept running, accessing the database in a data-specific container, _ram_mongo_data_.
   * __ram_mongo_data__ - a data container - one for each mongo database. It would be possible to have different copies with different data sets as needed. Use _docker remane_ to move container references around as needed. This container is never left running.
   * __ram_node__ - is created from _ram_ubuntu_ - and includes node, npm and jasmine. It is the base container for microservices and other node-based code. This container is never left running.

@@ -1,0 +1,4 @@
+FROM       nginx
+MAINTAINER ATO
+volume /ram
+CMD bash /ram/dockerfiles/nginx.sh
