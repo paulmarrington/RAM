@@ -10,6 +10,15 @@ ubuntu:
   dockerfile:     ubuntu
   command:        /bin/bash
 
+nginx:
+  container_name: ram_nginx
+  build:          dockerfiles
+  dockerfile:     nginx
+  volumes:        [".:/ram"]
+  working_dir:    /ram/frontend/dist
+  volumes_from:   ["ubuntu"]
+  ports:          ["8080:80"]
+
 node:
   container_name: ram_node
   build:          dockerfiles
@@ -98,6 +107,7 @@ microservice_register:
   volumes:        [".:/ram","/var/run:/var/run"]
   working_dir:    /ram/microservices/register
   volumes_from:   ["node"]
+  ports:          ["8081:80"]
   # Items below are for development/debugging
   # --debug allows remote debugging, --debug-brk will wait
   # at start of execution for debugger to connect.
