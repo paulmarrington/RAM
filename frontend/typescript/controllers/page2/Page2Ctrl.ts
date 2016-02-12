@@ -1,6 +1,6 @@
 /// <reference path="../../_all.ts" />
 
-module ram {
+namespace ram {
     export class Page2Ctrl {
         public static $inject = [
             "$scope"
