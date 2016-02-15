@@ -7,6 +7,14 @@ ENV NODE_VERSION 4.2.6
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
   && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
   && rm "node-v$NODE_VERSION-linux-x64.tar.gz"
-RUN        npm install -g jasmine typescript gulp pm2
 
-CMD pm2 ecosystem.json
+RUN        npm install -g jasmine typescript gulp-cli pm2
+
+# Some dancing because source may be on Windows disk
+RUN        cd /&&npm install gulp gulp-typescript gulp-concat gulp-sourcemaps gulp-tslint gulp-ignore gulp-rimraf gulp-sass gulp-sequence gulp-uglify browser-sync merge2 bower main-bower-files gulp-inject event-stream gulp-chmod gulp-angular-templatecache
+
+RUN  apt-get install -y ruby
+RUN  gem install sass
+
+#CMD tail -f /dev/null
+CMD  cd /ram/frontend&&mkdir bower_components&&gulp dist
