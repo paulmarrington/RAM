@@ -25,7 +25,7 @@ nginx:
   volumes:        [".:/ram"]
   working_dir:    /ram/frontend
   volumes_from:   ["node"]
-  ports:          ["8080:80"]
+  ports:          ["80:80"]
 
 #vnc: # Base OS with xterm and other useful X11 utilities
 #  container_name: ram_vnc
