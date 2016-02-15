@@ -16,4 +16,5 @@ RUN        cd /&&npm install gulp gulp-typescript gulp-concat gulp-sourcemaps gu
 RUN  apt-get install -y ruby
 RUN  gem install sass
 
-CMD        pm2 ecosystem.json
+CMD tail -f /dev/null
+#CMD  cd /ram/frontend&&gulp dist
