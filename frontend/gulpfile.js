@@ -9,7 +9,6 @@ var scss = require("gulp-sass");
 var seq = require("gulp-sequence");
 var uglify = require("gulp-uglify");
 var browserSync = require("browser-sync").create();
-var merge = require("merge2");
 var bowerFiles = require("main-bower-files");
 var inject = require("gulp-inject");
 var es = require("event-stream");
@@ -68,17 +67,6 @@ gulp.task("copy:index.html", function () {
 
 gulp.task("dist", seq(["clean"], ["ts:compile", "copy:images", "scss:compile", "copy:data", "copy:index.html", "copy:templates"], ["copy:font", "copy:jslib", "copy:bower"]));
 
-// var tsProject = ts.createProject({
-//     noImplicitAny: true,
-//     removeComments: true,
-//     preserveConstEnums: true,
-//     target: "es5",
-//     experimentalDecorators: true,
-//     emitDecoratorMetadata: true,
-//     sortOutput: true,
-//     outFile: "app.js"
-// });
-
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript"),
     outFile: "app.js"
@@ -98,13 +86,6 @@ gulp.task("ts:compile", ["ts:lint"], function () {
         .pipe(sourcemaps.write("."))
         .pipe(chmod(755))
         .pipe(gulp.dest("dist/js"));
-
-    // return gulp.src(["typescript/**/*.ts"])
-    //     .pipe(sourcemaps.init())
-    //     .pipe(ts(tsProject))
-    //     .pipe(sourcemaps.write("."))
-    //     .pipe(gulp.dest("javascript"))
-
 });
 
 gulp.task("html:watch", ["copy:index.html", "copy:templates"], function () {
@@ -142,7 +123,7 @@ gulp.task("ts:lint", function () {
         .pipe(tslint())
         .pipe(tslint.report("verbose", {
             emitError: false
-        }))
+        }));
 });
 
 gulp.task("serve", ["copy:images","scss:watch", "ts:watch", "html:watch", "bower:watch", "data:watch"], function () {
