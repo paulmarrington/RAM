@@ -15,6 +15,7 @@ var inject = require("gulp-inject");
 var es = require("event-stream");
 var templateCache = require("gulp-angular-templatecache");
 var chmod = require('gulp-chmod');
+var zip = require('gulp-zip');
 
 gulp.task("copy:font", function () {
     return gulp.src(["fonts/*.{eot,svg,ttf,woff,woff2}"], { base: "./" })
@@ -25,6 +26,12 @@ gulp.task("copy:data", function () {
     return gulp.src(["data/**/*.json"], { base: "./" })
         .pipe(chmod(755))
         .pipe(gulp.dest("dist"));
+});
+
+gulp.task("publish:zip",["dist"],function () {
+    return gulp.src("dist/**/*")
+        .pipe(zip('frontend-dist.zip'))
+        .pipe(gulp.dest('./'));
 });
 
 gulp.task("copy:images", function () {
