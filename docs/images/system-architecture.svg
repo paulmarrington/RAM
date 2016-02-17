@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="architecture.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="464.5"
+     inkscape:cy="168.32475"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3382"
+     showgrid="false"
+     showborder="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1137"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       transform="matrix(0,1,-1,0,1029.479,9.0481071)"
+       id="g3043">
+      <flowRoot
+         xml:space="preserve"
+         id="flowRoot3073"
+         style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+           id="flowRegion3075"><rect
+             id="rect3077"
+             width="444"
+             height="548"
+             x="528"
+             y="170.36218" /></flowRegion><flowPara
+           id="flowPara3079" /></flowRoot>      <g
+         id="Ebene_1"
+         transform="matrix(0,-0.23376785,0.19938308,0,533.62137,697.27094)" />
+      <flowRoot
+         xml:space="preserve"
+         id="flowRoot3194"
+         style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+           id="flowRegion3196"><rect
+             id="rect3198"
+             width="1348"
+             height="838"
+             x="-93"
+             y="38.362183" /></flowRegion><flowPara
+           id="flowPara3200"></flowPara></flowRoot>    </g>
+    <g
+       id="g3282">
+      <g
+         id="g3382"
+         transform="matrix(0,-1,1,0,-77.44529,1055.804)">
+        <g
+           id="g3140"
+           transform="matrix(0,1,-1,0,1108.638,-54.951893)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             ry="0"
+             y="139.67424"
+             x="-700.56952"
+             height="176.06122"
+             width="71.742722"
+             id="rect3053"
+             style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.81728786px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             transform="matrix(0,-1,1,0,0,0)" />
+          <text
+             sodipodi:linespacing="125%"
+             id="text3055"
+             y="657.25189"
+             x="227.6609"
+             style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             xml:space="preserve"><tspan
+               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+               y="657.25189"
+               x="230.43434"
+               id="tspan3057"
+               sodipodi:role="line">Frontend </tspan><tspan
+               id="tspan3059"
+               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+               y="682.25189"
+               x="227.6609"
+               sodipodi:role="line">Single Page App</tspan></text>
+        </g>
+        <rect
+           ry="0"
+           y="74.004173"
+           x="681.82275"
+           height="755.23364"
+           width="36.184837"
+           id="rect3061"
+           style="fill:#666666;fill-rule:evenodd;stroke:none"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <text
+           transform="matrix(0,1,-1,0,1029.479,9.0481071)"
+           sodipodi:linespacing="125%"
+           id="text3063"
+           y="339.14438"
+           x="441.54016"
+           style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+           xml:space="preserve"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"><tspan
+             style="font-size:30px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+             y="339.14438"
+             x="441.54016"
+             sodipodi:role="line"
+             id="tspan3071">Nginx</tspan></text>
+        <g
+           id="g3195"
+           transform="matrix(0,1,-1,0,1107.9713,-53.79308)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             transform="matrix(0,-1,1,0,0,0)"
+             style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.8369689px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             id="rect3081"
+             width="71.742722"
+             height="184.64273"
+             x="-699.90283"
+             y="419.09271"
+             ry="0" />
+          <text
+             xml:space="preserve"
+             style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             x="511.17972"
+             y="656.58521"
+             id="text3083"
+             sodipodi:linespacing="125%"><tspan
+               sodipodi:role="line"
+               x="511.17972"
+               y="656.58521"
+               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+               id="tspan3087">REST - /api/*</tspan><tspan
+               id="tspan3091"
+               sodipodi:role="line"
+               x="511.17972"
+               y="681.58521"
+               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial">(HTTP/JSON)</tspan></text>
+        </g>
+        <rect
+           ry="0"
+           y="288.06732"
+           x="226.53766"
+           height="339.10733"
+           width="76.318977"
+           id="rect3112"
+           style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.16987431px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <text
+           transform="matrix(0,1,-1,0,0,0)"
+           sodipodi:linespacing="125%"
+           id="text3114"
+           y="-274.43152"
+           x="457.26453"
+           style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+           xml:space="preserve"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"><tspan
+             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+             y="-274.43152"
+             x="457.26453"
+             id="tspan3116"
+             sodipodi:role="line">Backend</tspan><tspan
+             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+             y="-249.43152"
+             x="457.26453"
+             sodipodi:role="line"
+             id="tspan3128">NodeJS / Express/TypeScript/Gulp</tspan></text>
+        <g
+           id="g3190"
+           transform="matrix(0,1,-1,0,1044.8123,-99.01319)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <path
+             inkscape:connector-curvature="0"
+             id="rect3146"
+             d="m 510.27481,504.55192 26.375,40.0625 26.34375,-40.0625 -12.6875,0 0,-122.4375 -27.3125,0 0,122.4375 -12.71875,0 z"
+             style="fill:#000000" />
+          <text
+             xml:space="preserve"
+             style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             x="-451.1839"
+             y="540.51599"
+             id="text3148"
+             sodipodi:linespacing="125%"
+             transform="matrix(0,-1,1,0,0,0)"><tspan
+               sodipodi:role="line"
+               x="-451.1839"
+               y="540.51599"
+               id="tspan3152"
+               style="font-size:15px;text-align:center;text-anchor:middle">Dynamic Contents</tspan></text>
+        </g>
+        <g
+           id="g3185"
+           transform="matrix(0,1,-1,0,1038.1457,-70.597145)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <path
+             style="fill:#000000"
+             d="m 191.59715,511.8957 26.375,40.0625 26.34375,-40.0625 -12.6875,0 0,-64.9375 0,-42.4375 12.6875,0 -26.34375,-40.0625 -26.375,40.0625 12.71875,0 0,42.4375 0,64.9375 -12.71875,0 z"
+             id="path3179"
+             inkscape:connector-curvature="0" />
+          <text
+             transform="matrix(0,-1,1,0,0,0)"
+             sodipodi:linespacing="125%"
+             id="text3181"
+             y="223.32516"
+             x="-458.2558"
+             style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             xml:space="preserve"><tspan
+               style="font-size:15px;text-align:center;text-anchor:middle"
+               id="tspan3183"
+               y="223.32516"
+               x="-458.2558"
+               sodipodi:role="line">Static Contents</tspan></text>
+        </g>
+        <g
+           transform="matrix(0,1,-1,0,1038.1457,516.15223)"
+           id="g3223"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <path
+             inkscape:connector-curvature="0"
+             id="path3225"
+             d="m 189.60814,497.88525 26.375,40.0625 26.34375,-40.0625 -12.6875,0 0,-122.4375 -27.3125,0 0,122.4375 -12.71875,0 z"
+             style="fill:#000000" />
+          <text
+             xml:space="preserve"
+             style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             x="-437.1839"
+             y="221.33617"
+             id="text3227"
+             sodipodi:linespacing="125%"
+             transform="matrix(0,-1,1,0,0,0)"><tspan
+               sodipodi:role="line"
+               x="-437.1839"
+               y="221.33617"
+               id="tspan3229"
+               style="font-size:15px;text-align:center;text-anchor:middle">Static Contents</tspan></text>
+        </g>
+        <g
+           transform="matrix(-1,0,0,-1,759.41503,1006.8955)"
+           id="g3239"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g3241"
+             transform="matrix(0.73443983,0,0,0.73443983,180.55154,188.03039)">
+            <path
+               inkscape:connector-curvature="0"
+               id="path3243"
+               d="m 280.71221,465.50411 -40.0625,26.375 40.0625,26.34375 0,-12.6875 40.74258,0 0,-27.3125 -40.74258,0 z"
+               style="fill:#000000"
+               sodipodi:nodetypes="cccccccc" />
+            <path
+               sodipodi:nodetypes="cccccccc"
+               style="fill:#000000"
+               d="m 326.77835,465.50411 40.0625,26.375 -40.0625,26.34375 0,-12.6875 -40.74258,0 0,-27.3125 40.74258,0 z"
+               id="path3247"
+               inkscape:connector-curvature="0" />
+          </g>
+        </g>
+        <g
+           id="g3047"
+           transform="matrix(0,1,1,0,-105.3347,-90.194093)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             transform="matrix(0.73443983,0,0,0.73443983,180.55154,188.03039)"
+             id="g3049">
+            <path
+               sodipodi:nodetypes="cccccccc"
+               style="fill:#000000"
+               d="m 280.71221,465.50411 -40.0625,26.375 40.0625,26.34375 0,-12.6875 40.74258,0 0,-27.3125 -40.74258,0 z"
+               id="path3051"
+               inkscape:connector-curvature="0" />
+            <path
+               inkscape:connector-curvature="0"
+               id="path3053"
+               d="m 326.77835,465.50411 40.0625,26.375 -40.0625,26.34375 0,-12.6875 -40.74258,0 0,-27.3125 40.74258,0 z"
+               style="fill:#000000"
+               sodipodi:nodetypes="cccccccc" />
+          </g>
+        </g>
+        <g
+           id="g3055"
+           transform="matrix(0,-1,1,0,-105.3347,1000.0742)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             transform="matrix(0.73443983,0,0,0.73443983,180.55154,188.03039)"
+             id="g3057">
+            <path
+               inkscape:connector-curvature="0"
+               id="path3061"
+               d="m 293.42031,465.50411 -40.0625,26.375 40.0625,26.34375 0,-12.6875 67.97422,0 0,-27.3125 -67.97422,0 z"
+               style="fill:#000000"
+               sodipodi:nodetypes="cccccccc" />
+          </g>
+        </g>
+        <g
+           id="g3063"
+           transform="matrix(-1,0,0,-1,579.41503,886.89553)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             transform="matrix(0.73443983,0,0,0.73443983,180.55154,188.03039)"
+             id="g3065">
+            <path
+               sodipodi:nodetypes="cccccccc"
+               style="fill:#000000"
+               d="m 280.71221,465.50411 -40.0625,26.375 40.0625,26.34375 0,-12.6875 40.74258,0 0,-27.3125 -40.74258,0 z"
+               id="path3067"
+               inkscape:connector-curvature="0" />
+            <path
+               inkscape:connector-curvature="0"
+               id="path3069"
+               d="m 326.77835,465.50411 40.0625,26.375 -40.0625,26.34375 0,-12.6875 -40.74258,0 0,-27.3125 40.74258,0 z"
+               style="fill:#000000"
+               sodipodi:nodetypes="cccccccc" />
+          </g>
+        </g>
+        <g
+           transform="matrix(0,1,-1,0,927.97126,-331.79308)"
+           id="g3071"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             ry="0"
+             y="419.09271"
+             x="-699.90283"
+             height="184.64273"
+             width="71.742722"
+             id="rect3073"
+             style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.8369689px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             transform="matrix(0,-1,1,0,0,0)" />
+          <text
+             sodipodi:linespacing="125%"
+             id="text3075"
+             y="656.58521"
+             x="511.17972"
+             style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             xml:space="preserve"><tspan
+               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+               y="656.58521"
+               x="511.17972"
+               sodipodi:role="line"
+               id="tspan3079">TypeScript / Gulp</tspan><tspan
+               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+               y="681.58521"
+               x="513.95313"
+               sodipodi:role="line"
+               id="tspan3083">Bootstrap / Angular </tspan></text>
+        </g>
+        <g
+           id="g3085"
+           transform="matrix(-1,0,0,-1,759.41503,734.6449)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             transform="matrix(0.73443983,0,0,0.73443983,180.55154,188.03039)"
+             id="g3087">
+            <path
+               sodipodi:nodetypes="cccccccc"
+               style="fill:#000000"
+               d="m 280.71221,465.50411 -40.0625,26.375 40.0625,26.34375 0,-12.6875 40.74258,0 0,-27.3125 -40.74258,0 z"
+               id="path3089"
+               inkscape:connector-curvature="0" />
+            <path
+               inkscape:connector-curvature="0"
+               id="path3091"
+               d="m 326.77835,465.50411 40.0625,26.375 -40.0625,26.34375 0,-12.6875 -40.74258,0 0,-27.3125 40.74258,0 z"
+               style="fill:#000000"
+               sodipodi:nodetypes="cccccccc" />
+          </g>
+        </g>
+        <rect
+           style="fill:#666666;fill-rule:evenodd;stroke:none"
+           id="rect3121"
+           width="36.184837"
+           height="759.23364"
+           x="825.82275"
+           y="72.004173"
+           ry="0"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <text
+           transform="matrix(0,1,-1,0,1029.479,9.0481071)"
+           xml:space="preserve"
+           style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+           x="442.38245"
+           y="195.14438"
+           id="text3123"
+           sodipodi:linespacing="125%"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"><tspan
+             id="tspan3125"
+             sodipodi:role="line"
+             x="442.38245"
+             y="195.14438"
+             style="font-size:30px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial">Forge Rock           Authentication</tspan></text>
+        <g
+           transform="matrix(0,1,-1,0,1044.8123,-99.01319)"
+           id="g3135"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <path
+             style="fill:#000000"
+             d="m 510.27481,504.55192 26.375,40.0625 26.34375,-40.0625 -12.6875,0 0,-122.4375 -27.3125,0 0,122.4375 -12.71875,0 z"
+             id="path3137"
+             inkscape:connector-curvature="0" />
+          <text
+             transform="matrix(0,-1,1,0,0,0)"
+             sodipodi:linespacing="125%"
+             id="text3139"
+             y="540.51599"
+             x="-451.1839"
+             style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             xml:space="preserve"><tspan
+               style="font-size:15px;text-align:center;text-anchor:middle"
+               id="tspan3141"
+               y="540.51599"
+               x="-451.1839"
+               sodipodi:role="line">Dynamic Contents</tspan></text>
+        </g>
+        <g
+           id="g3154"
+           transform="matrix(0,1,-1,0,1272.1457,-53.847773)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <path
+             style="fill:#000000"
+             d="m 189.60814,497.88525 26.375,40.0625 26.34375,-40.0625 -12.6875,0 0,-182.4375 -27.3125,0 0,182.4375 z"
+             id="path3156"
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="cccccccc" />
+          <text
+             transform="matrix(0,-1,1,0,0,0)"
+             sodipodi:linespacing="125%"
+             id="text3158"
+             y="221.33617"
+             x="-437.1839"
+             style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             xml:space="preserve"><tspan
+               style="font-size:15px;text-align:center;text-anchor:middle"
+               id="tspan3160"
+               y="221.33617"
+               x="-437.1839"
+               sodipodi:role="line" /></text>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+           x="883.88232"
+           y="166.89685"
+           id="text3162"
+           sodipodi:linespacing="125%"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"><tspan
+             sodipodi:role="line"
+             x="883.88232"
+             y="166.89685"
+             id="tspan3166"
+             style="font-size:15px;fill:#ffffff">End user</tspan></text>
+        <g
+           id="g3174"
+           transform="matrix(0,1,-1,0,1044.8123,-21.013187)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <path
+             inkscape:connector-curvature="0"
+             id="path3176"
+             d="m 510.27481,504.55192 26.375,40.0625 26.34375,-40.0625 -12.6875,0 0,-278.4375 -27.3125,0 0,278.4375 z"
+             style="fill:#000000"
+             sodipodi:nodetypes="cccccccc" />
+          <text
+             xml:space="preserve"
+             style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             x="-273.1839"
+             y="542.51599"
+             id="text3178"
+             sodipodi:linespacing="125%"
+             transform="matrix(0,-1,1,0,0,0)"><tspan
+               sodipodi:role="line"
+               x="-273.1839"
+               y="542.51599"
+               id="tspan3180"
+               style="font-size:15px;text-align:center;text-anchor:middle">Internal API</tspan></text>
+        </g>
+        <g
+           transform="matrix(0,1,-1,0,1272.1457,236.15223)"
+           id="g3182"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <path
+             sodipodi:nodetypes="cccccccc"
+             inkscape:connector-curvature="0"
+             id="path3184"
+             d="m 189.60814,497.88525 26.375,40.0625 26.34375,-40.0625 -12.6875,0 0,-182.4375 -27.3125,0 0,182.4375 z"
+             style="fill:#000000" />
+          <text
+             xml:space="preserve"
+             style="font-size:20px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             x="-437.1839"
+             y="221.33617"
+             id="text3186"
+             sodipodi:linespacing="125%"
+             transform="matrix(0,-1,1,0,0,0)"><tspan
+               sodipodi:role="line"
+               x="-437.1839"
+               y="221.33617"
+               id="tspan3188"
+               style="font-size:15px;text-align:center;text-anchor:middle" /></text>
+        </g>
+        <text
+           sodipodi:linespacing="125%"
+           id="text3190"
+           y="456.79871"
+           x="869.48145"
+           style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+           xml:space="preserve"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"><tspan
+             id="tspan3192"
+             y="456.79871"
+             x="869.48145"
+             sodipodi:role="line"
+             style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial">External API</tspan></text>
+        <g
+           id="g3611"
+           transform="translate(0,-14)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             ry="0"
+             y="231.83917"
+             x="19.382271"
+             height="217.46672"
+             width="101.83176"
+             id="rect3609"
+             style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.0821619px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+          <text
+             transform="matrix(0,1,-1,0,0,0)"
+             sodipodi:linespacing="125%"
+             id="text2995"
+             y="-77.622368"
+             x="339.84012"
+             style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+             xml:space="preserve"><tspan
+               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+               y="-77.622368"
+               x="339.84012"
+               id="tspan2997"
+               sodipodi:role="line">MongoDB Cluster</tspan><tspan
+               id="tspan3093"
+               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+               y="-52.622368"
+               x="339.84012"
+               sodipodi:role="line">(Document Store)</tspan></text>
+        </g>
+        <g
+           id="g3098"
+           transform="translate(661.17439,461.33333)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             ry="0"
+             y="178.46504"
+             x="-253.10596"
+             height="182.06122"
+             width="71.742722"
+             id="rect3095"
+             style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.83109742px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+          <g
+             transform="matrix(0,1,-1,0,122.08269,-468.15757)"
+             id="g3031">
+            <text
+               xml:space="preserve"
+               style="font-size:40px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+               x="738.17249"
+               y="331.87097"
+               id="text3017"
+               sodipodi:linespacing="125%"><tspan
+                 sodipodi:role="line"
+                 id="tspan3019"
+                 x="740.94592"
+                 y="331.87097"
+                 style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial">API Documentation </tspan><tspan
+                 sodipodi:role="line"
+                 x="738.17249"
+                 y="356.87097"
+                 style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+                 id="tspan3021">(Swagger)</tspan></text>
+          </g>
+        </g>
+        <g
+           id="g3524"
+           transform="matrix(0,1,-1,0,1043.5117,831.38665)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g3510"
+             transform="matrix(0.30582624,0,0,0.30582624,-744.29077,-51.369512)">
+	<path
+   id="path3512"
+   d="m 112.066,319.819 c 21.252,-14.114 44.849,-21.851 67.67,-29.382 3.279,-1.078 6.554,-2.137 9.813,-3.239 l 0.668,-0.221 c 4.822,-1.689 9.393,-3.284 13.134,-5.345 0.169,-0.394 0.411,-1.049 0.7,-2.135 -18.788,-27.428 -31.554,-69.82 -31.554,-106.136 0,-30.807 9.682,-53.629 27.941,-67.526 -7.894,-3.991 -17.416,-5.527 -27.663,-5.527 -27.307,0 -49.442,10.91 -49.442,50.082 0,26.007 9.755,57.906 24.296,76.43 -0.135,1.464 -0.308,2.931 -0.571,4.388 -0.867,3.979 -2.261,8.437 -5.981,10.646 -4.174,2.478 -8.81,4.051 -13.372,5.649 -18.912,6.365 -38.472,11.975 -55.258,23.121 -8.727,5.745 -14.639,15.713 -17.9,25.506 -3.359,10.163 -4.733,24.371 -4.526,32.371 h 51.575 c 3.272,-4.001 6.758,-6.243 10.47,-8.682 z"
+   inkscape:connector-curvature="0"
+   style="fill:#020201" />
+
+	<path
+   id="path3514"
+   d="m 457.457,296.129 c -3.263,-9.793 -9.178,-19.379 -17.9,-25.125 -16.79,-11.145 -36.352,-16.946 -55.262,-23.307 -4.563,-1.598 -9.197,-3.267 -13.366,-5.746 -3.726,-2.213 -5.121,-6.715 -5.982,-10.698 -0.382,-2.108 -0.619,-4.25 -0.736,-6.378 13.712,-18.761 22.809,-49.369 22.809,-74.471 0,-39.18 -22.137,-50.097 -49.443,-50.097 -10.385,0 -20.009,1.594 -27.967,5.706 18.105,13.913 27.697,36.684 27.697,67.366 0,35.358 -11.861,76.072 -29.895,103.673 0.049,0.313 0.097,0.619 0.153,0.925 0.475,2.141 0.864,3.259 1.106,3.814 3.955,2.205 8.687,3.935 13.973,5.794 l 7.919,2.639 c 23.412,7.773 47.621,15.722 69.428,30.19 3.524,2.325 6.852,4.085 9.971,8.085 h 52.019 c 0.208,-7.999 -1.168,-22.207 -4.524,-32.37 z"
+   inkscape:connector-curvature="0"
+   style="fill:#020201" />
+
+</g>
+          <path
+             id="path3516"
+             d="m -617.45117,61.17638 c -1.33157,-3.99379 -3.74301,-7.95118 -7.29916,-10.29656 -6.84622,-4.54274 -14.82339,-6.9343 -22.5348,-9.52802 -1.86065,-0.65232 -3.75065,-1.3441 -5.44983,-2.35516 -1.51965,-0.90311 -2.08787,-2.74327 -2.44018,-4.3672 -0.15506,-0.86121 -0.252,-1.73648 -0.30002,-2.60534 5.59112,-7.64963 9.3011,-20.13223 9.3011,-30.36854 0,-15.97636 -9.02677,-20.42797 -20.16191,-20.42797 -11.13452,0 -20.16067,4.44702 -20.16067,20.42185 0,10.603 3.97757,23.61101 9.90724,31.16736 -0.0554,0.59545 -0.12539,1.19334 -0.23243,1.78664 -0.35445,1.6218 -0.92298,3.44024 -2.43896,4.3409 -1.70284,1.01167 -3.59316,1.65116 -5.4535,2.30348 -7.71141,2.59616 -15.68797,4.88252 -22.53236,9.42771 -3.55859,2.34293 -5.96973,6.50706 -7.29915,10.50085 -1.3701,4.14425 -1.93007,9.32586 -1.84566,13.3016 h 50.3916 50.3919 c 0.0862,-3.97574 -0.47464,-9.15766 -1.84321,-13.3016 z"
+             inkscape:connector-curvature="0" />
+        </g>
+        <rect
+           ry="0"
+           y="457.83917"
+           x="19.382271"
+           height="217.46672"
+           width="101.83176"
+           id="rect3557"
+           style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.0821619px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <g
+           transform="matrix(0,-0.21804301,0.21804301,0,76.33024,646.35029)"
+           id="g3774"
+           style="fill:#ffffff"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <path
+             d="m 322.5,-82.347 c 2.6,1.2 12.7,10.7 28.6,26.7 21.1,21.3 24.7,25.4 25.3,28.6 2.2,12.2 -10,22.9 -21,18.3 -2.3,-0.9 -8,-5.7 -13.6,-11.3 l -9.8,-9.7 0,33.7 0,33.6 3.3,0.7 c 5.6,1.2 19,8.2 25.2,13.2 5.2,4.2 13.4,13.7 16.3,18.9 0.9,1.6 4.1,0.6 30.8,-9.1 16.5,-5.9 30.6,-11.1 31.4,-11.5 1,-0.6 0.5,-1.2 -2,-2.3 -11.6,-5 -19.8,-9.1 -21.8,-11 -8,-7.4 -6.7,-19 2.8,-25.5 6.3,-4.3 9.8,-3.2 44.4,12.9 34.2,15.9 35.5,16.8 36.4,25.8 0.4,4.4 -0.5,6.7 -13.8,35.2 -7.9,16.7 -15,31.4 -15.8,32.7 -0.8,1.3 -3.3,3.2 -5.5,4.4 -8.5,4.3 -18.8,0.3 -22.2,-8.7 -2.3,-5.8 -1.7,-8.2 4.7,-21.7 2.8,-5.9 4.9,-11 4.7,-11.2 -0.2,-0.2 -14.9,4.8 -32.5,11.2 l -32.1,11.7 -0.5,8 c -1.7,26.6 -21.9,52.2 -47.8,60.5 l -7,2.3 0,16.7 0,16.8 4.3,2.5 c 5.5,3.3 10.8,9.1 14.4,15.9 2.5,4.8 2.8,6.2 2.8,15.8 0,10 -0.1,10.8 -3.4,16.8 -4.1,7.5 -10.3,13.5 -17.9,17 -4.9,2.3 -7,2.7 -15.2,2.7 -8.5,0 -10.1,-0.3 -15.5,-2.9 -7.6,-3.8 -14.3,-10.5 -18.1,-18.1 -2.6,-5.4 -2.9,-7 -2.9,-15.5 0.1,-8.4 0.4,-10.2 3,-15.5 3.1,-6.5 10,-13.8 15.8,-17 l 3.7,-2 0,-16.5 0,-16.6 -5.7,-1.8 c -11.1,-3.5 -21.2,-9.5 -29.2,-17.6 -12.4,-12.3 -19.5,-27.4 -20.8,-44 l -0.6,-7.5 -32.1,-11.7 c -17.6,-6.4 -32.3,-11.4 -32.5,-11.2 -0.2,0.2 1.9,5.3 4.7,11.2 6.4,13.5 7,15.9 4.7,21.7 -3.6,9.5 -14.2,13.2 -22.9,8.1 -5,-2.9 -3.8,-0.8 -24.3,-44.6 -9.7,-20.6 -10.5,-22.8 -10.1,-27.2 0.9,-8.9 2.2,-9.8 36.4,-25.7 34.6,-16.1 38.1,-17.2 44.4,-12.9 9.5,6.5 10.8,18.1 2.8,25.5 -2,1.9 -10.2,6 -21.8,11 -2.5,1.1 -3,1.7 -2,2.3 0.8,0.4 15,5.6 31.4,11.6 27.9,10 30,10.6 31,8.9 3.1,-5.2 11.5,-14.6 17.2,-19.2 6.6,-5.3 15.6,-10.1 23.2,-12.4 l 4.2,-1.2 0,-33 0,-33 -9.9,9.6 c -10.3,10 -15,12.5 -21,11.2 -4.2,-0.9 -8.9,-4.2 -11.1,-7.7 -2.4,-3.9 -2.7,-11.6 -0.6,-15.6 0.8,-1.5 12.4,-13.6 25.8,-26.9 27.9,-27.7 29.8,-28.8 39.3,-24.4 z"
+             inkscape:connector-curvature="0"
+             style="fill:#ffffff"
+             id="path8"
+             sodipodi:nodetypes="cccccccccccccccccccscccscccccccccsccscccccccccccccsccccccccccccccccccccccc" />
+        </g>
+        <g
+           id="g3593"
+           transform="translate(22,-14)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             id="rect3101"
+             width="9.0764856"
+             height="39.254665"
+             x="75.366936"
+             y="637.8476"
+             ry="0" />
+          <rect
+             ry="0"
+             y="637.8476"
+             x="64.917023"
+             height="39.254665"
+             width="9.0764856"
+             id="rect3103"
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+          <rect
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             id="rect3105"
+             width="9.0764856"
+             height="39.254665"
+             x="54.467121"
+             y="637.8476"
+             ry="0" />
+          <rect
+             ry="0"
+             y="637.8476"
+             x="44.017216"
+             height="39.254665"
+             width="9.0764856"
+             id="rect3107"
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        </g>
+        <g
+           id="g3599"
+           transform="translate(22,-14)"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             ry="0"
+             y="499.8476"
+             x="75.366936"
+             height="39.254665"
+             width="9.0764856"
+             id="rect3559"
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+          <rect
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             id="rect3561"
+             width="9.0764856"
+             height="39.254665"
+             x="64.917023"
+             y="499.8476"
+             ry="0" />
+          <rect
+             ry="0"
+             y="499.8476"
+             x="54.467121"
+             height="39.254665"
+             width="9.0764856"
+             id="rect3563"
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+          <rect
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             id="rect3565"
+             width="9.0764856"
+             height="39.254665"
+             x="44.017216"
+             y="499.8476"
+             ry="0" />
+          <rect
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             id="rect3567"
+             width="9.0764856"
+             height="39.254665"
+             x="75.366936"
+             y="499.8476"
+             ry="0" />
+          <rect
+             ry="0"
+             y="499.8476"
+             x="64.917023"
+             height="39.254665"
+             width="9.0764856"
+             id="rect3569"
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+          <rect
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             id="rect3571"
+             width="9.0764856"
+             height="39.254665"
+             x="54.467121"
+             y="499.8476"
+             ry="0" />
+          <rect
+             ry="0"
+             y="499.8476"
+             x="44.017216"
+             height="39.254665"
+             width="9.0764856"
+             id="rect3573"
+             style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.13726467px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        </g>
+        <text
+           transform="matrix(0,1,-1,0,0,0)"
+           sodipodi:linespacing="125%"
+           id="text3109"
+           y="-33.115288"
+           x="569.88855"
+           style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+           xml:space="preserve"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"><tspan
+             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;font-family:Arial;-inkscape-font-specification:Arial"
+             y="-33.115288"
+             x="569.88855"
+             sodipodi:role="line"
+             id="tspan3119">External Data Sources</tspan></text>
+        <g
+           transform="matrix(-1,0,0,-1,579.41503,1126.8955)"
+           id="g3093"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             id="g3095"
+             transform="matrix(0.73443983,0,0,0.73443983,180.55154,188.03039)">
+            <path
+               inkscape:connector-curvature="0"
+               id="path3097"
+               d="m 280.71221,465.50411 -40.0625,26.375 40.0625,26.34375 0,-12.6875 40.74258,0 0,-27.3125 -40.74258,0 z"
+               style="fill:#000000"
+               sodipodi:nodetypes="cccccccc" />
+            <path
+               sodipodi:nodetypes="cccccccc"
+               style="fill:#000000"
+               d="m 326.77835,465.50411 40.0625,26.375 -40.0625,26.34375 0,-12.6875 -40.74258,0 0,-27.3125 40.74258,0 z"
+               id="path3099"
+               inkscape:connector-curvature="0" />
+          </g>
+        </g>
+        <path
+           inkscape:connector-curvature="0"
+           id="path4726"
+           d="m 1051.5043,448.44529 c 0,-5.50597 -1.0948,-11.00977 -3.2018,-16.09662 -2.1071,-5.08685 -5.2247,-9.75275 -9.118,-13.64606 -3.8933,-3.89331 -8.5592,-7.01096 -13.6461,-9.118 -5.0868,-2.10705 -10.5906,-3.20182 -16.0966,-3.20182 -5.506,0 -11.0098,1.09477 -16.0966,3.20182 -5.0869,2.10704 -9.7528,5.22469 -13.6461,9.118 -3.8933,3.89331 -7.0109,8.55921 -9.118,13.64606 -2.107,5.08685 -3.2018,10.59065 -3.2018,16.09662 0,5.50597 1.0948,11.00977 3.2018,16.09662 2.1071,5.08685 5.2247,9.75275 9.118,13.64606 3.8933,3.89331 8.5592,7.01096 13.6461,9.118 5.0868,2.10704 10.5906,3.20182 16.0966,3.20182 5.506,0 11.0098,-1.09478 16.0966,-3.20182 5.0869,-2.10704 9.7528,-5.22469 13.6461,-9.118 3.8933,-3.89331 7.0109,-8.55921 9.118,-13.64606 2.107,-5.08685 3.2018,-10.59065 3.2018,-16.09662 z m -7.9187,-0.41927 c -1.8017,-4.48117 -4.2111,-8.6537 -7.1324,-12.40977 1.7962,0.46423 3.5472,1.03997 5.2465,1.71742 1.1921,3.43347 1.8314,7.05822 1.8859,10.69235 z m -0.6847,7.27767 c 0,1.1e-4 0,1.6e-4 0,3.1e-4 -0.4219,2.02563 -1.0283,4.01279 -1.8093,5.92882 -1.0506,-1.23383 -2.1504,-2.43242 -3.3047,-3.58665 -3.936,-3.936 -8.3552,-7.27734 -13.1169,-9.96974 0.01,-0.11257 0.016,-0.22557 0.017,-0.33862 0,-1.07139 -0.4409,-2.13622 -1.1985,-2.89383 -0.7576,-0.75762 -1.8224,-1.19869 -2.8938,-1.19867 -1.022,10e-4 -2.0383,0.40241 -2.7857,1.09948 -3.2086,-1.31749 -6.5289,-2.36362 -9.9268,-3.11994 0.4551,-1.37518 0.9762,-2.71997 1.5594,-4.03113 2.4073,-0.93528 4.918,-1.66385 7.5096,-2.16693 0.6817,1.33404 2.1454,2.22995 3.6435,2.23009 0.8915,-0.001 1.7799,-0.3034 2.487,-0.84623 0.707,-0.54284 1.2286,-1.32298 1.46,-2.18386 0.2828,-0.005 0.5659,-0.0101 0.8501,-0.0101 2.2172,0 4.3951,0.16547 6.5239,0.48124 5.2012,5.78131 9.0261,12.82111 10.985,20.60575 z m -2.6731,-21.58454 c -2.2256,-0.7425 -4.5205,-1.33299 -6.88,-1.7367 -3.6968,-3.94259 -8.0061,-7.30406 -12.7751,-9.93237 1.543,-1.36013 3.1856,-2.60867 4.9094,-3.7444 6.3804,3.40315 11.6283,8.8887 14.7457,15.41347 z m -0.4949,30.45273 c -2.4343,4.69066 -5.9743,8.80289 -10.2509,11.90762 -4.2765,3.10474 -9.2829,5.19723 -14.4968,6.05914 -0.9501,-1.21645 -1.8372,-2.48463 -2.6583,-3.79807 0.6266,-0.73292 0.9813,-1.6931 0.9818,-2.65737 -1e-4,-1.07124 -0.4411,-2.13586 -1.1986,-2.89334 -0.7575,-0.75748 -1.8221,-1.1985 -2.8934,-1.19857 -0.1112,7.6e-4 -0.2224,0.006 -0.3332,0.0157 -2.0758,-5.09993 -3.2249,-10.67616 -3.2249,-16.52777 0,-3.81996 0.4861,-7.52529 1.3989,-11.05825 3.2389,0.70932 6.4043,1.69509 9.4642,2.93936 -0.012,0.12544 -0.018,0.25144 -0.019,0.37746 10e-5,1.0713 0.4412,2.13597 1.1987,2.89346 0.7576,0.75749 1.8223,1.19847 2.8935,1.19846 1.0355,-9.1e-4 2.0651,-0.41253 2.8158,-1.12587 4.4693,2.5471 8.6185,5.69725 12.3199,9.39865 1.422,1.42204 2.746,2.92235 4.0023,4.46938 z m -11.0555,-32.74865 c -1.0856,-0.0752 -2.1809,-0.11446 -3.2854,-0.11446 -0.3823,0 -0.7631,0.006 -1.1431,0.0154 -0.6774,-1.345 -2.148,-2.25113 -3.654,-2.25144 -0.8956,0.001 -1.7881,0.30647 -2.4968,0.85409 -0.7087,0.54763 -1.2293,1.33425 -1.4563,2.20061 -1.8124,0.34277 -3.5887,0.78837 -5.3213,1.33314 1.9276,-3.41454 4.2973,-6.54522 7.0328,-9.31445 3.7591,1.97522 7.2272,4.4271 10.3241,7.27709 z m -6.2221,-14.54527 c -1.6224,1.15864 -3.1729,2.41169 -4.6328,3.76248 -5.4989,-2.61268 -11.5325,-4.27992 -17.8905,-4.79139 0.066,-0.0893 0.1391,-0.17321 0.2057,-0.26212 3.0219,-0.85849 6.1627,-1.2974 9.3041,-1.30022 4.4513,0.005 8.8999,0.89062 13.0135,2.59125 z m -6.8365,5.93742 c -3.3727,3.55806 -6.1937,7.64382 -8.327,12.11948 -3.1662,1.32667 -6.1563,2.99017 -8.9257,4.94647 -1.2433,-0.0764 -2.4922,-0.11505 -3.745,-0.11505 -1.5075,0 -3.0091,0.056 -4.5023,0.16635 0.3027,-2.20608 0.7422,-4.36805 1.3088,-6.47797 1.0229,-0.0692 2.0133,-0.53958 2.7133,-1.28859 0.7001,-0.74901 1.1025,-1.76891 1.1026,-2.79414 0,-1.13671 -0.5028,-2.2638 -1.3453,-3.02683 1.158,-2.6914 2.5325,-5.26743 4.1037,-7.70466 6.2543,0.28454 12.1985,1.74898 17.6169,4.17494 z m -3.9671,59.71021 c -0.7355,0.0499 -1.4727,0.0761 -2.2099,0.0783 -2.2583,-9.1e-4 -4.5165,-0.22658 -6.7303,-0.67249 -3.5186,-4.00822 -6.439,-8.55462 -8.6221,-13.50006 0.8764,-0.76383 1.4015,-1.91561 1.4034,-3.07812 0,-1.04862 -0.4239,-2.09085 -1.1538,-2.8438 -0.7298,-0.75295 -1.7584,-1.20809 -2.8064,-1.24189 -0.8075,-2.91662 -1.3722,-5.93476 -1.6668,-9.03245 2.6193,-3.57535 5.7644,-6.74023 9.3237,-9.37998 1.6839,0.13266 3.356,0.33796 5.0123,0.61468 -0.9467,3.71346 -1.4512,7.60295 -1.4512,11.60947 0,6.29594 1.2517,12.29742 3.5105,17.78085 -0.7189,0.75072 -1.1348,1.78372 -1.1366,2.82312 0,1.07135 0.441,2.13609 1.1986,2.89365 0.7576,0.75755 1.8223,1.19857 2.8936,1.19856 0.1882,-0.002 0.3763,-0.016 0.5625,-0.0433 0.5921,0.95401 1.216,1.88624 1.8725,2.79347 z m -6.0284,-43.63373 c -0.2146,0.5831 -0.4155,1.17266 -0.6073,1.76634 -0.6778,-0.11714 -1.3581,-0.22325 -2.0409,-0.31757 0.8642,-0.51207 1.7471,-0.99547 2.6482,-1.44877 z m -5.1434,42.47554 c -0.3792,-0.0899 -0.7568,-0.18628 -1.1327,-0.2891 0.3759,0.10282 0.7535,0.19921 1.1327,0.2891 z m -2.6401,-0.83943 c -6.1132,-2.20695 -11.5693,-6.20061 -15.5209,-11.3607 0.9876,-4.72156 2.7262,-9.16571 5.0924,-13.1976 0.338,2.1242 0.7981,4.20768 1.3699,6.24461 -0.9168,0.76399 -1.4711,1.94551 -1.4725,3.13892 0,1.06509 0.4367,2.12357 1.1867,2.87979 0.75,0.75623 1.8049,1.20109 2.8699,1.21034 1.733,3.95569 3.9115,7.67242 6.4745,11.08464 z m -3.0509,-37.85257 c -1.8515,1.59556 -3.5758,3.33438 -5.1588,5.19702 0,-0.23214 0,-0.46454 0,-0.6974 0,-1.44773 0.059,-2.88167 0.1735,-4.29977 1.598,-0.13294 3.2066,-0.20104 4.8222,-0.20104 0.056,0 0.1119,10e-4 0.1679,10e-4 z m -0.1699,-24.07321 c -1.2836,2.13753 -2.4267,4.36867 -3.4185,6.67991 -0.016,-9.2e-4 -0.033,-0.002 -0.049,-0.002 -1.0713,-2e-5 -2.1361,0.44101 -2.8936,1.19856 -0.7576,0.75755 -1.1986,1.8223 -1.1986,2.89365 0,1.24361 0.6068,2.47253 1.5911,3.23261 -0.6714,2.47626 -1.1766,5.02074 -1.5012,7.62104 -3.8718,0.47747 -7.6692,1.33488 -11.3503,2.52839 0.8494,-5.00087 2.8302,-9.80623 5.7515,-13.95301 2.9214,-4.14677 6.7795,-7.62958 11.2026,-10.11278 0.6196,-0.0376 1.2403,-0.0717 1.866,-0.086 l 0,0 z m -7.7399,32.83969 c -3.0298,4.34597 -5.3133,9.23991 -6.7392,14.48537 -3.1462,-5.25111 -4.8434,-11.36051 -4.8567,-17.48196 0.011,-0.83585 0.053,-1.67129 0.1254,-2.50407 3.6998,-1.29541 7.5352,-2.21869 11.4503,-2.74603 -0.093,1.31466 -0.1415,2.6416 -0.1415,3.97983 0,1.43564 0.055,2.85846 0.1617,4.26686 z"
+           style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Impact;-inkscape-font-specification:Impact Condensed"
+           sodipodi:nodetypes="ssssssssssssssssscccccccsccsccccccscscccccccccscccsccscccsccsccsccscccccccccccccsccscccccccccsccccsccscccccccccccccccsccccscscccccsccccscccccccccsc"
+           inkscape:export-filename="C:\Users\ali-windows-mbp\Documents\projects\ram_project\documents\system-architecture.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+      </g>
+    </g>
+  </g>
+</svg>
