@@ -7,6 +7,18 @@ ENV NODE_VERSION 4.2.6
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
   && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
   && rm "node-v$NODE_VERSION-linux-x64.tar.gz"
-RUN        npm install -g jasmine typescript gulp pm2
 
-CMD pm2 ecosystem.json
+RUN        npm install -g jasmine typescript gulp-cli pm2
+
+# Some dancing because source may be on Windows disk
+RUN cd /&&npm install gulp gulp-typescript gulp-concat gulp-sourcemaps
+RUN cd /&&npm install gulp-tslint gulp-ignore gulp-rimraf gulp-sass
+RUN cd /&&npm install gulp-sequence gulp-uglify gulp-inject
+RUN cd /&&npm install gulp-chmod gulp-angular-templatecache
+RUN npm install -g bower main-bower-files
+RUN cd /&&npm install browser-sync merge2 event-stream
+
+RUN  apt-get install -y ruby
+RUN  gem install sass
+
+CMD  bash /ram/dockerfiles/node.sh

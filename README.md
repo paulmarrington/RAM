@@ -11,7 +11,7 @@
 * To use SourceTree for reviewing / merging pull requests, you need to modify _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247). In short, add the following:
     [remote "atogov"]
         fetch = +refs/pull/\*/head:refs/remotes/origin/pr/\*
-        
+
 ### Ports
 Any instance started with docker-compose (dev thru AWS test) will expose static files on 8080 and services on 8081.
 
@@ -49,14 +49,14 @@ Any instance started with docker-compose (dev thru AWS test) will expose static 
   * __mongo__ - downloaded from https://hub.docker.com/_/mongo/. This is a base reference container for the mongo containers created for RAM. This container is never left running.
   * __busybox__ - a minimal Linux distribution used as base for data specific containers. It contains useful Unix command to manipulate the data directories directly if needed. This container is never left running.
   * __ram_ubuntu__ - is created from _ubuntu_, adding any common packages that are convenient. Currently that includes curl, unzip and git. This container is never left running.
-  * __ram_nginx__ - web server used for serving static content. It has it's configuration files in /ram/dockerfiles
+  * __ram_nginx__ - web server used for serving static content. It has it's configuration files in /ram/dockerfiles. Before NGINX start, gulp is run to refresh the front-end.
   * __ram_mongo__ - is created from _mongo_ with any RAM specifics added. This container is kept running, accessing the database in a data-specific container, _ram_mongo_data_.
   * __ram_mongo_data__ - a data container - one for each mongo database. It would be possible to have different copies with different data sets as needed. Use _docker remane_ to move container references around as needed. This container is never left running.
   * __ram_node__ - is created from _ram_ubuntu_ - and includes node, npm and jasmine. It is the base container for microservices and other node-based code. This container is never left running.
   * __ram_jasmine__ - is created from _ram_node_ and is left running. To execute all microservice jasmine specifications from the server, use _docker exec -it ram_jasmine jasmine_.
   * __ram_microservice_register__. One ring to rule them all. It uses the NPM package Redbird to provide a reverse proxy to access all running microservices on a cluster. Redbird in turn relies on http-proxy (a Nodejitsu project) for the reverse proxy. When a container start, the register is informed and creates a path _host:90//service_name_ where the service name has _ram_microservice\__ removed.
   * __ram_microservice_template__. Is the base microservice. It does nothing useful except provide code to be copied to create a new service.
-  * __ram_microservice\*__ - all the other microservices in the running docker instance/cluster.
+  * __ram_microservice\*__ - all the other microservices in the running docker instance/cluster. Before the services start, gulp is run to update the running code-base.
 
 # How to Create a New MicroService
 Microservice source is kept in RAM/microservices/. To create a new one, say _fred_, copy the directory _template_ to _fred_ and edit/review the following files:
