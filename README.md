@@ -1,6 +1,6 @@
 # Table of Contents:
- 1. [System Architecture](architecture.md)
- 1. [Development Environment](environment.md)
+ 1. [System Architecture](docs/architecture.md)
+ 1. [Development Environment](docs/environment.md)
 
 ## Development Environment Installation
 
