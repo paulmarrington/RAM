@@ -33,8 +33,8 @@ server.use(express.static(path.join(__dirname, conf.frontendDir)));
 import homeRte from "./routes/home";
 import usersRte from "./routes/users";
 
-server.use("/home", homeRte);
-server.use("/users", usersRte);
+server.use("/api/home", homeRte);
+server.use("/api/users", usersRte);
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {

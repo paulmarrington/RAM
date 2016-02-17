@@ -8,7 +8,6 @@ var rimraf = require("gulp-rimraf");
 var seq = require("gulp-sequence");
 var zip = require('gulp-zip');
 
-
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript")
 });

@@ -80,9 +80,10 @@ gulp.task("ts:compile", ["ts:lint"], function () {
 
     var tsResult = gulp.src("typescript/**/*.ts")
         .pipe(sourcemaps.init())
-        .pipe(ts(tsProject));
+        .pipe(ts(tsProject,{sortOutput:true}));
 
     return tsResult.js
+        .pipe(uglify({mangle:false}))
         .pipe(sourcemaps.write("."))
         .pipe(chmod(755))
         .pipe(gulp.dest("dist/js"));
@@ -130,7 +131,8 @@ gulp.task("serve", ["copy:images","scss:watch", "ts:watch", "html:watch", "bower
     browserSync.init({
         server: {
             baseDir: "./dist/"
-        }
+        },
+        online: true
     });
 
     return gulp.watch([
