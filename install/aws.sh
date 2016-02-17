@@ -1,3 +1,13 @@
+#!/bin/bash
+if [ "$(id -u)" != "0" ]; then
+	echo "Sorry, you are not root. Please use sudo bash aws.sh"
+	exit 1
+fi
+apt-get update
+
+## NGINX
+apt-get install -y nginx
+cat > /etc/nginx/nginx.conf << EOF
 # user www-data;
 
 worker_processes  2;
@@ -85,3 +95,36 @@ http {
   }
 
 }
+EOF
+
+## NODE
+if ! type curl > /dev/null; then
+  apt-get install -y curl
+fi
+export NPM_CONFIG_LOGLEVEL=info
+export NODE_VERSION=4.2.6
+export NV=$NODE_VERSION
+export NVF=node-v$NV-linux-x64.tar.gz
+
+curl -SLO "https://nodejs.org/dist/v$NV/$NVF"
+tar -xzf "$NVF" -C /usr/local --strip-components=1
+rm "$NVF"
+
+## MongoDB
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+apt-get update
+apt-get install -y mongodb-org
+service mongod start
+
+# Get initial version of distribution code
+mkdir /ram
+cd /ram
+apt-get install -y unzip
+curl -SLO "https://rawgit.com/atogov/RAM/develop/frontend/frontend-dist.zip"
+unzip frontend-dist.zip
+export $logname=`logname`
+if [ $logname ]; then
+  chown -R $logname /ram
+  sudo su $logname install/npm-packages.sh
+fi

@@ -1,19 +1,11 @@
 ## Development Environment Installation
 
-### Install Docker
-* Go to https://docs.docker.com and select your OS from the installation list on the left. It is very painless - even for Windows.
-* The installation and familiarisation instructions work smoothly for Windows until you attempt to log in to your docker hub account. This may fail. If it does, follow https://github.com/docker/hub-feedback/ussues/473.
 ### Source Access
 * Create a GitHub account if you do not already have one.
-* On Windows or OS X it is beneficial to install the GitHub desktop from https://desktop.github.com/. For Windows is provides also provides a bash shell and many Unix commands so that common shell-scripts can be written. In both cases, the GUI will provide seamless access to GitHub.
 * Fork and Clone https://github.com/atogov/RAM. Read https://help.github.com/articles/fork-a-repo/ for instructions. This will give you a repository in your own account that synchronises from the ATO RAM repository. As you make changes, use pull requests to update the main repository.
-* Go to the RAM root directory with from a command prompt and type _docker-compose build_ then wait while containers and their contents are downloaded and built. This will take a long time - once per installation. It is also possible to publish the containers to share them between developer platforms.
 * To use SourceTree for reviewing / merging pull requests, you need to modify _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247). In short, add the following:
     [remote "atogov"]
         fetch = +refs/pull/\*/head:refs/remotes/origin/pr/\*
-
-### Ports
-Any instance started with docker-compose (dev thru AWS test) will expose static files on 8080 and services on 8081.
 
 ## AWS Install
 * SSH to the server
@@ -34,14 +26,13 @@ Any instance started with docker-compose (dev thru AWS test) will expose static 
   * Link between GitHub and local git
     * **eval "$(ssh-agent -s)"**
     * **ssh-add ~/.ssh/id_rsa"**
-* Clone source
-  * **git clone git@github.com:atogov/RAM.git**
-  * **cd RAM**
 * Now we can automate much if the rest of the install
-  * **bash aws-install.sh**
-    * installs Docker
-    * creates a fresh build of all containers
-    * uses _docker_compose_ to start all containers
+  * curl -SLO https://raw.githubusercontent.com/atogov/RAM/master/install/aws.sh
+  * **sudo bash aws-init.sh**
+    * installs NGINX
+    * installs Nodejs
+    * installs MongoDB
+    *
 
 ## Docker Containers
 
