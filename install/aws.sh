@@ -153,6 +153,7 @@ pm2 start all
 
 apt-get install -y unzip
 /ram/update.sh develop
+chmod -R 777 /ram
 
 export logname=`logname`
 if [ $logname ]; then
