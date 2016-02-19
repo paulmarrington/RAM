@@ -34,7 +34,7 @@ gulp.task("publish:zip",["dist"],function () {
 });
 
 gulp.task("copy:images", function () {
-    return gulp.src(["images/**/*.{jpeg,jpg,png,svg,gif}"], { base: "./" })
+    return gulp.src(["**/*.{jpeg,jpg,png,svg,gif,ico}"], { base: "./" })
         .pipe(chmod(755))
         .pipe(gulp.dest("dist"));
 });
