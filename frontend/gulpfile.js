@@ -90,12 +90,12 @@ gulp.task("clean", function () {
 gulp.task("ts:compile", ["ts:lint"], function () {
 
     var tsResult = gulp.src(["typescript/**/*.ts", "../commons/**/*.ts"])
-        .pipe(sourcemaps.init())
+        // .pipe(sourcemaps.init())
         .pipe(ts(tsProject, { sortOutput: true }));
     // .pipe(uglify({mangle:false}))
 
     return tsResult.js
-        .pipe(sourcemaps.write("."))
+        // .pipe(sourcemaps.write("."))
         .pipe(chmod(755))
         .pipe(gulp.dest("dist/js"));
 });

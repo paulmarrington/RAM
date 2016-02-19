@@ -12,6 +12,6 @@
         "experimentalDecorators": true
     },
     "files": [
-        "app.ts"
+        "Boot.ts"
     ]
 }
