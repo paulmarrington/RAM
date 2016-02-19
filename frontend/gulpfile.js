@@ -27,7 +27,7 @@ gulp.task("copy:data", function () {
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task("publish:zip",["dist"],function () {
+gulp.task("publish:zip", ["dist"], function () {
     return gulp.src("dist/**/*")
         .pipe(zip('frontend-dist.zip'))
         .pipe(gulp.dest('./'));
@@ -39,16 +39,27 @@ gulp.task("copy:images", function () {
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task("copy:jslib", function () {
+gulp.task("copy:jslib",["copy:systemJsConf"], function () {
     return gulp.src(["javascript/lib/*"])
         .pipe(chmod(755))
         .pipe(gulp.dest("dist/js/lib")); // move the javascript/lib into dist folder
+});
+
+gulp.task("copy:systemJsConf",["copy:jspm"], function () {
+    return gulp.src(["system.config.js"])
+        .pipe(gulp.dest("dist/js/"));
 });
 
 gulp.task("copy:bower", function () {
     return gulp.src(bowerFiles(), { base: "./" })
         .pipe(chmod(755))
         .pipe(gulp.dest("dist/")); // move the javascript/lib into dist folder
+});
+
+gulp.task("copy:jspm", function () {
+    return gulp.src(["./jspm_packages/**/**"], { base: "./" })
+        .pipe(chmod(755))
+        .pipe(gulp.dest("dist/"));
 });
 
 gulp.task("copy:templates", function () {
@@ -78,12 +89,12 @@ gulp.task("clean", function () {
 
 gulp.task("ts:compile", ["ts:lint"], function () {
 
-    var tsResult = gulp.src("typescript/**/*.ts")
+    var tsResult = gulp.src(["typescript/**/*.ts", "../commons/**/*.ts"])
         .pipe(sourcemaps.init())
-        .pipe(ts(tsProject,{sortOutput:true}));
+        .pipe(ts(tsProject, { sortOutput: true }));
+    // .pipe(uglify({mangle:false}))
 
     return tsResult.js
-        .pipe(uglify({mangle:false}))
         .pipe(sourcemaps.write("."))
         .pipe(chmod(755))
         .pipe(gulp.dest("dist/js"));
@@ -97,12 +108,16 @@ gulp.task("bower:watch", ["copy:bower"], function () {
     gulp.watch(["bower_components/**/*.js"], ["copy:index.html", "copy:bower"]);
 });
 
+gulp.task("jspm:watch", ["copy:jspm"], function () {
+    gulp.watch(["jspm__packages/**/*.js"], ["copy:bower"]);
+});
+
 gulp.task("data:watch", function () {
     gulp.watch(["data/**/*.{json}"], ["copy:data"]);
 });
 
 gulp.task("ts:watch", ["ts:compile"], function () {
-    gulp.watch(["typescript/**/*.ts"], ["ts:compile"]);
+    gulp.watch(["typescript/**/*.ts", "../commons/**/*.ts"], ["ts:compile"]);
 });
 
 
@@ -127,7 +142,7 @@ gulp.task("ts:lint", function () {
         }));
 });
 
-gulp.task("serve", ["copy:images","scss:watch", "ts:watch", "html:watch", "bower:watch", "data:watch"], function () {
+gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "bower:watch", "data:watch","jspm:watch","copy:jslib"], function () {
     browserSync.init({
         server: {
             baseDir: "./dist/"

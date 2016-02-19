@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-framework="typescript" ng-app="ram">
+<html lang="en" data-framework="typescript">
 
 <head>
     <meta charset="utf-8">
@@ -31,15 +31,16 @@
 
     <script src="/js/lib/ie10-viewport-bug-workaround.js"></script>
 
-    <!-- bower:js -->
-    <!-- endinject -->
-
     <!--<a ui-sref="layout.page1">Page 1</a>
     <a ui-sref="layout.page2">Page 2</a>-->
 
 
-    <script src="js/templates.js"></script>
+    <script src="jspm_packages/system.js"></script>
+    <script src="js/system.config.js"></script>
     <script src="js/app.js"></script>
+    <script>
+            System.import('frontend/typescript/App')
+    </script>
 
 </body>
 

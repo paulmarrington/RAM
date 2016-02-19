@@ -25,7 +25,7 @@ gulp.task("ts:lint", function () {
 });
 
 gulp.task("ts:compile", ["ts:lint"], function () {
-    var tsResult = gulp.src("typescript/**/*.ts")
+    var tsResult = gulp.src(["typescript/**/*.ts","../commons/**/*.ts"])
         .pipe(sourcemaps.init())
         .pipe(ts(tsProject));
 
@@ -35,12 +35,12 @@ gulp.task("ts:compile", ["ts:lint"], function () {
 });
 
 gulp.task("ts:watch", ["ts:compile"], function () {
-    gulp.watch(["typescript/**/*.ts"], ["ts:compile"]);
+    gulp.watch(["typescript/**/*.ts","../commons/**/*.ts"], ["ts:compile"]);
 });
 
 
 gulp.task('serve',["ts:watch"], function () {
-  nodemon({ script: 'dist/server.js',
+  nodemon({ script: 'dist/backend/typescript/Server.js',
           "verbose":true,
            delay: 5
            })

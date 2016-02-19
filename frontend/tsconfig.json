@@ -4,6 +4,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "outFile": "javascript/app.js",
+        "module": "system",
         "sourceMap": true,
         "target": "es5",
         "declaration": false,
