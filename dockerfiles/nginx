@@ -1,5 +1,0 @@
-FROM       nginx
-MAINTAINER ATO
-volume /ram
-RUN mkdir /var/www
-CMD bash /ram/dockerfiles/nginx.sh
