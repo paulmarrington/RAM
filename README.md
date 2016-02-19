@@ -52,6 +52,9 @@ You may prefer to test your service from a browser. You can then select individu
 * _RAM/microservices/node_modules/ram/service/request.js_
 * _RAM/microservices/nnnnn/spec.js_
 
-### PM2 - Production Process Manager
+## PM2 - Production Process Manager
 
 Full use has yet to be explored. For development the watch can be set to restart on file changes. To do this we need to set up environments so that it only does so on development. This is a matter of setting and using environent variable within _ecosystem.json_.
+
+## favicon.ico
+Credit for creation of icon to [Alexandr Cherkinsky](https://thenounproject.com/cherkinskiy/)
