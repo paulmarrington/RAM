@@ -6,8 +6,7 @@ import "angular-ui-router";
 import "lodash";
 import "restangular";
 import "angular-bootstrap";
-// import "frontend/typescript/App";
 import "js/templates";
+import {Boot} from "frontend/typescript/App";
 
-
-ram.Boot();
+Boot();

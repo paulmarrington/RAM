@@ -1,15 +1,14 @@
 /// <reference path="../../_ClientTypes" />
+import * as api from "../api/IRamScope";
+export class Page2Ctrl {
+    public static $inject = [
+        "$scope"
+    ];
 
-namespace ram {
-    export class Page2Ctrl {
-        public static $inject = [
-            "$scope"
-        ];
-
-        constructor(
-            private $scope: IRamScope
-        ) {
-        }
+    constructor(
+        private $scope: api.IRamScope
+    ) {
     }
 }
+
 

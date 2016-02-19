@@ -9,7 +9,6 @@ var scss = require("gulp-sass");
 var seq = require("gulp-sequence");
 var uglify = require("gulp-uglify");
 var browserSync = require("browser-sync").create();
-var bowerFiles = require("main-bower-files");
 var inject = require("gulp-inject");
 var es = require("event-stream");
 var templateCache = require("gulp-angular-templatecache");
@@ -50,12 +49,6 @@ gulp.task("copy:systemJsConf",["copy:jspm"], function () {
         .pipe(gulp.dest("dist/js/"));
 });
 
-gulp.task("copy:bower", function () {
-    return gulp.src(bowerFiles(), { base: "./" })
-        .pipe(chmod(755))
-        .pipe(gulp.dest("dist/")); // move the javascript/lib into dist folder
-});
-
 gulp.task("copy:jspm", function () {
     return gulp.src(["./jspm_packages/**/**"], { base: "./" })
         .pipe(chmod(755))
@@ -71,12 +64,11 @@ gulp.task("copy:templates", function () {
 
 gulp.task("copy:index.html", function () {
     return gulp.src(["index.html"])
-        .pipe(inject(gulp.src(bowerFiles(), { read: false }), { name: "bower" }))
         .pipe(chmod(755))
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task("dist", seq(["clean"], ["ts:compile", "copy:images", "scss:compile", "copy:data", "copy:index.html", "copy:templates"], ["copy:font", "copy:jslib", "copy:bower"]));
+gulp.task("dist", seq(["clean"], ["ts:compile", "copy:images", "scss:compile", "copy:data", "copy:index.html", "copy:templates"], ["copy:font", "copy:jslib", "copy:jspm"]));
 
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript"),
@@ -104,12 +96,8 @@ gulp.task("html:watch", ["copy:index.html", "copy:templates"], function () {
     gulp.watch(["views/**/*.html", "index.html"], ["copy:index.html", "copy:templates"]);
 });
 
-gulp.task("bower:watch", ["copy:bower"], function () {
-    gulp.watch(["bower_components/**/*.js"], ["copy:index.html", "copy:bower"]);
-});
-
 gulp.task("jspm:watch", ["copy:jspm"], function () {
-    gulp.watch(["jspm__packages/**/*.js"], ["copy:bower"]);
+    gulp.watch(["jspm_packages/**/*.js"], ["copy:jspm"]);
 });
 
 gulp.task("data:watch", function () {
@@ -142,7 +130,7 @@ gulp.task("ts:lint", function () {
         }));
 });
 
-gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "bower:watch", "data:watch","jspm:watch","copy:jslib"], function () {
+gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch","data:watch","jspm:watch","copy:jslib"], function () {
     browserSync.init({
         server: {
             baseDir: "./dist/"

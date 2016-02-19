@@ -1,6 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../../commons/_CommonTypes" />
-/// <reference path="interfaces/IRamScope" />
+/// <reference path="api/IRamScope" />
 /// <reference path="controllers/LayoutCtrl" />
 /// <reference path="controllers/page1/Page1Ctrl" />
 /// <reference path="controllers/page2/Page2Ctrl" />
