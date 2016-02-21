@@ -3,7 +3,8 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outFile": "javascript/app.js",
+        "outFile": "dist/js/app.js",
+        "module": "system",
         "sourceMap": true,
         "target": "es5",
         "declaration": false,
@@ -11,6 +12,6 @@
         "experimentalDecorators": true
     },
     "files": [
-        "app.ts"
+        "typescript/Boot.ts"
     ]
 }

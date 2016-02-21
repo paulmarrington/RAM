@@ -1,14 +1,15 @@
-/// <reference path="../_all.ts" />
+/// <reference path="../_ClientTypes" />
 
-namespace ram {
-    export class LayoutCtrl {
-        public static $inject = [
-            "$scope"
-        ];
+import * as api from "../api/IRamScope";
 
-        constructor(
-            private $scope: IRamScope
-        ) {
-        }
+export class LayoutCtrl {
+    public static $inject = [
+        "$scope"
+    ];
+
+    constructor(
+        private $scope: api.IRamScope
+    ) {
     }
 }
+
