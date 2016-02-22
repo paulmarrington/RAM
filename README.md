@@ -4,17 +4,54 @@
 
 ## Development Environment Installation
 
+* Create a (GitHub)[http://github.com] account if you do not already have one.
+* Log in to your GitHub account
+* Go to https://github.com/atogov/RAM
+* Select the _Fork_ button from the top right
+  * If you have not yet created a fork, you will be given that option now
+    * Read https://help.github.com/articles/fork-a-repo/ for instructions. This will give you a repository in your own account that synchronises from the ATO RAM repository. As you make changes, use pull requests to update the main repository. Don't forget to merge from ATO before creating a pull request back.
+
+### Windows
+
+* Download the Github downloader/installer
+  * Click on https://github-windows.s3.amazonaws.com/GitHubSetup.exe
+  * and accept the download to save it
+  * Once downloaded, run the exe
+* The GitHub GUI should open once install is complete
+  * Change shell to Bash
+    * Select the tool icon on the top right
+    * Selection _Options..._ from the menu
+    * In the _Default shell_ section, choose **Git Bash**
+    * While there configure your GitHub account, clone path, etc
+    * Close the options
+    * To use SourceTree for reviewing / merging pull requests, you need to modify _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247). In short, add the following:
+        [remote "atogov"]
+            fetch = +refs/pull/\*/head:refs/remotes/origin/pr/\*
+* Run a git bash shell
+  * from the GitHub GUI client
+    * Select the tool icon on the top right
+    * Selection _Open in Git Shell_ from the menu
+  * cd to your git clone directory (e.g. ~/dev)
+  * curl -SLO https://raw.githubusercontent.com/atogov/RAM/develop/install/ram-dev-win.sh
+  * ./ram-dev-win.sh _your-github-name_
+    * Clones a local copy of your FORK of RAM
+    * Uses _npm update_ to install dependencies
+    * Installs MongoDB
+    * Installs Node
+    * Installs Visual Studio Code
+
+### All Operating Systems
+
+* The _ram-dev-xxx.sh your-github-name_ script will:
+  * clone the RAM fork from your GitHub account (not atogov)
+  * install node if necessary
+
 ### Source Access
-* Create a GitHub account if you do not already have one.
-* Fork and Clone https://github.com/atogov/RAM. Read https://help.github.com/articles/fork-a-repo/ for instructions. This will give you a repository in your own account that synchronises from the ATO RAM repository. As you make changes, use pull requests to update the main repository. Don't forget to merge from ATO before creating a pull request back.
-* To use SourceTree for reviewing / merging pull requests, you need to modify _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247). In short, add the following:
-    [remote "atogov"]
-        fetch = +refs/pull/\*/head:refs/remotes/origin/pr/\*
 
 ## AWS Install
 
 * SSH to the server
-  * curl -SLO https://raw.githubusercontent.com/atogov/RAM/master/install/aws.sh
+  * curl -SLO https://raw.githubusercontent.com/atogov/RAM/develop/install/aws.sh
   * **sudo bash aws-init.sh**
     * creates /etc/nginx/nginx.conf
     * installs NGINX
