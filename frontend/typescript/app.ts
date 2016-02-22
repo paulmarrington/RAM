@@ -5,6 +5,7 @@ import {Page1Ctrl} from "./controllers/page1/Page1Ctrl";
 import {Page2Ctrl} from "./controllers/page2/Page2Ctrl";
 import {HomeCtrl} from "./controllers/home/HomeCtrl";
 import {FourOFourCtrl} from "./controllers/404/FourOFourCtrl";
+import {IProvider} from "restangular";
 
 export function Boot() {
 
@@ -48,6 +49,14 @@ export function Boot() {
             templateProvider: ($templateCache: TemplateCache) => $templateCache.get("home/index.html"),
             controller: "HomeCtrl",
             url: ""
+        });
+    });
+
+    app.config((RestangularProvider: IProvider): any => {
+        RestangularProvider.setBaseUrl("/api");
+        RestangularProvider.addResponseInterceptor(
+            (data:any,operation:string,model:string,url:any,response:any,deffered:any) => {
+            return data["data"];
         });
     });
 
