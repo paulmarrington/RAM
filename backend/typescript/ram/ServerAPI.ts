@@ -4,6 +4,7 @@
 * IRamConf is used for providing type safety over configuration
 * file provided through environment variable
 */
+
 import * as cApi from "../../../commons/RamAPI";
 
 export interface IRamConf {
@@ -15,6 +16,5 @@ export interface IRamConf {
 }
 
 export interface Persistence {
-    getBusinessInformation(businessIds: Array<string>):
-        Array<cApi.BusinessName>
+    getBusinessInformation(businessIds: Array<string>):Promise<cApi.DataResponse<Array<cApi.BusinessName>>>
 }
