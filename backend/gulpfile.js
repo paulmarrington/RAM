@@ -42,7 +42,10 @@ gulp.task("ts:watch", ["ts:compile"], function () {
 gulp.task('serve',["ts:watch"], function () {
   nodemon({ script: 'dist/backend/typescript/Server.js',
           "verbose":true,
-           delay: 5
+           "delay": 5,
+            "execMap": {
+                "js": "node --harmony"
+            }
            })
     .on('restart', function () {
       console.log('RAM Backend Server: restarted [OK]')
