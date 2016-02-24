@@ -1,4 +1,4 @@
-/// <reference path="../_ClientTypes" />
+/// <reference path="../_ClientTypes.ts" />
 import * as cApi from "../../commons/RamAPI";
 import * as cUtils from "../../commons/RamUtils";
 
