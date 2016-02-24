@@ -1,3 +1,5 @@
+"use strict"
+
 import * as enums from "./RamEnums";
 
 export interface IResponse {
@@ -6,13 +8,13 @@ export interface IResponse {
 
 export class ErrorResponse implements IResponse {
     constructor(public errorCode: number,
-        public errorMessage: string = "") { }
+        public errorMessage: string) { }
 
     isError: boolean = true;
 }
 
 export class ErrorResponseWithData<T> implements IResponse {
-    constructor(public data: T, public errorCode: number, public errorMessage: string = "") { }
+    constructor(public data: T, public errorCode: number, public errorMessage: string ) { }
     isError: boolean = true;
 }
 

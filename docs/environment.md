@@ -1,5 +1,9 @@
 # Development Environment
- * IDE: [Visual Studio Code](https://code.visualstudio.com/), [IntelliJ Community Edition](https://www.jetbrains.com/idea/download/), [ATOM](https://atom.io/)
+ * IDEs (choose your favorite):
+   * [Visual Studio Code](https://code.visualstudio.com/)
+   * [IntelliJ Community Edition](https://www.jetbrains.com/idea/download/)
+   * [ATOM](https://atom.io/)
+   * [Visual Studio 2015 Community Edition](https://www.visualstudio.com/downloads/download-visual-studio-vs) with [Node.js tools for Visual Studio](https://github.com/Microsoft/nodejstools)
  * Programming language: [TypeScript](http://typescriptlang.org), compiled using [Gulp](https://github.com/gulpjs/gulp) build script into JavaScript *ES5* on both backend and frontend
  * Instant messaging: TBD
  * Project planning: [Trello](http://www.trello.com) - This is only accessible through invitation
