@@ -1,4 +1,4 @@
-/// <reference path="../_BackendTypes" />
+/// <reference path="../_BackendTypes.ts" />
 
 "use strict";
 

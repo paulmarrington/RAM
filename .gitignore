@@ -18,3 +18,4 @@ server/typings/
 backend/node_modules/
 backend/typings/
 backend/dist/
+/.vs/RAM/v14/.suo
