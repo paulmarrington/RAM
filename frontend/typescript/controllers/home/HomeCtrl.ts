@@ -1,4 +1,4 @@
-/// <reference path="../../_ClientTypes" />
+/// <reference path="../../_ClientTypes.ts" />
 
 import * as api from "../api/IRamScope";
 import * as enums from "../../commons/RamEnums";

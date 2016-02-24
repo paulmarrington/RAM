@@ -1,4 +1,4 @@
-/// <reference path="_BackendTypes" />
+/// <reference path="_BackendTypes.ts" />
 
 import * as express from "express";
 import * as path from "path";

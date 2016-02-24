@@ -1,16 +1,16 @@
 {
-    "compilerOptions": {
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "outFile": "dist/js/app.js",
-        "module": "system",
-        "sourceMap": true,
-        "target": "es5",
-        "declaration": false,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
-    },
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outFile": "dist/js/app.js",
+    "module": "system",
+    "sourceMap": true,
+    "target": "es5",
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
     "files": [
         "typescript/Boot.ts"
     ]
