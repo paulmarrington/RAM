@@ -58,9 +58,8 @@ server.use(methodOverride());
 
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
-server.use("/api/home", HomeCtrl());
-server.use("/api/users", UsersCtrl());
-
+server.use("/api/home", HomeCtrl(logger));
+server.use("/api/users", UsersCtrl(logger));
 server.use("/api/relations", RelationsCtrl(logger));
 
 // catch 404 and forward to error handler

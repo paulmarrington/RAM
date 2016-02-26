@@ -17,7 +17,7 @@ export class HomeCtrl {
     ) {
         $scope.helpers = cUtils.Helpers;
         let relations = restNg.all("relations");
-        relations.one("123").getList().then(( individual_business_authorisations:Array<cApi.IndividualBusinessAuthorisation>) => {
+        relations.one("123").getList().then((individual_business_authorisations: Array<cApi.IndividualBusinessAuthorisation>) => {
             $scope.individual_business_authorisations = individual_business_authorisations;
         });
     }
