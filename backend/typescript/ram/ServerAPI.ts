@@ -14,7 +14,3 @@ export interface IRamConf {
     mongoURL: string
     devMode: boolean
 }
-
-export interface Persistence {
-    getBusinessInformation(businessIds: Array<string>):Promise<cApi.DataResponse<Array<cApi.BusinessName>>>
-}

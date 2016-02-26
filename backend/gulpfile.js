@@ -35,7 +35,7 @@ gulp.task("ts:compile", ["ts:lint"], function () {
 });
 
 gulp.task("ts:watch", ["ts:compile"], function () {
-    gulp.watch(["typescript/**/*.ts","../commons/**/*.ts"], ["ts:compile"]);
+    gulp.watch(["typescript/**/*.ts","../commons/**/*.ts","typings/**/*.d.ts"], ["ts:compile"]);
 });
 
 
