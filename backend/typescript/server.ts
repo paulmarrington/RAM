@@ -2,34 +2,52 @@
 
 import * as express from "express";
 import * as path from "path";
-import * as logger from "morgan";
+import * as loggerMorgan from "morgan";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import * as methodOverride from "method-override";
 import * as cApi from "../../commons/RamAPI";
 import * as api from "./ram/ServerAPI";
 import * as mongo from "./ram/MongoPersistence";
-import {HomeCtrl} from "./controllers/Home";
-import {UsersCtrl} from "./controllers/Users";
-import {RelationsCtrl} from "./controllers/Relations";
+import {HomeCtrl} from "./controllers/Home.server.ctrl";
+import {UsersCtrl} from "./controllers/Users.server.ctrl";
+import {RelationsCtrl} from "./controllers/Relations.server.ctrl";
+import * as winston from "winston";
 
-if (process.env.RAM_CONF == void 0 || process.env.RAM_CONF.trim().length == 0){
+if (process.env.RAM_CONF == void 0 || process.env.RAM_CONF.trim().length == 0) {
     console.log("Missing RAM_CONF environment variable, server can't continue.");
     process.exit(1);
 }
 
-const conf:api.IRamConf = require(`${process.env.RAM_CONF}`);
+const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
 const port = conf.httpPort || 3000
 
+const logger = new (winston.Logger)({
+    level: "debug",
+    transports: [
+        new (winston.transports.Console)({
+            handleExceptions: true,
+            humanReadableUnhandledException: true
+        }),
+        new (winston.transports.File)({
+            filename: `${conf.logDir}/ram.log`,
+            level: "debug",
+            handleExceptions: true,
+            humanReadableUnhandledException: true
+        })
+    ]
+});
+
 var server = express();
-var persistance = new mongo.MongoPersistence(conf);
+
+mongo.register(conf, logger);
 
 switch (conf.devMode) {
     case false:
-        server.use(logger("dev")); // todo: Log to file: https://github.com/expressjs/morgan
+        server.use(loggerMorgan("dev")); // todo: Log to file: https://github.com/expressjs/morgan
         break;
     default:
-        server.use(logger("dev"));
+        server.use(loggerMorgan("dev"));
         break;
 }
 
@@ -40,9 +58,9 @@ server.use(methodOverride());
 
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
-server.use("/api/home", HomeCtrl(persistance));
-server.use("/api/users", UsersCtrl(persistance));
-server.use("/api/relations", RelationsCtrl(persistance));
+server.use("/api/home", HomeCtrl(logger));
+server.use("/api/users", UsersCtrl(logger));
+server.use("/api/relations", RelationsCtrl(logger));
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {

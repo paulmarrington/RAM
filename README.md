@@ -56,6 +56,14 @@
 
 ## AWS Update
 
+## MongoDB setup
+Login to your mongo database and create a user for ramdb, update _backend/conf/conf.js_ file accordingly:
+
+```javascript
+use ramdb
+db.createUser({user:"username",pwd:"password",roles:[{role:"readWrite",db:"ramdb"}]});
+```
+
 ### From the Server
 
 SSH to the server and run _/ram/update.sh hhhhhh_ where **hhhhhh** is the hash of the commit you want to run. It can also be a tag or branch name. If not supplied, _develop_ is used.
