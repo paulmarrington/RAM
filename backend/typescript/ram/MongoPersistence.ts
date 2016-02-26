@@ -2,33 +2,30 @@
 
 "use strict";
 
-import {Persistence, IRamConf} from "./ServerAPI";
-import {DataResponse, IndividualBusinessAuthorisation, BusinessName} from "../../../commons/RamAPI";
-import * as enums from "../../../commons/RamEnums";
+import {IRamConf} from "./ServerAPI";
+import * as mongoose from "mongoose";
+import {IUser, UserSchema} from "../models/Users.server.model";
+import {IBusiness, BusinessSchema} from "../models/Businesses.server.model";
+import {IIndividualBusinessAuthorisation, IndividualBusinessAuthorisationSchema} from "../models/BusinessAuthorisation.server.model";
+import {LoggerInstance} from "winston";
 
-export class MongoPersistence implements Persistence {
-    constructor(private conf: IRamConf) {
+export function register(conf: IRamConf, logger: LoggerInstance) {
 
-    }
+    // mongoose.Promise = Promise as any;
 
-    getBusinessInformation(businessIds: Array<string>): Promise<DataResponse<Array<BusinessName>>> {
-        return new Promise((resolve, reject) => {
-            resolve(new DataResponse([
-                new IndividualBusinessAuthorisation(
-                    "Ted's Group",
-                    "123 2222 2222 22",
-                    new Date(),
-                    enums.AuthorisationStatus.Active,
-                    enums.AccessLevels.Associate
-                ),
-                new IndividualBusinessAuthorisation(
-                    "Ali's Group",
-                    "33 3333 3333 34",
-                    new Date(),
-                    enums.AuthorisationStatus.Active,
-                    enums.AccessLevels.Associate
-                )
-            ]));
-        });
-    }
+    mongoose.connection.on("open", () => {
+        mongoose.model<IUser>("User", UserSchema);
+        mongoose.model<IBusiness>("Business", UserSchema);
+        mongoose.model<IIndividualBusinessAuthorisation>("IndividualBusinessAuthorisation", IndividualBusinessAuthorisationSchema);
+    });
+
+    this.db = mongoose.connect(conf.mongoURL, {}, (err) => {
+        if (err) {
+            logger.error("[MongoDB]", err);
+        } else {
+            logger.info("[MongoDB]",{message:"Connected to server"});
+        }
+    });
+
+
 }

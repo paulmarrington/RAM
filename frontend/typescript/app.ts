@@ -1,10 +1,10 @@
 /// <reference path="_ClientTypes.ts" />
 
-import {LayoutCtrl} from "./controllers/LayoutCtrl";
-import {Page1Ctrl} from "./controllers/page1/Page1Ctrl";
-import {Page2Ctrl} from "./controllers/page2/Page2Ctrl";
-import {HomeCtrl} from "./controllers/home/HomeCtrl";
-import {FourOFourCtrl} from "./controllers/404/FourOFourCtrl";
+import {LayoutCtrl} from "./controllers/Layout.client.ctrl";
+import {Page1Ctrl} from "./controllers/page1/Page1.client.ctrl";
+import {Page2Ctrl} from "./controllers/page2/Page2.client.ctrl";
+import {HomeCtrl} from "./controllers/home/Home.client.ctrl";
+import {FourOFourCtrl} from "./controllers/404/FourOFour.client.ctrl";
 import {IProvider} from "restangular";
 
 export function Boot() {
