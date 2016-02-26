@@ -1,4 +1,4 @@
-/// <reference path="_ClientTypes" />
+/// <reference path="_ClientTypes.ts" />
 
 import {LayoutCtrl} from "./controllers/LayoutCtrl";
 import {Page1Ctrl} from "./controllers/page1/Page1Ctrl";

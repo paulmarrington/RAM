@@ -1,4 +1,4 @@
-/// <reference path="RamAPI" />
+/// <reference path="RamAPI.ts" />
 
 import * as enums from "./RamEnums";
 

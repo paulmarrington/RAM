@@ -1,2 +1,2 @@
-/// <reference path="RamAPI" />
-/// <reference path="RamUtils" />
+/// <reference path="RamAPI.ts" />
+/// <reference path="RamUtils.ts" />
