@@ -31,22 +31,13 @@
   * from the GitHub GUI client
     * Select the tool icon on the top right
     * Selection _Open in Git Shell_ from the menu
-  * cd to your git clone directory (e.g. ~/dev)
   * curl -SLO https://raw.githubusercontent.com/atogov/RAM/develop/install/ram-dev-win.sh
   * ./ram-dev-win.sh _your-github-name_
     * Clones a local copy of your FORK of RAM
-    * Uses _npm update_ to install dependencies
+    * Uses _npm/tsd/jspm_ to install dependencies
     * Installs MongoDB
     * Installs Node
     * Installs Visual Studio Code
-
-### All Operating Systems
-
-* The _ram-dev-xxx.sh your-github-name_ script will:
-  * clone the RAM fork from your GitHub account (not atogov)
-  * install node if necessary
-
-### Source Access
 
 ## AWS Install
 
@@ -65,6 +56,14 @@
 
 ## AWS Update
 
+## MongoDB setup
+Login to your mongo database and create a user for ramdb, update _backend/conf/conf.js_ file accordingly:
+
+```javascript
+use ramdb
+db.createUser({user:"username",pwd:"password",roles:[{role:"readWrite",db:"ramdb"}]});
+```
+
 ### From the Server
 
 SSH to the server and run _/ram/update.sh hhhhhh_ where **hhhhhh** is the hash of the commit you want to run. It can also be a tag or branch name. If not supplied, _develop_ is used.
@@ -76,6 +75,10 @@ From a browser run http://ramvm01.expoctest.com/reset?from=hhhhhh. As above, the
 ## The Development Process
 
 * Fork and clone https://github.com/atogov/RAM if you haven't already. This need only be done once per developer.
+* Open Git Shell
+* Run _./ram.sh backend server&_
+* Run _./ram.sh frontend server&_
+* Wait patentially. Eventually a browser page will open
 * For each task:
   * Refresh your clone from RAM or another fork if that is the base you need.
   * Repeat...
