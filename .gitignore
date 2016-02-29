@@ -13,3 +13,11 @@ javascript/app.js
 javascript/app.js.map
 frontend/bower_components/
 frontend/dist/
+server/node_modules/
+server/typings/
+backend/node_modules/
+backend/typings/
+backend/dist/
+/.vs/RAM/v14/.suo
+.ntvs_analysis.dat
+backend/log/ram.log

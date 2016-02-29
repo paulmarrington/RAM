@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "target": "es6",
+        "declaration": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "outDir": "dist/",
+        "module": "commonjs"
+    },
+    "files": [
+        "typescript/server.ts"
+    ]
+}

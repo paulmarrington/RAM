@@ -30,6 +30,7 @@
     "angular-filter": "^0.5.8",
     "angular-loading-bar": "^0.8.0",
     "restangular": "^1.5.1",
-    "angular-bootstrap": "^1.1.2"
+    "angular-bootstrap": "^1.1.2",
+    "system.js": "^0.19.22"
   }
 }
