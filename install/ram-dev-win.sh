@@ -63,7 +63,7 @@ export PATH=$bd/node_modules/.bin:$PATH
 echo "Runtime update of frontend..."
 cd $bd/RAM/frontend
 echo "  npm..."
-npm update >> $bd/ram.install.log
+npm install >> $bd/ram.install.log
 echo "  tsd..."
 tsd install >> $bd/ram.install.log
 echo "  jspm..."
@@ -80,15 +80,21 @@ cd ..
 cat > $bd/ram.sh << EOF
 #!/bin/bash
 rswd="\$(cd \$(dirname "\$0"); pwd)"
+export PATH=\$rswd/node_modules/.bin:\$PATH
+export RAM_CONF="\$rswd/RAM/backend/conf/conf.js"
 if [ \$# -eq 0 ]; then
-  echo "Usage: \$rswd/ram [frontend|backend] [serve|clean|publish:zip]"
+  echo "Usage: \$rswd/ram.sh [frontend|backend] cmd"
+  echo "  where cmd is"
+  echo "    gulp [serve|clean|publish:zip]"
+  echo "    npm  [install|update]"
+  echo "    jspm install"
+  echo "    tsd  install"
   exit 1
 fi
 /c/mongodb/bin/mongod.exe >> mongod.log&
-export PATH=\$rswd/node_modules/.bin:\$PATH
-export RAM_CONF="\$rswd/RAM/backend/conf/conf.js"
 cd "\$rswd/RAM/\$1"
-gulp \$2
+shift
+\$@
 EOF
 
 if [ -d "/c/mongodb" ]; then
