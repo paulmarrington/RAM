@@ -9,12 +9,12 @@ System.config({
 
   map: {
     "angular": "github:angular/bower-angular@1.5.0",
-    "angular-bootstrap": "github:angular-ui/bootstrap-bower@1.1.2",
+    "angular-bootstrap": "github:angular-ui/bootstrap-bower@1.2.1",
     "angular-filter": "npm:angular-filter@0.5.8",
     "angular-loading-bar": "github:chieffancypants/angular-loading-bar@0.8.0",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.18",
-    "jquery": "npm:jquery@2.2.0",
-    "lodash": "npm:lodash@4.5.0",
+    "jquery": "npm:jquery@2.2.1",
+    "lodash": "npm:lodash@4.5.1",
     "restangular": "github:mgonto/restangular@1.5.2",
     "github:angular-ui/ui-router@0.2.18": {
       "angular": "github:angular/bower-angular@1.5.0"
@@ -59,7 +59,7 @@ System.config({
     "npm:lodash@3.10.1": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:lodash@4.5.0": {
+    "npm:lodash@4.5.1": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
