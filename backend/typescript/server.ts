@@ -12,7 +12,7 @@ import * as mongo from "./ram/MongoPersistence";
 import {HomeCtrl} from "./controllers/Home.server.ctrl";
 import {UsersCtrl} from "./controllers/Users.server.ctrl";
 import {RelationsCtrl} from "./controllers/Relations.server.ctrl";
-import * as winston from "winston";
+import {logger, logStream} from "./Logger";
 
 if (process.env.RAM_CONF == void 0 || process.env.RAM_CONF.trim().length == 0) {
     console.log("Missing RAM_CONF environment variable, server can't continue.");
@@ -20,34 +20,18 @@ if (process.env.RAM_CONF == void 0 || process.env.RAM_CONF.trim().length == 0) {
 }
 
 const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
-const port = conf.httpPort || 3000
+const port = conf.httpPort || 3000;
 
-const logger = new (winston.Logger)({
-    level: "debug",
-    transports: [
-        new (winston.transports.Console)({
-            handleExceptions: true,
-            humanReadableUnhandledException: true
-        }),
-        new (winston.transports.File)({
-            filename: `${conf.logDir}/ram.log`,
-            level: "debug",
-            handleExceptions: true,
-            humanReadableUnhandledException: true
-        })
-    ]
-});
-
-var server = express();
+const server = express();
 
 mongo.register(conf, logger);
 
 switch (conf.devMode) {
     case false:
-        server.use(loggerMorgan("dev")); // todo: Log to file: https://github.com/expressjs/morgan
+        server.use(loggerMorgan("dev", { stream: logStream })); // todo: Log to file: https://github.com/expressjs/morgan
         break;
     default:
-        server.use(loggerMorgan("dev"));
+        server.use(loggerMorgan("dev", { stream: logStream }));
         break;
 }
 
@@ -58,13 +42,13 @@ server.use(methodOverride());
 
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
-server.use("/api/home", HomeCtrl(logger));
-server.use("/api/users", UsersCtrl(logger));
-server.use("/api/relations", RelationsCtrl(logger));
+server.use("/api/home", HomeCtrl());
+server.use("/api/users", UsersCtrl());
+server.use("/api/relations", RelationsCtrl());
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
-    var err = new cApi.ErrorResponse(404, "Not Found");
+    const err = new cApi.ErrorResponse(404, "Not Found");
     res.send(err);
 });
 
