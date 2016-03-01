@@ -143,7 +143,6 @@ cat > update.sh << EOF
   npm update
 
   cd /ram/backend
-  pm2 restart all
 EOF
 chmod +x update.sh
 
