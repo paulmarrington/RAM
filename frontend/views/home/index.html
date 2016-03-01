@@ -74,9 +74,9 @@
             <div class="padding-top-20"></div>
             <div class="row">
                 <div class="form-group">
-                    <label for="switch-abn" class="col-md-3 control-label">
-                        <h4>Switch account</h4></label>
-                    <div class="col-md-9">
+                    <label for="switch-abn" class="col-md-1 control-label">
+                        <h4>ABN</h4></label>
+                    <div class="col-md-11">
                         <select class="form-control" id="switch-abn">
                             <option ng-repeat="auth in individual_business_authorisations">{{auth.businessName}} - ABN {{auth.abn}}</option>
                         </select>
@@ -85,46 +85,49 @@
             </div>
 
             <div class="ram section">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="super-header">
-                            <th colspan="6">
-                                <h4 class="text-center">Representatives authorised to act for Ted's Bistro</h4>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h5>Name</h5></th>
-                            <th>
-                                <h5>Access</h5></th>
-                            <th>
-                                <h5>Status</h5></th>
-                            <th>
-                                <h5>Active on</h5></th>
-                            <th colspan="2">
-                                <h5>Expires on</h5></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Jennifer Maxims</td>
-                            <td>Associate</td>
-                            <td>Inactive</td>
-                            <td>10/09/2015</td>
-                            <td>Until further notice</td>
-                            <td class="text-center"><a class="btn btn-default btn-sm" >Manage</a></td>
-                        </tr>
-                        <tr>
-                            <td>Edward Maxims</td>
-                            <td>Full access</td>
-                            <td>Active</td>
-                            <td>01/07/2015</td>
-                            <td>Until further notice</td>
-                            <td class="text-center"><a class="btn btn-default btn-sm">View</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <table class="table table-hover">
+        <thead>
+            <tr class="super-header">
+                <th colspan="5">
+                    <h4 class="text-center">Representatives authorised to act for Ted's Bistro</h4>
+                </th>
+                <th class=" text-center">
+                    <a class="btn btn-primary btn-sm ">Add</a>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <h5>Name</h5></th>
+                <th>
+                    <h5>Access</h5></th>
+                <th>
+                    <h5>Status</h5></th>
+                <th>
+                    <h5>Active on</h5></th>
+                <th colspan="2">
+                    <h5>Expires on</h5></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Jennifer Maxims</td>
+                <td>Associate</td>
+                <td>Inactive</td>
+                <td>10/09/2015</td>
+                <td>Until further notice</td>
+                <td class="text-center"><a class="btn btn-default btn-sm">Manage</a></td>
+            </tr>
+            <tr>
+                <td>Edward Maxims</td>
+                <td>Full access</td>
+                <td>Active</td>
+                <td>01/07/2015</td>
+                <td>Until further notice</td>
+                <td class="text-center"><a class="btn btn-default btn-sm">View</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
             <div class="ram section">
                 <table class="table table-hover">

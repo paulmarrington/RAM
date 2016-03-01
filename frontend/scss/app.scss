@@ -72,7 +72,7 @@ div.navbar-header {
 }
 
 .section{
-    .btn.btn-default{
+    .btn.btn-default ,.btn.btn-primary  {
         width:70px;
     }
     thead tr {
@@ -83,6 +83,7 @@ div.navbar-header {
         color:#fff;
         th {
             border-bottom: 0px;
+            vertical-align: middle;
         }
     }
     margin-bottom: 50px;
