@@ -3,9 +3,9 @@
 import * as express from "express";
 import {IRamConf} from "../ram/ServerAPI";
 import {DataResponse} from "../../../commons/RamAPI";
-import {LoggerInstance} from "winston";
+import {logger} from "../Logger";
 
-export function UsersCtrl(logger:LoggerInstance) {
+export function UsersCtrl() {
 
     const router = express.Router();
     router.get("/", function(req: express.Request, res: express.Response, next: express.NextFunction) {
