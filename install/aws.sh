@@ -135,26 +135,29 @@ cat > update.sh << EOF
   rm -f *end-dist.zip
   cd /ram/frontend
   curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/frontend/frontend-dist.zip"
-  unzip -u frontend-dist.zip
+  unzip -quo frontend-dist.zip
   npm update
   cd /ram/backend
   curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/backend/backend-dist.zip"
-  unzip -u backend-dist.zip
+  unzip -quo backend-dist.zip
   npm update
 
   cd /ram/backend
 EOF
 chmod +x update.sh
 
-cd /ram/backend
-nginx
-pm2 start all
+npm install -g pm2
 
 apt-get install -y unzip
 /ram/update.sh develop
-chmod -R 777 /ram
+chown -R ubuntu /ram
+chgrp -R ubuntu /ram
 
 export logname=`logname`
 if [ $logname ]; then
   chown -R $logname /ram
 fi
+
+cd /ram/backend
+nginx
+pm2 start all

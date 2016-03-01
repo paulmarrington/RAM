@@ -53,7 +53,7 @@ gulp.task('serve',["ts:watch"], function () {
 });
 
 gulp.task("copy:resources",function (params) {
-   return gulp.src(["package.json"])
+   return gulp.src(["package.json", "pm2.json"])
         .pipe(gulp.dest("dist/"));
 });
 
