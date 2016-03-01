@@ -1,0 +1,25 @@
+{
+  "apps" : [{
+    // Application #1
+    "name"        : "ram-server",
+    "script"      : "Server.js",
+    "args"        : [],
+    "watch"       : false,
+    "autorestart" : true,
+    "node_args"   : "--harmony",
+    "merge_logs"  : true,
+    "cwd"         : "dist/backend/typescript",
+    "instances"   : 1,
+    "error_file" : "../../../log/stderr.log",
+    "out_file"   : "../../../log/stdout.log",
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "env_production" : {
+       "NODE_ENV": "production"
+    },
+    "env_staging" : {
+       "NODE_ENV" : "staging"
+    }
+  }]
+}

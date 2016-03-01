@@ -57,6 +57,7 @@ function npm_module() {
 npm_module gulp
 npm_module tsd
 npm_module jspm
+npm_module pm2
 wd=$(pwd)
 export PATH=$bd/node_modules/.bin:$PATH
 
@@ -83,12 +84,13 @@ rswd="\$(cd \$(dirname "\$0"); pwd)"
 export PATH=\$rswd/node_modules/.bin:\$PATH
 export RAM_CONF="\$rswd/RAM/backend/conf/conf.js"
 if [ \$# -eq 0 ]; then
-  echo "Usage: \$rswd/ram.sh [frontend|backend] cmd"
+  echo "Usage: \$rswd/ram.sh [frontend|backend|..] cmd"
   echo "  where cmd is"
   echo "    gulp [serve|clean|publish:zip]"
   echo "    npm  [install|update]"
   echo "    jspm install"
   echo "    tsd  install"
+  echo "    pm2  [start|restart|stop|logs|...]"
   exit 1
 fi
 /c/mongodb/bin/mongod.exe >> mongod.log&

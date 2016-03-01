@@ -12,6 +12,7 @@ import * as mongo from "./ram/MongoPersistence";
 import {HomeCtrl} from "./controllers/Home.server.ctrl";
 import {UsersCtrl} from "./controllers/Users.server.ctrl";
 import {RelationsCtrl} from "./controllers/Relations.server.ctrl";
+import {ResetCtrl} from "./controllers/Reset.server.ctrl";
 import * as winston from "winston";
 
 if (process.env.RAM_CONF == void 0 || process.env.RAM_CONF.trim().length == 0) {
@@ -60,6 +61,7 @@ server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
 server.use("/api/home", HomeCtrl(logger));
 server.use("/api/users", UsersCtrl(logger));
+server.use("/reset", ResetCtrl(logger));
 server.use("/api/relations", RelationsCtrl(logger));
 
 // catch 404 and forward to error handler
