@@ -134,13 +134,13 @@ cat > update.sh << EOF
   export ramrel="\${1:-develop}"
   rm -f *end-dist.zip
   cd /ram/frontend
-  curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/frontend/frontend-dist.zip"
-  unzip -quo frontend-dist.zip
-  npm update
+  curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/frontend/frontend-dist.tar.gz"
+  tar -xzf frontend-dist.tar.gz
+  npm install
   cd /ram/backend
-  curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/backend/backend-dist.zip"
-  unzip -quo backend-dist.zip
-  npm update
+  curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/backend/backend-dist.tar.gz"
+  tar -xzf backend-dist.tar.gz
+  npm install
 
   cd /ram/backend
 EOF

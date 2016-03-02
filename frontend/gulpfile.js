@@ -21,7 +21,7 @@ gulp.task("copy:font", function () {
 });
 
 gulp.task("copy:data", function () {
-    return gulp.src(["data/**/*.json"], { base: "./" })
+    return gulp.src(["**/*.json"], { base: "./" })
         .pipe(gulp.dest("dist"));
 });
 
