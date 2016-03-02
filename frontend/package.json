@@ -9,7 +9,6 @@
     "gulp-chmod": "^1.3.0",
     "systemjs": "^0.19.23",
     "tsd": "^0.6.5",
-    "tslint": "^3.5.0",
     "typescript": "^1.8.2"
   },
   "devDependencies": {
