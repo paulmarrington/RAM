@@ -61,7 +61,7 @@ server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
 server.use("/api/home", HomeCtrl(logger));
 server.use("/api/users", UsersCtrl(logger));
-server.use("/reset", ResetCtrl(logger));
+server.use("/api/reset", ResetCtrl(logger));
 server.use("/api/relations", RelationsCtrl(logger));
 
 // catch 404 and forward to error handler
