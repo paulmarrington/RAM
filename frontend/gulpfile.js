@@ -12,7 +12,9 @@ var browserSync = require("browser-sync").create();
 var inject = require("gulp-inject");
 var es = require("event-stream");
 var templateCache = require("gulp-angular-templatecache");
-var zip = require('gulp-zip');
+var zip = require("gulp-zip");
+var proxy = require("proxy-middleware");
+var url = require("url");
 
 gulp.task("copy:font", function () {
     return gulp.src(["fonts/*.{eot,svg,ttf,woff,woff2}"], { base: "./" })
@@ -122,9 +124,13 @@ gulp.task("ts:lint", function () {
 gulp.task("watch",["scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch"]);
 
 gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch", "copy:jslib"], function () {
+    var proxyOptions = url.parse('http://localhost:3000/api');
+    proxyOptions.route = '/api';
+
     browserSync.init({
         server: {
-            baseDir: "./dist/"
+            baseDir: "./dist/",
+            middleware: [proxy(proxyOptions)]
         },
         online: true
     });

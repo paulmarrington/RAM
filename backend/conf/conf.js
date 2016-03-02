@@ -5,3 +5,7 @@ module.exports = {
     "mongoURL" : "mongodb://username:password@127.0.0.1:27017/ramdb",
     "devMode":true,
 };
+
+/**
+ *  "mongoURL" : "mongodb://username:password@127.0.0.1:27017/ramdb"
+ */

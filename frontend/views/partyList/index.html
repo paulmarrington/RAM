@@ -1,0 +1,71 @@
+<div class="col-lg-9 col-md-9 col-sm-8">
+    <div class="page-header">
+        <h2>Authorisations</h2>
+    </div>
+    <div class="jumbotron">
+        <h3>Received an invitation code?</h3>
+
+        <h4 class="padding-top-5">If you have received an authorisation code, enter it below:</h4>
+        <br/>
+        <form class="form form-horizontal" role="form">
+            <div class="row form-group">
+                <label class="h4 col-sm-3 col-lg-3 col-md-3 " for="new-activation-code">Invitation code</label>
+
+                <div class="col-sm-5 col-lg-6 col-lg-pull-1">
+                    <input class="form-control input" type="text" id="new-activation-code" placeholder="Invitation code ...">
+                </div>
+
+                <div class="col-sm-4 col-lg-3 col-lg-pull-1">
+                    <a href="#" class="btn btn-primary btn">Accept</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="contents">
+        <input type="text" ng-model="selected" uib-typeahead="state for state in businessNames | filter:$viewValue | limitTo:8" class="form-control"
+        placeholder="Search here ...">
+        <div class=" ram section">
+            <table class="table  table-hover ">
+                <thead>
+                    <tr class="super-header">
+                        <th colspan="6">
+                            <h4 class="text-center">My business authorisations</h4>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            <h5>Business name</h5></th>
+                        <th>
+                            <h5>Access</h5></th>
+                        <th>
+                            <h5>Status</h5></th>
+                        <th>
+                            <h5>Active on</h5></th>
+                        <th>
+                            <h5>Expires on</h5></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="auth in individual_business_authorisations">
+                        <td>
+                            <div>{{auth.businessName}}</div>
+                            <small>ABN: {{auth.abn}}</small>
+                        </td>
+                        <td>{{helpers.AuthorisationStatusNames(auth.authorisationStatus)}}</td>
+                        <td>{{helpers.AccessLevelNames(auth.accessLevel)}}</td>
+                        <td>{{auth.activeOn | date: "dd/MM/yyyy"}}</td>
+                        <td>Until further notice</td>
+                        <td><a class="btn btn-default btn-sm">View</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center">
+                <uib-pagination total-items="2131" ng-model="selectedPage" max-size="15" class="pagination-sm" boundary-link-numbers="true"
+                rotate="false"></uib-pagination>
+            </div>
+
+        </div>
+    </div>
+</div>
