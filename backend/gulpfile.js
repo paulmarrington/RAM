@@ -6,7 +6,8 @@ var tslint = require("gulp-tslint");
 var ignore = require("gulp-ignore");
 var rimraf = require("gulp-rimraf");
 var seq = require("gulp-sequence");
-var zip = require('gulp-zip');
+var gzip = require('gulp-gzip');
+var tar = require('gulp-tar');
 
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript")
@@ -57,8 +58,9 @@ gulp.task("copy:resources",function (params) {
         .pipe(gulp.dest("dist/"));
 });
 
-gulp.task("publish:zip",["ts:compile","copy:resources"],function () {
+gulp.task("publish:tarball",["ts:compile","copy:resources"],function () {
     return gulp.src("dist/**/*")
-        .pipe(zip('backend-dist.zip'))
+        .pipe(tar('backend-dist.tar', {mode: null}))
+        .pipe(gzip())
         .pipe(gulp.dest('./'));
 });

@@ -12,7 +12,8 @@ var browserSync = require("browser-sync").create();
 var inject = require("gulp-inject");
 var es = require("event-stream");
 var templateCache = require("gulp-angular-templatecache");
-var zip = require('gulp-zip');
+var gzip = require('gulp-gzip');
+var tar = require('gulp-tar');
 
 gulp.task("copy:font", function () {
     return gulp.src(["fonts/*.{eot,svg,ttf,woff,woff2}"], { base: "./" })
@@ -24,9 +25,10 @@ gulp.task("copy:data", function () {
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task("publish:zip", ["dist"], function () {
+gulp.task("publish:tarball", ["dist"], function () {
     return gulp.src("dist/**/*")
-        .pipe(zip('frontend-dist.zip'))
+        .pipe(tar('frontend-dist.tar', {mode: null}))
+        .pipe(gzip())
         .pipe(gulp.dest('./'));
 });
 

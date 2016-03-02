@@ -20,7 +20,6 @@
     "serve-favicon": "^2.3.0",
     "systemjs": "^0.19.23",
     "tsd": "^0.6.5",
-    "tslint": "^3.5.0",
     "typescript": "^1.8.2",
     "winston": "^2.2.0"
   },
@@ -33,7 +32,8 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-tslint": "^4.3.2",
     "gulp-typescript": "^2.11.0",
-    "gulp-zip": "^3.1.0",
+    "gulp-gzip": "^1.2.0",
+    "gulp-tar": "^1.8.0",
     "karma": "^0.13.21",
     "karma-chrome-launcher": "^0.2.2",
     "karma-coverage": "^0.5.3",
