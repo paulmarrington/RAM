@@ -105,6 +105,7 @@ EOF
 chmod +x update.sh
 
 npm install -g pm2
+pm2 completion install
 
 apt-get install -y unzip
 /ram/update.sh develop
