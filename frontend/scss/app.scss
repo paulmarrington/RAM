@@ -72,7 +72,7 @@ div.navbar-header {
 }
 
 .section{
-    .btn.btn-default ,.btn.btn-primary  {
+    .btn-width-70.btn.btn-default ,.btn-width-70.btn.btn-primary  {
         width:70px;
     }
     thead tr {
@@ -84,6 +84,9 @@ div.navbar-header {
         th {
             border-bottom: 0px;
             vertical-align: middle;
+        }
+        small,strong {
+            color:#fff;
         }
     }
     margin-bottom: 50px;
@@ -162,3 +165,4 @@ color: $color;
     background-color: $background;
   }
 }
+

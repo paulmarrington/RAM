@@ -1,212 +1,27 @@
-<div class="jumbotron">
-    <h3>Received an authorisation code?</h3>
-
-    <h4 class="padding-top-5">If you have received an authorisation code, enter it below:</h4>
-    <br/>
-    <form class="form form-horizontal" role="form">
-        <div class="row form-group">
-            <label class="control-label h4 col-sm-3 col-lg-3 " for="new-activation-code">Activation code</label>
-
-            <div class="col-sm-5 col-lg-6 ">
-                <input class="form-control input-lg" type="text" id="new-activation-code" placeholder="Activation code ...">
-            </div>
-
-            <div class="col-sm-4 col-lg-3 ">
-                <a href="#" class="btn btn-primary btn-lg">Activate</a>
-            </div>
-        </div>
-    </form>
-
-</div>
-<div>
-    <uib-tabset justified="true">
-        <uib-tab>
-            <uib-tab-heading>
-                <h4>Individual Authorisation</h4>
-            </uib-tab-heading>
-            <div class="padding-top-20"></div>
-            <div class="padding-top-20"></div>
-            <div class="padding-top-20"></div>
-            <div class=" ram section">
-                <table class="table  table-hover ">
-                    <thead>
-                        <tr class="super-header">
-                            <th colspan="6">
-                                <h4 class="text-center">My business authorisations</h4>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h4>Business name</h4></th>
-                            <th>
-                                <h4>Access</h4></th>
-                            <th>
-                                <h4>Status</h4></th>
-                            <th>
-                                <h4>Active on</h4></th>
-                            <th>
-                                <h4>Expires on</h4></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="auth in individual_business_authorisations">
-                            <td>
-                                <div>{{auth.businessName}}</div>
-                                <small>ABN: {{auth.abn}}</small>
-                            </td>
-                            <td>{{helpers.AuthorisationStatusNames(auth.authorisationStatus)}}</td>
-                            <td>{{helpers.AccessLevelNames(auth.accessLevel)}}</td>
-                            <td>{{auth.activeOn | date: "dd/MM/yyyy"}}</td>
-                            <td>Until further notice</td>
-                            <td><a class="btn btn-default btn-sm">View</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </uib-tab>
-        <uib-tab active="true">
-            <uib-tab-heading>
-                <h4>Business Authorisation</h4>
-            </uib-tab-heading>
-            <div class="padding-top-20"></div>
-            <div class="padding-top-20"></div>
-            <div class="padding-top-20"></div>
-            <div class="row">
-                <div class="form-group">
-                    <label for="switch-abn" class="col-sm-1 control-label">
-                        <h4>ABN</h4></label>
-                    <div class="col-sm-11">
-                        <select class="form-control" id="switch-abn">
-                            <option ng-repeat="auth in individual_business_authorisations">{{auth.abn}}, {{auth.businessName}}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <hr/>
-            <div class="padding-top-20"></div>
-
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-sm-5 col-sm-offset-1">
-                        <input class="form-control " type="text" id="search_field" placeholder="Search ...">
-                    </div>
-                    <div class="col-sm-2 ">
-                        <input class="form-control btn btn-default" type="button" value="Search">
-                    </div>
-                    <div class="col-sm-4 ">
-                        <div class="btn-group pull-right">
-                            <label class="btn btn-inverse" ng-model="status_filter" uib-btn-radio="'all'">All</label>
-                            <label class="btn btn-inverse" ng-model="status_filter" uib-btn-radio="'active'">Active</label>
-                            <label class="btn btn-inverse" ng-model="status_filter" uib-btn-radio="'inactive'">Inactive</label>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="ram section">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="super-header">
-                            <th colspan="5">
-                                <h4 class="text-center">Representatives authorised to act for Ted's Bistro</h4>
-                            </th>
-                            <th class=" text-center">
-                                <a class="btn btn-primary btn-sm ">Add</a>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h5>Name</h5></th>
-                            <th>
-                                <h5>Access</h5></th>
-                            <th>
-                                <h5>Status</h5></th>
-                            <th>
-                                <h5>Active on</h5></th>
-                            <th colspan="2">
-                                <h5>Expires on</h5></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Jennifer Maxims</td>
-                            <td>Associate</td>
-                            <td>Inactive</td>
-                            <td>10/09/2015</td>
-                            <td>Until further notice</td>
-                            <td class="text-center"><a class="btn btn-default btn-sm">Manage</a></td>
-                        </tr>
-                        <tr>
-                            <td>Edward Maxims</td>
-                            <td>Full access</td>
-                            <td>Active</td>
-                            <td>01/07/2015</td>
-                            <td>Until further notice</td>
-                            <td class="text-center"><a class="btn btn-default btn-sm">View</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="ram section">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="super-header">
-                            <th colspan="6">
-                                <h4 class="text-center">Representatives authorised to act for Ted's Bistro</h4>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <h5>Name</h5></th>
-                            <th>
-                                <h5>Access</h5></th>
-                            <th>
-                                <h5>Status</h5></th>
-                            <th>
-                                <h5>Active on</h5></th>
-                            <th colspan="2">
-                                <h5>Expires on</h5></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Jennifer Maxims</td>
-                            <td>Associate</td>
-                            <td>Inactive</td>
-                            <td>10/09/2015</td>
-                            <td>Until further notice</td>
-                            <td class="text-center"><a class="btn btn-default btn-sm">Manage</a></td>
-                        </tr>
-                        <tr>
-                            <td>Edward Maxims</td>
-                            <td>Full access</td>
-                            <td>Active</td>
-                            <td>01/07/2015</td>
-                            <td>Until further notice</td>
-                            <td class="text-center"><a class="btn btn-default btn-sm">View</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-
-        </uib-tab>
-    </uib-tabset>
-
-
-</div>
-<!--<div>
-    <ul class="nav nav-tabs">
-        <li class="active h2"><a href="#individual-authorisation-tab" data-toggle="tab">Individual Authorisation</a></li>
-        <li class="h2"><a href="#business-authorisation-tab" data-toggle="tab">Business Authorisation</a></li>
-    </ul>
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="individual-authorisation-tab">
-
-        </div>
-        <div role="tabpanel" class="tab-pane" id="business-authorisation-tab">...</div>
+<div class="col-lg-9 col-md-9 col-sm-8">
+    <div class="page-header">
+        <h2>Authorisations</h2>
     </div>
-</div>-->
+    <div class="contents">
+        <div class="jumbotron">
+            <h3>Received an invitation code?</h3>
+
+            <h4 class="padding-top-5">If you have received an authorisation code, enter it below:</h4>
+            <br/>
+            <form class="form form-horizontal" role="form">
+                <div class="row form-group">
+                    <label class="h4 col-sm-3 col-lg-3 col-md-3 " for="new-activation-code">Invitation code</label>
+
+                    <div class="col-sm-5 col-lg-6 col-lg-pull-1">
+                        <input class="form-control input" type="text" id="new-activation-code" placeholder="Invitation code ...">
+                    </div>
+
+                    <div class="col-sm-4 col-lg-3 col-lg-pull-1">
+                        <a href="#" class="btn btn-primary btn">Accept</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
