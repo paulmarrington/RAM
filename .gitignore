@@ -21,3 +21,4 @@ backend/dist/
 /.vs/RAM/v14/.suo
 .ntvs_analysis.dat
 backend/log/ram.log
+*.log

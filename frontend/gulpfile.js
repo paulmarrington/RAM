@@ -119,6 +119,7 @@ gulp.task("ts:lint", function () {
             emitError: false
         }));
 });
+gulp.task("watch",["scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch"]);
 
 gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch", "copy:jslib"], function () {
     browserSync.init({
