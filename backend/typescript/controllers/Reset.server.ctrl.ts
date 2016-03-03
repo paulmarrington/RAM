@@ -30,7 +30,7 @@ export function ResetCtrl(logger:LoggerInstance) {
       const query: Query = url.parse(req.url, true).query;
       if (!query.tag) {
         res.send(new DataResponse({
-          error: "usage: localhost:3000?tag=develop"
+          error: "usage: #url#/api/reset?tag=develop"
         }));
       } else {
         const cmd = path.join("..", "update.sh " + query.tag);
