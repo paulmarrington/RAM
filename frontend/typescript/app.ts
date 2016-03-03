@@ -1,11 +1,12 @@
 /// <reference path="_ClientTypes.ts" />
 
 import {LayoutCtrl} from "./controllers/Layout.client.ctrl";
-import {Page1Ctrl} from "./controllers/page1/Page1.client.ctrl";
-import {Page2Ctrl} from "./controllers/page2/Page2.client.ctrl";
+import {PartyListCtrl} from "./controllers/partyList/PartyList.client.ctrl";
+import {PartyRelationsCtrl} from "./controllers/partyRelations/PartyRelations.client.ctrl";
 import {HomeCtrl} from "./controllers/home/Home.client.ctrl";
 import {FourOFourCtrl} from "./controllers/404/FourOFour.client.ctrl";
 import {IProvider} from "restangular";
+import {RelationshipTableWidget} from "./widgets/RelationshipTable.widget";
 
 export function Boot() {
 
@@ -20,11 +21,12 @@ export function Boot() {
     ]);
 
     app.controller("LayoutCtrl", LayoutCtrl)
-        .controller("Page1Ctrl", Page1Ctrl)
-        .controller("Page2Ctrl", Page2Ctrl)
+        .controller("PartyListCtrl", PartyListCtrl)
+        .controller("PartyRelationsCtrl", PartyRelationsCtrl)
         .controller("HomeCtrl", HomeCtrl)
-        .controller("404Ctrl", FourOFourCtrl)
-        ;
+        .controller("404Ctrl", FourOFourCtrl);
+
+    app.directive("relationshipTable", RelationshipTableWidget.Factory());
 
     app.config(($stateProvider: angular.ui.IStateProvider,
         $urlRouterProvider: angular.ui.IUrlRouterProvider): any => {
@@ -33,14 +35,14 @@ export function Boot() {
         $stateProvider.state("layout", {
             templateProvider: ($templateCache: TemplateCache) => $templateCache.get("layout.html"),
             controller: "LayoutCtrl"
-        }).state("layout.page1", {
-            templateProvider: ($templateCache: TemplateCache) => $templateCache.get("page1/index.html"),
-            controller: "Page1Ctrl",
-            url: "/page1/"
-        }).state("layout.page2", {
-            templateProvider: ($templateCache: TemplateCache) => $templateCache.get("page2/index.html"),
-            controller: "Page2Ctrl",
-            url: "/page2/"
+        }).state("layout.partyList", {
+            templateProvider: ($templateCache: TemplateCache) => $templateCache.get("partyList/index.html"),
+            controller: "PartyListCtrl",
+            url: "/party/:party"
+        }).state("layout.partyRelations", {
+            templateProvider: ($templateCache: TemplateCache) => $templateCache.get("partyRelations/index.html"),
+            controller: "PartyRelationsCtrl",
+            url: "/party/:party/relations"
         }).state("layout.404", {
             templateProvider: ($templateCache: TemplateCache) => $templateCache.get("404/index.html"),
             controller: "404Ctrl",
@@ -55,9 +57,9 @@ export function Boot() {
     app.config((RestangularProvider: IProvider): any => {
         RestangularProvider.setBaseUrl("/api");
         RestangularProvider.addResponseInterceptor(
-            (data:any,operation:string,model:string,url:any,response:any,deffered:any) => {
-            return data["data"];
-        });
+            (data: any, operation: string, model: string, url: any, response: any, deffered: any) => {
+                return data["data"];
+            });
     });
 
     angular.element(document).ready(function() {

@@ -3,14 +3,17 @@
 import * as api from "../api/IRamScope";
 import * as restNg from "restangular";
 
-export class Page1Ctrl {
+
+export interface IPartyListScope extends ng.IScope {
+
+}
+
+export class PartyListCtrl {
     public static $inject = [
         "$scope",
         "Restangular"
     ];
 
-    constructor(
-        private $scope: api.IRamScope, restAngualr: restNg.IService
-    ) {
+    constructor(private $scope: IPartyListScope, restAngualr: restNg.IService) {
     }
 }
