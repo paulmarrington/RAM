@@ -12,7 +12,8 @@ var browserSync = require("browser-sync").create();
 var inject = require("gulp-inject");
 var es = require("event-stream");
 var templateCache = require("gulp-angular-templatecache");
-var zip = require("gulp-zip");
+var gzip = require('gulp-gzip');
+var tar = require('gulp-tar');
 var proxy = require("proxy-middleware");
 var url = require("url");
 
@@ -22,13 +23,14 @@ gulp.task("copy:font", function () {
 });
 
 gulp.task("copy:data", function () {
-    return gulp.src(["data/**/*.json"], { base: "./" })
+    return gulp.src(["**/*.json"], { base: "./" })
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task("publish:zip", ["dist"], function () {
+gulp.task("publish:tarball", ["dist"], function () {
     return gulp.src("dist/**/*")
-        .pipe(zip('frontend-dist.zip'))
+        .pipe(tar('frontend-dist.tar', {mode: null}))
+        .pipe(gzip())
         .pipe(gulp.dest('./'));
 });
 

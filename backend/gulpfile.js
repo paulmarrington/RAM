@@ -6,7 +6,9 @@ var tslint = require("gulp-tslint");
 var ignore = require("gulp-ignore");
 var rimraf = require("gulp-rimraf");
 var seq = require("gulp-sequence");
-var zip = require('gulp-zip');
+var gzip = require('gulp-gzip');
+var tar = require('gulp-tar');
+var rename = require("gulp-rename")
 
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript")
@@ -53,12 +55,20 @@ gulp.task('serve',["ts:watch"], function () {
 });
 
 gulp.task("copy:resources",function (params) {
-   return gulp.src(["package.json"])
+   return gulp.src(["package.json", "pm2.json"])
         .pipe(gulp.dest("dist/"));
 });
 
-gulp.task("publish:zip",["ts:compile","copy:resources"],function () {
+gulp.task("copy:conf",function (params) {
+   return gulp.src(["conf/aws.js"])
+        .pipe(rename("conf.js"))
+        .pipe(gulp.dest("dist/"));
+});
+
+gulp.task("publish:tarball",
+["ts:compile","copy:resources", "copy:conf"], function () {
     return gulp.src("dist/**/*")
-        .pipe(zip('backend-dist.zip'))
+        .pipe(tar('backend-dist.tar', {mode: null}))
+        .pipe(gzip())
         .pipe(gulp.dest('./'));
 });

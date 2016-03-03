@@ -56,6 +56,10 @@
 
 ## AWS Update
 
+http://ramvm01.expoctest.com/api/reset?tag=develop
+
+where the domain will be different for different servers and the tag can be a branch, tag or hash.
+
 ## MongoDB setup
 Login to your mongo database and create a user for ramdb, update _backend/conf/conf.js_ file accordingly:
 
