@@ -56,25 +56,13 @@
 
 ## AWS Update
 
-http://ramvm01.expoctest.com/api/reset?tag=develop
-
-where the domain will be different for different servers and the tag can be a branch, tag or hash.
-
-## MongoDB setup
-Login to your mongo database and create a user for ramdb, update _backend/conf/conf.js_ file accordingly:
-
-```javascript
-use ramdb
-db.createUser({user:"username",pwd:"password",roles:[{role:"readWrite",db:"ramdb"}]});
-```
-
 ### From the Server
 
 SSH to the server and run _/ram/update.sh hhhhhh_ where **hhhhhh** is the hash of the commit you want to run. It can also be a tag or branch name. If not supplied, _develop_ is used.
 
 ### From the UI (Dev env only)
 
-From a browser run http://ramvm01.expoctest.com/reset?from=hhhhhh. As above, the parameter is optional and can be a branch, tag or hash. It defaults to _develop_.
+From a browser run http://ramvm01.expoctest.com/dev. Enter a branch/tag/hash and press the appropriate button.
 
 ## The Development Process
 

@@ -36,10 +36,8 @@ export function ResetCtrl(logger:LoggerInstance) {
         const cmd = path.join("..", "update.sh " + query.tag);
         exec(cmd, function(err, stdout, stderr){
           res.send(new DataResponse({
-            message: "reset to " + query.tag,
+            message: "tag/branch/hash not found for " + query.tag,
             error: err ? err.message : false,
-            stdout: stdout,
-            stderr: stderr
           }));
         });
       }

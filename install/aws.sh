@@ -94,13 +94,18 @@ cat > update.sh << EOF
   cd /ram/frontend
   curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/frontend/frontend-dist.tar.gz"
   tar -xzf frontend-dist.tar.gz
+  if [ $? -ne 0 ]; then
+    printf "\n\n$ramrel is not a valid tag/branch/hash for atogov/RAM\n\n"
+    exit 1
+  fi
   npm install
   cd /ram/backend
   curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/backend/backend-dist.tar.gz"
   tar -xzf backend-dist.tar.gz
   npm install
-
+  
   cd /ram/backend
+  pm restart all
 EOF
 chmod +x update.sh
 
