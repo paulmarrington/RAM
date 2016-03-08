@@ -12,7 +12,12 @@ import * as mongo from "./ram/MongoPersistence";
 import {HomeCtrl} from "./controllers/Home.server.ctrl";
 import {UsersCtrl} from "./controllers/Users.server.ctrl";
 import {RelationsCtrl} from "./controllers/Relations.server.ctrl";
+<<<<<<< HEAD
+import {ResetCtrl} from "./controllers/Reset.server.ctrl";
+import * as winston from "winston";
+=======
 import {logger, logStream} from "./Logger";
+>>>>>>> 79c9ddce966ca73d00d2a99be9ac04493383b739
 
 if (process.env.RAM_CONF == void 0 || process.env.RAM_CONF.trim().length == 0) {
     console.log("Missing RAM_CONF environment variable, server can't continue.");
@@ -42,9 +47,16 @@ server.use(methodOverride());
 
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
+<<<<<<< HEAD
+server.use("/api/home", HomeCtrl(logger));
+server.use("/api/users", UsersCtrl(logger));
+server.use("/api/reset", ResetCtrl(logger));
+server.use("/api/relations", RelationsCtrl(logger));
+=======
 server.use("/api/home", HomeCtrl());
 server.use("/api/users", UsersCtrl());
 server.use("/api/relations", RelationsCtrl());
+>>>>>>> 79c9ddce966ca73d00d2a99be9ac04493383b739
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {

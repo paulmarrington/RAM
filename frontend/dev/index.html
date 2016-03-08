@@ -1,0 +1,47 @@
+<html>
+  <body>
+    <a href="/index.html">Home</a>
+    <p>
+      <script>
+        http_request = function(uri, type, callback) {
+          var req = new XMLHttpRequest()
+          req.open(type, uri, true)
+          req.setRequestHeader("Cache-Control", "no-cache")
+          req.onerror = function(err) {
+            callback(err)
+          }
+          req.onload = function() {
+            if (req.status === 200) callback(null, req.responseText)
+            else                    req.onerror(req.statusText)
+          }
+          req.send()
+        }
+        window.redeploy = function() {
+          var msg_element = document.getElementById("msg")
+          var tag_element = document.getElementById("tag")
+          var tag = tag_element.value
+          tag_element.value = ""
+          msg_element.innerHTML = "Reloading from " + tag + "..."
+          var dots = setInterval(function() {
+            msg_element.innerHTML += "."
+          }, 1000)
+          http_request("/api/reset?tag="+tag, "GET",
+          function(err, data) {
+            clearInterval(dots)
+            if (err) {
+              msg_element.innerHTML = "Reloading page..."
+              window.location.href = "/"
+            } else {
+              console.log(err,data)
+              msg_element.innerHTML = data;
+            }
+          })
+        }
+      </script>
+      Tag/Branch/Hash:
+      <input id="tag" type="text" value="develop">
+      <button onclick="redeploy()">Redeploy</button>
+    </p>
+    <p id=msg></p>
+  </body>
+</html>

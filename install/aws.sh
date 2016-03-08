@@ -48,55 +48,13 @@ http {
     listen   *:80; ## listen for ipv4
     access_log  /var/log/nginx/localhost.access.log;
     root /ram/frontend;
-    location /rest/ {
-      proxy_pass http://127.0.0.1:8080;
+    location /api/ {
+      proxy_pass http://127.0.0.1:3000;
       proxy_set_header   Host             \$host;
       proxy_set_header   X-Real-IP        \$remote_addr;
       proxy_set_header   X-Forwarded-For  \$proxy_add_x_forwarded_for;
     }
-    location /api-docs {
-      proxy_pass http://127.0.0.1:8080;
-      proxy_redirect     off;
-      server_name_in_redirect off;
-      proxy_set_header   Host             \$host;
-      proxy_set_header   X-Real-IP        \$remote_addr;
-      proxy_set_header   X-Forwarded-For  \$proxy_add_x_forwarded_for;
-
-      if (\$request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        #
-        # Om nom nom cookies
-        #
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        #
-        # Custom headers and headers various browsers *should* be OK with but aren't
-        #
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
-        #
-        # Tell client that this pre-flight info is valid for 20 days
-        #
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain charset=UTF-8';
-        add_header 'Content-Length' 0;
-        return 204;
-      }
-      if (\$request_method = 'POST') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
-      }
-      if (\$request_method = 'GET') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
-      }
-    }
-
   }
-
 }
 EOF
 
@@ -123,7 +81,7 @@ chmod 777 /data /data/db
 service mongod start
 
 # Create RAM update script
-mkdir /ram /ram/frontend /ram/backend
+mkdir /ram /ram/frontend /ram/backend /ram/log
 cd /ram
 cat > update.sh << EOF
   #!/bin/bash
@@ -134,28 +92,36 @@ cat > update.sh << EOF
   export ramrel="\${1:-develop}"
   rm -f *end-dist.zip
   cd /ram/frontend
-  curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/frontend/frontend-dist.zip"
-  unzip -u frontend-dist.zip
-  npm update
+  curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/frontend/frontend-dist.tar.gz"
+  tar -xzf frontend-dist.tar.gz
+  if [ $? -ne 0 ]; then
+    printf "\n\n$ramrel is not a valid tag/branch/hash for atogov/RAM\n\n"
+    exit 1
+  fi
+  npm install
   cd /ram/backend
-  curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/backend/backend-dist.zip"
-  unzip -u backend-dist.zip
-  npm update
-
+  curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/backend/backend-dist.tar.gz"
+  tar -xzf backend-dist.tar.gz
+  npm install
+  
   cd /ram/backend
-  pm2 restart all
+  pm restart all
 EOF
 chmod +x update.sh
 
-cd /ram/backend
-nginx
-pm2 start all
+npm install -g pm2
+pm2 completion install
 
 apt-get install -y unzip
 /ram/update.sh develop
-chmod -R 777 /ram
+chown -R ubuntu /ram
+chgrp -R ubuntu /ram
 
 export logname=`logname`
 if [ $logname ]; then
   chown -R $logname /ram
 fi
+
+cd /ram/backend
+nginx
+pm2 start pm2.json
