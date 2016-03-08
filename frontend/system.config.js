@@ -15,6 +15,7 @@ System.config({
     "angular-ui-router": "github:angular-ui/ui-router@0.2.18",
     "jquery": "npm:jquery@2.2.1",
     "lodash": "npm:lodash@4.5.1",
+    "ng-table": "github:esvit/ng-table@0.8.3",
     "restangular": "github:mgonto/restangular@1.5.2",
     "github:angular-ui/ui-router@0.2.18": {
       "angular": "github:angular/bower-angular@1.5.0"

@@ -1,5 +1,8 @@
-# Table of Contents:
- 1. [System Architecture](docs/architecture.md)
+# Architecture
+
+![System Architecture](https://raw.githubusercontent.com/atogov/RAM/develop/docs/images/system-architecture.png)
+
+# Useful resources:
  1. [Development Environment](docs/environment.md)
 
 ## Development Environment Installation
@@ -12,7 +15,6 @@
     * Read https://help.github.com/articles/fork-a-repo/ for instructions. This will give you a repository in your own account that synchronises from the ATO RAM repository. As you make changes, use pull requests to update the main repository. Don't forget to merge from ATO before creating a pull request back.
 
 ### Windows
-
 * Download the Github downloader/installer
   * Click on https://github-windows.s3.amazonaws.com/GitHubSetup.exe
   * and accept the download to save it
