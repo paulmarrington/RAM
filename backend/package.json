@@ -21,7 +21,8 @@
     "systemjs": "^0.19.23",
     "tsd": "^0.6.5",
     "tslint": "^3.5.0",
-    "typescript": "^1.8.5",
+    "typescript": "^1.8.2",
+    "validator-js": "^0.2.1",
     "winston": "^2.2.0"
   },
   "devDependencies": {
