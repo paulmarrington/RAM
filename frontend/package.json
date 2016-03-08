@@ -11,7 +11,7 @@
     "systemjs": "^0.19.23",
     "tsd": "^0.6.5",
     "tslint": "^3.5.0",
-    "typescript": "^1.8.2"
+    "typescript": "^1.8.5"
   },
   "devDependencies": {
     "browser-sync": "^2.11.1",

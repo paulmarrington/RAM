@@ -6,8 +6,10 @@ import * as cApi from "../../commons/RamAPI";
 import * as cUtils from "../../commons/RamUtils";
 
 export interface RelationshipWidgetScope extends ng.IScope {
-    myTitle: string;
     Ctrl: RelationshipTableWidgetController;
+
+    relation:
+
 }
 
 export class RelationshipTableWidget implements ng.IDirective {
@@ -27,7 +29,7 @@ export class RelationshipTableWidget implements ng.IDirective {
     controllerAs: string = "Ctrl";
 
     scope: { [key: string]: string } = {
-        "myTitle": "=",
+        "relation": "@relation",
     };
 
     link: (scope: RelationshipWidgetScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) => void;
@@ -50,7 +52,7 @@ export class RelationshipTableWidgetController {
     }
 
     handleAction() {
-        this.scope.myTitle = "clicked";
+        this.scope.title = "clicked";
     }
 
 }
