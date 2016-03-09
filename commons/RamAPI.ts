@@ -76,25 +76,24 @@ export interface Relationship extends IRAMObject {
  * However, one of those parties may be unknown during the set-up phase for a relationship.
  * During that time the relationship will be owned by a "PendingInvitations"
  */
-export interface PendingInvitation extends IRAMObject {
-    relationshipCreatorId: EntityID;
-    relationshipCreatorRoleDefId: EntityID;
-    relationshipAttributes: SharableEntityWithAttributes<string>;
-    secrets: KeyValue<String>[];
-    expiryTimestamp: Date;
-}
-
-interface IdentityValue {
-    claimedTimestamp: Date;
-    identityDefinitionId: EntityID;
-    answersToSecrets: EntityAttributeValue<String>[];
-}
-
-export interface IdentityDefinition extends IRAMObject {
+export interface IdentityValue extends IRAMObject {
     machine_name: string;
     human_name: string;
-    listOfInformation: KeyValue<String>[];
-    listOfSecrets: KeyValue<String>[];
+    identityProviderId: EntityID;
+    partySpecificInfo: SharableEntityWithAttributes<string>;
+    answersToSecrets: EntityAttributeValue<String>[];
+    claimedTimestamp: Date;
+    expiryTimestamp: Date;
+    creatorPartyId: EntityID;
+    creatorRoleDefId: EntityID;
+}
+
+export interface IdentityProvider extends IRAMObject {
+    machine_name: string;
+    human_name: string;
+    partySepcificInfoDef: KeyValue<string>[]; // e.g., driving licence #
+    listOfPossibleSecrets: KeyValue<string>[]; // e.g., address, date of birth and phone number
+    defaultExpiryPeriodInDays: number;
 }
 
 /** A Role is some characteristic that a Party has. Roles will only likely to be collected when there is something that needs to be build into a business rule for relationships.
