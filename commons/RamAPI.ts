@@ -79,8 +79,9 @@ export interface Relationship extends IRAMObject {
 export interface PendingInvitation extends IRAMObject {
     relationshipCreatorId: EntityID;
     relationshipCreatorRoleDefId: EntityID;
+    relationshipAttributes: SharableEntityWithAttributes<string>;
     secrets: KeyValue<String>[];
-    expiryTimestamp?: Date;
+    expiryTimestamp: Date;
 }
 
 interface IdentityValue {
