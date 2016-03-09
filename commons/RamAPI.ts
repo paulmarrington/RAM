@@ -24,11 +24,14 @@ export class DataResponse<T>{
  *  Most objects in RAM extend off the RAMObject.
  * PK is _id(used by mongo) and (id,lastUpdatedTimestamp)
  */
+
+type EntityID = string;
+
 export interface IRAMObject {
-    _id: string;
-    id: string;
+    _id: EntityID;
+    id: EntityID;
     lastUpdatedTimestamp: Date;
-    lastUpdatedByPartyId: string;
+    lastUpdatedByPartyId: EntityID;
     deleteIndicator: boolean;
 }
 
@@ -37,7 +40,7 @@ export interface IRAMObject {
  * see https://books.google.com.au/books?id=_fSVKDn7v04C&lpg=PP1&dq=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&pg=RA1-PA159#v=onepage&q=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&f=false
  */
 export interface Party extends IRAMObject {
-    relationships: Relationship[];
+    relationships: EntityID[];
     identities: IdentityValue[];
     roles: SharableEntityAttributeValue<string>[];
     partyTypeInformation: SharableEntityWithAttributes<string>;
@@ -47,12 +50,12 @@ export interface Relationship extends IRAMObject {
     /** A Subject is the party being effected (changed) by a transaction performed by the Delegate */
     relationshipTypeInformation: SharableEntityWithAttributes<string>;
 
-    subjectPartyId: string;
-    subjectRoleId: string;
+    subjectPartyId: EntityID;
+    subjectRoleId: EntityID;
     subjectRolePermission: EntityWithAttributes<boolean, EntityAttributeValue<boolean>>;
     /** A Delegate is the party who will be interacting with government on line services on behalf of the Subject. */
-    delegatePartyId: string;
-    delegateRoleId: string;
+    delegatePartyId: EntityID;
+    delegateRoleId: EntityID;
     /** when does this relationship start to be usable - this will be different to the creation timestamp */
     startTimestamp: Date;
     /** when does this relationship finish being usable */
@@ -74,15 +77,15 @@ export interface Relationship extends IRAMObject {
  * During that time the relationship will be owned by a "PendingInvitations"
  */
 export interface PendingInvitation extends IRAMObject {
-    relationshipCreatorId: string;
-    relationshipCreatorRoleDefId: string;
+    relationshipCreatorId: EntityID;
+    relationshipCreatorRoleDefId: EntityID;
     secrets: KeyValue<String>[];
     expiryTimestamp?: Date;
 }
 
 interface IdentityValue {
     claimedTimestamp: Date;
-    identityDefinitionId: string;
+    identityDefinitionId: EntityID;
     answersToSecrets: EntityAttributeValue<String>[];
 }
 
@@ -101,7 +104,7 @@ interface SharableEntityWithAttributes<T> extends EntityWithAttributes<T, Sharab
 }
 
 interface EntityWithAttributes<T, U extends EntityAttributeValue<T>> {
-    entityWithAttributeDefId: string;
+    entityWithAttributeDefId: EntityID;
     attributes: U[];
 }
 
