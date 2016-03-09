@@ -1,7 +1,6 @@
 /// <reference path="../_ClientTypes.ts" />
 
 import * as api from "../api/IRamScope";
-import * as enums from "../../commons/RamEnums";
 import * as cApi from "../../commons/RamAPI";
 import * as cUtils from "../../commons/RamUtils";
 

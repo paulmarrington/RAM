@@ -1,5 +1,3 @@
-import * as enums from "./RamEnums";
-
 export interface IResponse {
     isError: boolean;
 }

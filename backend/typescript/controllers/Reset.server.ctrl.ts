@@ -11,22 +11,20 @@
 
 import * as express from "express";
 import * as url from "url";
-import * as path from "path"
+import * as path from "path";
 import {exec} from "child_process";
 import {IRamConf} from "../ram/ServerAPI";
 import {DataResponse} from "../../../commons/RamAPI";
 import * as cApi from "../../../commons/RamAPI";
-import * as enums from "../../../commons/RamEnums";
-import {LoggerInstance} from "winston";
 
 interface Query { tag?: string; }
 
-export function ResetCtrl(logger:LoggerInstance) {
+export function ResetCtrl() {
     const router: express.Router = express.Router();
 
-    router.get('/', function(req: express.Request,
+    router.get("/", function(req: express.Request,
     res: express.Response, next: express.NextFunction) {
-      
+
       const query: Query = url.parse(req.url, true).query;
       if (!query.tag) {
         res.send(new DataResponse({
@@ -41,7 +39,7 @@ export function ResetCtrl(logger:LoggerInstance) {
           }));
         });
       }
-      
+
     });
     return router;
 }
