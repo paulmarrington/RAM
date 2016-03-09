@@ -10,7 +10,8 @@
     "proxy-middleware": "^0.15.0",
     "systemjs": "^0.19.23",
     "tsd": "^0.6.5",
-    "typescript": "^1.8.2"
+    "tslint": "^3.5.0",
+    "typescript": "^1.8.5"
   },
   "devDependencies": {
     "browser-sync": "^2.11.1",
@@ -18,17 +19,17 @@
     "expect.js": "^0.3.1",
     "gulp-angular-templatecache": "^1.8.0",
     "gulp-concat": "^2.6.0",
+    "gulp-gzip": "^1.2.0",
     "gulp-ignore": "^2.0.1",
     "gulp-inject": "^3.0.0",
     "gulp-rimraf": "^0.2.0",
     "gulp-sass": "^2.2.0",
     "gulp-sequence": "^0.4.4",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-tar": "^1.8.0",
     "gulp-tslint": "^4.3.1",
     "gulp-typescript": "^2.10.0",
     "gulp-uglify": "^1.5.2",
-    "gulp-gzip": "^1.2.0",
-    "gulp-tar": "^1.8.0",
     "karma": "^0.13.21",
     "karma-chrome-launcher": "^0.2.2",
     "karma-coverage": "^0.5.3",
@@ -69,6 +70,7 @@
       "angular-ui-router": "github:angular-ui/ui-router@^0.2.18",
       "jquery": "npm:jquery@^2.2.0",
       "lodash": "npm:lodash@^4.5.0",
+      "ng-table": "github:esvit/ng-table@^0.8.3",
       "restangular": "github:mgonto/restangular@^1.5.2"
     },
     "devDependencies": {}
