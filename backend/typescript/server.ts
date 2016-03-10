@@ -15,7 +15,7 @@ import {RelationsCtrl} from "./controllers/Relations.server.ctrl";
 import {ResetCtrl} from "./controllers/Reset.server.ctrl";
 import {logger, logStream} from "./Logger";
 
-if (process.env.RAM_CONF == void 0 || process.env.RAM_CONF.trim().length == 0) {
+if (process.env.RAM_CONF === void 0 || process.env.RAM_CONF.trim().length === 0) {
     console.log("Missing RAM_CONF environment variable, server can't continue.");
     process.exit(1);
 }

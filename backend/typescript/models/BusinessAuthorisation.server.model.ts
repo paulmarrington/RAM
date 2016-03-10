@@ -18,11 +18,11 @@ export const IndividualBusinessAuthorisationSchema = new mongoose.Schema({
         required: true
     },
     authorisationStatus: {
-        type: AuthorisationStatus,
+        type: Number,
         required: true
     },
     accessLevel: {
-        type: AccessLevels,
+        type: Number,
         required: true
     },
     expiresOn: {
@@ -31,29 +31,29 @@ export const IndividualBusinessAuthorisationSchema = new mongoose.Schema({
     },
 });
 
-export interface IIndividualBusinessAuthorisation
-    extends IndividualBusinessAuthorisation, mongoose.Document {
-}
+// export interface IIndividualBusinessAuthorisation
+//     extends IndividualBusinessAuthorisation, mongoose.Document {
+// }
 
-export class IndividualBusinessAuthorisationDAO {
+// export class IndividualBusinessAuthorisationDAO {
 
-    model: mongoose.Model<IIndividualBusinessAuthorisation>
-    constructor() {
-        this.model = mongoose.model<IIndividualBusinessAuthorisation>("IndividualBusinessAuthorisation");
-    }
+//     model: mongoose.Model<IIndividualBusinessAuthorisation>
+//     constructor() {
+//         this.model = mongoose.model<IIndividualBusinessAuthorisation>("IndividualBusinessAuthorisation");
+//     }
 
-    getBusinessInformation(businessIds: Array<string>): Promise<IIndividualBusinessAuthorisation[]> {
-        return new Promise((resolve, reject) => {
-            this.model.find({}, (error, result) => {
-                if (error) {
-                    logger.error(error);
-                    reject(error);
-                } else {
-                    resolve(result);
-                }
-            });
-        });
-    }
-}
+//     getBusinessInformation(businessIds: Array<string>): Promise<IIndividualBusinessAuthorisation[]> {
+//         return new Promise((resolve, reject) => {
+//             this.model.find({}, (error, result) => {
+//                 if (error) {
+//                     logger.error(error);
+//                     reject(error);
+//                 } else {
+//                     resolve(result);
+//                 }
+//             });
+//         });
+//     }
+// }
 
 
