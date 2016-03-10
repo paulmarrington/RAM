@@ -4,7 +4,6 @@ import * as express from "express";
 import {IRamConf} from "../ram/ServerAPI";
 import {DataResponse} from "../../../commons/RamAPI";
 import * as cApi from "../../../commons/RamAPI";
-import * as enums from "../../../commons/RamEnums";
 import {logger} from "../Logger";
 
 export function HomeCtrl() {

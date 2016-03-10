@@ -1,9 +1,8 @@
 /// <reference path="../_BackendTypes.ts" />
 
 import * as mongoose from "mongoose";
-import {IndividualBusinessAuthorisation} from "../../../commons/RamAPI";
-import * as enums from "../../../commons/RamEnums";
-import {LoggerInstance} from "winston";
+import * as cApi from "../../../commons/RamAPI";
+import {logger} from "../Logger";
 
 export const IndividualBusinessAuthorisationSchema = new mongoose.Schema({
     businessName: {
@@ -19,11 +18,11 @@ export const IndividualBusinessAuthorisationSchema = new mongoose.Schema({
         required: true
     },
     authorisationStatus: {
-        type: enums.AuthorisationStatus,
+        type: AuthorisationStatus,
         required: true
     },
     accessLevel: {
-        type: enums.AccessLevels,
+        type: AccessLevels,
         required: true
     },
     expiresOn: {
@@ -39,7 +38,7 @@ export interface IIndividualBusinessAuthorisation
 export class IndividualBusinessAuthorisationDAO {
 
     model: mongoose.Model<IIndividualBusinessAuthorisation>
-    constructor(private logger:LoggerInstance) {
+    constructor() {
         this.model = mongoose.model<IIndividualBusinessAuthorisation>("IndividualBusinessAuthorisation");
     }
 
@@ -47,7 +46,7 @@ export class IndividualBusinessAuthorisationDAO {
         return new Promise((resolve, reject) => {
             this.model.find({}, (error, result) => {
                 if (error) {
-                    this.logger.error(error);
+                    logger.error(error);
                     reject(error);
                 } else {
                     resolve(result);
