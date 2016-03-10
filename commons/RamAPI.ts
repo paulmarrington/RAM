@@ -39,20 +39,20 @@ export interface IRAMObject {
  * A Party is the concept that participates in Relationships.
  * see https://books.google.com.au/books?id=_fSVKDn7v04C&lpg=PP1&dq=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&pg=RA1-PA159#v=onepage&q=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&f=false
  */
-export interface Party extends IRAMObject {
+export interface IParty extends IRAMObject {
     relationships: EntityID[];
     identities: IdentityValue[];
-    roles: SharableEntityAttributeValue<string>[];
-    partyTypeInformation: SharableEntityWithAttributes<string>;
+    roles: ISharableEntityAttributeValue<string>[];
+    partyTypeInformation: ISharableEntityWithAttributes<string>;
 }
 
-export interface Relationship extends IRAMObject {
+export interface IRelationship extends IRAMObject {
     /** A Subject is the party being effected (changed) by a transaction performed by the Delegate */
-    relationshipTypeInformation: SharableEntityWithAttributes<string>;
+    relationshipTypeInformation: ISharableEntityWithAttributes<string>;
 
     subjectPartyId: EntityID;
     subjectRoleId: EntityID;
-    subjectRolePermission: EntityWithAttributes<boolean, EntityAttributeValue<boolean>>;
+    subjectRolePermission: IEntityWithAttributes<boolean, IEntityAttributeValue<boolean>>;
     /** A Delegate is the party who will be interacting with government on line services on behalf of the Subject. */
     delegatePartyId: EntityID;
     delegateRoleId: EntityID;
@@ -61,7 +61,7 @@ export interface Relationship extends IRAMObject {
     /** when does this relationship finish being usable */
     endTimestamp?: Date;
     /** which agencies can see the existence of this Relationship */
-    sharing: Consent[];
+    sharing: IConsent[];
     /** Party's identity (including Authorisation Code) contain names,
      * but the other party may prefer setting a different name by which to remember
      * who they are dealing with. */
@@ -80,8 +80,8 @@ export interface IdentityValue extends IRAMObject {
     machine_name: string;
     human_name: string;
     identityProviderId: EntityID;
-    partySpecificInfo: SharableEntityWithAttributes<string>;
-    answersToSecrets: EntityAttributeValue<String>[];
+    partySpecificInfo: ISharableEntityWithAttributes<string>;
+    answersToSecrets: IEntityAttributeValue<String>[];
     claimedTimestamp: Date;
     expiryTimestamp: Date;
     creatorPartyId: EntityID;
@@ -91,48 +91,48 @@ export interface IdentityValue extends IRAMObject {
 export interface IdentityProvider extends IRAMObject {
     machine_name: string;
     human_name: string;
-    partySepcificInfoDef: KeyValue<string>[]; // e.g., driving licence #
-    listOfPossibleSecrets: KeyValue<string>[]; // e.g., address, date of birth and phone number
+    partySepcificInfoDef: IKeyValue<string>[]; // e.g., driving licence #
+    listOfPossibleSecrets: IKeyValue<string>[]; // e.g., address, date of birth and phone number
     defaultExpiryPeriodInDays: number;
 }
 
 /** A Role is some characteristic that a Party has. Roles will only likely to be collected when there is something that needs to be build into a business rule for relationships.
  *  A Role is independant of relationships, e.g. you a doctor even if you have no patients.  In essanse a Role is just a collection of attributes.
  */
-interface SharableEntityWithAttributes<T> extends EntityWithAttributes<T, SharableEntityAttributeValue<T>> {
+interface ISharableEntityWithAttributes<T> extends IEntityWithAttributes<T, ISharableEntityAttributeValue<T>> {
     sharing: string[];          //which agencies can see the existence of this Role
 }
 
-interface EntityWithAttributes<T, U extends EntityAttributeValue<T>> {
+interface IEntityWithAttributes<T, U extends IEntityAttributeValue<T>> {
     entityWithAttributeDefId: EntityID;
     attributes: U[];
 }
 
 export interface EntityWithAttributeDef extends IRAMObject {
     human_name: string;
-    listOfAttributes: AttributeDef<String>[];
+    listOfAttributes: IAttributeDef<String>[];
 }
 
-export interface AttributeDef<T> {
+export interface IAttributeDef<T> {
     machine_name: string;
     human_name: string;
-    listOfAcceptableOptions: Array<KeyValue<T>>;
+    listOfAcceptableOptions: Array<IKeyValue<T>>;
     isFreeText: boolean;
     isRequired: boolean;
 }
 
-export interface KeyValue<T> {
+export interface IKeyValue<T> {
     machine_name: string;
     human_name: string;
     value: T;
 }
 
-interface EntityAttributeValue<T> {
+interface IEntityAttributeValue<T> {
     machine_name: string;
     value: T;
 }
 
-interface SharableEntityAttributeValue<T> extends EntityAttributeValue<T> {
+interface ISharableEntityAttributeValue<T> extends IEntityAttributeValue<T> {
     sharing: string[];          //referencing consent id, which agencies can see the existence of this RoleAttribute
 
 }
@@ -141,18 +141,18 @@ interface SharableEntityAttributeValue<T> extends EntityAttributeValue<T> {
  * agencies may be set by parties in the system.  The Consent object will record what
  * which LegislativePrograms consent has been granted for sharing
  */
-export interface Consent extends IRAMObject {
-    legislativeProgram: LegislativeProgram;
+export interface IConsent extends IRAMObject {
+    legislativeProgram: ILegislativeProgram;
 }
 
 /** A LegislativeProgram represents some course-grained grouping of functionality offered by government to citizens.
  *  Due to "Machinary of Government" changes these LegislativePrograms are moved between agencies. Generally, LegislativePrograms survive these moves, just in a newly named agency.
  */
-export interface LegislativeProgram {
+export interface ILegislativeProgram {
     name: string;
 }
 
-export interface Name {
+export interface IName {
     givenName?: string;
     familyName?: string;
     unstructuredName?: string;
