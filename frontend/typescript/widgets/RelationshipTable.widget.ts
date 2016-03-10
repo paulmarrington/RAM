@@ -7,7 +7,7 @@ import * as cUtils from "../../commons/RamUtils";
 export interface RelationshipWidgetScope extends ng.IScope {
     Ctrl: RelationshipTableWidgetController;
 
-    relation:
+    title: string;
 
 }
 

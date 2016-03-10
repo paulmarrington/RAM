@@ -40,9 +40,9 @@ export interface IRAMObject {
  * see https://books.google.com.au/books?id=_fSVKDn7v04C&lpg=PP1&dq=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&pg=RA1-PA159#v=onepage&q=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&f=false
  */
 export interface IParty extends IRAMObject {
-    relationships: EntityID[];
+    relationshipIds: EntityID[];
     identities: IdentityValue[];
-    roles: ISharableEntityAttributeValue<string>[];
+    roles: IEntityWithAttributes<string, ISharableEntityAttributeValue<string>>[];
     partyTypeInformation: ISharableEntityWithAttributes<string>;
 }
 
@@ -91,8 +91,8 @@ export interface IdentityValue extends IRAMObject {
 export interface IdentityProvider extends IRAMObject {
     machine_name: string;
     human_name: string;
-    partySepcificInfoDef: IKeyValue<string>[]; // e.g., driving licence #
-    listOfPossibleSecrets: IKeyValue<string>[]; // e.g., address, date of birth and phone number
+    partySepcificInfoDef: Namable[]; // e.g., driving licence #
+    listOfPossibleSecrets: Namable[]; // e.g., address, date of birth and phone number
     defaultExpiryPeriodInDays: number;
 }
 
@@ -108,23 +108,18 @@ interface IEntityWithAttributes<T, U extends IEntityAttributeValue<T>> {
     attributes: U[];
 }
 
-export interface EntityWithAttributeDef extends IRAMObject {
-    human_name: string;
+export interface EntityWithAttributeDef extends IRAMObject, Namable {
     listOfAttributes: IAttributeDef<String>[];
 }
 
-export interface IAttributeDef<T> {
+export interface Namable {
     machine_name: string;
     human_name: string;
-    listOfAcceptableOptions: Array<IKeyValue<T>>;
+}
+export interface IAttributeDef<T> extends Namable {
+    listOfAcceptableOptions: Array<Namable>;
     isFreeText: boolean;
     isRequired: boolean;
-}
-
-export interface IKeyValue<T> {
-    machine_name: string;
-    human_name: string;
-    value: T;
 }
 
 interface IEntityAttributeValue<T> {
@@ -134,7 +129,6 @@ interface IEntityAttributeValue<T> {
 
 interface ISharableEntityAttributeValue<T> extends IEntityAttributeValue<T> {
     sharing: string[];          //referencing consent id, which agencies can see the existence of this RoleAttribute
-
 }
 
 /** Control for sharing various different objects in the RAM database with other government

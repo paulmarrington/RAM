@@ -13,7 +13,7 @@ export function RelationsCtrl() {
     router.get("/123", async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         // const businesses = new IndividualBusinessAuthorisationDAO();
         // const businessInfo = await businesses.getBusinessInformation(["123"]);
-        // res.send(new cApi.DataResponse(businessInfo));
+        res.send(new cApi.DataResponse([]));
     });
     return router;
 }
