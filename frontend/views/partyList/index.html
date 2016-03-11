@@ -33,7 +33,7 @@
             Find out more about <a href="">managing access</a>.</h4></p>
 
         <div class=" ram section">
-            <table class="table  table-hover" show-filter="true" ng-table="myAuthorisations">
+            <table class="table  table-hover" show-filter="true" ng-table="myAuthorisations" >
                     <tr ng-repeat="row in $data">
                         <td header-class="'h5'" title="'Name'" filter="{name: 'text'}" sortable="'name'">{{row.name}}<small class="show" ng-if="row.abn"> ABN: {{row.abn}}</small></td>
                         <td header-class="'h5'" title="'Relationship'" filter="{rel: 'select'}" sortable="'rel'">{{row.rel}}</td>
@@ -43,10 +43,6 @@
                     </tr>
                 </tbody>
             </table>
-            <!--<div class="text-center">
-                <uib-pagination total-items="2131" ng-model="selectedPage" max-size="15" class="pagination-sm" boundary-link-numbers="true"
-                rotate="false"></uib-pagination>
-            </div>-->
         </div>
     </div>
     <div class="contents">
@@ -58,44 +54,16 @@
             Find out more about <a href="">managing access</a>.</h4></p>
 
         <div class=" ram section">
-            <table class="table  table-hover" show-filter="true" ng-table="othersAuthorisations">
-                <thead>
-                    <!--<tr class="super-header">
-                        <th colspan="6">
-                            <h4 class="text-center">My business authorisations</h4>
-                        </th>
-                    </tr>-->
-                    <tr>
-                        <th>
-                            <h5>Entity</h5></th>
-                        <th>
-                            <h5>Relationship</h5></th>
-                        <th>
-                            <h5>Access Level</h5></th>
-                        <th>
-                            <h5>Status</h5></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="auth in individual_business_authorisations">
-                        <td>
-                            <div>{{auth.businessName}}</div>
-                            <small>ABN: {{auth.abn}}</small>
-                        </td>
-                        <td>{{helpers.AuthorisationStatusNames(auth.authorisationStatus)}}</td>
-                        <td>{{helpers.AccessLevelNames(auth.accessLevel)}}</td>
-                        <td>Active</td>
-                        <!-- {{auth.activeOn | date: "dd/MM/yyyy"}} -->
-                        <td><a class="btn btn-default btn-sm">View</a></td>
+            <table class="table  table-hover" show-filter="true" ng-table="myAuthorisations">
+                    <tr ng-repeat="row in $data">
+                        <td header-class="'h5'" title="'Name'" filter="{name: 'text'}" sortable="'name'">{{row.name}}<small class="show" ng-if="row.abn"> ABN: {{row.abn}}</small></td>
+                        <td header-class="'h5'" title="'Relationship'" filter="{rel: 'select'}" sortable="'rel'">{{row.rel}}</td>
+                        <td header-class="'h5'" title="'Access Level'" filter="{access: 'select'}" sortable="'access'">{{row.access}}</td>
+                        <td header-class="'h5'" title="'Status'" filter="{status: 'select'}" sortable="'status'" filterData="statusValues">{{row.status}}</td>
+                        <td header-class="'h5'" title="''"><a class="btn btn-default btn-sm">View</a></td>
                     </tr>
                 </tbody>
             </table>
-            <!--<div class="text-center">
-                <uib-pagination total-items="2131" ng-model="selectedPage" max-size="15" class="pagination-sm" boundary-link-numbers="true"
-                rotate="false"></uib-pagination>
-            </div>-->
-
         </div>
     </div>
 </div>

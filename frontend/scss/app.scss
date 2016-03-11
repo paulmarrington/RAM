@@ -85,6 +85,14 @@ div.navbar-header {
     }
     margin-bottom: 50px;
     margin-top: 50px;
+    .pagination.ng-table-pagination{
+        margin:0;
+    }
+    .ng-table-pager {
+        .btn {
+            margin-left:1px;
+        }
+    }
 }
 footer {
     font-size: 20px;
