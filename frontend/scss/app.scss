@@ -78,16 +78,10 @@ div.navbar-header {
     thead tr {
         background: #EEE;
     }
-    thead tr.super-header{
-        background: #555;
-        color:#fff;
-        th {
-            border-bottom: 0px;
-            vertical-align: middle;
-        }
-        small,strong {
-            color:#fff;
-        }
+    thead tr th.header {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 15px;
     }
     margin-bottom: 50px;
     margin-top: 50px;
