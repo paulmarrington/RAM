@@ -2,9 +2,10 @@
 import * as cApi from "../../commons/RamAPI";
 import * as cUtils from "../../commons/RamUtils";
 
-export interface IRamScope extends ng.IScope {
-    party: cApi.IParty;
-    relationships: cApi.IRelationship[];
-    roles:
+export interface DefaultIRamScope extends ng.IScope {
+
+}
+
+export interface IRamScope extends DefaultIRamScope {
     helpers: cUtils.Helpers;
 }

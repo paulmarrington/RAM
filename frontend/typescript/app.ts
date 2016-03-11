@@ -17,7 +17,8 @@ export function Boot() {
         "angular-loading-bar",
         "restangular",
         "ui.bootstrap",
-        "templates"
+        "templates",
+        "ngTable"
     ]);
 
     app.controller("LayoutCtrl", LayoutCtrl)

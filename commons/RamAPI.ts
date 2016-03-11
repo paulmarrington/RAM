@@ -22,10 +22,10 @@ export class DataResponse<T>{
 /**
  * A RAMObject defines the common attributes that all objects in the RAM model will contain.
  *  Most objects in RAM extend off the RAMObject.
- * PK is _id(used by mongo) and (id,lastUpdatedTimestamp)
+ * PK is _id(used by mongo) and (id,lastUpdatedTimestamp) because we can then version on entity
  */
 
-type EntityID = string;
+export type EntityID = string;
 
 export interface IRAMObject {
     _id: EntityID;
@@ -77,8 +77,6 @@ export interface IRelationship extends IRAMObject {
  * During that time the relationship will be owned by a "PendingInvitations"
  */
 export interface IdentityValue extends IRAMObject {
-    machine_name: string;
-    human_name: string;
     identityProviderId: EntityID;
     partySpecificInfo: ISharableEntityWithAttributes<string>;
     answersToSecrets: IEntityAttributeValue<String>[];
@@ -88,46 +86,62 @@ export interface IdentityValue extends IRAMObject {
     creatorRoleDefId: EntityID;
 }
 
-export interface IdentityProvider extends IRAMObject {
-    machine_name: string;
-    human_name: string;
-    partySepcificInfoDef: Namable[]; // e.g., driving licence #
-    listOfPossibleSecrets: Namable[]; // e.g., address, date of birth and phone number
+export interface IdentityProvider extends IRAMObject, HumanNamable {
+    partySepcificInfoDef: IEntityAttributeValue<InputDataTypes>[]; // e.g., driving licence #
+    listOfPossibleSecrets: IEntityAttributeValue<InputDataTypes>[]; // e.g., address, date of birth and phone number
     defaultExpiryPeriodInDays: number;
 }
 
 /** A Role is some characteristic that a Party has. Roles will only likely to be collected when there is something that needs to be build into a business rule for relationships.
  *  A Role is independant of relationships, e.g. you a doctor even if you have no patients.  In essanse a Role is just a collection of attributes.
  */
-interface ISharableEntityWithAttributes<T> extends IEntityWithAttributes<T, ISharableEntityAttributeValue<T>> {
+export interface ISharableEntityWithAttributes<T> extends IEntityWithAttributes<T, ISharableEntityAttributeValue<T>> {
     sharing: string[];          //which agencies can see the existence of this Role
 }
 
-interface IEntityWithAttributes<T, U extends IEntityAttributeValue<T>> {
+export interface IEntityWithAttributes<T, U extends IEntityAttributeValue<T>> {
     entityWithAttributeDefId: EntityID;
     attributes: U[];
 }
 
-export interface EntityWithAttributeDef extends IRAMObject, Namable {
-    listOfAttributes: IAttributeDef<String>[];
+export enum EntityWithAttributeTypes {
+    ROLE = 1,
+    PARTY = 2,
+    ROLE_PERMISSIONS = 3,
 }
 
-export interface Namable {
+export enum InputDataTypes {
+    GENERIC = 0,
+    NUMBER = 1,
+    ABN = 2,
+    NAME = 3,
+    RANDOM_NUMBER = 4,
+}
+export interface EntityWithAttributeDef extends IRAMObject, HumanNamable {
+    entityWithAttributeTypes: EntityWithAttributeTypes;
+    listOfAttributes: IAttributeDef[];
+}
+
+export interface MachineHumanNamable extends HumanNamable {
     machine_name: string;
+}
+
+export interface HumanNamable {
     human_name: string;
 }
-export interface IAttributeDef<T> extends Namable {
-    listOfAcceptableOptions: Array<Namable>;
+
+export interface IAttributeDef extends MachineHumanNamable {
+    listOfAcceptableOptions?: Array<MachineHumanNamable>;
     isFreeText: boolean;
     isRequired: boolean;
+    inputDataType: InputDataTypes;
 }
 
-interface IEntityAttributeValue<T> {
-    machine_name: string;
+export interface IEntityAttributeValue<T> extends MachineHumanNamable {
     value: T;
 }
 
-interface ISharableEntityAttributeValue<T> extends IEntityAttributeValue<T> {
+export interface ISharableEntityAttributeValue<T> extends IEntityAttributeValue<T> {
     sharing: string[];          //referencing consent id, which agencies can see the existence of this RoleAttribute
 }
 
