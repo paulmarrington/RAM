@@ -1,8 +1,18 @@
 <html>
-  <body>
-    <a href="/index.html">Home</a>
-    <p>
+  <body> 
+    <a style="float:right" href="javascript:toggle_raw_display_mode()">
+      Toggle Raw Mode
+    </a>
+    <ol>
+      <li><a href="/index.html">Home</a>
+      <li><a href="/index.html/party/123">Party</a>
+      <li><a href="/index.html/party/123/relations">Relations</a>
+    </ol><p>
       <script>
+        toggle_raw_mode = function() {
+          mode = sessionStorage.ram_display_mode
+          sessionStorage.ram_display_mode = !mode
+        }
         http_request = function(uri, type, callback) {
           var req = new XMLHttpRequest()
           req.open(type, uri, true)

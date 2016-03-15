@@ -12,6 +12,8 @@ export class LayoutCtrl {
     constructor(
         private $scope: api.IRamScope, restAngualr:restNg.IService
     ) {
+      $scope.raw_display_mode =
+        (sessionStorage.getItem("ram_display_mode") === "raw");
     }
 }
 

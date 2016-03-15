@@ -39,6 +39,11 @@ gulp.task("copy:images", function () {
         .pipe(gulp.dest("dist"));
 });
 
+gulp.task("copy:dev", function () {
+    return gulp.src(["dev/*"], { base: "./"})
+        .pipe(gulp.dest("dist")); // move the javascript/lib into dist folder
+});
+
 gulp.task("copy:jslib", ["copy:systemJsConf"], function () {
     return gulp.src(["javascript/lib/*"])
         .pipe(gulp.dest("dist/js/lib")); // move the javascript/lib into dist folder
@@ -65,7 +70,7 @@ gulp.task("copy:index.html", function () {
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task("dist", seq(["clean"], ["ts:compile", "copy:images", "scss:compile", "copy:data", "copy:index.html", "copy:templates"], ["copy:font", "copy:jslib", "copy:jspm"]));
+gulp.task("dist", seq(["clean"], ["ts:compile", "copy:images", "scss:compile", "copy:data", "copy:index.html", "copy:templates"], ["copy:font", "copy:jslib", "copy:jspm", "copy:dev"]));
 
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript"),
@@ -87,8 +92,8 @@ gulp.task("ts:compile", ["ts:lint"], function () {
     // .pipe(uglify({mangle:false}))
 });
 
-gulp.task("html:watch", ["copy:index.html", "copy:templates"], function () {
-    gulp.watch(["views/**/*.html", "index.html"], ["copy:index.html", "copy:templates"]);
+gulp.task("html:watch", ["copy:index.html", "copy:templates", "copy:dev"], function () {
+    gulp.watch(["views/**/*.html", "index.html","dev/**/*.html"], ["copy:index.html", "copy:templates", "copy:dev"]);
 });
 
 gulp.task("jspm:watch", ["copy:jspm"], function () {
@@ -140,6 +145,7 @@ gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "data
     return gulp.watch([
         "./typescript/**/*.js",
         "./index.html",
+        "./dev/*",
         "./views/**/*.html",
         "./scss/*.*",
         "./images/*.*",
