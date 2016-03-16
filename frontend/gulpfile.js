@@ -91,7 +91,7 @@ gulp.task("ts:compile", ["ts:lint"], function () {
 });
 
 gulp.task("html:watch", ["copy:index.html", "copy:templates", "copy:dev"], function () {
-    gulp.watch(["views/{**,./}/*.html", "index.html","dev/**/*.html"], ["copy:index.html", "copy:templates", "copy:dev"]);
+    return gulp.watch(["views/{**,./}/*.html", "index.html","dev/**/*.html"], ["copy:index.html", "copy:templates", "copy:dev"]);
 });
 
 gulp.task("jspm:watch", ["copy:jspm"], function () {
