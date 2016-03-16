@@ -8,4 +8,5 @@ export interface DefaultIRamScope extends ng.IScope {
 
 export interface IRamScope extends DefaultIRamScope {
     helpers: cUtils.Helpers;
+    raw_display_mode: boolean;
 }
