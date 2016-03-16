@@ -1,8 +1,7 @@
 /// <reference path="../_BackendTypes.ts" />
 
 import * as mongoose from "mongoose";
-import {DataResponse, IndividualBusinessAuthorisation, BusinessName} from "../../../commons/RamAPI";
-import * as enums from "../../../commons/RamEnums";
+import * as cApi from "../../../commons/RamAPI";
 
 export const BusinessSchema = new mongoose.Schema({
     name: {
@@ -14,7 +13,6 @@ export const BusinessSchema = new mongoose.Schema({
         required: true
     }
 });
-
 
 export interface IBusiness extends mongoose.Document {
     name: string;

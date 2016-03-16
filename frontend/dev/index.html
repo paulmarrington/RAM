@@ -1,8 +1,25 @@
 <html>
-  <body>
-    <a href="/index.html">Home</a>
-    <p>
+  <body> 
+    <a id="toggle_raw_display_mode" style="float:right"
+    href="javascript:toggle_raw_display_mode()">
+      Toggle again
+    </a>
+    <ol>
+      <li><a href="/index.html">Home</a>
+      <li><a href="/index.html#/party/123">Party</a>
+      <li><a href="/index.html#/party/123/relations">Relations</a>
+    </ol><p>
       <script>
+        window.toggle_raw_display_mode = function() {
+          var toggle_link = document.getElementById("toggle_raw_display_mode")
+          if (sessionStorage.ram_display_mode === "raw") {
+            sessionStorage.ram_display_mode = "full"
+            toggle_link.innerHTML = "Toggle to Raw Mode"
+          } else {
+            sessionStorage.ram_display_mode = "raw"
+            toggle_link.innerHTML = "Toggle to Wrapped Mode"
+          }
+        }
         http_request = function(uri, type, callback) {
           var req = new XMLHttpRequest()
           req.open(type, uri, true)

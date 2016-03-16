@@ -58,6 +58,7 @@ npm_module gulp
 npm_module tsd
 npm_module jspm
 npm_module pm2
+npm_module jasmine
 wd=$(pwd)
 export PATH=$bd/node_modules/.bin:$PATH
 

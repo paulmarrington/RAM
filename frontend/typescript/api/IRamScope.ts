@@ -2,7 +2,11 @@
 import * as cApi from "../../commons/RamAPI";
 import * as cUtils from "../../commons/RamUtils";
 
-export interface IRamScope extends ng.IScope {
-    individual_business_authorisations: Array<cApi.IndividualBusinessAuthorisation>;
+export interface DefaultIRamScope extends ng.IScope {
+
+}
+
+export interface IRamScope extends DefaultIRamScope {
     helpers: cUtils.Helpers;
+    raw_display_mode: boolean;
 }
