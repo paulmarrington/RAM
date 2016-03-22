@@ -41,26 +41,27 @@
                                 <h5>Status</h5></th>
                             <th></th>
                         </tr>
+
                         <tr>
                             <th>
                                 <input class="form-control" type="text" placeholder="Name ..." ng-model="myAuthorisation.filters.name" />
                             </th>
                             <th>
                                 <select class="form-control" ng-model="myAuthorisation.filters.relationship">
-                                    <option value="" ng-selected=" row.value == '' ">All</option>
-                                    <option ng-repeat="item in myAuthorisation.lastResponse.relationships" ng-value="item.key" ng-selected="item.value == myAuthorisation.filters.relationship">{{item.value}}</option>
+                                    <option value="" selected>(All)</option>
+                                    <option ng-repeat="item in myAuthorisation.lastResponse.relationships" value="{{item.key}}" ng-selected="item.key == myAuthorisation.filters.relationship">{{item.value}}</option>
                                 </select>
                             </th>
                             <th class="hidden-xs">
-                                <select class="form-control" ng-model="myAuthorisation.filters.accessLevel" class="form-control">
-                                    <option value="">All</option>
-                                    <option ng-repeat="item in myAuthorisation.lastResponse.accessLevels" ng-value="item.key" ng-selected="item.value == myAuthorisation.filters.accessLevel">{{item.value}}</option>
+                                <select ng-model="myAuthorisation.filters.accessLevel" class="form-control">
+                                    <option value="" selected>(All)</option>
+                                    <option ng-repeat="item in myAuthorisation.lastResponse.accessLevels" value="{{item.key}}" ng-selected="item.key == myAuthorisation.filters.accessLevel">{{item.value}}</option>
                                 </select>
                             </th>
                             <th class="hidden-xs">
                                 <select class="form-control" ng-model="myAuthorisation.filters.status">
-                                    <option value="">All</option>
-                                    <option ng-repeat="item in myAuthorisation.lastResponse.statusValues" ng-value="item.key" ng-selected="item.value == myAuthorisation.filters.status">{{item.value}}</option>
+                                    <option value="" selected>(All)</option>
+                                    <option ng-repeat="item in myAuthorisation.lastResponse.statusValues" value="{{item.key}}" ng-selected="item.key == myAuthorisation.filters.status">{{item.value}}</option>
                                 </select>
                             </th>
                             <th></th>
@@ -73,11 +74,11 @@
                                 <h3>Loading ...</h3></td>
                         </tr>
                         <tr ng-repeat="row in myAuthorisation.lastResponse.data">
-                            <td>{{row.name}}<small class="show" ng-if="row.abn"> ABN: {{row.abn}}</small></td>
+                            <td><a href="">{{row.name}}</a><small class="show" ng-if="row.abn"> ABN: {{row.abn}}</small></td>
                             <td>{{row.rel}}</td>
                             <td class="hidden-xs">{{row.access}}</td>
                             <td class="hidden-xs">{{row.status}}</td>
-                            <td><a class="btn btn-primary btn-sm">Act as</a></td>
+                            <td><a class="btn btn-primary btn-sm">act as <i class="glyphicon glyphicon-menu-right"> </i></a></td>
                         </tr>
                     </tbody>
                 </table>
