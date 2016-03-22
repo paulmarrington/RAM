@@ -18,7 +18,7 @@ export interface IPartyScope extends ng.IScope {
 }
 
 export interface ITable {
-    getData: (partyId: string, pageNo: number, pageSize: number) => ng.IPromise<IDataTableResponse<Sample>>;
+    // getData: (partyId: string, pageNo: number, pageSize: number) => ng.IPromise<IDataTableResponse<Sample>>;
     isLoading: boolean;
     lastResponse: IDataTableResponse<Sample>;
     pageSize: number;
@@ -29,6 +29,7 @@ export interface ITable {
     sorts: {
         [index: string]: number;
     };
+    updatePageSize: (newSize: number) => void
 }
 
 class EmptyDataTableResponse implements IDataTableResponse<Sample> {
@@ -49,21 +50,24 @@ export class PartyCtrl {
     constructor(private RAMRestServices: RAMRestServices, private $scope: IPartyScope, private $q: ng.IQService) {
 
         // $scope.myAuthorisation = {
-        //     isLoading: false,
-        //     lastResponse: new EmptyDataTableResponse(),
-        //     pageSize: 5,
-        //     pageNo: 1,
-        //     filters: {},
-        //     sorts: {},
         //     getData: (filters: any){
         //         console.log(filters);
-
         //         $scope.myAuthorisation.isLoading = true;
-
-
         //     }
         // };
 
+        $scope.myAuthorisation = {
+            isLoading: false,
+            lastResponse: new EmptyDataTableResponse(),
+            pageSize: 5,
+            pageNo: 1,
+            filters: {},
+            sorts: {},
+            updatePageSize: (newPageSize) => {
+                $scope.myAuthorisation.pageSize = newPageSize;
+                updateTable();
+            }
+        }
 
 
         $scope.$watch("myAuthorisation.sorts", (newSorts, oldSorts) => {
@@ -77,21 +81,23 @@ export class PartyCtrl {
         $scope.$watch<{ [index: string]: string }>("myAuthorisation.filters", (newFilters, oldFilters) => {
             if (newFilters) {
                 console.dir(newFilters);
-                const auth = $scope.myAuthorisation;
-                auth.isLoading = true;
-                RAMRestServices.getRelationshipData("partyId", auth.filters, auth.sorts)
-                .then((data)=>{
-                    auth.isLoading = false;
-                    auth.lastResponse = data;
-
-                })
+                updateTable();
             } else {
 
             }
         }, true);
 
+        function updateTable() {
+            const auth = $scope.myAuthorisation;
+            auth.isLoading = true;
+            RAMRestServices.getRelationshipData("partyId", auth.filters, auth.sorts)
+                .then((data) => {
+                    auth.isLoading = false;
+                    auth.lastResponse = data;
 
-
+                });
+        }
+        updateTable();
     }
 }
 

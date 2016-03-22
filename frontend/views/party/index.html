@@ -33,7 +33,7 @@
                         <tr>
                             <th>
                                 <h5>Name</h5></th>
-                            <th >
+                            <th>
                                 <h5>Relationship</h5></th>
                             <th class="hidden-xs">
                                 <h5>Access Level</h5></th>
@@ -41,12 +41,11 @@
                                 <h5>Status</h5></th>
                             <th></th>
                         </tr>
-
                         <tr>
                             <th>
-                                <input class="form-control" type="text" placeholder="Name ..." ng-model="myAuthorisation.filters.name" />
+                                <input class="form-control" type="text" placeholder="Name ..." ng-model="myAuthorisation.filters.name">
                             </th>
-                            <th >
+                            <th>
                                 <select class="form-control" ng-model="myAuthorisation.filters.relationship">
                                     <option value="" selected>(All)</option>
                                     <option ng-repeat="item in myAuthorisation.lastResponse.relationships" value="{{item.key}}" ng-selected="item.key == myAuthorisation.filters.relationship">{{item.value}}</option>
@@ -67,18 +66,18 @@
                             <th></th>
                         </tr>
                     </thead>
-
                     <tbody>
+
+                        <tr ng-repeat="row in myAuthorisation.lastResponse.data">
+                            <td><a href="">{{row.name}}</a><small class="show" ng-if="row.abn"> ABN: {{row.abn}}</small></td>
+                            <td>{{row.rel}}</td>
+                            <td class="hidden-xs ">{{row.access}}</td>
+                            <td class="hidden-xs ">{{row.status}}</td>
+                            <td><a class="btn btn-primary btn-sm">act as →</a></td>
+                        </tr>
                         <tr ng-if="myAuthorisation.isLoading">
                             <td colspan="5" class="text-center">
                                 <h3>Loading ...</h3></td>
-                        </tr>
-                        <tr ng-repeat="row in myAuthorisation.lastResponse.data">
-                            <td><a href="">{{row.name}}</a><small class="show" ng-if="row.abn"> ABN: {{row.abn}}</small></td>
-                            <td >{{row.rel}}</td>
-                            <td class="hidden-xs ">{{row.access}}</td>
-                            <td class="hidden-xs ">{{row.status}}</td>
-                            <td><a class="btn btn-primary btn-sm">act as <i class="glyphicon glyphicon-menu-right"> </i></a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -100,11 +99,15 @@
             </div>
             <div class="col-md-4">
                 <div class="pull-md-right text-xs-center">
-                    <div class="btn-group pagination" role="group">
-                        <button type="button" class="btn btn-primary">5</button>
-                        <button type="button" class="btn btn-primary">10</button>
-                        <button type="button" class="btn btn-primary">25</button>
-                        <button type="button" class="btn btn-primary">100</button>
+                    <div class="btn-group pagination" data-toggle="buttons">
+                        <label class="btn btn-primary"
+                            ng-repeat="pageSize in [5,10,25,100]"
+                            ng-class=" myAuthorisation.pageSize == pageSize ? 'active' : ''"
+                            >
+                            <input type="radio" name="pageSizeOptions" autocomplete="off"
+                            ng-change="myAuthorisation.updatePageSize(pageSize)"
+                            ng-model="myAuthorisation.pageSize"> {{pageSize}}
+                        </label>
                     </div>
                 </div>
             </div>
