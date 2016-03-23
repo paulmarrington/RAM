@@ -18,14 +18,13 @@ export interface Sample {
 
 export interface IPartyListScope extends ng.IScope {
 
-    partyId: cApi.EntityID; // what is the currently active partyId
-
-    parties: cApi.IParty[];
-    partyTypes: Array<cApi.EntityWithAttributeDef>;
-    relationships: cApi.IRelationship[];
-    roleDefinitions: cApi.EntityWithAttributeDef[];
-    permissionDefinitions: cApi.EntityWithAttributeDef[];
-    identityProviders: cApi.IdentityProvider[];
+    // partyId: cApi.EntityID; // what is the currently active partyId
+    // parties: cApi.IParty[];
+    // partyTypes: Array<cApi.EntityWithAttributeDef>;
+    // relationships: cApi.IRelationship[];
+    // roleDefinitions: cApi.EntityWithAttributeDef[];
+    // permissionDefinitions: cApi.EntityWithAttributeDef[];
+    // identityProviders: cApi.IdentityProvider[];
     myAuthorisations: NgTableParams<Sample>;
     othersAuthorisations: NgTableParams<Sample>;
     statusValues: Array<any>;
