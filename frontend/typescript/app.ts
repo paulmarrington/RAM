@@ -1,12 +1,12 @@
 /// <reference path="_ClientTypes.ts" />
 
 import {LayoutCtrl} from "./controllers/Layout.client.ctrl";
-import {PartyListCtrl} from "./controllers/partyList/PartyList.client.ctrl";
-import {PartyRelationsCtrl} from "./controllers/partyRelations/PartyRelations.client.ctrl";
+import {PartyCtrl} from "./controllers/party/Party.client.ctrl";
 import {HomeCtrl} from "./controllers/home/Home.client.ctrl";
 import {FourOFourCtrl} from "./controllers/404/FourOFour.client.ctrl";
 import {IProvider} from "restangular";
 import {RelationshipTableWidget} from "./widgets/RelationshipTable.widget";
+import {RAMRestServices} from "./services/RAMRestServices.client";
 
 export function Boot() {
 
@@ -17,13 +17,13 @@ export function Boot() {
         "angular-loading-bar",
         "restangular",
         "ui.bootstrap",
-        "templates",
-        "ngTable"
+        "templates"
     ]);
 
+    app.service("RAMRestServices",RAMRestServices);
+
     app.controller("LayoutCtrl", LayoutCtrl)
-        .controller("PartyListCtrl", PartyListCtrl)
-        .controller("PartyRelationsCtrl", PartyRelationsCtrl)
+        .controller("PartyCtrl", PartyCtrl)
         .controller("HomeCtrl", HomeCtrl)
         .controller("404Ctrl", FourOFourCtrl);
 
@@ -36,14 +36,10 @@ export function Boot() {
         $stateProvider.state("layout", {
             templateProvider: ($templateCache: TemplateCache) => $templateCache.get("layout.html"),
             controller: "LayoutCtrl"
-        }).state("layout.partyList", {
-            templateProvider: ($templateCache: TemplateCache) => $templateCache.get("partyList/index.html"),
-            controller: "PartyListCtrl",
+        }).state("layout.party", {
+            templateProvider: ($templateCache: TemplateCache) => $templateCache.get("party/index.html"),
+            controller: "PartyCtrl",
             url: "/party/:party"
-        }).state("layout.partyRelations", {
-            templateProvider: ($templateCache: TemplateCache) => $templateCache.get("partyRelations/index.html"),
-            controller: "PartyRelationsCtrl",
-            url: "/party/:party/relations"
         }).state("layout.404", {
             templateProvider: ($templateCache: TemplateCache) => $templateCache.get("404/index.html"),
             controller: "404Ctrl",
