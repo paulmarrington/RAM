@@ -34,6 +34,7 @@ export var updateOne = function(collection:string, _id:string, updates) {
 /* change the contents of a document referred to by primary key */
 export var insertOne = function(collection:string, document) {
   document.lastUpdatedTimestamp = new Date()
+  document.deleted = false
   return db.collection(collection).insertOne(document)
 }
 

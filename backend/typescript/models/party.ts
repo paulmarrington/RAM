@@ -17,7 +17,7 @@ export function read(type:string, value: string) {
 
 /* retrieve a list of identities for a party */
 export function identities(_id: string) {
-  return mongo.findAll("identities", { partyId: mongo.ObjectID(_id) }).toArray()
+  return mongo.findAll("identities", { partyId: mongo.ObjectID(_id), deleted: false }).toArray()
 }
 
 /* add a new identity to an existing party */
@@ -50,4 +50,6 @@ export function deleteIdentity(_id: string) {
  * add indexes if they are not already created...
  * (none for parties as they are always referenced through identities)
  */
-mongo.db.collection("identities").createIndex({ type: 1, value: 1 })
+var identities_collection = mongo.db.collection("identities")
+identities_collection.createIndex({ type: 1, value: 1 })
+identities_collection.createIndex({ partyId: 1, deleted: 1 })
