@@ -15,6 +15,8 @@ import {RelationsCtrl} from "./controllers/Relations.server.ctrl";
 import {ResetCtrl} from "./controllers/Reset.server.ctrl";
 import {logger, logStream} from "./Logger";
 
+import {PartyAPI} from "./controllers/Party"
+
 if (process.env.RAM_CONF === void 0 || process.env.RAM_CONF.trim().length === 0) {
     console.log("Missing RAM_CONF environment variable, server can't continue.");
     process.exit(1);
@@ -48,19 +50,21 @@ server.use("/api/users", UsersCtrl());
 server.use("/api/reset", ResetCtrl());
 server.use("/api/relations", RelationsCtrl());
 
+server.use("/api/party", PartyAPI())
+
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
     const err = new cApi.ErrorResponse(404, "Not Found");
     res.send(err);
 });
 
-server.use((ramResponse: cApi.IResponse, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if (ramResponse.isError) {
-        res.send(ramResponse); // Todo: More specific error handling
-    } else {
-        res.send(ramResponse);
-    }
-});
+// server.use((ramResponse: cApi.IResponse, req: express.Request, res: express.Response, next: express.NextFunction) => {
+//     if (ramResponse.isError) {
+//         res.send(ramResponse); // Todo: More specific error handling
+//     } else {
+//         res.send(ramResponse);
+//     }
+// });
 
 server.listen(conf.httpPort);
 console.log(`RAM Server running on port ${conf.httpPort}`);

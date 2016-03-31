@@ -5,8 +5,6 @@
 * file provided through environment variable
 */
 
-import * as cApi from "../../../commons/RamAPI";
-
 export interface IRamConf {
     frontendDir: string
     logDir: string
