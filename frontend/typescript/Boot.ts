@@ -1,11 +1,13 @@
-import "jquery";
-import "angular";
-import "angular-ui-router";
-import "angular-loading-bar";
-import "lodash";
-import "restangular";
-import "angular-bootstrap";
-import "js/templates";
-import {Boot} from "frontend/typescript/App";
+///<reference path="../node_modules/angular2/typings/browser.d.ts"/>
 
-Boot();
+import "es6-shim";
+import "angular2/bundles/angular2-polyfills";
+import "rxjs/Rx";
+// import "ng2-bootstrap";
+import {bootstrap} from "angular2/platform/browser";
+import {AppComponent} from "./components/app/app.component";
+import {enableProdMode} from "angular2/core";
+
+// enableProdMode();
+
+bootstrap(AppComponent,[]).catch(err => console.error(err));

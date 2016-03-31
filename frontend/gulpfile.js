@@ -11,78 +11,84 @@ var uglify = require("gulp-uglify");
 var browserSync = require("browser-sync").create();
 var inject = require("gulp-inject");
 var es = require("event-stream");
-var templateCache = require("gulp-angular-templatecache");
-var gzip = require('gulp-gzip');
-var tar = require('gulp-tar');
+var gzip = require("gulp-gzip");
+var tar = require("gulp-tar");
 var proxy = require("proxy-middleware");
 var url = require("url");
+var embedTemplates = require("gulp-angular-embed-templates");
 
-gulp.task("copy:font", function () {
+gulp.task("copy:font", function() {
     return gulp.src(["fonts/{**,./}/*.{eot,svg,ttf,woff,woff2}"], { base: "./" })
         .pipe(gulp.dest("dist/")); // move the fonts into dist folder
 });
 
-gulp.task("copy:data", function () {
+gulp.task("copy:data", function() {
     return gulp.src(["data/{**,./}/*.json"], { base: "./" })
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task("publish:tarball", ["dist"], function () {
+gulp.task("publish:tarball", ["dist"], function() {
     return gulp.src("dist/{**,./}/*")
-        .pipe(tar('frontend-dist.tar', {mode: null}))
+        .pipe(tar("frontend-dist.tar", { mode: null }))
         .pipe(gzip())
-        .pipe(gulp.dest('./'));
+        .pipe(gulp.dest("./"));
 });
 
-gulp.task("copy:images", function () {
+gulp.task("copy:images", function() {
     return gulp.src(["images/{**,./}/*.{jpeg,jpg,png,svg,gif,ico}"], { base: "./" })
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task("copy:dev", function () {
-    return gulp.src(["dev/*"], { base: "./"})
+gulp.task("copy:dev", function() {
+    return gulp.src(["dev/*"], { base: "./" })
         .pipe(gulp.dest("dist")); // move the javascript/lib into dist folder
 });
 
-gulp.task("copy:jslib", ["copy:systemJsConf"], function () {
+gulp.task("copy:jslib", ["copy:systemJsConf"], function() {
     return gulp.src(["javascript/lib/*"])
         .pipe(gulp.dest("dist/js/lib")); // move the javascript/lib into dist folder
 });
 
-gulp.task("copy:systemJsConf", ["copy:jspm"], function () {
+gulp.task("copy:systemJsConf", ["copy:jspm"], function() {
     return gulp.src(["system.config.js"])
         .pipe(gulp.dest("dist/js/"));
 });
 
-gulp.task("copy:jspm", function () {
+gulp.task("copy:jspm", function() {
     return gulp.src(["jspm_packages/{**,./}/**"], { base: "./" })
         .pipe(gulp.dest("dist/"));
 });
 
-gulp.task("copy:templates", function () {
-    return gulp.src(["views/{**,./}/*.html"])
-        .pipe(templateCache({ "standalone": true }))
-        .pipe(gulp.dest("dist/js/")); // merge .html templates into templates.js file
-});
-
-gulp.task("copy:index.html", function () {
+gulp.task("copy:index.html", function() {
     return gulp.src(["index.html"])
         .pipe(gulp.dest("dist"));
 });
 
-gulp.task("dist", seq(["clean"], ["ts:compile", "copy:images", "scss:compile", "copy:data", "copy:index.html", "copy:templates"], ["copy:font", "copy:jslib", "copy:jspm", "copy:dev"]));
+gulp.task("dist", seq(["clean"], ["ts:compile", "copy:images", "scss:compile", "copy:data", "copy:index.html"], ["copy:font", "copy:jslib", "copy:jspm", "copy:dev"]));
 
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript"),
     outFile: "app.js"
 });
 
-gulp.task("clean", function () {
+gulp.task("clean", function() {
     return gulp.src(["dist"], { read: false }).pipe(rimraf());
 });
 
-gulp.task("ts:compile", ["ts:lint"], function () {
-    return gulp.src(["typescript/{**,./}/*.ts", "../commons/{**,./}/*.ts"])
+gulp.task("ts:compile", ["ts:lint"], function() {
+    return gulp.src(["typescript/{**,./}/*.ts", "../commons/{**,./}/*.ts", "../commons/{**,./}/*.html"])
+        .pipe(embedTemplates({
+            sourceType: 'ts',
+            minimize: {
+                empty: true,
+                spare: true,
+                quotes: true,
+                dom: {
+                    lowerCaseAttributeNames: false,
+                    lowerCaseTags: false
+                }
+            }
+        }))
         .pipe(sourcemaps.init())
         .pipe(ts(tsProject, { sortOutput: true }))
         .pipe(sourcemaps.write("."))
@@ -90,23 +96,23 @@ gulp.task("ts:compile", ["ts:lint"], function () {
     // .pipe(uglify({mangle:false}))
 });
 
-gulp.task("html:watch", ["copy:index.html", "copy:templates", "copy:dev"], function () {
-    return gulp.watch(["views/{**,./}/*.html", "index.html","dev/**/*.html"], ["copy:index.html", "copy:templates", "copy:dev"]);
+gulp.task("html:watch", ["copy:index.html", "copy:dev"], function() {
+    return gulp.watch(["views/{**,./}/*.html", "index.html", "dev/**/*.html"], ["copy:index.html", "copy:dev"]);
 });
 
-gulp.task("jspm:watch", ["copy:jspm"], function () {
+gulp.task("jspm:watch", ["copy:jspm"], function() {
     return gulp.watch(["jspm_packages/{**,./}/*.js"], ["copy:jspm"]);
 });
 
-gulp.task("data:watch", function () {
+gulp.task("data:watch", function() {
     return gulp.watch(["data/{**,./}/*.{json}"], ["copy:data"]);
 });
 
-gulp.task("ts:watch", ["ts:compile"], function () {
-    return gulp.watch(["typescript/{**,./}/*.ts", "../commons/{**,./}/*.ts"], ["ts:compile"]);
+gulp.task("ts:watch", ["ts:compile"], function() {
+    return gulp.watch(["typescript/{**,./}/*.ts", "../commons/{**,./}/*.ts", "typescript/{**,./}/*.html"], ["ts:compile"]);
 });
 
-gulp.task("scss:compile", function () {
+gulp.task("scss:compile", function() {
     return gulp.src("./scss/app.scss")
         .pipe(sourcemaps.init())
         .pipe(scss().on("error", scss.logError))
@@ -114,22 +120,22 @@ gulp.task("scss:compile", function () {
         .pipe(gulp.dest("./dist/css"));
 });
 
-gulp.task("scss:watch", ["scss:compile"], function () {
+gulp.task("scss:watch", ["scss:compile"], function() {
     return gulp.watch("scss/{**,./}/*.scss", ["scss:compile"]);
 });
 
-gulp.task("ts:lint", function () {
+gulp.task("ts:lint", function() {
     return gulp.src(["typescript/{**,./}/*.ts", "test/{**,./}/*.ts"])
         .pipe(tslint())
         .pipe(tslint.report("verbose", {
             emitError: false
         }));
 });
-gulp.task("watch",["scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch"]);
+gulp.task("watch", ["scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch"]);
 
-gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch", "copy:jslib"], function () {
-    var proxyOptions = url.parse('http://localhost:3000/api');
-    proxyOptions.route = '/api';
+gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch", "copy:jslib"], function() {
+    var proxyOptions = url.parse("http://localhost:3000/api");
+    proxyOptions.route = "/api";
 
     browserSync.init({
         server: {
@@ -143,7 +149,7 @@ gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "data
         "./typescript/**/*.js",
         "./index.html",
         "./dev/*",
-        "./views/{**,./}/*.html",
+        "./typescript/{**,./}/*.html",
         "./scss/*.*",
         "./images/*.*",
     ], [browserSync.reload]);
