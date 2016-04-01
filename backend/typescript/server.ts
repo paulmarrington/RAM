@@ -15,6 +15,10 @@ import {RelationsCtrl} from "./controllers/Relations.server.ctrl";
 import {ResetCtrl} from "./controllers/Reset.server.ctrl";
 import {logger, logStream} from "./Logger";
 
+// Prepare mongoose for daily operations
+const mongoose = require("mongoose");
+mongoose.connect('mongodb://localhost/ram');
+
 import {PartyAPI} from "./controllers/Party"
 
 if (process.env.RAM_CONF === void 0 || process.env.RAM_CONF.trim().length === 0) {
@@ -50,7 +54,7 @@ server.use("/api/users", UsersCtrl());
 server.use("/api/reset", ResetCtrl());
 server.use("/api/relations", RelationsCtrl());
 
-server.use("/api/party", PartyAPI())
+server.use("/api/1/Party", PartyAPI())
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {

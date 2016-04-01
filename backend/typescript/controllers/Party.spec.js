@@ -1,12 +1,12 @@
 describe("a RAM Party", () => {
   it("can create a new identity and party", function(done) {
     new_party(rest.uuid()).then(function (result) {
-      expect(result).toEqual(jasmine.objectContaining({ error: false }))
+      expect(result).toEqual(jasmine.objectContaining({ deleted: false }))
       done()
     }).catch(function(err) { fail(err); done() })
   })
   it("can create a new identity for an existing party", function(done) {
-    new_two_identity_party().then(function(result) {
+    new_two_identity_party(rest.uuid()).then(function(result) {
       expect(result.identities.length).toEqual(2)
       done()
     }).catch(function(err) { fail(err); done() })
@@ -15,44 +15,42 @@ describe("a RAM Party", () => {
     var abn = rest.uuid()
     new_party(abn).then(function (result) {
       get_party(abn).then(function (result) {
-        expect(result.party).not.toBe(null)
-        expect(result.identities).not.toBe(null)
+        expect(result.identities.length).toEqual(1)
         done()
       }).catch(function(err) { fail(err); done() })
     }).catch(function(err) { fail(err); done() })
   })
   it("can retrieve a list of identities for a party", function(done) {
-    new_two_identity_party().then(function(result) {
+    new_two_identity_party(rest.uuid()).then(function(result) {
       expect(result.identities.length).toEqual(2)
       done()
     }).catch(function(err) { fail(err); done() })
   })
   it("can change party roles", function(done) {
-    update_party(function(data) {
-      return {roles: data.roles}
-    }).then(function(data) {
-      expect(data.party.roles.length).toEqual(2)
+    update_party(rest.uuid(), {
+        $addToSet: {roles: {name: "spouse"}},
+        $set:      {"attributes.magic": "dark"}
+      }
+    ).then(function(partyDoc) {
+      expect(partyDoc.roles.length).toEqual(2)
       done()
     }).catch(function(err) { fail(err); done() })
   })
   it("can change party attributes", function(done) {
-    update_party(function(data) {
-      return {attributes: {registered: true}}
-    }).then(function(data) {
-      expect(data.party.attributes.registered).toEqual(true)
+    update_party(rest.uuid(), {
+      "attributes.magic": "light"
+    }).then(function(partyDoc) {
+      expect(partyDoc.attributes.magic).toEqual("light")
       done()
     }).catch(function(err) { fail(err); done() })
   })
   it("can delete identities", function(done) {
-    new_two_identity_party().then(function(data) {
-      var identities = data.identities
-      rest.delete("party", {_id: identities[0]._id}).then(function(data) {
-        get_party(identities[1].value).then(function (result) {
-          expect(result.party).not.toBe(null)
-          expect(result.identities.length).toEqual(1)
-          done()
-        }).catch(function(err) { fail(err); done() })
-      }).catch(function(err) { fail(err); done() })
+    var abn_1 = rest.uuid()
+    update_party(abn_1, {
+      $pull: {identities: {value:abn_1, type:"abn"}},
+    }).then(function (updatedParty) {
+      expect(updatedParty.identities.length).toEqual(1)
+      done()
     }).catch(function(err) { fail(err); done() })
   })
 });
@@ -60,50 +58,47 @@ describe("a RAM Party", () => {
 rest = require("../../spec/support/rest.js")
 
 var get_party = function(abn) {
-  return rest.get("party", {type: "abn", value: abn})
+  return rest.get("Party/Identity/" + abn + "/abn")
 }
 
 var new_party = function(abn) {
-  var documents = {
-    party:    {
-      roles:      [
-        {name:"tax-agent", attributes:{}, sharingAgencyIds:[]}
-      ],
-      attributes: {}
-    },
-    identity: {type: "abn", value: abn}
+  var doc = {
+    roles: [
+      {name:"tax-agent", attributes:{}, sharingAgencyIds:[]}
+    ],
+    attributes: {},
+    identities: [{type: "abn", value: abn, name: rest.uuid()}]
   }
-  return rest.post("party", {}, documents)
+  return rest.post("Party", doc)
 }
 
-var new_two_identity_party = function() {
+var new_two_identity_party = function(abn_1) {
   return new Promise(function(resolve, reject) {
-    var abn_1   = rest.uuid(), abn_2 = rest.uuid()
-    var party_1 = new_party(abn_1)
-    party_1.then(function (result) {
-      get_party(abn_1).then(function (result) {
-        var identity = {
-          type:     "abn",
-          value:    abn_2,
-          partyId:  result.party._id
-        }
-        rest.post("party", {}, identity).then(function(result) {
-          get_party(abn_2).then(function (result) { resolve(result) })
-        }).catch(function(err) { reject(err) })
+    var abn_2 = rest.uuid()
+    new_party(abn_1).then(function (res_1) {
+      var identity = {
+        type:     "abn",
+        value:    abn_2,
+        name:     rest.uuid()
+      }
+      rest.put("Party/Identity/" + abn_1 + "/abn",
+      
+      {$addToSet: {identities: identity}}
+      
+      ).then(function(res_2) {
+        resolve(res_2)
       }).catch(function(err) { reject(err) })
     }).catch(function(err) { reject(err) })
   })
 }
 
-var update_party = function(updates) {
+var update_party = function(abn, updates) {
   return new Promise(function(resolve, reject) {
-    new_two_identity_party().then(function(result) {
-      result.party.roles.push({name: "spouse"})
-      var sel = {_id: result.party._id}
-      rest.put("party", sel, updates(result.party)).then(function() {
-        get_party(result.identities[0].value).then(function(result) {
-          resolve(result)
-        }).catch(function(err) { reject(err) })
+    new_two_identity_party(abn).then(function(partyDoc) {
+      var abn = partyDoc.identities[0].value
+      rest.put("Party/Identity/" + abn + "/abn", updates)
+      .then(function(updatedParty) {
+          resolve(updatedParty)        
       }).catch(function(err) { reject(err) })
     }).catch(function(err) { reject(err) })
   })

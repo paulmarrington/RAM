@@ -4,16 +4,16 @@ var serialize = function(obj ){
   return '?'+Object.keys(obj).reduce(function(a,k){a.push(k+'='+encodeURIComponent(obj[k]));return a},[]).join('&')
 }
 
-var options = function(method, api, params) {
+var options = function(method, api) {
   return {
     method:   method,
     host:     "localhost",
     port:     3000,
-    path:     "/api/"+api+serialize(params)  }
+    path:     "/api/1/"+api  }
 }
 
-var request = function(method, api, params, body) {
-  var opts = options(method, api, params)
+var request = function(method, api, body) {
+  var opts = options(method, api)
   if (body) {
     body = JSON.stringify(body)
     opts.headers = {
@@ -36,17 +36,17 @@ var request = function(method, api, params, body) {
 }
 
 module.exports = {
-  get: function(api, params) {
-    return request("GET", api, params)
+  get: function(api) {
+    return request("GET", api)
   },
-  post: function(api, params, body) {
-    return request("POST", api, params, body)
+  post: function(api, body) {
+    return request("POST", api, body)
   },
-  put: function(api, params, body) {
-    return request("PUT", api, params, body)
+  put: function(api, body) {
+    return request("PUT", api, body)
   },
-  delete: function(api, params) {
-    return request("DELETE", api, params)
+  delete: function(api) {
+    return request("DELETE", api)
   },
   uuid: function() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
