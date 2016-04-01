@@ -34,19 +34,6 @@
 //         //     }
 //         // };
 
-//         $scope.myAuthorisation = {
-//             isLoading: false,
-//             lastResponse: new EmptyDataTableResponse(),
-//             pageSize: 5,
-//             pageNo: 1,
-//             filters: {},
-//             sorts: {},
-//             updatePageSize: (newPageSize) => {
-//                 $scope.myAuthorisation.pageSize = newPageSize;
-//                 updateTable();
-//             }
-//         }
-
 //         $scope.$watch<{ [index: string]: string }>("myAuthorisation.filters", (newFilters, oldFilters) => {
 //             if (newFilters) {
 //                 console.dir(newFilters);

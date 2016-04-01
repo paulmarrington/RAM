@@ -14,17 +14,9 @@ export class ErrorResponseWithData<T> implements IResponse {
     isError: boolean = true;
 }
 
-export class DataResponse<T>{
+export class DataResponse<T> implements IResponse{
     constructor(public data: T) { }
     isError: boolean = false;
-}
-
-export interface IDataTableResponse<T> {
-    total: number;
-    data: T[];
-    relationshipOptions: IKeyValue<string>[];
-    accessLevelOptions: IKeyValue<string>[];
-    statusValueOptions: IKeyValue<string>[];
 }
 
 /**
@@ -38,27 +30,71 @@ export interface IKeyValue<T> {
     value: T;
 }
 
-export interface Sample {
+/***************************************************
+ *                     SHARED
+ ***************************************************/
+
+/***************************************************
+ *                     REQUESTS
+ ***************************************************/
+export class RelationshipTableReq {
+    constructor(
+        public pageSize: number,
+        public pageNumber: number,
+        public canActFor: boolean,
+        public filters: { [index: string]: string },
+        public sortByField: string
+    ) {
+    }
+}
+
+export class NavReq {
+
+    constructor(public relId?: string,public seqNo?:number) {
+
+    }
+
+}
+
+/***************************************************
+ *                     RESPONSES
+ ***************************************************/
+export interface IRelationshipTableRes {
+    total: number;
+    data: IRelationshipTableRow[];
+    relationshipOptions: Array<string>;
+    accessLevelOptions: Array<string>;
+    statusValueOptions: Array<string>;
+}
+
+export class EmptyRelationshipTableRes implements IRelationshipTableRes {
+    total = 0;
+    data = new Array<IRelationshipTableRow>();
+    relationshipOptions = new Array<string>();
+    accessLevelOptions = new Array<string>();
+    statusValueOptions = new Array<string>();
+}
+
+export interface IRelationshipTableRow {
     name: string;
+    subName?: string;
+    relId: string;
     rel: string;
     access: string;
     status: string;
-    abn?: string;
 }
 
-export class EmptyDataTableResponse implements IDataTableResponse<Sample> {
-    total = 0;
-    data = new Array<Sample>();
-    relationshipOptions = new Array<IKeyValue<string>>();
-    accessLevelOptions = new Array<IKeyValue<string>>();
-    statusValueOptions = new Array<IKeyValue<string>>();
+export interface IRelationshipQuickInfo {
+    id: string;
+    name: string;
+    subName?: string;
 }
 
-export class RelationshipTableUpdateRequest {
-    constructor(public pageSize: number,
-        public pageNumber: number,
-        public filters: { [index: string]: string },
-        public sortByField: string) {
+export class StateRes {
+    partyChain: IRelationshipQuickInfo[];
+}
 
-    }
+export class NavRes {
+    partyChain: IRelationshipQuickInfo[];
+    seqNo: number;
 }

@@ -66,7 +66,7 @@ gulp.task("copy:index.html", function() {
 
 gulp.task("dist", seq(["clean"], ["ts:compile", "copy:images", "scss:compile", "copy:data", "copy:index.html"], ["copy:font", "copy:jslib", "copy:jspm", "copy:dev"]));
 
-var tsProject = ts.createProject("tsconfig.json", {
+var tsProject = ts.createProject("typescript/tsconfig.json", {
     typescript: require("typescript"),
     outFile: "app.js"
 });
@@ -97,7 +97,7 @@ gulp.task("ts:compile", ["ts:lint"], function() {
 });
 
 gulp.task("html:watch", ["copy:index.html", "copy:dev"], function() {
-    return gulp.watch(["views/{**,./}/*.html", "index.html", "dev/**/*.html"], ["copy:index.html", "copy:dev"]);
+    return gulp.watch(["typescript/{**,./}/*.html", "index.html", "dev/**/*.html"], ["copy:index.html", "copy:dev"]);
 });
 
 gulp.task("jspm:watch", ["copy:jspm"], function() {

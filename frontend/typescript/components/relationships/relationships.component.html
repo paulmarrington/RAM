@@ -18,15 +18,13 @@
         </div>
     </div>
 
-    <div class="page-header">
-        <h3><strong>Jennifer Maxims</strong> can act/authorised for </h3>
-    </div>
+    <nav-crumb></nav-crumb>
     <p class="lead">
         <h4>You have access to the entries listed below. Select an entity to view the relationship or manage access.
             Find out more about <a href="">managing access</a>.</h4></p>
 
     <div class="ram section">
-        <ram-relationship-table></ram-relationship-table>
+        <ram-relationship-table ramCanActFor="true"></ram-relationship-table>
     </div>
 
 
@@ -40,7 +38,7 @@
     <div class="ram section">
         <div class="row">
             <div class="col-md-12">
-                <ram-relationship-table></ram-relationship-table>
+                <ram-relationship-table ramCanActFor="false"></ram-relationship-table>
             </div>
         </div>
     </div>
