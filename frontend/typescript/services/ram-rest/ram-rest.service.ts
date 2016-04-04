@@ -1,32 +1,30 @@
-/// <reference path="../_ClientTypes.ts" />
+///<reference path="../../../node_modules/angular2/typings/browser.d.ts"/>
 
-import {IDataTableResponse, IKeyValue, Sample}  from "../../commons/RamAPI";
+import { Injectable } from "angular2/core";
+import {
+    RelationshipTableUpdateRequest,
+    IDataTableResponse,
+    IKeyValue,
+    Sample}
+from "../../../../commons/RamAPI";
 
-export class RAMRestServices {
+@Injectable()
+export class RAMRestService {
 
-    public static $inject = [
-        "$timeout",
-        "$q"
-    ];
+    constructor() { }
 
-    constructor(private $timeout: ng.ITimeoutService, private $q: ng.IQService) {
-
-    }
-
-    getRelationshipData(partyId: string,
-        filters: { [index: string]: string }, sorts: { [index: string]: number }): ng.IPromise<IDataTableResponse<Sample>> {
-        const deferred = this.$q.defer<IDataTableResponse<Sample>>();
-
-        this.$timeout(() => {
-            deferred.resolve({
-                total: 100,
-                data: this.testData,
-                relationships: [{ key: "family", value: "Family" }, { key: "rep", value: "Business Rep" }],
-                statusValues: [{ key: "active", value: "Active" }, { key: "inactive", value: "InActive" }],
-                accessLevels: [{ key: "universal", value: "Universal" }, { key: "limited", value: "Limited" }]
-            });
-        }, 1500);
-        return deferred.promise;
+    getRelationshipData(partyId: string, filters: RelationshipTableUpdateRequest): Promise<IDataTableResponse<Sample>> {
+        return new Promise<IDataTableResponse<Sample>>(resolve =>
+            setTimeout(() => {
+                resolve({
+                    total: 100,
+                    data: this.testData,
+                    relationshipOptions: [{ key: "family", value: "Family" }, { key: "rep", value: "Business Rep" }],
+                    statusValueOptions: [{ key: "active", value: "Active" }, { key: "inactive", value: "InActive" }],
+                    accessLevelOptions: [{ key: "universal", value: "Universal" }, { key: "limited", value: "Limited" }]
+                });
+            }, 1500)
+        );
     }
 
     testData: Array<Sample> = [
@@ -95,8 +93,6 @@ export class RAMRestServices {
         { name: "Cloud software for USI", rel: "Hosted software provider", abn: "22 222 222 222", access: "Universal", status: "Active" },
         { name: "Henry Puffandstuff", rel: "User", access: "Limited", status: "Active" }
     ];
-
-
 
 
 }

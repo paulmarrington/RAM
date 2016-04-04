@@ -22,9 +22,9 @@ export class DataResponse<T>{
 export interface IDataTableResponse<T> {
     total: number;
     data: T[];
-    relationships: IKeyValue<string>[];
-    accessLevels: IKeyValue<string>[];
-    statusValues: IKeyValue<string>[];
+    relationshipOptions: IKeyValue<string>[];
+    accessLevelOptions: IKeyValue<string>[];
+    statusValueOptions: IKeyValue<string>[];
 }
 
 /**
@@ -44,4 +44,21 @@ export interface Sample {
     access: string;
     status: string;
     abn?: string;
+}
+
+export class EmptyDataTableResponse implements IDataTableResponse<Sample> {
+    total = 0;
+    data = new Array<Sample>();
+    relationshipOptions = new Array<IKeyValue<string>>();
+    accessLevelOptions = new Array<IKeyValue<string>>();
+    statusValueOptions = new Array<IKeyValue<string>>();
+}
+
+export class RelationshipTableUpdateRequest {
+    constructor(public pageSize: number,
+        public pageNumber: number,
+        public filters: { [index: string]: string },
+        public sortByField: string) {
+
+    }
 }

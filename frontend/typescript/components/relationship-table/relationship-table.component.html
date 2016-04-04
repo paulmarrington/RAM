@@ -1,0 +1,91 @@
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        <h5>Name</h5></th>
+                    <th>
+                        <h5>Relationship</h5></th>
+                    <th class="hidden-xs">
+                        <h5>Access Level</h5></th>
+                    <th class="hidden-xs">
+                        <h5>Status</h5></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>
+                        <input class="form-control" type="text" [ngModel]="parameters.filters.name" placeholder="Name ..." #nameFilter (ngModelChange)="updateFilter('name',nameFilter.value)">
+                    </th>
+                    <th>
+                        <select class="form-control" #relationshipFilter (change)="updateFilter('relationship',relationshipFilter.value)">
+                            <option value="" [selected]="parameters.filters.relationship == '' ">(All)</option>
+                            <option *ngFor="#item of relationshipTableResponse.relationshipOptions" value="{{item.key}}" [selected]="parameters.filters.relationship == item.key">
+                                {{item.value}}</option>
+                        </select>
+                    </th>
+                    <th class="hidden-xs">
+                        <select #accessLevelFilter (change)="updateFilter('accessLevel',accessLevelFilter.value)" class="form-control">
+                            <option value="">(All)</option>
+                            <option *ngFor="#item of relationshipTableResponse.accessLevelOptions" value="{{item.key}}" [selected]="parameters.filters.accessLevel == item.key">{{item.value}}</option>
+                        </select>
+                    </th>
+                    <th class="hidden-xs">
+                        <select class="form-control" #statusFilter (change)="updateFilter('state',statusFilter.value)">
+                            <option value="">(All)</option>
+                            <option *ngFor="#item of relationshipTableResponse.statusValueOptions" value="{{item.key}}" [selected]="parameters.filters.status == item.key">{{item.value}}</option>
+                        </select>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody *ngIf="!isLoading">
+                <tr *ngFor="#row of relationshipTableResponse.data">
+                    <td><a href="">{{row.name}}</a><small class="show" *ngIf="row.abn"> ABN: {{row.abn}}</small></td>
+                    <td>{{row.rel}}</td>
+                    <td class="hidden-xs ">{{row.access}}</td>
+                    <td class="hidden-xs ">{{row.status}}</td>
+                    <td><a class="btn btn-primary btn-sm">act as →</a></td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="isLoading">
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <h3>Loading ...</h3></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="text-md-left text-xs-center">
+            <nav>
+                <ul class="pagination">
+                    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                    <li [class.active]="parameters.pageNumber == 1"><a href="#">1 </a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="pull-md-right text-xs-center">
+            <div class="btn-group pagination" data-toggle="buttons">
+                <label class="btn btn-primary" *ngFor="#pSizeValue of pageSizeOptions" [class.active]="pSizeValue == parameters.pageSize">
+                    <input type="radio" autocomplete="off" (ngModelChange)="setPageSize(pSizeValue)" name="{{pSizeValue}}"> {{pSizeValue}}
+                </label>
+            </div>
+        </div>
+    </div>
+    <!--<div class="btn-group">
+        <label class="btn btn-primary" [(ngModel)]="parameters.pageSize" btnRadio="5" uncheckable>5</label>
+        <label class="btn btn-primary" [(ngModel)]="parameters.pageSize" btnRadio="10" uncheckable>10</label>
+        <label class="btn btn-primary" [(ngModel)]="parameters.pageSize" btnRadio="25" uncheckable>25</label>
+        <label class="btn btn-primary" [(ngModel)]="parameters.pageSize" btnRadio="100" uncheckable>100</label>
+    </div>-->
+    <!--{{getDiagnostic()}}-->
+
+</div>
