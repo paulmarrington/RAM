@@ -1,23 +1,27 @@
-import { Component, OnInit } from "angular2/core";
+import { Component, OnInit, Input} from "angular2/core";
 
 import {
-    IDataTableResponse,
-    EmptyDataTableResponse,
-    IKeyValue, Sample,
-    RelationshipTableUpdateRequest
+    IRelationshipTableRes,
+    EmptyRelationshipTableRes,
+    IKeyValue, IRelationshipTableRow,
+    RelationshipTableReq
 }  from "../../../../commons/RamAPI";
-import {RAMRestService} from "../../services/ram-rest/ram-rest.service";
+import {RAMNavService} from "../../services/ram-nav.service";
+import {RAMRestService} from "../../services/ram-rest.service";
 
 @Component({
     selector: "ram-relationship-table",
     templateUrl: "relationship-table.component.html",
-    providers: [RAMRestService]
+    providers: [RAMNavService, RAMRestService]
 })
 export class RelationshipTableComponent implements OnInit {
 
-    parameters: RelationshipTableUpdateRequest = {
+    @Input("ramCanActFor") canActFor: boolean;
+
+    parameters: RelationshipTableReq = {
         pageSize: 5,
         pageNumber: 1,
+        canActFor: true,
         filters: {
             name: "",
             accessLevel: "",
@@ -30,13 +34,15 @@ export class RelationshipTableComponent implements OnInit {
     isLoading = false;
     pageSizeOptions = [5, 10, 25, 100];
 
-    relationshipTableResponse = new EmptyDataTableResponse();
+    relationshipTableResponse: IRelationshipTableRes = new EmptyRelationshipTableRes();
 
-    constructor(private rest: RAMRestService) {
-
+    constructor(
+        private nav: RAMNavService,
+        private rest: RAMRestService) {
     }
 
     ngOnInit() {
+        this.parameters.canActFor = this.canActFor;
         this.updateTable();
     }
 
