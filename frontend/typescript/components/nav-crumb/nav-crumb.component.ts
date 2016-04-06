@@ -5,20 +5,21 @@ import {Subject, Observable} from "rxjs";
 
 @Component({
     selector: "nav-crumb",
-    templateUrl: "nav-crumb.component.html",
-    providers: [RAMNavService]
+    templateUrl: "nav-crumb.component.html"
 })
 export class NavCrumbComponent implements OnInit {
     relChain: Observable<IRelationshipQuickInfo[]>;
 
     constructor(private nav: RAMNavService) {
-        this.relChain = this.nav.navSource$.map(res => res.partyChain);
+    }
+
+    navigateTo(relId: string) {
+        this.nav.navigateToRel(relId);
     }
 
     ngOnInit() {
-        // this.nav.navSource$.subscribe(data => {
-        //     this.relChain = data.partyChain;
-        // });
+        this.relChain = this.nav.navObservable$
+            .map(res => res.partyChain);
     }
 
 }

@@ -7,8 +7,7 @@ import {NavReq, IRelationshipQuickInfo} from "../../../../commons/RamAPI";
 @Component({
     selector: "ram-relationships",
     templateUrl: "relationships.component.html",
-    directives: [RelationshipTableComponent, NavCrumbComponent],
-    providers:[RAMRestService]
+    directives: [RelationshipTableComponent, NavCrumbComponent]
 })
 export class RelationshipsComponent implements OnInit {
 

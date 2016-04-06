@@ -1,4 +1,6 @@
 import { Component, OnInit, Input} from "angular2/core";
+import Rx from "rxjs/Rx";
+import { ControlGroup, Control, FORM_DIRECTIVES} from "angular2/common";
 
 import {
     IRelationshipTableRes,
@@ -12,65 +14,69 @@ import {RAMRestService} from "../../services/ram-rest.service";
 @Component({
     selector: "ram-relationship-table",
     templateUrl: "relationship-table.component.html",
-    providers: [RAMNavService, RAMRestService]
+    providers: [FORM_DIRECTIVES]
 })
 export class RelationshipTableComponent implements OnInit {
 
-    @Input("ramCanActFor") canActFor: boolean;
+    @Input("ram-can-act-for") canActFor: boolean;
 
-    parameters: RelationshipTableReq = {
-        pageSize: 5,
-        pageNumber: 1,
-        canActFor: true,
-        filters: {
-            name: "",
-            accessLevel: "",
-            relationship: "",
-            status: ""
-        },
-        sortByField: ""
-    };
+    private _isLoading = new Rx.Subject<boolean>();
+    private isLoading$ = this._isLoading.asObservable();
 
-    isLoading = false;
+    pageNo = 1;
+    pageSize = 5;
+
     pageSizeOptions = [5, 10, 25, 100];
 
-    relationshipTableResponse: IRelationshipTableRes = new EmptyRelationshipTableRes();
+    relationshipTableResponse$: Rx.Observable<IRelationshipTableRow[]>;
+    statusOptions$: Rx.Observable<string[]>;
+    accessLevelOptions$: Rx.Observable<string[]>;
+    relationshipOptions$: Rx.Observable<string[]>;
+
+    filters$: ControlGroup;
 
     constructor(
         private nav: RAMNavService,
         private rest: RAMRestService) {
+        this.filters$ = new ControlGroup({
+            "name": new Control(""),
+            "accessLevel": new Control(""),
+            "relationship": new Control(""),
+            "status": new Control("")
+        });
+        this._isLoading.next(false);
+        this.filters$.valueChanges.debounceTime(500).subscribe(() => this.refreshContents());
+        this.nav.navObservable$.subscribe(() => this.refreshContents());
     }
 
     ngOnInit() {
-        this.parameters.canActFor = this.canActFor;
-        this.updateTable();
-    }
-
-    updateFilter(field: string, value: string) {
-        this.parameters.filters[field] = value;
-        console.log(this.parameters);
-        this.updateTable();
+        this.refreshContents();
     }
 
     setSortByField(field: string) {
-        this.parameters.sortByField = field;
-        this.updateTable();
+
     }
 
     setPageSize(newSize: number) {
-        this.parameters.pageSize = newSize;
-        this.updateTable();
+        this.pageSize = newSize;
+        this.refreshContents();
     }
 
-    updateTable() {
-        this.isLoading = true;
-        this.rest.getRelationshipData("", this.parameters)
-            .then(response => {
-                this.relationshipTableResponse = response;
-                this.isLoading = false;
-            });
+    refreshContents() {
+        this._isLoading.next(true);
+
+        let response = this.rest.getRelationshipData(
+            "SomePartyId", this.canActFor, this.filters$.value, this.pageNo, this.pageSize)
+            .do(() => this._isLoading.next(false));
+
+        this.relationshipTableResponse$ = response.map(r => r.data);
+        this.relationshipOptions$ = response.map(r => r.relationshipOptions);
+        this.accessLevelOptions$ = response.map(r => r.accessLevelOptions);
+        this.statusOptions$ = response.map(r => r.statusValueOptions);
+        return response;
     }
-    getDiagnostic() {
-        return JSON.stringify(this.parameters);
+
+    navigateTo(relId: string) {
+        this.nav.navigateToRel(relId);
     }
 }

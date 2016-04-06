@@ -50,7 +50,7 @@ export class RelationshipTableReq {
 
 export class NavReq {
 
-    constructor(public relId?: string,public seqNo?:number) {
+    constructor(public relId?: string) {
 
     }
 
@@ -96,5 +96,4 @@ export class StateRes {
 
 export class NavRes {
     partyChain: IRelationshipQuickInfo[];
-    seqNo: number;
 }

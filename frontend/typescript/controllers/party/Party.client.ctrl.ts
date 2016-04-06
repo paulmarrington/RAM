@@ -20,11 +20,6 @@
 //     filters: {
 //         [index: string]: string;
 //     };
-//     sorts: {
-//         [index: string]: number;
-//     };
-//     updatePageSize: (newSize: number) => void
-// }
 //     constructor(private RAMRestServices: RAMRestServices, private $scope: IPartyScope, private $q: ng.IQService) {
 
 //         // $scope.myAuthorisation = {
@@ -42,19 +37,6 @@
 
 //             }
 //         }, true);
-
-//         function updateTable() {
-//             const auth = $scope.myAuthorisation;
-//             auth.isLoading = true;
-//             RAMRestServices.getRelationshipData("partyId", auth.filters, auth.sorts)
-//                 .then((data) => {
-//                     auth.isLoading = false;
-//                     auth.lastResponse = data;
-
-//                 });
-//         }
-//         updateTable();
-//     }
 // }
 // // category_groups: [{ "name": "category" }, { name: "category" }, { name: "category" }],
 // //             categories: [{ name: "Business Representative", category: 1 },
