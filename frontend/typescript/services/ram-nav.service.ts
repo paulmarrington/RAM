@@ -1,6 +1,6 @@
 import {Inject, Injectable, EventEmitter} from "angular2/core";
 import {RAMRestService} from "./ram-rest.service";
-import {Subject, Observable, Subscription} from "rxjs";
+import {ReplaySubject, Observable, Subscription} from "rxjs";
 import {
     RelationshipTableReq,
     IRelationshipTableRes,
@@ -14,9 +14,7 @@ from "../../../commons/RamAPI";
 @Injectable()
 export class RAMNavService {
 
-    private _navSource = new Subject<NavRes>();
-
-    private _navSubscription: Subscription = null;
+    private _navSource = new ReplaySubject<NavRes>(1);
 
     navObservable$ = this._navSource.asObservable();
 
@@ -32,11 +30,10 @@ export class RAMNavService {
      */
     navigateToRel(relId?: string) {
         const req = new NavReq(relId);
-        this.rest.navTo(req).map((body) => body.data).subscribe((res) => this._navSource.next(res));
+        this.rest.navTo(req).subscribe(d => this._navSource.next(d.data));
     }
 
     constructor( @Inject(RAMRestService) private rest: RAMRestService) {
-        console.log("Created");
         this.navigateToRel();
     }
 }

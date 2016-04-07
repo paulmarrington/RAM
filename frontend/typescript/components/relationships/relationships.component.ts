@@ -17,7 +17,4 @@ export class RelationshipsComponent implements OnInit {
 
     ngOnInit() { }
 
-    actAs(relId: string) {
-
-    }
 }

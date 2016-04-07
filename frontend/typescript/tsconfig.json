@@ -15,8 +15,6 @@
         "suppressImplicitAnyIndexErrors": true
     },
     "files": [
-        "./Boot.ts",
-        "!./node_modules/",
-        "!./jspm_packages/"
+        "./Boot.ts"
     ]
 }

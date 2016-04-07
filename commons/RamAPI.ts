@@ -19,23 +19,13 @@ export class DataResponse<T> implements IResponse{
     isError: boolean = false;
 }
 
-/**
- * A RAMObject defines the common attributes that all objects in the RAM model will contain.
- *  Most objects in RAM extend off the RAMObject.
- * PK is _id(used by mongo) and (id,lastUpdatedTimestamp) because we can then version on entity
- */
-
 export interface IKeyValue<T> {
     key: string;
     value: T;
 }
 
 /***************************************************
- *                     SHARED
- ***************************************************/
-
-/***************************************************
- *                     REQUESTS
+ *            RELATIONSHIP TABLE
  ***************************************************/
 export class RelationshipTableReq {
     constructor(
@@ -48,17 +38,6 @@ export class RelationshipTableReq {
     }
 }
 
-export class NavReq {
-
-    constructor(public relId?: string) {
-
-    }
-
-}
-
-/***************************************************
- *                     RESPONSES
- ***************************************************/
 export interface IRelationshipTableRes {
     total: number;
     data: IRelationshipTableRow[];
@@ -84,16 +63,20 @@ export interface IRelationshipTableRow {
     status: string;
 }
 
-export interface IRelationshipQuickInfo {
-    id: string;
-    name: string;
-    subName?: string;
-}
+/***************************************************
+ *            NAVIGATION
+ ***************************************************/
 
-export class StateRes {
-    partyChain: IRelationshipQuickInfo[];
+export class NavReq {
+    constructor(public relId?: string) {}
 }
 
 export class NavRes {
     partyChain: IRelationshipQuickInfo[];
+}
+
+export interface IRelationshipQuickInfo {
+    id: string;
+    name: string;
+    subName?: string;
 }

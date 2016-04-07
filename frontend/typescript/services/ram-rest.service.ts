@@ -20,11 +20,11 @@ export class RAMRestService {
     }
 
     getRelationshipData(partyId: string, canActFor: boolean, filters: RelationshipTableReq, pageNumber: number, pageSize: number): Rx.Observable<IRelationshipTableRes> {
-        let toReturn = Rx.Observable.create((observer: Rx.Observer<IRelationshipTableRes>) => {
+        let toReturn = Rx.Observable.create((subscriber: Rx.Subscriber<IRelationshipTableRes>) => {
             let data = (canActFor ? this.testData1 : this.testData2);
             setTimeout(() => {
                 this._counter += 1;
-                observer.next({
+                subscriber.next({
                     total: 100,
                     data: (() => {
 
@@ -38,7 +38,7 @@ export class RAMRestService {
                     statusValueOptions: ["Active", "Inactive"],
                     accessLevelOptions: ["Universal", "Limited"]
                 });
-                observer.complete();
+                subscriber.complete();
             }, 500);
         }).publishLast();
         let connection = toReturn.connect();
@@ -46,17 +46,14 @@ export class RAMRestService {
     }
 
     navTo(req: NavReq): Rx.Observable<DataResponse<NavRes>> {
-        return Rx.Observable.create((observer: Rx.Observer<DataResponse<NavRes>>) => {
-            observer.next({
-                isError: false,
-                data: {
-                    partyChain: [{
-                        id: "1",
-                        name: "name"
-                    }]
-                }
-            });
-            observer.complete();
+        return Rx.Observable.of<DataResponse<NavRes>>({
+            isError: false,
+            data: {
+                partyChain: [{
+                    id: "1",
+                    name: ("name" + Math.random())
+                }]
+            }
         });
     }
 

@@ -46,10 +46,10 @@ export class RelationshipTableComponent implements OnInit {
         });
         this._isLoading.next(false);
         this.filters$.valueChanges.debounceTime(500).subscribe(() => this.refreshContents());
-        this.nav.navObservable$.subscribe(() => this.refreshContents());
     }
 
     ngOnInit() {
+        this.nav.navObservable$.subscribe(() => this.refreshContents());
         this.refreshContents();
     }
 
