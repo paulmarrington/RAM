@@ -6,6 +6,10 @@
 
 ![System Architecture](https://raw.githubusercontent.com/atogov/RAM/develop/docs/images/system-architecture.png)
 
+# High level system functionality - User UI Flow
+
+![High Level Functionality ](https://raw.githubusercontent.com/atogov/RAM/develop/docs/images/ui-flow.png)
+
 # Useful resources:
  1. [Development Environment](docs/environment.md)
 

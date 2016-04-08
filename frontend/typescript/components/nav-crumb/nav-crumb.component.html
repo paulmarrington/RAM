@@ -1,0 +1,12 @@
+<div class="page-header">
+    <h3>
+        <span *ngFor="#rel of relChain | async ; #i= index ">
+            <span *ngIf="i != (relChain.length-1)">
+            <a href="rel.id"><strong>{{rel.name}}</strong></a> acting as
+            </span>
+            <span *ngIf="i == (relChain.length-1)">
+                <strong>{{rel.name}}</strong> can act/authorised for
+            </span>
+            </span>
+    </h3>
+</div>

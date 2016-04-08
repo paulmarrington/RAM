@@ -14,17 +14,9 @@ export class ErrorResponseWithData<T> implements IResponse {
     isError: boolean = true;
 }
 
-export class DataResponse<T>{
+export class DataResponse<T> implements IResponse{
     constructor(public data: T) { }
     isError: boolean = false;
-}
-
-export interface IDataTableResponse<T> {
-    total: number;
-    data: T[];
-    relationships: IKeyValue<string>[];
-    accessLevels: IKeyValue<string>[];
-    statusValues: IKeyValue<string>[];
 }
 
 /**
@@ -38,10 +30,71 @@ export interface IKeyValue<T> {
     value: T;
 }
 
-export interface Sample {
+/***************************************************
+ *                     SHARED
+ ***************************************************/
+
+/***************************************************
+ *                     REQUESTS
+ ***************************************************/
+export class RelationshipTableReq {
+    constructor(
+        public pageSize: number,
+        public pageNumber: number,
+        public canActFor: boolean,
+        public filters: { [index: string]: string },
+        public sortByField: string
+    ) {
+    }
+}
+
+export class NavReq {
+
+    constructor(public relId?: string,public seqNo?:number) {
+
+    }
+
+}
+
+/***************************************************
+ *                     RESPONSES
+ ***************************************************/
+export interface IRelationshipTableRes {
+    total: number;
+    data: IRelationshipTableRow[];
+    relationshipOptions: Array<string>;
+    accessLevelOptions: Array<string>;
+    statusValueOptions: Array<string>;
+}
+
+export class EmptyRelationshipTableRes implements IRelationshipTableRes {
+    total = 0;
+    data = new Array<IRelationshipTableRow>();
+    relationshipOptions = new Array<string>();
+    accessLevelOptions = new Array<string>();
+    statusValueOptions = new Array<string>();
+}
+
+export interface IRelationshipTableRow {
     name: string;
+    subName?: string;
+    relId: string;
     rel: string;
     access: string;
     status: string;
-    abn?: string;
+}
+
+export interface IRelationshipQuickInfo {
+    id: string;
+    name: string;
+    subName?: string;
+}
+
+export class StateRes {
+    partyChain: IRelationshipQuickInfo[];
+}
+
+export class NavRes {
+    partyChain: IRelationshipQuickInfo[];
+    seqNo: number;
 }
