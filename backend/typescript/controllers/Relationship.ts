@@ -2,6 +2,7 @@
 
 import * as express from "express";
 import * as relationship from "../models/relationship"
+import {IParty} from "../models/party"
 import {getParty} from "./Party"
 
 function getRelationship(req:any, res:any, actor:any) {
@@ -25,20 +26,23 @@ export function RelationshipAPI() {
     /* list relationships for a specific delegate party */
     router.get("/List/:Delegate_or_Party/:value/:type/page/:page/size/:pagesize",
     (req, res) => {
-      const party = getParty(req, res, function(party:any, resp:any) {
-        if (resp) return resp
-        // Current mongo can get very slow for skip on large responses.
-        // Let's hope this is fixed before release.
-        const delegate_or_party = req.params.Delegate_or_Party
-        var query: { [key: string] : any } = { deleted: false }
-        query[delegate_or_party + "PartyId"] = party._id
-        relationship.model.find(query)
-        .skip((req.params.page - 1) * req.params.page_size)
-        .limit(req.params.page_size)
-        .lean()
-        .find(function(err: any, relDocs: any[]) {
-          if (!err) res.json(JSON.stringify(relDocs))
-        })
+      const party = getParty(req, res, function(party:IParty) {
+        if (party) {
+          // Current mongo can get very slow for skip on large responses.
+          // Let's hope this is fixed before release.
+          const delegate_or_party = req.params.Delegate_or_Party
+          var query: { [key: string] : any } = { deleted: false }
+          query[delegate_or_party + "PartyId"] = party._id
+          relationship.model.find(query)
+          .skip((req.params.page - 1) * req.params.page_size)
+          .limit(req.params.page_size)
+          .lean()
+          .find(function(err: any, relDocs: any[]) {
+            if (!err) res.json(JSON.stringify(relDocs))
+          })
+        } else {
+          res.status(500).send("Can't find party")
+        }
       })
     });
     
