@@ -23,6 +23,7 @@
     "passport": "^0.3.2",
     "phantomjs-prebuilt": "^2.1.5",
     "pm2": "^1.0.2",
+    "rx": "^4.1.0",
     "serve-favicon": "^2.3.0",
     "systemjs": "^0.19.24",
     "tsd": "^0.6.5",

@@ -26,7 +26,7 @@ const IdentitySchema = mongoose.Schema({
   //The Identity "provider" will supply a name by which to refer to
   // the party.  TBD whether RAM this record this from ABN or WofG CSPs.   
   name:                   String
-})
+}, {timestamps: true})
 
 // A Party is the concept that participates in Relationships.
 // see https://books.google.com.au/books?id=_fSVKDn7v04C&lpg=PP1&dq=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&pg=RA1-PA159#v=onepage&q=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&f=false  
@@ -35,6 +35,6 @@ const PartySchema = mongoose.Schema({
   identities: { type: [IdentitySchema], index: true },
   attributes: {},
   deleted:    { type: Boolean, default: false }
-})
+}, {timestamps: true})
 
 export const model = mongoose.model("Party", PartySchema)
