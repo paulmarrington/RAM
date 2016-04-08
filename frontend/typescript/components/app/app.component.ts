@@ -1,7 +1,6 @@
 import { Component } from "angular2/core";
 import { HTTP_PROVIDERS } from "angular2/http";
 import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from "angular2/router";
-import "rxjs/Rx"; // load the full rxjs
 import {RAMRestService} from "../../services/ram-rest.service";
 import {RAMNavService} from "../../services/ram-nav.service";
 import {RelationshipsComponent} from "../relationships/relationships.component";
