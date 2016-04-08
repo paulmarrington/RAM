@@ -32,7 +32,7 @@
     * Select the tool icon on the top right
     * Selection _Options..._ from the menu
     * In the _Default shell_ section, choose **Git Bash**
-    * While there configure your GitHub account, clone path, etc
+* While there configure your GitHub account, clone path, etc
     * Close the options
     * To use SourceTree for reviewing / merging pull requests, you need to modify _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247). In short, add the following:
         [remote "atogov"]

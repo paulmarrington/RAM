@@ -3,7 +3,6 @@ var nodemon = require('gulp-nodemon')
 var ts = require("gulp-typescript");
 var sourcemaps = require("gulp-sourcemaps");
 var tslint = require("gulp-tslint");
-var ignore = require("gulp-ignore");
 var rimraf = require("gulp-rimraf");
 var seq = require("gulp-sequence");
 var gzip = require('gulp-gzip');
