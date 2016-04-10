@@ -8,14 +8,17 @@ import * as bodyParser from "body-parser";
 import * as methodOverride from "method-override";
 import * as cApi from "../../commons/RamAPI";
 import * as api from "./ram/ServerAPI";
-import * as mongo from "./ram/MongoPersistence";
 import {HomeCtrl} from "./controllers/Home.server.ctrl";
 import {UsersCtrl} from "./controllers/Users.server.ctrl";
-import {RelationsCtrl} from "./controllers/Relations.server.ctrl";
 import {ResetCtrl} from "./controllers/Reset.server.ctrl";
 import {logger, logStream} from "./Logger";
 
+// Prepare mongoose for daily operations
+const mongoose = require("mongoose");
+mongoose.connect('mongodb://localhost/ram');
+
 import {PartyAPI} from "./controllers/Party"
+import {RelationshipAPI} from "./controllers/Relationship"
 
 if (process.env.RAM_CONF === void 0 || process.env.RAM_CONF.trim().length === 0) {
     console.log("Missing RAM_CONF environment variable, server can't continue.");
@@ -26,8 +29,6 @@ const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
 const port = conf.httpPort || 3000;
 
 const server = express();
-
-mongo.register(conf, logger);
 
 switch (conf.devMode) {
     case false:
@@ -48,9 +49,9 @@ server.use(express.static(path.join(__dirname, conf.frontendDir)));
 server.use("/api/home", HomeCtrl());
 server.use("/api/users", UsersCtrl());
 server.use("/api/reset", ResetCtrl());
-server.use("/api/relations", RelationsCtrl());
 
-server.use("/api/party", PartyAPI())
+server.use("/api/1/Party", PartyAPI())
+server.use("/api/1/Relationship", RelationshipAPI())
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {

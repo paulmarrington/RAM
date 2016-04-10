@@ -1,6 +1,6 @@
 # APIs
 
- 1. [Back-end](backend/api.md)
+ 1. [Back-end APIs](docs/api.md)
 
 # Architecture
 

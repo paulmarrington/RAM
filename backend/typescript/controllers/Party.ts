@@ -1,62 +1,64 @@
 /// <reference path="../_BackendTypes.ts" />
 
 import * as express from "express";
-import * as ramDTO from "../../../commons/RamDTO";
-import * as party from "../models/party"
+import {model,IParty} from "../models/party"
+import * as mongoose from "mongoose"
+
+export function getParty
+(req:express.Request, res:express.Response,
+actor: (doc? : IParty) => any) : void {
+  model.findOne({
+    "identities.type": req.params.type,
+    "identities.value": req.params.value,
+    deleted: false
+  }, function(err: any, partyDoc: any) {
+    actor(err ? null : partyDoc);
+  })
+}
 
 export function PartyAPI() {
-    const router: express.Router = express.Router();
+  const router: express.Router = express.Router();
 
-    /* given identity time and value, retrieve identity and party documents */
-    router.get("/", async(req, res, next) => {
-      party.read(req.query.type, req.query.value).then(function(partyDoc) {
-        party.identities(partyDoc._id).then(function(identities) {
-          res.json({party: partyDoc, identities: identities})
-        }).catch(function(err) { res.status(500).send(err.toString()) })
-      }).catch(function(err) { res.status(500).send(err.toString()) })
-    });
-    
-    /*
-     * Add an identity and optional new party record. Body can
-     * contain either an Identity record or one containing
-     * Identity and Party records.
-     */
-    router.post("/", async(req, res, next) => {
-      var data = req.body;
-      var addIdentity = function(identity) {
-        party.addIdentity(identity).then(function() {
-          res.json({error: false, partyId: identity.partyId})
-        }).catch(function(err) { res.status(500).send(err.toString()) })
-      }
-      if (data.party) {
-        party.add(data.party).then(function() {
-          if (data.identity) {
-            data.identity.partyId = data.party._id
-            addIdentity(data.identity)
-          } else {
-            res.json({error: false, partyId: data.party._id})
-          }
-        }).catch(function(err) { res.status(500).send(err.toString()) })
-      } else if (data.partyId) {
-        addIdentity(data)
+  /* given identity type and value, retrieve identity and party documents */
+  router.get("/Identity/:value/:type", (req, res) => {
+    getParty(req, res, function(partyDoc:IParty) {
+    if (partyDoc) {
+      res.json(partyDoc.toJSON())
+    } else {
+      res.status(500).send("Can't find party")
+    }
+    })
+  });
+
+  /*
+   * Add a Party. It must have one identity to be valid.
+   */
+  router.post("/", (req, res) => {
+    model.create(req.body,
+    function(err: any, partyDoc: IParty) {
+      if (err) {
+        res.status(500).send(err.toString());
       } else {
-        res.status(500).send("Identity not loaded")
+        res.json(partyDoc.toJSON());
       }
-    });
-    
-    /* We can change roles and other party attributes here */
-    router.put("/", async(req, res, next) => {
-      party.update(req.query._id, req.body).
-      then(function(data) { res.json({error: false}) }).
-      catch(function(err) { res.status(500).send(err.toString()) })
-    });
-    
-    /* we can mark an identity as deleted */
-    router.delete("/", async(req, res, next) => {
-      party.deleteIdentity(req.query._id).
-      then(function(data) { res.json(data) }).
-      catch(function(err) { res.status(500).send(err.toString()) })
-    });
-    
-    return router;
+    })
+  });
+
+  /* We can change roles and other party attributes here */
+  router.put("/Identity/:value/:type", (req, res) => {
+    model.findOneAndUpdate({
+      "identities.type": req.params.type,
+      "identities.value": req.params.value,
+      deleted: false
+    }, req.body, { new: true },
+    function(err: any, partyDoc:IParty) {
+      if (err) {
+        res.status(500).send(err.toString());
+      } else {
+        res.json(partyDoc.toJSON());
+      }
+    })
+  });
+
+  return router;
 }

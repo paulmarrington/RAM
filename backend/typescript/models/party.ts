@@ -1,55 +1,65 @@
 /// <reference path="../_BackendTypes.ts" />
-import * as dto from "../../../commons/RamDTO";
-import * as mongo from "../mongo"
+import * as mongoose from "mongoose"
 
-/* We retrieve a party based on an identity document */
-export function read(type:string, value: string) {
-  return new Promise(function(resolve, reject) {
-    var identity = mongo.findOne("identities", { type: type, value: value })
-    identity.then(function(identity) {
-      var party = mongo.read("parties", identity.partyId)
-      party.then(function(party) {
-        resolve(party)
-      }).catch(function(err) { reject(err) })
-    }).catch(function(err) { reject(err) })
-  })
+// Due to "Machinary of Government" changes, agencies frequently change
+// their names & abbrieviations.
+export interface IAgency extends mongoose.Document {
+  currentAbbrieviation:   string;
+  previousAbbrieviations: string[];
+  currentName:            string;
+  previousNames:          string[];
+  // to be "privacy enhancing" myGov allocates different identifiers to
+  // different agencies.  The consumer identifies the agency the
+  // identifier is for (assuming it is relevant)
+  consumer:               string;
 }
+const AgencySchema = new mongoose.Schema({
+  currentAbbrieviation:   { type : String, trim : true },
+  previousAbbrieviations: { type: [String], default: [] },
+  currentName:            { type : String, trim : true },
+  previousNames:          { type: [String], default: [] },
+  consumer:               String
+})
 
-/* retrieve a list of identities for a party */
-export function identities(_id: string) {
-  return mongo.findAll("identities", { partyId: mongo.ObjectID(_id), deleted: false }).toArray()
+export interface IRole extends mongoose.Document {
+  name:                 string;
+  attributes:           {string: string};
+  sharingAgencyIds:     string;
 }
+const RoleSchema = new mongoose.Schema({
+  name:                 String,
+  attributes:           {},
+  sharingAgencyIds:     [{type:mongoose.Schema.Types.ObjectId, ref:'Agency'}]
+})
 
-/* add a new identity to an existing party */
-export function addIdentity(identity: dto.Identity) {
-  identity.partyId = mongo.ObjectID(identity.partyId)
-  return mongo.insertOne("identities", identity)
+export interface IIdentity extends mongoose.Document {
+  type:                   string;   // "abn", scheme, ...
+  value:                  string;   // abn, scheme link id
+  agency:                 IAgency;  // agency the identifier is for
+  //The Identity "provider" will supply a name by which to refer to
+  // the party.  TBD whether RAM this record this from ABN or WofG CSPs.   
+  name:                   string;
 }
+const IdentitySchema = new mongoose.Schema({
+  type:                   String,
+  value:                  String,
+  agency:                 AgencySchema,
+  name:                   String
+}, {timestamps: true})
 
-/* To create a new party we need to create party and identity documents */
-export function add(party: dto.Party) {
-  return mongo.insertOne("parties", party)
+// A Party is the concept that participates in Relationships.
+// see https://books.google.com.au/books?id=_fSVKDn7v04C&lpg=PP1&dq=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&pg=RA1-PA159#v=onepage&q=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&f=false  
+export interface IParty extends mongoose.Document {
+  roles:      IRole;
+  identities: IIdentity[];
+  attributes: {string: string};
+  deleted:    boolean;
 }
+const PartySchema = new mongoose.Schema({
+  roles:      [RoleSchema],
+  identities: { type: [IdentitySchema], index: true },
+  attributes: {},
+  deleted:    { type: Boolean, default: false }
+}, {timestamps: true})
 
-/* Updating parties means updating roles, or general attributes */
-export function update(_id: string, updates) {
-  return mongo.updateOne("parties", _id, updates)
-}
-
-/* deleting parties is a matter of marking them with a deleted flag */
-export function deleteParty(_id: string) {
-  return mongo.updateOne("parties", _id, { deleted: true })
-}
-
-/* we can't update identities, just delete and add new */
-export function deleteIdentity(_id: string) {
-  return mongo.updateOne("identities", _id, { deleted: true })
-}
-
-/*
- * add indexes if they are not already created...
- * (none for parties as they are always referenced through identities)
- */
-var identities_collection = mongo.db.collection("identities")
-identities_collection.createIndex({ type: 1, value: 1 })
-identities_collection.createIndex({ partyId: 1, deleted: 1 })
+export const model = mongoose.model("Party", PartySchema)
