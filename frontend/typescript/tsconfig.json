@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "dist/js/app.js",
+        "module": "system",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "target": "es5",
+        "declaration": false,
+        "inlineSources": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "suppressImplicitAnyIndexErrors": true
+    },
+    "files": [
+        "./Boot.ts"
+    ]
+}

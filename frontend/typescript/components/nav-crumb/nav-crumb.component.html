@@ -1,0 +1,10 @@
+<div class="page-header">
+    <h3>
+        <span *ngFor="#rel of relChain$ | async ">
+            <a (click)="navigateTo(rel.id)"><strong>{{rel.name}}</strong></a> acting as
+        </span>
+        <span *ngIf="subjectUser$ | async">
+            <strong>{{(subjectUser$ | async).name}}</strong> can act/authorised for
+        </span>
+    </h3>
+</div>

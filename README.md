@@ -1,6 +1,14 @@
+# APIs
+
+ 1. [Back-end APIs](docs/api.md)
+
 # Architecture
 
 ![System Architecture](https://raw.githubusercontent.com/atogov/RAM/develop/docs/images/system-architecture.png)
+
+# High level system functionality - User UI Flow
+
+![High Level Functionality ](https://raw.githubusercontent.com/atogov/RAM/develop/docs/images/ui-flow.png)
 
 # Useful resources:
  1. [Development Environment](docs/environment.md)
@@ -24,7 +32,7 @@
     * Select the tool icon on the top right
     * Selection _Options..._ from the menu
     * In the _Default shell_ section, choose **Git Bash**
-    * While there configure your GitHub account, clone path, etc
+* While there configure your GitHub account, clone path, etc
     * Close the options
     * To use SourceTree for reviewing / merging pull requests, you need to modify _.git/config_ file as described [here](https://gist.github.com/piscisaureus/3342247). In short, add the following:
         [remote "atogov"]
@@ -43,6 +51,9 @@
 
 ## AWS Install
 
+* Each server requires its own configuration file. Template configuration file at _conf/conf.js_. You must set an environment variable called *RAM_CONF* pointing to the absolute path of your configuration file.
+Once you set your *RAM_CONF* environment variable you can run the server by calling _gulp serve_.
+
 * SSH to the server
   * curl -SLO https://raw.githubusercontent.com/atogov/RAM/develop/install/aws.sh
   * **sudo bash aws-init.sh**
@@ -55,8 +66,6 @@
       * downloads and unpacks latest copy of RAM from GitHub
       * _npm update_ to update dependencies
       * restart RAM server
-
-## AWS Update
 
 ### From the Server
 
