@@ -8,7 +8,7 @@ System.config({
   },
 
   map: {
-    "angular2": "npm:angular2@2.0.0-beta.13",
+    "angular2": "npm:angular2@2.0.0-beta.14",
     "es6-shim": "github:es-shims/es6-shim@0.35.0",
     "lodash": "npm:lodash@4.8.2",
     "ng2-bootstrap": "npm:ng2-bootstrap@1.0.10",
@@ -37,7 +37,12 @@ System.config({
     "npm:angular2@2.0.0-beta.13": {
       "reflect-metadata": "npm:reflect-metadata@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.5",
-      "zone.js": "npm:zone.js@0.6.9"
+      "zone.js": "npm:zone.js@0.6.10"
+    },
+    "npm:angular2@2.0.0-beta.14": {
+      "reflect-metadata": "npm:reflect-metadata@0.1.2",
+      "rxjs": "npm:rxjs@5.0.0-beta.5",
+      "zone.js": "npm:zone.js@0.6.10"
     },
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
@@ -122,7 +127,7 @@ System.config({
       "inherits": "npm:inherits@2.0.1",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:zone.js@0.6.9": {
+    "npm:zone.js@0.6.10": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     }
   }
