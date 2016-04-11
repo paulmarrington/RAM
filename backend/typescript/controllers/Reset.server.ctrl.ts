@@ -14,7 +14,7 @@ import * as url from "url";
 import * as path from "path";
 import {exec} from "child_process";
 import {IRamConf} from "../ram/ServerAPI";
-import {DataResponse} from "../../../commons/RamAPI";
+import {ErrorResponse} from "../../../commons/RamAPI";
 import * as cApi from "../../../commons/RamAPI";
 
 interface Query { tag?: string; }
@@ -27,16 +27,11 @@ export function ResetCtrl() {
 
       const query: Query = url.parse(req.url, true).query;
       if (!query.tag) {
-        res.send(new DataResponse({
-          error: "usage: #url#/api/reset?tag=develop"
-        }));
+        res.send(new ErrorResponse(400, "usage: #url#/api/reset?tag=develop"));
       } else {
         const cmd = path.join("..", "update.sh " + query.tag);
         exec(cmd, function(err, stdout, stderr){
-          res.send(new DataResponse({
-            message: "tag/branch/hash not found for " + query.tag,
-            error: err ? err.message : false,
-          }));
+            res.send(new ErrorResponse(404, "tag/branch/hash not found for " + query.tag));
         });
       }
 

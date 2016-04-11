@@ -4,7 +4,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "target": "es6",
+        "target": "es5",
         "declaration": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -12,7 +12,9 @@
         "outDir": "dist/",
         "module": "commonjs"
     },
+    "compileOnSave": true,
     "files": [
-        "typescript/server.ts"
+        "typescript/server.ts",
+        "typings/main.d.ts"
     ]
 }

@@ -11,4 +11,11 @@ export interface IRamConf {
     httpPort: number
     mongoURL: string
     devMode: boolean
+    jwtSecretKey: string
+    jwtExpiryInMSec: number
+}
+
+export interface SecurityToken {
+    partyId: string;
+    navPathIds: string[];
 }
