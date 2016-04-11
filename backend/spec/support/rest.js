@@ -22,12 +22,16 @@ var request = function(method, api, body) {
     }
   }
   return new Promise(function(resolve, reject) {
+    var data = []
     var getter = http.request(opts, function(response) {
       if (response.statusCode !== 200) {
         return reject(response.statusMessage)
       }
-      response.on("data", function(data) {
-        resolve(JSON.parse(data))
+      response.on("data", function(chunk) {
+        data.push(chunk)
+      })
+      response.on("end", function() {
+        resolve(JSON.parse(data.join("")))
       })
     })
     getter.end(body)
