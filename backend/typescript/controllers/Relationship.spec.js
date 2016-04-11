@@ -16,13 +16,23 @@ describe("a RAM Relationship", () => {
       })
     })
   })
-  xit("can list relationships", function(done) {
+  it("can list relationships", function(done) {
     new_relationships(12).then(rels => {
-      var delegateId = rels[0].delegatePartyId
-      rest.get("Relationship/List/Delegate/"+delegateId+
+      var abn = rels[0].attributes.delegate_abn
+      rest.get("Relationship/List/delegate/"+abn+
       "/abn/page/1/size/20")
       .then(function(res) {
         expect(res.length).toEqual(12)
+        done()
+      })
+    })
+  })
+  it("can update a relationship", function(done) {
+    new_relationships(1).then(rel => {
+      var updates = { subjectRole: "bletherer" }
+      rest.put("Relationship/"+rel._id, updates)
+      .then(function(res) {
+        expect(res.subjectRole).toEqual("bletherer")
         done()
       })
     })
@@ -47,6 +57,7 @@ var new_relationships = function(count) {
         status:           "Active",
         subjectNickName:  party_1.identities[0].name,
         delegateNickName: party_2.identities[0].name,
+        attributes:       {delegate_abn: abn_2}
       }
       rest.post("Relationship", doc).then(function(res) {
         list.push(res)
