@@ -13,6 +13,7 @@
     "tslint": "^3.7.3",
     "typescript": "^1.8.9",
     "typings": "^0.7.12",
+    "urijs": "^1.17.1",
     "zone.js": "^0.6.10"
   },
   "devDependencies": {
@@ -77,7 +78,8 @@
       "es6-shim": "github:es-shims/es6-shim@^0.35.0",
       "lodash": "npm:lodash@^4.8.2",
       "ng2-bootstrap": "npm:ng2-bootstrap@^1.0.10",
-      "rxjs": "npm:rxjs@^5.0.0-beta.5"
+      "rxjs": "npm:rxjs@^5.0.0-beta.5",
+      "urijs": "npm:urijs@^1.17.1"
     },
     "devDependencies": {}
   }
