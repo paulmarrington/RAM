@@ -18,9 +18,8 @@ describe("a RAM Relationship", () => {
   })
   it("can list relationships", function(done) {
     new_relationships(12).then(rels => {
-      var abn = rels[0].attributes.delegate_abn
-      rest.get("Relationship/List/delegate/"+abn+
-      "/abn/page/1/size/20")
+      rest.get("Relationship/List/delegate/" +
+      rels[0].delegatePartyId + "/page/1/size/20")
       .then(function(res) {
         expect(res.length).toEqual(12)
         done()

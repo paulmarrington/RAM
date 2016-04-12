@@ -23,23 +23,21 @@ export function RelationshipAPI() {
     
     /* list relationships for a specific delegate party */
     router.get(
-    "/List/:delegate_or_subject/:value/:type/page/:page/size/:pagesize",
+    "/List/:delegate_or_subject/:_id/page/:page/size/:pagesize",
     (req, res) => {
-      const party = getParty(req, res, function(party:IParty) {
-        if (party) {
-          // Current mongo can get very slow for skip on large responses.
-          // Let's hope this is fixed before release.
-          const delegate_or_subject = req.params.delegate_or_subject
-          var query: { [key: string] : any } = { deleted: false }
-          query[delegate_or_subject + "PartyId"] =
-          mongoose.Types.ObjectId(party._id)
-          model.find(query)
-          // .skip((req.params.page - 1) * req.params.page_size)
-          // .limit(req.params.page_size)
-          // .lean()
-          .find(function(err: any, relDocs: IRelationship[]) {
-            if (!err) res.json(relDocs)
-          })
+      // Current mongo can get very slow for skip on large responses.
+      // Let's hope this is fixed before release.
+      const delegate_or_subject = req.params.delegate_or_subject
+      var query: { [key: string] : any } = { deleted: false }
+      query[delegate_or_subject + "PartyId"] =
+      new mongoose.Types.ObjectId(req.params._id)
+      model.find(query)
+      // .skip((req.params.page - 1) * req.params.page_size)
+      // .limit(req.params.page_size)
+      // .lean()
+      .find(function(err: any, relDocs: IRelationship[]) {
+        if (!err) {
+          res.json(relDocs)
         } else {
           res.status(500).send("Can't find party")
         }
