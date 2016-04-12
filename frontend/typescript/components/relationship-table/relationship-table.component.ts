@@ -25,6 +25,7 @@ export class RelationshipTableComponent implements OnInit {
 
     pageNo = 1;
     pageSize = 5;
+    private _relIds = new Array<string>();
 
     pageSizeOptions = [5, 10, 25, 100];
 
@@ -45,12 +46,11 @@ export class RelationshipTableComponent implements OnInit {
             "status": new Control("")
         });
         this._isLoading.next(false);
-        this.filters$.valueChanges.debounceTime(500).subscribe(() => this.refreshContents());
+        this.filters$.valueChanges.debounceTime(500).subscribe(() => this.refreshContents(this._relIds));
     }
 
     ngOnInit() {
-        this.nav.navObservable$.subscribe(() => this.refreshContents());
-        this.refreshContents();
+        this.nav.navObservable$.subscribe((relIds) => this.refreshContents(relIds));
     }
 
     setSortByField(field: string) {
@@ -59,24 +59,25 @@ export class RelationshipTableComponent implements OnInit {
 
     setPageSize(newSize: number) {
         this.pageSize = newSize;
-        this.refreshContents();
+        this.refreshContents(this._relIds);
     }
 
-    refreshContents() {
+    refreshContents(relIds: string[]) {
+        this._relIds = relIds;
         this._isLoading.next(true);
 
         let response = this.rest.getRelationshipData(
-            "SomePartyId", this.canActFor, this.filters$.value, this.pageNo, this.pageSize)
+            "SomePartyId",relIds, this.canActFor, this.filters$.value, this.pageNo, this.pageSize)
             .do(() => this._isLoading.next(false));
 
-        this.relationshipTableResponse$ = response.map(r => r.data);
-        this.relationshipOptions$ = response.map(r => r.relationshipOptions);
-        this.accessLevelOptions$ = response.map(r => r.accessLevelOptions);
-        this.statusOptions$ = response.map(r => r.statusValueOptions);
+        this.relationshipTableResponse$ = response.map(r => r.data.table);
+        this.relationshipOptions$ = response.map(r => r.data.relationshipOptions);
+        this.accessLevelOptions$ = response.map(r => r.data.accessLevelOptions);
+        this.statusOptions$ = response.map(r => r.data.statusValueOptions);
         return response;
     }
 
-    navigateTo(relId: string) {
+    navigateTo(relId: string[]) {
         this.nav.navigateToRel(relId);
     }
 }
