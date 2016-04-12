@@ -20,7 +20,7 @@ export function RelationshipAPI() {
         }
       })
     });
-    
+
     /* list relationships for a specific delegate party */
     router.get(
     "/List/:delegate_or_subject/:_id/page/:page/size/:pagesize",
@@ -43,7 +43,7 @@ export function RelationshipAPI() {
         }
       })
     });
-    
+
     /*
      * Add a relationship.
      */
@@ -57,10 +57,10 @@ export function RelationshipAPI() {
         }
       })
     });
-    
+
     /* body must include updates - either fields that have
        changed or a mongo update command
-         
+
        Only send back fields that have changed.
      */
     router.put("/:_id", (req, res) => {
@@ -73,6 +73,6 @@ export function RelationshipAPI() {
         }
       })
     });
-    
+
     return router;
 }

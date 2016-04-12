@@ -1,29 +1,27 @@
-export interface IResponse {
-    isError: boolean;
+export enum RAMMessageType {
+    Error = 1,
+    Info = 2,
+    Success = 3
 }
 
-export class ErrorResponse implements IResponse {
-    constructor(public errorCode: number,
-        public errorMessage: string) { }
-
-    isError: boolean = true;
+export interface IResponse<T> {
+    data?: T;
+    token?: string;
+    status: number; // status code
+    message?: Message;
 }
 
-export class ErrorResponseWithData<T> implements IResponse {
-    constructor(public data: T, public errorCode: number, public errorMessage: string) { }
-    isError: boolean = true;
+export interface Message {
+    message: string;
+    messageType: RAMMessageType;
 }
 
-export class DataResponse<T> implements IResponse{
-    constructor(public data: T) { }
-    isError: boolean = false;
+export class ErrorResponse implements IResponse<void>{
+    message: Message;
+    constructor(public status: number, message: string) {
+        this.message = { message: message, messageType: RAMMessageType.Error }
+    }
 }
-
-/**
- * A RAMObject defines the common attributes that all objects in the RAM model will contain.
- *  Most objects in RAM extend off the RAMObject.
- * PK is _id(used by mongo) and (id,lastUpdatedTimestamp) because we can then version on entity
- */
 
 export interface IKeyValue<T> {
     key: string;
@@ -31,11 +29,7 @@ export interface IKeyValue<T> {
 }
 
 /***************************************************
- *                     SHARED
- ***************************************************/
-
-/***************************************************
- *                     REQUESTS
+ *            RELATIONSHIP TABLE
  ***************************************************/
 export class RelationshipTableReq {
     constructor(
@@ -48,17 +42,6 @@ export class RelationshipTableReq {
     }
 }
 
-export class NavReq {
-
-    constructor(public relId?: string,public seqNo?:number) {
-
-    }
-
-}
-
-/***************************************************
- *                     RESPONSES
- ***************************************************/
 export interface IRelationshipTableRes {
     total: number;
     data: IRelationshipTableRow[];
@@ -84,17 +67,20 @@ export interface IRelationshipTableRow {
     status: string;
 }
 
-export interface IRelationshipQuickInfo {
-    id: string;
-    name: string;
-    subName?: string;
-}
+/***************************************************
+ *            NAVIGATION
+ ***************************************************/
 
-export class StateRes {
-    partyChain: IRelationshipQuickInfo[];
+export class NavReq {
+    constructor(public relId?: string) { }
 }
 
 export class NavRes {
     partyChain: IRelationshipQuickInfo[];
-    seqNo: number;
+}
+
+export interface IRelationshipQuickInfo {
+    id: string;
+    name: string;
+    subName?: string;
 }

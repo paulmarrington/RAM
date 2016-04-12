@@ -100,9 +100,9 @@ gulp.task("html:watch", ["copy:index.html", "copy:dev"], function() {
     return gulp.watch(["typescript/{**,./}/*.html", "index.html", "dev/**/*.html"], ["copy:index.html", "copy:dev"]);
 });
 
-gulp.task("jspm:watch", ["copy:jspm"], function() {
-    return gulp.watch(["jspm_packages/{**,./}/*.js"], ["copy:jspm"]);
-});
+// gulp.task("jspm:watch", ["copy:jspm"], function() {
+//     return gulp.watch(["jspm_packages/{**,./}/*.js"], ["copy:jspm"]);
+// });
 
 gulp.task("data:watch", function() {
     return gulp.watch(["data/{**,./}/*.{json}"], ["copy:data"]);
@@ -131,9 +131,9 @@ gulp.task("ts:lint", function() {
             emitError: false
         }));
 });
-gulp.task("watch", ["scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch"]);
+gulp.task("watch", ["scss:watch", "ts:watch", "html:watch", "data:watch"]);
 
-gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "data:watch", "jspm:watch", "copy:jslib"], function() {
+gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "data:watch", "copy:jslib"], function() {
     var proxyOptions = url.parse("http://localhost:3000/api");
     proxyOptions.route = "/api";
 

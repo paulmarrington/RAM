@@ -1,21 +1,16 @@
-/// <reference path="_BackendTypes.ts" />
-
 import * as express from "express";
 import * as path from "path";
 import * as loggerMorgan from "morgan";
-import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import * as methodOverride from "method-override";
 import * as cApi from "../../commons/RamAPI";
 import * as api from "./ram/ServerAPI";
-import {HomeCtrl} from "./controllers/Home.server.ctrl";
-import {UsersCtrl} from "./controllers/Users.server.ctrl";
 import {ResetCtrl} from "./controllers/Reset.server.ctrl";
 import {logger, logStream} from "./Logger";
-
+import {continueOnlyIfJWTisValid} from "./security"
 // Prepare mongoose for daily operations
 const mongoose = require("mongoose");
-mongoose.connect('mongodb://localhost/ram');
+mongoose.connect("mongodb://localhost/ram");
 
 import {PartyAPI} from "./controllers/Party"
 import {RelationshipAPI} from "./controllers/Relationship"
@@ -28,7 +23,7 @@ if (process.env.RAM_CONF === void 0 || process.env.RAM_CONF.trim().length === 0)
 const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
 const port = conf.httpPort || 3000;
 
-const server = express();
+ const server = express();
 
 switch (conf.devMode) {
     case false:
@@ -41,15 +36,13 @@ switch (conf.devMode) {
 
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
-server.use(cookieParser());
 server.use(methodOverride());
+
+server.use(continueOnlyIfJWTisValid(conf.jwtSecretKey,true));
 
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
-server.use("/api/home", HomeCtrl());
-server.use("/api/users", UsersCtrl());
 server.use("/api/reset", ResetCtrl());
-
 server.use("/api/1/Party", PartyAPI())
 server.use("/api/1/Relationship", RelationshipAPI())
 
