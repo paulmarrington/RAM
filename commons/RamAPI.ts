@@ -1,22 +1,26 @@
-export interface IResponse {
-    isError: boolean;
+export enum RAMMessageType {
+    Error = 1,
+    Info = 2,
+    Success = 3
 }
 
-export class ErrorResponse implements IResponse {
-    constructor(public errorCode: number,
-        public errorMessage: string) { }
-
-    isError: boolean = true;
+export interface IResponse<T> {
+    data?: T;
+    token?: string;
+    status: number; // status code
+    message?: Message;
 }
 
-export class ErrorResponseWithData<T> implements IResponse {
-    constructor(public data: T, public errorCode: number, public errorMessage: string) { }
-    isError: boolean = true;
+export interface Message {
+    message: string;
+    messageType: RAMMessageType;
 }
 
-export class DataResponse<T> implements IResponse{
-    constructor(public data: T) { }
-    isError: boolean = false;
+export class ErrorResponse implements IResponse<void>{
+    message: Message;
+    constructor(public status: number, message: string) {
+        this.message = { message: message, messageType: RAMMessageType.Error }
+    }
 }
 
 export interface IKeyValue<T> {
@@ -68,7 +72,7 @@ export interface IRelationshipTableRow {
  ***************************************************/
 
 export class NavReq {
-    constructor(public relId?: string) {}
+    constructor(public relId?: string) { }
 }
 
 export class NavRes {

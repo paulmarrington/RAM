@@ -20,7 +20,7 @@ export function RelationshipAPI() {
         }
       })
     });
-    
+
     /* list relationships for a specific delegate party */
     router.get(
     "/List/:delegate_or_subject/:value/:type/page/:page/size/:pagesize",
@@ -32,7 +32,7 @@ export function RelationshipAPI() {
           const delegate_or_subject = req.params.delegate_or_subject
           var query: { [key: string] : any } = { deleted: false }
           query[delegate_or_subject + "PartyId"] =
-          mongoose.Types.ObjectId(party._id)
+          mongoose.Types.ObjectId.createFromHexString(party._id)
           model.find(query)
           // .skip((req.params.page - 1) * req.params.page_size)
           // .limit(req.params.page_size)
@@ -45,7 +45,7 @@ export function RelationshipAPI() {
         }
       })
     });
-    
+
     /*
      * Add a relationship.
      */
@@ -59,10 +59,10 @@ export function RelationshipAPI() {
         }
       })
     });
-    
+
     /* body must include updates - either fields that have
        changed or a mongo update command
-         
+
        Only send back fields that have changed.
      */
     router.put("/:_id", (req, res) => {
@@ -75,6 +75,6 @@ export function RelationshipAPI() {
         }
       })
     });
-    
+
     return router;
 }
