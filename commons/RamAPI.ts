@@ -44,7 +44,7 @@ export class RelationshipTableReq {
 
 export interface IRelationshipTableRes {
     total: number;
-    data: IRelationshipTableRow[];
+    table: IRelationshipTableRow[];
     relationshipOptions: Array<string>;
     accessLevelOptions: Array<string>;
     statusValueOptions: Array<string>;
@@ -52,7 +52,7 @@ export interface IRelationshipTableRes {
 
 export class EmptyRelationshipTableRes implements IRelationshipTableRes {
     total = 0;
-    data = new Array<IRelationshipTableRow>();
+    table = new Array<IRelationshipTableRow>();
     relationshipOptions = new Array<string>();
     accessLevelOptions = new Array<string>();
     statusValueOptions = new Array<string>();
