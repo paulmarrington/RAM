@@ -13,6 +13,7 @@ System.config({
     "lodash": "npm:lodash@4.8.2",
     "ng2-bootstrap": "npm:ng2-bootstrap@1.0.10",
     "rxjs": "npm:rxjs@5.0.0-beta.5",
+    "urijs": "npm:urijs@1.17.1",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
@@ -119,6 +120,9 @@ System.config({
     },
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
+    },
+    "npm:urijs@1.17.1": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:util-deprecate@1.0.2": {
       "util": "github:jspm/nodelibs-util@0.1.0"

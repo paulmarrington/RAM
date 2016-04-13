@@ -7,7 +7,7 @@ import * as cApi from "../../commons/RamAPI";
 import * as api from "./ram/ServerAPI";
 import {ResetCtrl} from "./controllers/Reset.server.ctrl";
 import {logger, logStream} from "./Logger";
-import {continueOnlyIfJWTisValid} from "./security"
+// import {continueOnlyIfJWTisValid} from "./security"
 // Prepare mongoose for daily operations
 const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/ram");
@@ -27,7 +27,7 @@ const port = conf.httpPort || 3000;
 
 switch (conf.devMode) {
     case false:
-        server.use(loggerMorgan("dev", { stream: logStream })); // todo: Log to file: https://github.com/expressjs/morgan
+        server.use(loggerMorgan("prod", { stream: logStream })); // todo: Log to file: https://github.com/expressjs/morgan
         break;
     default:
         server.use(loggerMorgan("dev", { stream: logStream }));
@@ -38,7 +38,7 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(methodOverride());
 
-server.use(continueOnlyIfJWTisValid(conf.jwtSecretKey,true));
+// server.use(continueOnlyIfJWTisValid(conf.jwtSecretKey,true));
 
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 

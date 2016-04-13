@@ -42,7 +42,7 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody *ngIf="!(isLoading$ | async)">
+                <tbody *ngIf="!isLoading">
                     <tr *ngFor="#row of relationshipTableResponse$ | async">
                         <td><a href="">{{row.name}}</a><small class="show" *ngIf="row.abn"> ABN: {{row.abn}}</small></td>
                         <td>{{row.rel}}</td>
@@ -51,7 +51,7 @@
                         <td><a class="btn btn-primary btn-sm" (click)="navigateTo(row.relId)">act as →</a></td>
                     </tr>
                 </tbody>
-                <tbody *ngIf="isLoading$ | async">
+                <tbody *ngIf="isLoading">
                     <tr>
                         <td colspan="5" class="text-center">
                             <h3>Loading ...</h3></td>
@@ -61,7 +61,7 @@
         </form>
     </div>
 </div>
-<div class="row" *ngIf="!(isLoading$ | async)">
+<div class="row" *ngIf="!isLoading">
     <div class="col-md-8">
         <div class="text-md-left text-xs-center">
             <nav>

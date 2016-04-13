@@ -14,26 +14,15 @@ from "../../../commons/RamAPI";
 @Injectable()
 export class RAMNavService {
 
-    private _navSource = new ReplaySubject<NavRes>(1);
+    private _navSource = new ReplaySubject<string[]>(1);
 
     navObservable$ = this._navSource.asObservable();
 
-    navigateToHome() {
-        this.navigateToRel("");
-    }
-    /**
-     * @param  {string} relId?
-     * when relationshipId is not passed, means GET request
-     * when relationshipId is passed means PUT request (nav to a relationship from the current node)
-     * when relationshipId is empty string means POST request (go to root node - reset action)
-     * @returns Promise
-     */
-    navigateToRel(relId?: string) {
-        const req = new NavReq(relId);
-        this.rest.navTo(req).subscribe(d => this._navSource.next(d.data));
+    navigateToRel(relIds: string[]) {
+        this._navSource.next(relIds);
     }
 
-    constructor( @Inject(RAMRestService) private rest: RAMRestService) {
-        this.navigateToRel();
+    constructor() {
+        this.navigateToRel([]);
     }
 }
