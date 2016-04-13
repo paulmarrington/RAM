@@ -2,6 +2,7 @@ var partyHelper = require("../../spec/support/party")
 var rest = require("../../spec/support/rest.js")
 
 describe("a RAM Relationship", () => {
+  /*
   it("can be created", function(done) {
     new_relationships(1).then(rel => {
       expect(typeof rel._id).toBe("string")
@@ -36,6 +37,28 @@ describe("a RAM Relationship", () => {
       })
     })
   })
+  it("can load tables required by UI", function(done) {
+    new_relationships(12).then(rels => {
+      rest.get("Relationship/Table/delegate/" +
+      rels[0].delegatePartyId + "/page/1/size/20")
+      .then(function(res) {
+        expect(res.length).toEqual(12)
+        done()
+      })
+    })
+  })
+  */
+  it("can return breadcrumb required by UI", function(done) {
+    new_relationships(3).then(rels => {
+      var owner = rels[0].subjectId
+      var path = ["Relationship/Path", owner].concat(
+        rels.slice(1).map((rel) => rel._id))
+      rest.get(path.join("/")).then((res) => {
+        expect(res.partyChain.length).toEqual(3)
+        done()
+      })
+    })
+  })
 });
 
 var new_relationships = function(count) {
@@ -49,19 +72,19 @@ var new_relationships = function(count) {
       var tomorrow = new Date(now + 1000*60*60*12)
       var doc = {
         type:             "Business",
-        subjectPartyId:   party_1._id,
-        delegatePartyId:  party_2._id,
+        subjectId:        party_1.identities[0]._id,
+        delegateId:       party_2.identities[0]._id,
         startTimestamp:   now,
         endTimestamp:     tomorrow,
         status:           "Active",
-        subjectNickName:  party_1.identities[0].name,
-        delegateNickName: party_2.identities[0].name,
+        subjectsNickName:  abn_1,
+        delegatesNickName: abn_2,
         attributes:       {delegate_abn: abn_2}
       }
       rest.post("Relationship", doc).then(function(res) {
         list.push(res)
-      if (!counter) resolve(list.length == 1 ? list[0] : list)
-      else          add_relationship(counter - 1)
+        if (!counter) resolve(list.length == 1 ? list[0] : list)
+        else          add_relationship(counter - 1)
       })
     }
     add_relationship(count - 1)

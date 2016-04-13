@@ -7,9 +7,9 @@ import * as cApi from "../../commons/RamAPI";
 import * as api from "./ram/ServerAPI";
 import {ResetCtrl} from "./controllers/Reset.server.ctrl";
 import {logger, logStream} from "./Logger";
-import {continueOnlyIfJWTisValid} from "./security"
+//ort {continueOnlyIfJWTisValid} from "./security"
 // Prepare mongoose for daily operations
-const mongoose = require("mongoose");
+import * as mongoose from "mongoose";
 mongoose.connect("mongodb://localhost/ram");
 
 import {PartyAPI} from "./controllers/Party"
@@ -38,7 +38,7 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(methodOverride());
 
-server.use(continueOnlyIfJWTisValid(conf.jwtSecretKey,true));
+//server.use(continueOnlyIfJWTisValid(conf.jwtSecretKey,true));
 
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 

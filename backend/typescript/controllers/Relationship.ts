@@ -2,9 +2,10 @@
 
 import * as express from "express";
 import {model, IRelationship} from "../models/relationship"
-import {IParty} from "../models/party"
+import {IParty, IIdentity, model as partyModel} from "../models/party"
 import {getParty} from "./Party"
 import * as mongoose from "mongoose"
+import {NavRes, IRelationshipQuickInfo} from "../../../commons/RamAPI"
 
 export function RelationshipAPI() {
     const router: express.Router = express.Router();
@@ -32,9 +33,9 @@ export function RelationshipAPI() {
       query[delegate_or_subject + "PartyId"] =
       new mongoose.Types.ObjectId(req.params._id)
       model.find(query)
-      // .skip((req.params.page - 1) * req.params.page_size)
-      // .limit(req.params.page_size)
-      // .lean()
+      .skip((req.params.page - 1) * req.params.page_size)
+      .limit(req.params.page_size)
+      .lean()
       .find(function(err: any, relDocs: IRelationship[]) {
         if (!err) {
           res.json(relDocs)
@@ -73,6 +74,66 @@ export function RelationshipAPI() {
         }
       })
     });
+    
+    /* Provided navigation details for a relationship */
+    router.get(
+    "/Table/:delegate_or_subject/:_id/page/:page/size/:pagesize",
+    (req, res) => {
+      // Current mongo can get very slow for skip on large responses.
+      // Let's hope this is fixed before release.
+      const delegate_or_subject = req.params.delegate_or_subject
+      var query: { [key: string] : any } = { deleted: false }
+      query[delegate_or_subject + "PartyId"] =
+      new mongoose.Types.ObjectId(req.params._id)
+      model.find(query)
+      .skip((req.params.page - 1) * req.params.page_size)
+      .limit(req.params.page_size)
+      .lean()
+      .find(function(err: any, relDocs: IRelationship[]) {
+        if (!err) {
+          res.json(relDocs)
+        } else {
+          res.status(500).send("Can't find party")
+        }
+      })
+    });
+    
+  function navFromIdentity(identityId:string,
+  next:(IRelationshipQuickInfo) => void) {
+      partyModel.findOne({
+        "identities._id": new mongoose.Types.ObjectId(identityId)
+      }, {"identities.$": 1}, (err: any, pd: IParty) => {
+        var ident = pd.identities[0]
+        next({
+          id:       identityId,
+          name:     ident.name,
+          subName:  (ident.type === "abn") ? ident.value : ""
+        })
+      })
+  }
+  
+  router.get("/Path/*", (req, res) => {
+    var navRes = new NavRes()
+    var idList = req.params[0].split("/")
+    var owner = idList[0]
+    navFromIdentity(owner, (me:IRelationshipQuickInfo) => {
+      navRes.partyChain = [me]
+      var relIds = idList.slice(1)
+      relIds.forEach((relId, idx) => {
+        model.findById(relId, (err: any, relDoc: IRelationship) => {
+          var nickname = relDoc.subjectsNickName.split("//")
+          navRes.partyChain.push({
+            id:       relId,
+            name:     nickname[0],
+            subName:  nickname[1]
+          })
+          if (idx === (relIds.length - 1)) {
+            res.json(navRes)
+          }
+        })
+      })
+    })
+  })
 
     return router;
 }

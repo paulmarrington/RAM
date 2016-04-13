@@ -35,9 +35,9 @@ const RelationshipSchema = new mongoose.Schema({
     type: String,
     enum: ["Business", "Online Service Provider"]
   },
-  subjectPartyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
+  subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
   subjectRole: String,
-  delegatePartyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
+  delegateId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
   delegateRole: String,
   startTimestamp: Date,
   endTimestamp: Date,

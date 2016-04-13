@@ -21,7 +21,7 @@ export function PartyAPI() {
 
   /* given identity type and value, retrieve identity and party documents */
   router.get("/Identity/:value/:type", (req, res) => {
-    getParty(req, res, function(partyDoc:IParty) {
+    getParty(req, res, (partyDoc:IParty) => {
     if (partyDoc) {
       res.json(partyDoc.toJSON())
     } else {
@@ -35,7 +35,7 @@ export function PartyAPI() {
    */
   router.post("/", (req, res) => {
     model.create(req.body,
-    function(err: any, partyDoc: IParty) {
+    (err: any, partyDoc: IParty) => {
       if (err) {
         res.status(500).send(err.toString());
       } else {
