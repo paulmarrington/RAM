@@ -12,22 +12,18 @@ import {RAMNavService} from "../../services/ram-nav.service";
 import {RAMRestService} from "../../services/ram-rest.service";
 
 @Component({
-    selector: "ram-relationship-table",
-    templateUrl: "relationship-table.component.html",
+    selector: "ram-subjects-relationship-table",
+    templateUrl: "subjects-table.component.html",
     providers: [FORM_DIRECTIVES]
 })
-export class RelationshipTableComponent implements OnInit {
-
-    @Input("ram-can-act-for") canActFor: boolean;
-
-    private _isLoading = new Rx.Subject<boolean>();
-    private isLoading$ = this._isLoading.asObservable();
+export class SubjectsTableComponent implements OnInit {
 
     pageNo = 1;
     pageSize = 5;
     private _relIds = new Array<string>();
 
     pageSizeOptions = [5, 10, 25, 100];
+    isLoading = false;
 
     relationshipTableResponse$: Rx.Observable<IRelationshipTableRow[]>;
     statusOptions$: Rx.Observable<string[]>;
@@ -45,7 +41,6 @@ export class RelationshipTableComponent implements OnInit {
             "relationship": new Control(""),
             "status": new Control("")
         });
-        this._isLoading.next(false);
         this.filters$.valueChanges.debounceTime(500).subscribe(() => this.refreshContents(this._relIds));
     }
 
@@ -64,11 +59,11 @@ export class RelationshipTableComponent implements OnInit {
 
     refreshContents(relIds: string[]) {
         this._relIds = relIds;
-        this._isLoading.next(true);
+        this.isLoading = true;
 
-        let response = this.rest.getRelationshipData(
-            "SomePartyId",relIds, this.canActFor, this.filters$.value, this.pageNo, this.pageSize)
-            .do(() => this._isLoading.next(false));
+        let response = this.rest.getSubjectTableData(
+            "SomePartyId", relIds, this.filters$.value, this.pageNo, this.pageSize)
+            .do(() => this.isLoading = false);
 
         this.relationshipTableResponse$ = response.map(r => r.data.table);
         this.relationshipOptions$ = response.map(r => r.data.relationshipOptions);
@@ -79,5 +74,9 @@ export class RelationshipTableComponent implements OnInit {
 
     navigateTo(relId: string[]) {
         this.nav.navigateToRel(relId);
+    }
+
+    view(relId: string) {
+
     }
 }
