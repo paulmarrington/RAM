@@ -31,7 +31,8 @@ var request = function(method, api, body) {
         data.push(chunk)
       })
       response.on("end", function() {
-        resolve(JSON.parse(data.join("")))
+        var response = JSON.parse(data.join(""))
+        resolve(response.data ? response.data : response)
       })
     })
     getter.end(body)
