@@ -2,7 +2,6 @@ var partyHelper = require("../../spec/support/party")
 var rest = require("../../spec/support/rest.js")
 
 describe("a RAM Relationship", () => {
-  /*
   it("can be created", function(done) {
     new_relationships(1).then(rel => {
       expect(typeof rel._id).toBe("string")
@@ -37,7 +36,6 @@ describe("a RAM Relationship", () => {
       })
     })
   })
-  */
   it("can return breadcrumb required by UI", function(done) {
     new_relationships(3).then(rels => {
       var owner = rels[0].subjectId
@@ -49,13 +47,12 @@ describe("a RAM Relationship", () => {
       })
     })
   })
-  return
+  
   it("can load tables required by UI", function(done) {
     new_relationships(12).then(rels => {
       rest.get("relationship/table/delegate/" +
       rels[0].delegateId + "/page/1/size/20")
       .then(function(res) {
-console.log(res)
         expect(res.table.length).toEqual(12)
         done()
       })
