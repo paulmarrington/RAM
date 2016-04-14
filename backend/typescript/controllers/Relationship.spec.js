@@ -72,6 +72,7 @@ var new_relationships = function(count) {
       var doc = {
         type:             "Business",
         subjectId:        party_1.identities[0]._id,
+        subjectRole:      "Superman",
         delegateId:       party_2.identities[0]._id,
         startTimestamp:   now,
         endTimestamp:     tomorrow,

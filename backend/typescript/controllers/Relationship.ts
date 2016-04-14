@@ -127,6 +127,13 @@ export function RelationshipAPI() {
       model.count(query, cb)
     }
     
+    function getDistinct(delegate_or_subject, id, field, cb) {
+      var query: { [key: string] : any } = { deleted: false }
+      query[delegate_or_subject + "Id"] =
+      new mongoose.Types.ObjectId(id)
+      model.distinct(field, query, cb)
+    }
+    
     /* Provided navigation details for a relationship */
     router.get(
     "/table/:delegate_or_subject/:_id/page/:page/size/:pagesize",
@@ -135,19 +142,25 @@ export function RelationshipAPI() {
       req.params.page, req.params.pagesize, (err, rows) => {
       getRowCount(req.params.delegate_or_subject, req.params._id,
       (err, total) => {
+      getDistinct(req.params.delegate_or_subject, req.params._id,
+      "type", (err, types) => {
+      getDistinct(req.params.delegate_or_subject, req.params._id,
+      "subjectRole", (err, statuses) => {
+      getDistinct(req.params.delegate_or_subject, req.params._id,
+      "status", (err, roles) => {
         var table:RelationshipTableRes = {
           total:                total,
           table:                rows,
-          relationshipOptions:  [],
-          accessLevelOptions:   [],
-          statusValueOptions:   []
+          relationshipOptions:  types,
+          accessLevelOptions:   roles,
+          statusValueOptions:   statuses
         }
         var response:IResponse<RelationshipTableRes> = {
           data:     table,
           status:   200
         }
         res.json(response);
-      })})
+      })})})})})
     });
     
   function navFromIdentity(identityId:string,
@@ -178,23 +191,31 @@ export function RelationshipAPI() {
     navFromIdentity(owner, (me:IRelationshipQuickInfo) => {
       navRes.partyChain = [me]
       var relIds = idList.slice(1)
-      relIds.forEach((relId, idx) => {
-        model.findById(relId, (err: any, relDoc: IRelationship) => {
-          var nickname = relDoc.subjectsNickName.split("//")
-          navRes.partyChain.push({
-            id:       relId,
-            name:     nickname[0],
-            subName:  nickname[1]
-          })
-          if (idx === (relIds.length - 1)) {
-            var response:IResponse<NavRes> = {
-              data:     navRes,
-              status:   200
+      if (relIds.length) {
+        relIds.forEach((relId, idx) => {
+          model.findById(relId, (err: any, relDoc: IRelationship) => {
+            var nickname = relDoc.subjectsNickName.split("//")
+            navRes.partyChain.push({
+              id:       relId,
+              name:     nickname[0],
+              subName:  nickname[1]
+            })
+            if (idx === (relIds.length - 1)) {
+              var response:IResponse<NavRes> = {
+                data:     navRes,
+                status:   200
+              }
+              res.json(response);
             }
-            res.json(response);
-          }
+          })
         })
-      })
+      } else {
+        var response:IResponse<NavRes> = {
+          data:     navRes,
+          status:   200
+        }
+        res.json(response);
+      }
     })
   })
 
