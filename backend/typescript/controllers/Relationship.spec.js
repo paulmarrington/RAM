@@ -2,7 +2,6 @@ var partyHelper = require("../../spec/support/party")
 var rest = require("../../spec/support/rest.js")
 
 describe("a RAM Relationship", () => {
-  /*
   it("can be created", function(done) {
     new_relationships(1).then(rel => {
       expect(typeof rel._id).toBe("string")
@@ -48,7 +47,6 @@ describe("a RAM Relationship", () => {
       })
     })
   })
-  */
   it("can load tables required by UI", function(done) {
     new_relationships(12).then(rels => {
       rest.get("relationship/table/delegate/" +
