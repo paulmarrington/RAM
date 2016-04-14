@@ -3,6 +3,7 @@
 import * as express from "express";
 import {model,IParty} from "../models/party"
 import * as mongoose from "mongoose"
+import {IResponse, RAMMessageType} from "../../../commons/RamAPI"
 
 export function getParty
 (req:express.Request, res:express.Response,
@@ -20,10 +21,14 @@ export function PartyAPI() {
   const router: express.Router = express.Router();
 
   /* given identity type and value, retrieve identity and party documents */
-  router.get("/Identity/:value/:type", (req, res) => {
+  router.get("/identity/:value/:type", (req, res) => {
     getParty(req, res, (partyDoc:IParty) => {
     if (partyDoc) {
-      res.json(partyDoc.toJSON())
+      var response:IResponse<IParty> = {
+        data:     partyDoc.toJSON(),
+        status:   200
+      }
+      res.json(response);
     } else {
       res.status(500).send("Can't find party")
     }
@@ -39,13 +44,17 @@ export function PartyAPI() {
       if (err) {
         res.status(500).send(err.toString());
       } else {
-        res.json(partyDoc.toJSON());
+        var response:IResponse<IParty> = {
+          data:     partyDoc.toJSON(),
+          status:   200
+        }
+        res.json(response);
       }
     })
   });
 
   /* We can change roles and other party attributes here */
-  router.put("/Identity/:value/:type", (req, res) => {
+  router.put("/identity/:value/:type", (req, res) => {
     model.findOneAndUpdate({
       "identities.type": req.params.type,
       "identities.value": req.params.value,
@@ -55,7 +64,11 @@ export function PartyAPI() {
       if (err) {
         res.status(500).send(err.toString());
       } else {
-        res.json(partyDoc.toJSON());
+        var response:IResponse<IParty> = {
+          data:     partyDoc.toJSON(),
+          status:   200
+        }
+        res.json(response);
       }
     })
   });

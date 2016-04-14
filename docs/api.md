@@ -1,11 +1,11 @@
 ## Party
 ### Retrieve
 
-    GET http://host/api/1/Party/Identity/{value}/{type}
+    GET http://host/api/1/party/identity/{value}/{type}
 
 e.g.
 
-    GET http://host/api/1/Party/Identity/51824753556/abn
+    GET http://host/api/1/party/identity/51824753556/abn
     
 Returns:
 
@@ -27,7 +27,7 @@ Returns:
 
 ### Create New Party
 
-    POST http://host/api/1/Party
+    POST http://host/api/1/party
     
 **Body**: as for GET.
 
@@ -35,7 +35,7 @@ Note that party must include one identity or it cannot be found again in the fut
 
 ### Update a Party
 
-    PUT http://host/api/1/Party/Identity/{value}/{type}
+    PUT http://host/api/1/party/identity/{value}/{type}
 
 **Body**: Update object. This can be any partial party object:
 
@@ -55,11 +55,11 @@ Use the same technique to add and remove roles.
 
 ### Retrieve Relationship
 
-    GET http://host/api/1/Relationship/{RelId}
+    GET http://host/api/1/relationship/{RelId}
 
 e.g.
 
-    GET http://host/api/1/Relationship/570b2f98f7d1d96813bdd456
+    GET http://host/api/1/relationship/570b2f98f7d1d96813bdd456
     
 Returns:
     "_id" : "570c866b64457f7c32907806", 
@@ -80,11 +80,11 @@ Returns:
 
 ### List Relationship for a Party
 
-    GET http://host/api/1/Relationship/List/delegate/{PartyId}/page/{pageNo/size/{itemsPerPage}
+    GET http://host/api/1/relationship/list/delegate/{PartyId}/page/{pageNo/size/{itemsPerPage}
 
 e.g.
 
-    GET http://host/api/1/Relationship/List/570c866b64457f7c32907800/delegate/{PartyId}/page/0/size/50
+    GET http://host/api/1/relationship/list/570c866b64457f7c32907800/delegate/{PartyId}/page/0/size/50
     
 Returns:
 
@@ -93,7 +93,7 @@ An array of relationships as above
 
 ### Create New Relationship
 
-    POST http://host/api/1/Relationship
+    POST http://host/api/1/relationship
     
 **Body**: 
     "type" : "Business", 
@@ -110,7 +110,7 @@ An array of relationships as above
 
 ### Update a Relationship
 
-    PUT http://host/api/1/Relationship/{RelId}
+    PUT http://host/api/1/relationship/{RelId}
 
 **Body**: Update object. This can be any partial party object:
 
@@ -119,3 +119,19 @@ An array of relationships as above
 To change end time:
 
     { "endTimestamp": new Date() }
+
+### UI - Breadcrumb
+
+    GET http://host/api/1/relationship/path/identityId/relationshipId/...
+
+e.g.
+
+    GET http://host/api/1/relationship/path/570eeb715a5c40f047f42576/570eeb715a5c40f047f4257c/570eeb715a5c40f047f4257d
+
+Returns:
+
+    partyChain: [{
+      id:    570eeb715a5c40f047f4257d,
+      name:  "Abacus",
+      subName: "1234467900"
+    },...]

@@ -24,7 +24,7 @@ var new_two_identity_party = function(abn_1) {
         value:    abn_2,
         name:     rest.uuid()
       }
-      rest.put("Party/Identity/" + abn_1 + "/abn",
+      rest.put("party/identity/" + abn_1 + "/abn",
       
       {$addToSet: {identities: identity}}
       
@@ -39,7 +39,7 @@ var update_party = function(abn, updates) {
   return new Promise(function(resolve, reject) {
     new_two_identity_party(abn).then(function(partyDoc) {
       var abn = partyDoc.identities[0].value
-      rest.put("Party/Identity/" + abn + "/abn", updates)
+      rest.put("party/identity/" + abn + "/abn", updates)
       .then(function(updatedParty) {
           resolve(updatedParty)        
       }).catch(function(err) { reject(err) })

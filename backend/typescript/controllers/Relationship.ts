@@ -5,7 +5,7 @@ import {model, IRelationship} from "../models/relationship"
 import {IParty, IIdentity, model as partyModel} from "../models/party"
 import {getParty} from "./Party"
 import * as mongoose from "mongoose"
-import {NavRes, IRelationshipQuickInfo} from "../../../commons/RamAPI"
+import {IResponse, NavRes, IRelationshipQuickInfo} from "../../../commons/RamAPI"
 
 export function RelationshipAPI() {
     const router: express.Router = express.Router();
@@ -17,28 +17,36 @@ export function RelationshipAPI() {
         if (err) {
           res.status(500).send(err.toString());
         } else {
-          res.json(relDoc.toJSON())
+          var response:IResponse<IRelationship> = {
+            data:     relDoc.toJSON(),
+            status:   200
+          }
+          res.json(response);
         }
       })
     });
 
     /* list relationships for a specific delegate party */
     router.get(
-    "/List/:delegate_or_subject/:_id/page/:page/size/:pagesize",
+    "/list/:delegate_or_subject/:id/page/:page/size/:pagesize",
     (req, res) => {
       // Current mongo can get very slow for skip on large responses.
       // Let's hope this is fixed before release.
       const delegate_or_subject = req.params.delegate_or_subject
       var query: { [key: string] : any } = { deleted: false }
-      query[delegate_or_subject + "PartyId"] =
-      new mongoose.Types.ObjectId(req.params._id)
+      query[delegate_or_subject + "Id"] =
+      new mongoose.Types.ObjectId(req.params.id)
       model.find(query)
       .skip((req.params.page - 1) * req.params.page_size)
       .limit(req.params.page_size)
       .lean()
       .find(function(err: any, relDocs: IRelationship[]) {
         if (!err) {
-          res.json(relDocs)
+          var response:IResponse<IRelationship[]> = {
+            data:     relDocs,
+            status:   200
+          }
+          res.json(response);
         } else {
           res.status(500).send("Can't find party")
         }
@@ -54,7 +62,11 @@ export function RelationshipAPI() {
         if (err) {
           res.status(500).send(err.toString())
         } else {
-          res.json(relDoc.toJSON())
+          var response:IResponse<IRelationship> = {
+            data:     relDoc.toJSON(),
+            status:   200
+          }
+          res.json(response);
         }
       })
     });
@@ -70,14 +82,18 @@ export function RelationshipAPI() {
         if (err) {
           res.status(500).send(err.toString())
         } else {
-          res.json(relDoc.toJSON())
+          var response:IResponse<IRelationship> = {
+            data:     relDoc.toJSON(),
+            status:   200
+          }
+          res.json(response);
         }
       })
     });
     
     /* Provided navigation details for a relationship */
     router.get(
-    "/Table/:delegate_or_subject/:_id/page/:page/size/:pagesize",
+    "/table/:delegate_or_subject/:_id/page/:page/size/:pagesize",
     (req, res) => {
       // Current mongo can get very slow for skip on large responses.
       // Let's hope this is fixed before release.
@@ -91,7 +107,11 @@ export function RelationshipAPI() {
       .lean()
       .find(function(err: any, relDocs: IRelationship[]) {
         if (!err) {
-          res.json(relDocs)
+          var response:IResponse<IRelationship[]> = {
+            data:     relDocs,
+            status:   200
+          }
+          res.json(response);
         } else {
           res.status(500).send("Can't find party")
         }
@@ -112,7 +132,7 @@ export function RelationshipAPI() {
       })
   }
   
-  router.get("/Path/*", (req, res) => {
+  router.get("/path/*", (req, res) => {
     var navRes = new NavRes()
     var idList = req.params[0].split("/")
     var owner = idList[0]
@@ -128,12 +148,16 @@ export function RelationshipAPI() {
             subName:  nickname[1]
           })
           if (idx === (relIds.length - 1)) {
-            res.json(navRes)
+            var response:IResponse<NavRes> = {
+              data:     navRes,
+              status:   200
+            }
+            res.json(response);
           }
         })
       })
     })
   })
 
-    return router;
+  return router;
 }
