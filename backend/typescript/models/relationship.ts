@@ -3,10 +3,10 @@ import * as mongoose from "mongoose"
 export interface IRelationship extends mongoose.Document {
   /** A Subject is the party being effected (changed) by a transaction performed by the Delegate */
   type:               string;
-  subjectPartyId:     string;
+  subjectId:          string;
   subjectRole:        string;
   /** A Delegate is the party who will be interacting with government on line services on behalf of the Subject. */
-  delegatePartyId:    string;
+  delegateId:         string;
   delegateRole:       string;
   /** when does this relationship start to be usable - this will be different to the creation timestamp */
   startTimestamp:     Date;

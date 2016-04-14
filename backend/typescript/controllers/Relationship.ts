@@ -5,7 +5,7 @@ import {model, IRelationship} from "../models/relationship"
 import {IParty, IIdentity, model as partyModel} from "../models/party"
 import {getParty} from "./Party"
 import * as mongoose from "mongoose"
-import {IResponse, NavRes, IRelationshipQuickInfo} from "../../../commons/RamAPI"
+import {RelationshipTableRes, IRelationshipTableRow, IResponse, NavRes, IRelationshipQuickInfo} from "../../../commons/RamAPI"
 
 export function RelationshipAPI() {
     const router: express.Router = express.Router();
@@ -99,7 +99,7 @@ export function RelationshipAPI() {
       // Let's hope this is fixed before release.
       const delegate_or_subject = req.params.delegate_or_subject
       var query: { [key: string] : any } = { deleted: false }
-      query[delegate_or_subject + "PartyId"] =
+      query[delegate_or_subject + "Id"] =
       new mongoose.Types.ObjectId(req.params._id)
       model.find(query)
       .skip((req.params.page - 1) * req.params.page_size)
@@ -107,8 +107,24 @@ export function RelationshipAPI() {
       .lean()
       .find(function(err: any, relDocs: IRelationship[]) {
         if (!err) {
-          var response:IResponse<IRelationship[]> = {
-            data:     relDocs,
+          var table:RelationshipTableRes = {
+            total:                100,
+            table:                relDocs.map(relDoc => {
+              return {
+                name: "tobedone",
+                subName: relDoc[delegate_or_subject + "NickName"],
+                relId: relDoc.delegateId,
+                rel: relDoc.type,
+                access: "bypassphrase",
+                status: relDoc.status
+              }
+            }),
+            relationshipOptions:  [],
+            accessLevelOptions:   [],
+            statusValueOptions:   []
+          }
+          var response:IResponse<RelationshipTableRes> = {
+            data:     table,
             status:   200
           }
           res.json(response);

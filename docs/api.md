@@ -80,7 +80,7 @@ Returns:
 
 ### List Relationship for a Party
 
-    GET http://host/api/1/relationship/list/delegate/{PartyId}/page/{pageNo/size/{itemsPerPage}
+    GET http://host/api/1/relationship/list/delegate/{identityId}/page/{pageNo/size/{itemsPerPage}
 
 e.g.
 
@@ -135,3 +135,27 @@ Returns:
       name:  "Abacus",
       subName: "1234467900"
     },...]
+
+### UI - Table Entry
+
+
+    GET http://host/api/1/relationship/table/delegate/{identityId}/page/{pageNo/size/{itemsPerPage}
+
+e.g.
+
+    GET http://host/api/1/relationship/list/570c866b64457f7c32907800/delegate/{PartyId}/page/0/size/50
+    
+Returns:
+
+    total:                999
+    table:                [{
+      name:               "myidentityname"
+      subName:            "myabnornickname"
+      relId:              "570eeb715a5c40f047f4257d"
+      rel:                "sidekick"
+      access:             "never"
+      status:             "left hanging"
+    },...]
+    relationshipOptions:  ["",...]
+    accessLevelOptions:   ["",...]
+    statusValueOptions:   ["",...]
