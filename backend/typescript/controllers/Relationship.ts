@@ -91,61 +91,84 @@ export function RelationshipAPI() {
       })
     });
     
+    function getTableRows(delegate_or_subject:string, id:string,
+    page:number, pageSize:number,
+    cb:(err:any,row?:IRelationshipTableRow[]) => void) {
+      // Current mongo can get very slow for skip on large responses.
+      // Let's hope this is fixed before release.
+      var query: { [key: string] : any } = { deleted: false }
+      query[delegate_or_subject + "Id"] =
+      new mongoose.Types.ObjectId(id)
+      model.find(query)
+      .skip((page - 1) * pageSize)
+      .limit(+pageSize)
+      .lean()
+      .find(function(err: any, relDocs:IRelationship[]) {
+        if (!err) {
+          cb (null, relDocs.map(relDoc => {
+            return {
+              name: "tobedone",
+              subName: relDoc[delegate_or_subject + "NickName"],
+              relId: relDoc.delegateId,
+              rel: relDoc.type,
+              access: "bypassphrase",
+              status: relDoc.status
+            }
+          }))
+        } else {
+          cb(err)
+        }
+      })
+    }
+    function getRowCount(delegate_or_subject, id, cb) {
+      var query: { [key: string] : any } = { deleted: false }
+      query[delegate_or_subject + "Id"] =
+      new mongoose.Types.ObjectId(id)
+      model.count(query, cb)
+    }
+    
     /* Provided navigation details for a relationship */
     router.get(
     "/table/:delegate_or_subject/:_id/page/:page/size/:pagesize",
     (req, res) => {
-      // Current mongo can get very slow for skip on large responses.
-      // Let's hope this is fixed before release.
-      const delegate_or_subject = req.params.delegate_or_subject
-      var query: { [key: string] : any } = { deleted: false }
-      query[delegate_or_subject + "Id"] =
-      new mongoose.Types.ObjectId(req.params._id)
-      model.find(query)
-      .skip((req.params.page - 1) * req.params.page_size)
-      .limit(req.params.page_size)
-      .lean()
-      .find(function(err: any, relDocs: IRelationship[]) {
-        if (!err) {
-          var table:RelationshipTableRes = {
-            total:                100,
-            table:                relDocs.map(relDoc => {
-              return {
-                name: "tobedone",
-                subName: relDoc[delegate_or_subject + "NickName"],
-                relId: relDoc.delegateId,
-                rel: relDoc.type,
-                access: "bypassphrase",
-                status: relDoc.status
-              }
-            }),
-            relationshipOptions:  [],
-            accessLevelOptions:   [],
-            statusValueOptions:   []
-          }
-          var response:IResponse<RelationshipTableRes> = {
-            data:     table,
-            status:   200
-          }
-          res.json(response);
-        } else {
-          res.status(500).send("Can't find party")
+      getTableRows(req.params.delegate_or_subject, req.params._id,
+      req.params.page, req.params.pagesize, (err, rows) => {
+      getRowCount(req.params.delegate_or_subject, req.params._id,
+      (err, total) => {
+        var table:RelationshipTableRes = {
+          total:                total,
+          table:                rows,
+          relationshipOptions:  [],
+          accessLevelOptions:   [],
+          statusValueOptions:   []
         }
-      })
+        var response:IResponse<RelationshipTableRes> = {
+          data:     table,
+          status:   200
+        }
+        res.json(response);
+      })})
     });
     
   function navFromIdentity(identityId:string,
-  next:(IRelationshipQuickInfo) => void) {
-      partyModel.findOne({
-        "identities._id": new mongoose.Types.ObjectId(identityId)
-      }, {"identities.$": 1}, (err: any, pd: IParty) => {
-        var ident = pd.identities[0]
-        next({
-          id:       identityId,
-          name:     ident.name,
-          subName:  (ident.type === "abn") ? ident.value : ""
-        })
+  next:(rq:IRelationshipQuickInfo) => void) {
+    if (identityId === "*") {
+      var query = {}
+      var opts = {}
+    } else {
+      var query = {
+      "identities._id": new mongoose.Types.ObjectId(identityId)
+      }
+      var opts = {"identities.$": 1}
+    }
+    partyModel.findOne(query, opts, (err: any, pd: IParty) => {
+      var ident = pd.identities[0]
+      next({
+        id:       identityId,
+        name:     ident.name,
+        subName:  (ident.type === "abn") ? ident.value : ""
       })
+    })
   }
   
   router.get("/path/*", (req, res) => {
