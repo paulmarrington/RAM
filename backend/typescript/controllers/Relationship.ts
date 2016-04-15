@@ -9,6 +9,14 @@ import {RelationshipTableRes, IRelationshipTableRow, IResponse, NavRes, IRelatio
 
 export function RelationshipAPI() {
     const router: express.Router = express.Router();
+  
+  router.get("/path", (req, res) => {
+    var navRes = new NavRes()
+    getRandomParty((pd:IParty) => {
+      var ownerId = pd.identities[0]._id
+      sendQuickInfo(ownerId, [], res)
+    })
+  })
 
     /* given id, retrieve relationship */
     router.get("/:id", (req, res) => {
@@ -181,54 +189,57 @@ export function RelationshipAPI() {
     
   function navFromIdentity(identityId:string,
   next:(rq:IRelationshipQuickInfo) => void) {
-    if (identityId === "*") {
-      getRandomParty((pd:IParty) => {
-        next(quickInfoFromParty(pd))
+    var query = {
+    "identities._id": new mongoose.Types.ObjectId(identityId)
+    }
+    var opts = {"identities.$": 1}
+    partyModel.findOne(query, opts, (err: any, pd: IParty) => {
+      next(quickInfoFromParty(pd))
+    })
+  }
+  
+  function getQuickInfo(owner:IRelationshipQuickInfo,
+  relIds:string[], next:(err:any, navRes:NavRes)=>void) {
+    var navRes = new NavRes()
+    navRes.partyChain = [owner]
+    if (relIds.length && relIds[0].length) {
+      relIds.forEach((relId, idx) => {
+        model.findById(relId, (err: any, relDoc: IRelationship) => {
+          var nickname = relDoc.subjectsNickName.split("//")
+          navRes.partyChain.push({
+            id:       relId,
+            name:     nickname[0],
+            subName:  nickname[1]
+          })
+          if (idx + 1 == relIds.length) next(null, navRes)
+        })
       })
     } else {
-      var query = {
-      "identities._id": new mongoose.Types.ObjectId(identityId)
-      }
-      var opts = {"identities.$": 1}
-      partyModel.findOne(query, opts, (err: any, pd: IParty) => {
-        next(quickInfoFromParty(pd))
-      })
+      next(null, navRes)
     }
+  }
+  
+  function sendResponse(navRes:NavRes, res) {
+    var response:IResponse<NavRes> = {
+      data:     navRes,
+      status:   200
+    }
+    res.json(response);
+  }
+  
+  function sendQuickInfo(ownerId:string, relIds:string[], res:any) {
+    navFromIdentity(ownerId, (owner:IRelationshipQuickInfo) => {
+    getQuickInfo(owner, relIds, (err:any, navRes:NavRes)=> {
+      sendResponse(navRes, res)
+    })})
   }
   
   router.get("/path/*", (req, res) => {
     var navRes = new NavRes()
     var idList = req.params[0].split("/")
-    var owner = idList[0]
-    navFromIdentity(owner, (me:IRelationshipQuickInfo) => {
-      navRes.partyChain = [me]
-      var relIds = idList.slice(1)
-      if (relIds.length && relIds[0].length) {
-        relIds.forEach((relId, idx) => {
-          model.findById(relId, (err: any, relDoc: IRelationship) => {
-            var nickname = relDoc.subjectsNickName.split("//")
-            navRes.partyChain.push({
-              id:       relId,
-              name:     nickname[0],
-              subName:  nickname[1]
-            })
-            if (idx === (relIds.length - 1)) {
-              var response:IResponse<NavRes> = {
-                data:     navRes,
-                status:   200
-              }
-              res.json(response);
-            }
-          })
-        })
-      } else {
-        var response:IResponse<NavRes> = {
-          data:     navRes,
-          status:   200
-        }
-        res.json(response);
-      }
-    })
+    var ownerId = idList[0]
+    var relIds = idList.slice(1)
+    sendQuickInfo(ownerId, relIds, res)
   })
 
   return router;
