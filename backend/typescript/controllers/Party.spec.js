@@ -3,19 +3,19 @@ rest = require("../../spec/support/rest.js")
 
 describe("a RAM Party", () => {
   it("can create a new identity and party", function(done) {
-    partyHelper.new_party(rest.uuid()).then(function (result) {
+    partyHelper.new_party(partyHelper.fake_abn()).then(function (result) {
       expect(result).toEqual(jasmine.objectContaining({ deleted: false }))
       done()
     }).catch(function(err) { fail(err); done() })
   })
   it("can create a new identity for an existing party", function(done) {
-    partyHelper.new_two_identity_party(rest.uuid()).then(function(result) {
+    partyHelper.new_two_identity_party(partyHelper.fake_abn()).then(function(result) {
       expect(result.identities.length).toEqual(2)
       done()
     }).catch(function(err) { fail(err); done() })
   })
   it("can retrieve a party based on identity", function(done) {
-    var abn = rest.uuid()
+    var abn = partyHelper.fake_abn()
     partyHelper.new_party(abn).then(function (result) {
       partyHelper.get_party(abn).then(function (result) {
         expect(result.identities.length).toEqual(1)
@@ -24,13 +24,13 @@ describe("a RAM Party", () => {
     }).catch(function(err) { fail(err); done() })
   })
   it("can retrieve a list of identities for a party", function(done) {
-    partyHelper.new_two_identity_party(rest.uuid()).then(function(result) {
+    partyHelper.new_two_identity_party(partyHelper.fake_abn()).then(function(result) {
       expect(result.identities.length).toEqual(2)
       done()
     }).catch(function(err) { fail(err); done() })
   })
   it("can change party roles", function(done) {
-    partyHelper.update_party(rest.uuid(), {
+    partyHelper.update_party(partyHelper.fake_abn(), {
         $addToSet: {roles: {name: "spouse"}},
         $set:      {"attributes.magic": "dark"}
       }
@@ -40,7 +40,7 @@ describe("a RAM Party", () => {
     }).catch(function(err) { fail(err); done() })
   })
   it("can change party attributes", function(done) {
-    partyHelper.update_party(rest.uuid(), {
+    partyHelper.update_party(partyHelper.fake_abn(), {
       "attributes.magic": "light"
     }).then(function(partyDoc) {
       expect(partyDoc.attributes.magic).toEqual("light")
@@ -48,7 +48,7 @@ describe("a RAM Party", () => {
     }).catch(function(err) { fail(err); done() })
   })
   it("can delete identities", function(done) {
-    var abn_1 = rest.uuid()
+    var abn_1 = partyHelper.fake_abn()
     partyHelper.update_party(abn_1, {
       $pull: {identities: {value:abn_1, type:"abn"}},
     }).then(function (updatedParty) {

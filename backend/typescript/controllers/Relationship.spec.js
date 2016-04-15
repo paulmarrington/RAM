@@ -47,6 +47,18 @@ describe("a RAM Relationship", () => {
       })
     })
   })
+  it("can provide breadcrumb when only random subject", function(done) {
+    new_relationships(3).then(rels => {
+      var owner = rels[0].subjectId
+      rest.get("relationship/path/*").then((res) => {
+        expect(res.partyChain.length).toEqual(1)
+        rest.get("relationship/path/*/").then((res) => {
+          expect(res.partyChain.length).toEqual(1)
+          done()
+        })
+      })
+    })
+  })
   
   it("can load tables required by UI", function(done) {
     new_relationships(12).then(rels => {
@@ -62,7 +74,7 @@ describe("a RAM Relationship", () => {
 
 var new_relationships = function(count) {
   return new Promise(function(resolve, reject) {
-  var abn_1 = rest.uuid(), abn_2 = rest.uuid()
+  var abn_1 = partyHelper.fake_abn(), abn_2 = partyHelper.fake_abn()
   partyHelper.new_party(abn_1).then(function (party_1) {
   partyHelper.new_party(abn_2).then(function (party_2) {
     var list = []
