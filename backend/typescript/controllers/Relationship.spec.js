@@ -1,5 +1,6 @@
 var partyHelper = require("../../spec/support/party")
 var rest = require("../../spec/support/rest.js")
+faker = require("faker")
 
 describe("a RAM Relationship", () => {
   it("can be created", function(done) {
@@ -78,15 +79,16 @@ var new_relationships = function(count) {
       var now = new Date()
       var tomorrow = new Date(now + 1000*60*60*12)
       var doc = {
-        type:             "Business",
+        type:             faker.company.bsNoun,
         subjectId:        party_1.identities[0]._id,
-        subjectRole:      "Superman",
+        subjectRole:      faker.name.jobArea(),
         delegateId:       party_2.identities[0]._id,
+        delegateRole:     faker.name.jobArea(),
         startTimestamp:   now,
         endTimestamp:     tomorrow,
         status:           "Active",
-        subjectsNickName:  abn_1,
-        delegatesNickName: abn_2,
+        subjectsNickName:  faker.name.firstName(),
+        delegatesNickName: faker.name.firstName(),
         attributes:       {delegate_abn: abn_2}
       }
       rest.post("relationship", doc).then(function(res) {
