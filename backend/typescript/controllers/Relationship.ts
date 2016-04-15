@@ -163,25 +163,37 @@ export function RelationshipAPI() {
       })})})})})
     });
     
+  function quickInfoFromParty(partyDoc: IParty):IRelationshipQuickInfo {
+    var ident:IIdentity = partyDoc.identities[0]
+    return({
+      id:       ident._id,
+      name:     ident.name,
+      subName:  (ident.type === "abn") ? ident.value : ""
+    })
+  }
+  
+  function getRandomParty(next:(partyDoc:IParty) => void):void {
+    partyModel.aggregate({ $sample: { size: 1 } },
+    (err:any, partyDocs:IParty[]) => {
+      next(partyDocs[0])
+    })
+  }
+    
   function navFromIdentity(identityId:string,
   next:(rq:IRelationshipQuickInfo) => void) {
     if (identityId === "*") {
-      var query = {}
-      var opts = {}
+      getRandomParty((pd:IParty) => {
+        next(quickInfoFromParty(pd))
+      })
     } else {
       var query = {
       "identities._id": new mongoose.Types.ObjectId(identityId)
       }
       var opts = {"identities.$": 1}
-    }
-    partyModel.findOne(query, opts, (err: any, pd: IParty) => {
-      var ident = pd.identities[0]
-      next({
-        id:       identityId,
-        name:     ident.name,
-        subName:  (ident.type === "abn") ? ident.value : ""
+      partyModel.findOne(query, opts, (err: any, pd: IParty) => {
+        next(quickInfoFromParty(pd))
       })
-    })
+    }
   }
   
   router.get("/path/*", (req, res) => {
@@ -191,7 +203,7 @@ export function RelationshipAPI() {
     navFromIdentity(owner, (me:IRelationshipQuickInfo) => {
       navRes.partyChain = [me]
       var relIds = idList.slice(1)
-      if (relIds.length) {
+      if (relIds.length && relIds[0].length) {
         relIds.forEach((relId, idx) => {
           model.findById(relId, (err: any, relDoc: IRelationship) => {
             var nickname = relDoc.subjectsNickName.split("//")

@@ -9,7 +9,7 @@ import {ResetCtrl} from "./controllers/Reset.server.ctrl";
 import {logger, logStream} from "./Logger";
 // import {continueOnlyIfJWTisValid} from "./security"
 // Prepare mongoose for daily operations
-const mongoose = require("mongoose");
+import * as mongoose from "mongoose"
 mongoose.connect("mongodb://localhost/ram");
 
 import {PartyAPI} from "./controllers/Party"
