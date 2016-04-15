@@ -5,15 +5,23 @@ import {model,IParty} from "../models/party"
 import * as mongoose from "mongoose"
 import {IResponse, RAMMessageType} from "../../../commons/RamAPI"
 
-export function getParty
-(req:express.Request, res:express.Response,
+function getPartyByIdentity
+(identityType:string, identityValue:string,
 actor: (doc? : IParty) => any) : void {
-  model.findOne({
-    "identities.type": req.params.type,
-    "identities.value": req.params.value,
-    deleted: false
-  }, function(err: any, partyDoc: any) {
-    actor(err ? null : partyDoc);
+  model.find({
+    "identities.type":  identityType,
+    "identities.value": identityValue,
+    deleted:            false
+  }).limit(1).lean().exec(function(err: any, pds: IParty[]) {
+    actor(err ? null : pds[0]);
+  })
+}
+
+function getPartyById(id:string,
+actor: (doc? : IParty) => void) : void {
+  model.find({ _id: id }).limit(1).lean().
+  exec(function(err: any, pds: IParty[]) {
+    actor(err ? null : pds[0]);
   })
 }
 
@@ -22,16 +30,17 @@ export function PartyAPI() {
 
   /* given identity type and value, retrieve identity and party documents */
   router.get("/identity/:value/:type", (req, res) => {
-    getParty(req, res, (partyDoc:IParty) => {
-    if (partyDoc) {
-      var response:IResponse<IParty> = {
-        data:     partyDoc.toJSON(),
-        status:   200
+    getPartyByIdentity(req.params.type, req.params.value,
+    (partyDoc:IParty) => {
+      if (partyDoc) {
+        var response:IResponse<IParty> = {
+          data:     partyDoc,
+          status:   200
+        }
+        res.json(response);
+      } else {
+        res.status(500).send("Can't find party")
       }
-      res.json(response);
-    } else {
-      res.status(500).send("Can't find party")
-    }
     })
   });
 
@@ -39,16 +48,20 @@ export function PartyAPI() {
    * Add a Party. It must have one identity to be valid.
    */
   router.post("/", (req, res) => {
-    model.create(req.body,
-    (err: any, partyDoc: IParty) => {
+    model.create(req.body, (err: any, pd: IParty) => {
       if (err) {
         res.status(500).send(err.toString());
       } else {
-        var response:IResponse<IParty> = {
-          data:     partyDoc.toJSON(),
-          status:   200
-        }
-        res.json(response);
+        // we have to ask for it again because typescript can't
+        // work well with mongoose doc.toJSON() so we have to use
+        // lean() instead.
+        getPartyById(pd._id, (partyDoc) => {
+          var response:IResponse<IParty> = {
+            data:     partyDoc,
+            status:   200
+          }
+          res.json(response);
+        })
       }
     })
   });
@@ -60,15 +73,20 @@ export function PartyAPI() {
       "identities.value": req.params.value,
       deleted: false
     }, req.body, { new: true },
-    function(err: any, partyDoc:IParty) {
+    function(err: any, pd:IParty) {
       if (err) {
         res.status(500).send(err.toString());
       } else {
-        var response:IResponse<IParty> = {
-          data:     partyDoc.toJSON(),
-          status:   200
-        }
-        res.json(response);
+        // we have to ask for it again because typescript can't
+        // work well with mongoose doc.toJSON() so we have to use
+        // lean() instead.
+        getPartyById(pd._id, (partyDoc) => {
+          var response:IResponse<IParty> = {
+            data:     partyDoc,
+            status:   200
+          }
+          res.json(response);
+        })
       }
     })
   });
