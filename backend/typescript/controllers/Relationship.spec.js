@@ -1,5 +1,6 @@
 var partyHelper = require("../../spec/support/party")
 var rest = require("../../spec/support/rest.js")
+faker = require("faker")
 
 describe("a RAM Relationship", () => {
   it("can be created", function(done) {
@@ -50,16 +51,12 @@ describe("a RAM Relationship", () => {
   it("can provide breadcrumb when only random subject", function(done) {
     new_relationships(3).then(rels => {
       var owner = rels[0].subjectId
-      rest.get("relationship/path/*").then((res) => {
+      rest.get("relationship/path").then((res) => {
         expect(res.partyChain.length).toEqual(1)
-        rest.get("relationship/path/*/").then((res) => {
-          expect(res.partyChain.length).toEqual(1)
-          done()
-        })
+        done()
       })
     })
   })
-  
   it("can load tables required by UI", function(done) {
     new_relationships(12).then(rels => {
       rest.get("relationship/table/delegate/" +
@@ -82,15 +79,20 @@ var new_relationships = function(count) {
       var now = new Date()
       var tomorrow = new Date(now + 1000*60*60*12)
       var doc = {
-        type:             "Business",
+        type:             faker.company.bsNoun,
         subjectId:        party_1.identities[0]._id,
-        subjectRole:      "Superman",
+        subjectName:      party_1.identities[0].name,
+        subjectAbn:       abn_1,
+        subjectRole:      faker.name.jobArea(),
         delegateId:       party_2.identities[0]._id,
+        delegateName:     party_2.identities[0].name,
+        delegateAbn:      abn_2,
+        delegateRole:     faker.name.jobArea(),
         startTimestamp:   now,
         endTimestamp:     tomorrow,
         status:           "Active",
-        subjectsNickName:  abn_1,
-        delegatesNickName: abn_2,
+        subjectsNickName:  faker.name.firstName(),
+        delegatesNickName: faker.name.firstName(),
         attributes:       {delegate_abn: abn_2}
       }
       rest.post("relationship", doc).then(function(res) {

@@ -3,10 +3,15 @@ import * as mongoose from "mongoose"
 export interface IRelationship extends mongoose.Document {
   /** A Subject is the party being effected (changed) by a transaction performed by the Delegate */
   type:               string;
+  
   subjectId:          string;
+  subjectName:        string;
+  subjectAbn:         string;
   subjectRole:        string;
   /** A Delegate is the party who will be interacting with government on line services on behalf of the Subject. */
   delegateId:         string;
+  delegateName:       string;
+  delegateAbn:        string;
   delegateRole:       string;
   /** when does this relationship start to be usable - this will be different to the creation timestamp */
   startTimestamp:     Date;
@@ -36,8 +41,12 @@ const RelationshipSchema = new mongoose.Schema({
     enum: ["Business", "Online Service Provider"]
   },
   subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
+  subjectName: String,
+  subjectAbn: {type: String, default: ""},
   subjectRole: String,
   delegateId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
+  delegateName: String,
+  delegateAbn: {type: String, default: ""},
   delegateRole: String,
   startTimestamp: Date,
   endTimestamp: Date,
