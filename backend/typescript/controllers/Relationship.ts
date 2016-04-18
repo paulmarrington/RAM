@@ -127,14 +127,24 @@ export function RelationshipAPI() {
     .find(function(err: any, relDocs:IRelationship[]) {
       if (!err) {
         cb (null, relDocs.map(relDoc => {
-          var subName = (delegate_or_subject === "subject") ?
-          relDoc.subjectsNickName : relDoc.delegatesNickName
+          if (delegate_or_subject === "subject") {
+            var name = relDoc.subjectsNickName || relDoc.subjectName
+            var subName = relDoc.subjectsAbn
+            var access = relDoc.subjectRole
+            var relId = relDoc.subjectId
+          } else {
+            var name = relDoc.delegatesNickName || relDoc.delegateName
+            var subName = relDoc.delegateAbn
+           var subName = relDoc.delegatesNickName
+           var access = relDoc.delegateRole
+           var relId = relDoc.delegateId
+          }
           return {
-            name: "tobedone",
+            name: name,
             subName: subName,
             relId: relDoc.delegateId,
             rel: relDoc.type,
-            access: "bypassphrase",
+            access: access,
             status: relDoc.status
           }
         }))

@@ -81,8 +81,12 @@ var new_relationships = function(count) {
       var doc = {
         type:             faker.company.bsNoun,
         subjectId:        party_1.identities[0]._id,
+        subjectName:      party_1.identities[0].name,
+        subjectAbn:       abn_1,
         subjectRole:      faker.name.jobArea(),
         delegateId:       party_2.identities[0]._id,
+        delegateName:     party_2.identities[0].name,
+        delegateAbn:      abn_2,
         delegateRole:     faker.name.jobArea(),
         startTimestamp:   now,
         endTimestamp:     tomorrow,
