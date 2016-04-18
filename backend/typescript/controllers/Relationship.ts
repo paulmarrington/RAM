@@ -127,9 +127,11 @@ export function RelationshipAPI() {
     .find(function(err: any, relDocs:IRelationship[]) {
       if (!err) {
         cb (null, relDocs.map(relDoc => {
+          var subName = (delegate_or_subject === "subject") ?
+          relDoc.subjectsNickName : relDoc.delegatesNickName
           return {
             name: "tobedone",
-            subName: relDoc[delegate_or_subject + "NickName"],
+            subName: subName,
             relId: relDoc.delegateId,
             rel: relDoc.type,
             access: "bypassphrase",
@@ -205,7 +207,7 @@ export function RelationshipAPI() {
   function navFromIdentity(identityId:string,
   next:(rq:IRelationshipQuickInfo) => void) {
     var query = {
-    "identities._id": new mongoose.Types.ObjectId(identityId)
+      "identities._id": new mongoose.Types.ObjectId(identityId)
     }
     var opts = {"identities.$": 1}
     partyModel.findOne(query, opts, (err: any, pd: IParty) => {
