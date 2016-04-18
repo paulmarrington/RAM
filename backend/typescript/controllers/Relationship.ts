@@ -129,7 +129,7 @@ export function RelationshipAPI() {
         cb (null, relDocs.map(relDoc => {
           if (delegate_or_subject === "subject") {
             var name = relDoc.subjectsNickName || relDoc.subjectName
-            var subName = relDoc.subjectsAbn
+            var subName = relDoc.subjectAbn
             var access = relDoc.subjectRole
             var relId = relDoc.subjectId
           } else {
