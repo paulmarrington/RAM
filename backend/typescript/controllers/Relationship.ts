@@ -6,7 +6,7 @@ import {IParty, IIdentity, model as partyModel} from "../models/party"
 import * as mongoose from "mongoose"
 import {
   IRelationshipTableRes, IRelationshipTableRow,
-  IResponse, NavRes, IRelationshipQuickInfo
+  IResponse, NavRes, IRelationshipQuickInfo, ErrorResponse
 } from "../../../commons/RamAPI"
 
 function getRelationshipById(id:string,
@@ -20,11 +20,24 @@ actor: (doc? : IRelationship) => void): void {
 export function RelationshipAPI() {
   const router: express.Router = express.Router();
   
+  function getRandomParty(next:(partyDoc:IParty) => void):void {
+    partyModel.aggregate({ $sample: { size: 1 } },
+    (err:any, partyDocs:IParty[]) => {
+      if (err) console.log(err)
+      next(partyDocs[0])
+    })
+  }
+  
   router.get("/path", (req, res) => {
     var navRes = new NavRes()
-    getRandomParty((pd:IParty) => {
-      var ownerId = pd.identities[0]._id
-      sendQuickInfo(ownerId, [], res)
+    getRandomParty((pd?:IParty) => {
+      if (pd) {
+        var ownerId = pd.identities[0]._id
+        sendQuickInfo(ownerId, [], res)
+      } else {
+        if (err) console.log(err)
+        sendError("Can't get random party for testing", res)
+      }
     })
   })
 
@@ -38,7 +51,7 @@ export function RelationshipAPI() {
         }
         res.json(response);
       } else {
-        res.status(500).send("can't retrieve relationship");
+        sendError("can't retrieve relationship", res);
       }
     })
   });
@@ -65,7 +78,7 @@ export function RelationshipAPI() {
         }
         res.json(response);
       } else {
-        res.status(500).send("Can't find party")
+        sendError("Listing failed", res)
       }
     })
   });
@@ -77,7 +90,8 @@ export function RelationshipAPI() {
     model.create(req.body,
     function(err: any, relDoc: IRelationship) {
       if (err) {
-        res.status(500).send(err.toString())
+        console.log(err)
+        sendError("Relationship addition failed", res)
       } else {
         getRelationshipById(relDoc._id, (rd) => {
           var response:IResponse<IRelationship> = {
@@ -99,7 +113,8 @@ export function RelationshipAPI() {
     model.findByIdAndUpdate(req.params._id, req.body,
     {new: true}, function(err: any, relDoc: IRelationship) {
       if (err) {
-        res.status(500).send(err.toString())
+        console.log(err)
+        sendError("Relationship update failed", res)
       } else {
         getRelationshipById(relDoc._id, (rd) => {
           var response:IResponse<IRelationship> = {
@@ -149,6 +164,7 @@ export function RelationshipAPI() {
           }
         }))
       } else {
+        console.log(err)
         cb(err)
       }
     })
@@ -206,13 +222,6 @@ export function RelationshipAPI() {
       subName:  (ident.type === "abn") ? ident.value : ""
     })
   }
-  
-  function getRandomParty(next:(partyDoc:IParty) => void):void {
-    partyModel.aggregate({ $sample: { size: 1 } },
-    (err:any, partyDocs:IParty[]) => {
-      next(partyDocs[0])
-    })
-  }
     
   function navFromIdentity(identityId:string,
   next:(rq:IRelationshipQuickInfo) => void) {
@@ -259,6 +268,10 @@ export function RelationshipAPI() {
     getQuickInfo(owner, relIds, (err:any, navRes:NavRes)=> {
       sendResponse(navRes, res)
     })})
+  }
+  
+  function sendError(msg:string, res:any) {
+    res.json(new ErrorResponse(500, msg))
   }
   
   router.get("/path/*", (req, res) => {
