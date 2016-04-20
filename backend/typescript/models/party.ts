@@ -3,7 +3,7 @@ import * as mongoose from "mongoose"
 
 // Due to "Machinary of Government" changes, agencies frequently change
 // their names & abbrieviations.
-export interface IAgency extends mongoose.Document {
+export interface Agency extends mongoose.Document {
   currentAbbrieviation:   string;
   previousAbbrieviations: string[];
   currentName:            string;
@@ -21,7 +21,7 @@ const AgencySchema = new mongoose.Schema({
   consumer:               String
 })
 
-export interface IRole extends mongoose.Document {
+export interface Role extends mongoose.Document {
   name:                 string;
   attributes:           {string: string};
   sharingAgencyIds:     string;
@@ -32,10 +32,10 @@ const RoleSchema = new mongoose.Schema({
   sharingAgencyIds:     [{type:mongoose.Schema.Types.ObjectId, ref:'Agency'}]
 })
 
-export interface IIdentity extends mongoose.Document {
+export interface Identity extends mongoose.Document {
   type:                   string;   // "abn", scheme, ...
   value:                  string;   // abn, scheme link id
-  agency:                 IAgency;  // agency the identifier is for
+  agency:                 Agency;  // agency the identifier is for
   //The Identity "provider" will supply a name by which to refer to
   // the party.  TBD whether RAM this record this from ABN or WofG CSPs.   
   name:                   string;
@@ -49,9 +49,9 @@ const IdentitySchema = new mongoose.Schema({
 
 // A Party is the concept that participates in Relationships.
 // see https://books.google.com.au/books?id=_fSVKDn7v04C&lpg=PP1&dq=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&pg=RA1-PA159#v=onepage&q=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&f=false  
-export interface IParty extends mongoose.Document {
-  roles:      IRole[];
-  identities: IIdentity[];
+export interface Party extends mongoose.Document {
+  roles:      Role[];
+  identities: Identity[];
   attributes: {string: string};
   deleted:    boolean;
 }

@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose"
 
-export interface IRelationship extends mongoose.Document {
+export interface Relationship extends mongoose.Document {
   /** A Subject is the party being effected (changed) by a transaction performed by the Delegate */
   type:               string;
   
