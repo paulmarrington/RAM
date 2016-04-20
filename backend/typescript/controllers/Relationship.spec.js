@@ -69,6 +69,10 @@ describe("a RAM Relationship", () => {
   })
 });
 
+function random_relationship_type() {
+    return faker.random.arrayElement["Business", "Online Service Provider"]
+}
+
 var new_relationships = function(count) {
   return new Promise(function(resolve, reject) {
   var abn_1 = partyHelper.fake_abn(), abn_2 = partyHelper.fake_abn()
@@ -79,7 +83,7 @@ var new_relationships = function(count) {
       var now = new Date()
       var tomorrow = new Date(now + 1000*60*60*12)
       var doc = {
-        type:             faker.company.bsNoun,
+        type:             random_relationship_type,
         subjectId:        party_1.identities[0]._id,
         subjectName:      party_1.identities[0].name,
         subjectAbn:       abn_1,

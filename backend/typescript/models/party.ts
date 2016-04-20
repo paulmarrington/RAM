@@ -50,7 +50,7 @@ const IdentitySchema = new mongoose.Schema({
 // A Party is the concept that participates in Relationships.
 // see https://books.google.com.au/books?id=_fSVKDn7v04C&lpg=PP1&dq=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&pg=RA1-PA159#v=onepage&q=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&f=false  
 export interface IParty extends mongoose.Document {
-  roles:      IRole;
+  roles:      IRole[];
   identities: IIdentity[];
   attributes: {string: string};
   deleted:    boolean;

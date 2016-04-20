@@ -3,7 +3,7 @@
 import * as express from "express";
 import {model,IParty} from "../models/party"
 import * as mongoose from "mongoose"
-import {IResponse, RAMMessageType} from "../../../commons/RamAPI"
+import {IResponse, RAMMessageType, ErrorResponse} from "../../../commons/RamAPI"
 
 function getPartyByIdentity
 (identityType:string, identityValue:string,
@@ -39,7 +39,7 @@ export function PartyAPI() {
         }
         res.json(response);
       } else {
-        res.status(500).send("Can't find party")
+        sendError("Can't find party", res)
       }
     })
   });
@@ -50,7 +50,7 @@ export function PartyAPI() {
   router.post("/", (req, res) => {
     model.create(req.body, (err: any, pd: IParty) => {
       if (err) {
-        res.status(500).send(err.toString());
+        sendError(err.toString(), res)
       } else {
         // we have to ask for it again because typescript can't
         // work well with mongoose doc.toJSON() so we have to use
@@ -75,7 +75,7 @@ export function PartyAPI() {
     }, req.body, { new: true },
     function(err: any, pd:IParty) {
       if (err) {
-        res.status(500).send(err.toString());
+        sendError(err.toString(), res)
       } else {
         // we have to ask for it again because typescript can't
         // work well with mongoose doc.toJSON() so we have to use
@@ -90,6 +90,10 @@ export function PartyAPI() {
       }
     })
   });
+  
+  function sendError(msg:string, res:any) {
+    res.json(new ErrorResponse(500, msg))
+  }
 
   return router;
 }
