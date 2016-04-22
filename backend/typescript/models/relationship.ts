@@ -1,13 +1,13 @@
-import * as mongoose from "mongoose"
+import * as mongoose from 'mongoose';
 
 export const status_options = [
-  "Invalid", "Pending", "Active", "Deleted", "Cancelled"
-]
+  'Invalid', 'Pending', 'Active', 'Deleted', 'Cancelled'
+];
 
 export interface Relationship extends mongoose.Document {
-  /** A Subject is the party being effected (changed) by a transaction performed by the Delegate */
+  /* A Subject is the party being effected (changed) by a transaction performed by the Delegate */
   type:               string;
-  
+
   subjectId:          string;
   subjectName:        string;
   subjectAbn:         string;
@@ -17,40 +17,38 @@ export interface Relationship extends mongoose.Document {
   delegateName:       string;
   delegateAbn:        string;
   delegateRole:       string;
-  /** when does this relationship start to be usable - this will be different to the creation timestamp */
+  /* when does this relationship start to be usable - this will be different to the creation timestamp */
   startTimestamp:     Date;
-  /** when does this relationship finish being usable */
+  /* when does this relationship finish being usable */
   endTimestamp:       Date;
-  /** when did this relationship get changed to being finished. */
+  /* when did this relationship get changed to being finished. */
   endEventTimestamp:  Date;
-  /** is this relationship: Invalid (semantically incorrect)/ Pending/ Active/ Inactive*/
+  /* is this relationship: Invalid (semantically incorrect)/ Pending/ Active/ Inactive*/
   status:             string;
   attributes:         {string: string};
   /** which agencies can see the existence of this Relationship */
   sharingAgencyIds:   [string];
-  /** Party's identity (including Authorisation Code) contain names,
-   * but the other party may prefer setting a different name by which to remember
-   * who they are dealing with. */
+  /* Party's identity (including Authorisation Code) contain names,
+   * but the other party may prefer setting a different name by which to remember who they are dealing with. */
   subjectsNickName:   string;
-  /** Party's identity (including Authorisation Code) contain names,
-   * but the other party may prefer setting a different name by which to remember
-   * who they are dealing with. */
+  /* Party's identity (including Authorisation Code) contain names,
+   * but the other party may prefer setting a different name by which to remember who they are dealing with. */
   delegatesNickName:  string;
-  
+
   deleted:            boolean;
 }
 const RelationshipSchema = new mongoose.Schema({
   type: {
     type: String,
-    enum: ["Business", "Online Service Provider"]
+    enum: ['Business', 'Online Service Provider']
   },
   subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
   subjectName: String,
-  subjectAbn: {type: String, default: ""},
+  subjectAbn: {type: String, default: ''},
   subjectRole: String,
   delegateId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
   delegateName: String,
-  delegateAbn: {type: String, default: ""},
+  delegateAbn: {type: String, default: ''},
   delegateRole: String,
   startTimestamp: Date,
   endTimestamp: Date,
@@ -61,6 +59,6 @@ const RelationshipSchema = new mongoose.Schema({
   subjectsNickName: String,
   delegatesNickName: String,
   deleted:    { type: Boolean, default: false }
-}, { timestamps: true })
+}, { timestamps: true });
 
-export const model = mongoose.model("Relationship", RelationshipSchema)
+export const model = mongoose.model('Relationship', RelationshipSchema);

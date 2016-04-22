@@ -1,13 +1,13 @@
-/// <reference path="_BackendTypes.ts" />
+/// <reference path='_BackendTypes.ts' />
 
-import * as winston from "winston";
-import * as morgan from "morgan";
-import * as api from "./ram/ServerAPI";
+import * as winston from 'winston';
+import * as morgan from 'morgan';
+import * as api from './ram/ServerAPI';
 
 const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
 
 export const logger = new (winston.Logger)({
-    level: "debug",
+    level: 'debug',
     exitOnError: false,
     transports: [
         new (winston.transports.Console)({
@@ -16,7 +16,7 @@ export const logger = new (winston.Logger)({
             colorize: true
         }),
         new (winston.transports.File)({
-            level: "debug",
+            level: 'debug',
             filename: `${conf.logDir}/ram.log`,
             handleExceptions: true,
             humanReadableUnhandledException: true,

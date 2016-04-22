@@ -1,4 +1,4 @@
-/// <reference path="../_BackendTypes.ts" />
+/// <reference path='../_BackendTypes.ts' />
 
 /*
  * Reset controller only works in debug mode (see conf.js).
@@ -9,32 +9,30 @@
  * check-in.
  */
 
-import * as express from "express";
-import * as url from "url";
-import * as path from "path";
-import {exec} from "child_process";
-import {IRamConf} from "../ram/ServerAPI";
-import {ErrorResponse} from "../../../commons/RamAPI";
-import * as cApi from "../../../commons/RamAPI";
+import * as express from 'express';
+import * as url from 'url';
+import * as path from 'path';
+import {exec} from 'child_process';
+import {ErrorResponse} from '../../../commons/RamAPI';
 
 interface Query { tag?: string; }
 
-export function ResetCtrl() {
+export const ResetCtrl = () => {
     const router: express.Router = express.Router();
 
-    router.get("/", function(req: express.Request,
-    res: express.Response, next: express.NextFunction) {
+    router.get('/', (req: express.Request,
+    res: express.Response, next: express.NextFunction) => {
 
       const query: Query = url.parse(req.url, true).query;
       if (!query.tag) {
-        res.send(new ErrorResponse(400, "usage: #url#/api/reset?tag=develop"));
+        res.send(new ErrorResponse(400, 'usage: #url#/api/reset?tag=develop'));
       } else {
-        const cmd = path.join("..", "update.sh " + query.tag);
-        exec(cmd, function(err, stdout, stderr){
-            res.send(new ErrorResponse(404, "tag/branch/hash not found for " + query.tag));
+        const cmd = path.join('..', 'update.sh ' + query.tag);
+        exec(cmd, (err, stdout, stderr) => {
+            res.send(new ErrorResponse(404, 'tag/branch/hash not found for ' + query.tag));
         });
       }
 
     });
     return router;
-}
+};
