@@ -1,7 +1,9 @@
 /// <reference path='../_BackendTypes.ts' />
 
 import {Router, Response} from 'express';
-import {model, Relationship, status_options} from '../models/relationship';
+import {
+  model, Relationship, status_options, access_levels
+} from '../models/relationship';
 import * as mongoose from 'mongoose';
 import {
   IRelationshipTableRes, IRelationshipTableRow,
@@ -173,13 +175,11 @@ export const RelationshipAPI = () => {
     (err, total) => {
     getDistinct(req.params.delegate_or_subject, req.params._id,
     'type', (err, types) => {
-    getDistinct(req.params.delegate_or_subject, req.params._id,
-    'status', (err, roles) => {
       const table = {
         total:                total,
         table:                rows,
         relationshipOptions:  types,
-        accessLevelOptions:   roles,
+        accessLevelOptions:   access_levels,
         statusValueOptions:   status_options
       };
       const response:IResponse<IRelationshipTableRes> = {
@@ -187,7 +187,7 @@ export const RelationshipAPI = () => {
         status:   200
       };
       res.json(response);
-    });});});});
+    });});});
   });
 
   return router;

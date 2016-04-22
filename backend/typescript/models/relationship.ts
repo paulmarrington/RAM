@@ -4,6 +4,10 @@ export const status_options = [
   'Invalid', 'Pending', 'Active', 'Deleted', 'Cancelled'
 ];
 
+export const access_levels = [
+  'Universal', 'Limited', 'Fixed', 'Legal Attorney'
+];
+
 export interface Relationship extends mongoose.Document {
   /* A Subject is the party being effected (changed) by a transaction performed by the Delegate */
   type:               string;

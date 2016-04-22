@@ -37,26 +37,6 @@ describe("a RAM Relationship", () => {
       })
     })
   })
-  it("can return breadcrumb required by UI", function(done) {
-    new_relationships(3).then(rels => {
-      var owner = rels[0].subjectId
-      var path = ["relationship/path", owner].concat(
-        rels.slice(1).map((rel) => rel._id))
-      rest.get(path.join("/")).then((res) => {
-        expect(res.partyChain.length).toEqual(3)
-        done()
-      })
-    })
-  })
-  it("can provide breadcrumb when only random subject", function(done) {
-    new_relationships(3).then(rels => {
-      var owner = rels[0].subjectId
-      rest.get("relationship/path").then((res) => {
-        expect(res.partyChain.length).toEqual(1)
-        done()
-      })
-    })
-  })
   it("can load tables required by UI", function(done) {
     new_relationships(12).then(rels => {
       rest.get("relationship/table/delegate/" +
