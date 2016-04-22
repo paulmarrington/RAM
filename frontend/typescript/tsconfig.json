@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
         "noImplicitAny": true,
+        "noImplicitReturns": false,
+        "noFallthroughCasesInSwitch": false,
         "removeComments": true,
         "preserveConstEnums": true,
         "outFile": "dist/js/app.js",
@@ -12,7 +14,11 @@
         "inlineSources": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "suppressImplicitAnyIndexErrors": true
+        "suppressImplicitAnyIndexErrors": true,
+        "noLib": false,
+        "pretty": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false
     },
     "files": [
         "./Boot.ts"
