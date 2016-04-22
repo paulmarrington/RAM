@@ -1,7 +1,7 @@
 /// <reference path="../_BackendTypes.ts" />
 
 import * as express from "express";
-import {model, Relationship} from "../models/relationship"
+import {model, Relationship, status_options} from "../models/relationship"
 import {Party, Identity, model as partyModel} from "../models/party"
 import * as mongoose from "mongoose"
 import {
@@ -185,7 +185,6 @@ export function RelationshipAPI() {
     model.distinct(field, query, cb)
   }
   
-  /* Provided navigation details for a relationship */
   router.get(
   "/table/:delegate_or_subject/:_id/page/:page/size/:pagesize",
   (req, res) => {
@@ -196,15 +195,13 @@ export function RelationshipAPI() {
     getDistinct(req.params.delegate_or_subject, req.params._id,
     "type", (err, types) => {
     getDistinct(req.params.delegate_or_subject, req.params._id,
-    "subjectRole", (err, statuses) => {
-    getDistinct(req.params.delegate_or_subject, req.params._id,
     "status", (err, roles) => {
       var table = {
         total:                total,
         table:                rows,
         relationshipOptions:  types,
         accessLevelOptions:   roles,
-        statusValueOptions:   statuses
+        statusValueOptions:   status_options
       }
       var response:IResponse<IRelationshipTableRes> = {
         data:     table,
@@ -215,7 +212,7 @@ export function RelationshipAPI() {
   });
   
   function quickInfoFromParty(partyDoc: Party):IRelationshipQuickInfo {
-    var ident:IIdentity = partyDoc.identities[0]
+    var ident:Identity = partyDoc.identities[0]
     return({
       id:       ident._id,
       name:     ident.name,

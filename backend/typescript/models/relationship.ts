@@ -1,5 +1,9 @@
 import * as mongoose from "mongoose"
 
+export const status_options = [
+  "Invalid", "Pending", "Active", "Deleted", "Cancelled"
+]
+
 export interface Relationship extends mongoose.Document {
   /** A Subject is the party being effected (changed) by a transaction performed by the Delegate */
   type:               string;
@@ -51,10 +55,7 @@ const RelationshipSchema = new mongoose.Schema({
   startTimestamp: Date,
   endTimestamp: Date,
   endEventTimestamp: Date,
-  status: {
-    type: String,
-    enum: ["Invalid", "Pending", "Active", "Deleted", "Cancelled"]
-  },
+  status: { type: String, enum: status_options },
   attributes: {},
   sharingAgencyIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agency' }],
   subjectsNickName: String,
