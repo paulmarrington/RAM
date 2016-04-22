@@ -1,6 +1,6 @@
 /// <reference path="../_BackendTypes.ts" />
 
-import * as express from "express";
+import * as express from "express"
 import {model,Party} from "../models/party"
 import * as mongoose from "mongoose"
 import {IResponse, RAMMessageType, ErrorResponse} from "../../../commons/RamAPI"
