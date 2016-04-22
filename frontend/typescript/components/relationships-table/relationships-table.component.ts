@@ -1,29 +1,32 @@
-import { Component, OnInit, Input} from "angular2/core";
+import {Component, OnInit, Input} from "angular2/core";
 import Rx from "rxjs/Rx";
-import { ControlGroup, Control, FORM_DIRECTIVES} from "angular2/common";
-
+import {ControlGroup, Control, FORM_DIRECTIVES} from "angular2/common";
 import {
     IRelationshipTableRes,
     EmptyRelationshipTableRes,
     IKeyValue, IRelationshipTableRow,
     RelationshipTableReq
 }  from "../../../../commons/RamAPI";
+import {RAMConstantsService} from "../../services/ram-constants.service";
 import {RAMNavService} from "../../services/ram-nav.service";
 import {RAMRestService} from "../../services/ram-rest.service";
 
 @Component({
-    selector: "ram-subjects-relationship-table",
-    templateUrl: "subjects-table.component.html",
+    selector: "ram-relationships-table",
+    templateUrl: "relationships-table.component.html",
     providers: [FORM_DIRECTIVES]
 })
-export class SubjectsTableComponent implements OnInit {
+export class RelationshipsTableComponent implements OnInit {
 
-    pageNo = 1;
-    pageSize = 5;
+    private _isLoading = new Rx.Subject<boolean>();
+    private isLoading$ = this._isLoading.asObservable();
+    @Input() delegate: boolean;
+
+    pageNo = 1; // initial value
+    pageSize = 5; // default value
     private _relIds = new Array<string>();
 
-    pageSizeOptions = [5, 10, 25, 100];
-    isLoading = false;
+    pageSizeOptions:Array<number> = [5,10,25,100]; // default value
 
     relationshipTableResponse$: Rx.Observable<IRelationshipTableRow[]>;
     statusOptions$: Rx.Observable<string[]>;
@@ -33,6 +36,7 @@ export class SubjectsTableComponent implements OnInit {
     filters$: ControlGroup;
 
     constructor(
+        private constants: RAMConstantsService,
         private nav: RAMNavService,
         private rest: RAMRestService) {
         this.filters$ = new ControlGroup({
@@ -41,7 +45,10 @@ export class SubjectsTableComponent implements OnInit {
             "relationship": new Control(""),
             "status": new Control("")
         });
+        this._isLoading.next(false);
         this.filters$.valueChanges.debounceTime(500).subscribe(() => this.refreshContents(this._relIds));
+        this.pageSizeOptions = constants.PageSizeOptions;
+        this.pageSize = constants.DefaultPageSize;
     }
 
     ngOnInit() {
@@ -59,11 +66,11 @@ export class SubjectsTableComponent implements OnInit {
 
     refreshContents(relIds: string[]) {
         this._relIds = relIds;
-        this.isLoading = true;
+        this._isLoading.next(true);
 
-        let response = this.rest.getSubjectTableData(
-            "SomePartyId", relIds, this.filters$.value, this.pageNo, this.pageSize)
-            .do(() => this.isLoading = false);
+        let response = this.rest.getRelationshipTableData(
+            "SomePartyId", this.delegate, relIds, this.filters$.value, this.pageNo, this.pageSize)
+            .do(() => this._isLoading.next(false));
 
         this.relationshipTableResponse$ = response.map(r => r.data.table);
         this.relationshipOptions$ = response.map(r => r.data.relationshipOptions);
@@ -74,9 +81,5 @@ export class SubjectsTableComponent implements OnInit {
 
     navigateTo(relId: string[]) {
         this.nav.navigateToRel(relId);
-    }
-
-    view(relId: string) {
-
     }
 }

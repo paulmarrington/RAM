@@ -16,5 +16,10 @@
     "files": [
         "typescript/server.ts",
         "typings/main.d.ts"
-    ]
+    ],
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true,
+        "**/jspm_packages/**": true
+    }
 }
