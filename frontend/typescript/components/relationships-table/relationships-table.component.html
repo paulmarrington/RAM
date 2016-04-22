@@ -2,7 +2,6 @@
     <div class="col-md-12">
         <form [ngFormModel]="filters$">
             <table class="table table-hover">
-
                 <thead>
                     <tr>
                         <th>
@@ -48,7 +47,8 @@
                         <td>{{row.rel}}</td>
                         <td class="hidden-xs ">{{row.access}}</td>
                         <td class="hidden-xs ">{{row.status}}</td>
-                        <td><a class="btn btn-primary btn-sm" (click)="navigateTo(row.relId)">act as →</a></td>
+                        <td *ngIf="delegate"><a class="btn btn-primary btn-sm" (click)="navigateTo(row.relId)">act as →</a></td>
+                        <td *ngIf="!delegate"><a class="btn btn-primary btn-sm" (click)="view(row.relId)">View</a></td>
                     </tr>
                 </tbody>
                 <tbody *ngIf="isLoading">
