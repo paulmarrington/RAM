@@ -56,6 +56,7 @@ function npm_module() {
 }
 npm_module gulp
 npm_module tsd
+npm_module typings
 npm_module jspm
 npm_module pm2
 npm_module jasmine
