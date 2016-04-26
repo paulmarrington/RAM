@@ -5,11 +5,14 @@
       Toggle again
     </a>
     <ol>
-      <li><a href="/index.html">Home</a>
-      <li><a href="/index.html#/party/123">Party</a>
-      <li><a href="/index.html#/party/123/relations">Relations</a>
+      <li><a href="javascript:gotoRAM('bob','pi')">Bob Bartholomew</a>
     </ol><p>
       <script>
+        window.gotoRAM = function(value, type) {
+          sessionStorage.setItem("RAM_identity_type", type)
+          sessionStorage.setItem("RAM_identity_value", value)
+          window.location.href = "/index.html"
+        }
         window.toggle_raw_display_mode = function() {
           var toggle_link = document.getElementById("toggle_raw_display_mode")
           if (sessionStorage.ram_display_mode === "raw") {

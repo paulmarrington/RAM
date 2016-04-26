@@ -99,9 +99,13 @@ export class RelationshipsTableComponent implements OnInit {
     private refreshContents(relIds: string[]) {
         this._relIds = relIds;
         this._isLoading = true;
+        const partyId:string = sessionStorage.getItem('RAM_identity_id');
         const response = this.rest.getRelationshipTableData(
-            this.constants.PartyId, this._delegate, relIds, this._filters$.value, this._pageNo, this._pageSize)
-            .do(() => this._isLoading = false);
+        partyId, this._delegate, relIds, this._filters$.value,
+        this._pageNo, this._pageSize)
+            .do(() => {
+                this._isLoading = false;
+            });
 
         this._relationshipTableResponse$ = response.map(r => r.table);
         this._relationshipOptions$ = response.map(r => r.relationshipOptions);

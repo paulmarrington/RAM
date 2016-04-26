@@ -44,7 +44,7 @@ server.use(methodOverride());
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
 server.use('/api/reset', ResetCtrl());
-server.use('/api/1/party', PartyAPI())
+server.use('/api/1/party', PartyAPI());
 server.use('/api/1/relationship', RelationshipAPI());
 
 // catch 404 and forward to error handler

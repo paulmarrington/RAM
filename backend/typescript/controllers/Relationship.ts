@@ -126,7 +126,7 @@ export const RelationshipAPI = () => {
     .find((err: string, relDocs:Relationship[]) => {
       if (!err) {
         cb (null, relDocs.map(relDoc => {
-          if (delegate_or_subject === 'subject') {
+          if (delegate_or_subject === 'delegate') {
             return {
               name: relDoc.subjectsNickName || relDoc.subjectName,
               subName: relDoc.subjectAbn,
