@@ -25,9 +25,13 @@ export class RelationshipsTableComponent implements OnInit {
         this._delegate = value;
     }
 
+    get delegate() {
+        return this._delegate;
+    }
+
     private _delegate: boolean;
 
-    private _pageNo: number;
+    private _pageNo = 1; // start from page one [one-based inded]
 
     private _pageSize: number;
 
@@ -95,19 +99,22 @@ export class RelationshipsTableComponent implements OnInit {
     private refreshContents(relIds: string[]) {
         this._relIds = relIds;
         this._isLoading = true;
-
-        let response = this.rest.getRelationshipTableData(
-            'SomePartyId', this.delegate, relIds, this._filters$.value, this._pageNo, this._pageSize)
+        const response = this.rest.getRelationshipTableData(
+            this.constants.PartyId, this._delegate, relIds, this._filters$.value, this._pageNo, this._pageSize)
             .do(() => this._isLoading = false);
 
-        this._relationshipTableResponse$ = response.map(r => r.data.table);
-        this._relationshipOptions$ = response.map(r => r.data.relationshipOptions);
-        this._accessLevelOptions$ = response.map(r => r.data.accessLevelOptions);
-        this._statusOptions$ = response.map(r => r.data.statusValueOptions);
+        this._relationshipTableResponse$ = response.map(r => r.table);
+        this._relationshipOptions$ = response.map(r => r.relationshipOptions);
+        this._accessLevelOptions$ = response.map(r => r.accessLevelOptions);
+        this._statusOptions$ = response.map(r => r.statusValueOptions);
         return response;
     }
 
     public navigateTo(relId: string[]) {
         this.nav.navigateToRel(relId);
+    }
+
+    public viewRelationship(relId: string) {
+        console.log(`Todo: View relationship: ${relId}`);
     }
 }
