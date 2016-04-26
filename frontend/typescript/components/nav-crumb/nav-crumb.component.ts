@@ -1,32 +1,30 @@
-import {EventEmitter, Input, Component, OnInit } from "angular2/core";
-import {IResponse,NavReq, NavRes, IRelationshipQuickInfo} from "../../../../commons/RamAPI";
-import {RAMNavService} from "../../services/ram-nav.service";
-import {RAMRestService} from "../../services/ram-rest.service";
-import {Subject, Observable} from "rxjs";
-// import * as _ from "lodash";
+import {Component} from 'angular2/core';
+import {IRelationshipQuickInfo} from '../../../../commons/RamAPI';
+import {RAMNavService} from '../../services/ram-nav.service';
+import {RAMRestService} from '../../services/ram-rest.service';
+import {Observable} from 'rxjs';
+// import * as _ from 'lodash';
 
 @Component({
-    selector: "nav-crumb",
-    templateUrl: "nav-crumb.component.html"
+    selector: 'nav-crumb',
+    templateUrl: 'nav-crumb.component.html'
 })
-export class NavCrumbComponent implements OnInit {
-    relChain$: Observable<IRelationshipQuickInfo[]>;
-    subjectUser$: Observable<IRelationshipQuickInfo>;
-    partyId = "Magic123";
+export class NavCrumbComponent {
+    private _relChain$: Observable<IRelationshipQuickInfo[]>;
+    private _subjectUser$: Observable<IRelationshipQuickInfo>;
 
-    constructor(private nav: RAMNavService,private rest:RAMRestService) {
+    public get subjectUser$() {
+        return this._subjectUser$;
     }
 
-    navigateTo(relId: string[]) {
+    public get relChain$() {
+        return this._relChain$;
+    }
+    constructor(private nav: RAMNavService, private rest: RAMRestService) {
+    }
+
+    public navigateTo(relId: string[]) {
         this.nav.navigateToRel(relId);
-    }
-
-    ngOnInit() {
-        this.relChain$ = this.nav.navObservable$.switchMap(res => {
-            return this.rest.getNavCrumb(this.partyId, res);
-        }).map((res: IResponse<NavRes>) => res.data.partyChain);
-
-        this.subjectUser$ = this.relChain$.map(v => v[v.length-1]);
     }
 
 }
