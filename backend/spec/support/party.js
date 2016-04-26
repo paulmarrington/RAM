@@ -10,12 +10,13 @@ var get_party = function(abn) {
 }
 
 var new_party = function(abn) {
+  var name = faker.company.companyName()
   var doc = {
     roles: [
       {name:faker.name.jobArea(), attributes:{}, sharingAgencyIds:[]}
     ],
     attributes: {},
-    identities: [{type: "abn", value: abn, name: faker.company.companyName()}]
+    identities: [{type: "abn", value: abn, name: name}]
   }
   return rest.post("Party", doc)
 }
