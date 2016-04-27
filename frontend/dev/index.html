@@ -1,41 +1,9 @@
 <html>
   <body> 
-    <a id="toggle_raw_display_mode" style="float:right"
-    href="javascript:toggle_raw_display_mode()">
-      Toggle again
-    </a>
     <ol>
-      <li><a href="javascript:gotoRAM('bob','pi')">Bob Bartholomew</a>
+      <li><a href="#/relationships/pi/bob">Bob Bartholomew</a>
     </ol><p>
       <script>
-        window.gotoRAM = function(value, type) {
-          sessionStorage.setItem("RAM_identity_type", type)
-          sessionStorage.setItem("RAM_identity_value", value)
-          window.location.href = "/index.html"
-        }
-        window.toggle_raw_display_mode = function() {
-          var toggle_link = document.getElementById("toggle_raw_display_mode")
-          if (sessionStorage.ram_display_mode === "raw") {
-            sessionStorage.ram_display_mode = "full"
-            toggle_link.innerHTML = "Toggle to Raw Mode"
-          } else {
-            sessionStorage.ram_display_mode = "raw"
-            toggle_link.innerHTML = "Toggle to Wrapped Mode"
-          }
-        }
-        http_request = function(uri, type, callback) {
-          var req = new XMLHttpRequest()
-          req.open(type, uri, true)
-          req.setRequestHeader("Cache-Control", "no-cache")
-          req.onerror = function(err) {
-            callback(err)
-          }
-          req.onload = function() {
-            if (req.status === 200) callback(null, req.responseText)
-            else                    req.onerror(req.statusText)
-          }
-          req.send()
-        }
         window.redeploy = function() {
           var msg_element = document.getElementById("msg")
           var tag_element = document.getElementById("tag")

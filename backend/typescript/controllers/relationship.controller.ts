@@ -1,5 +1,6 @@
 import {sendDocument, sendNotFoundError, sendError} from './helpers';
 import {Router} from 'express';
+import {PartyModel} from '../models/party.model';
 import {
   RelationshipModel, IRelationship, status_options, access_levels
 } from '../models/relationship.model';
@@ -115,11 +116,13 @@ export const RelationshipAPI = () => {
     return RelationshipModel.distinct(field, createQueryObject(delegate_or_subject, id)).exec();
   }
 
-  router.get('/table/:delegate_or_subject/:id/page/:page/size/:pagesize', (req, res) => {
-    const id = new mongoose.Types.ObjectId(req.params.id);
-    RelationshipModel.find(createQueryObject(req.params.delegate_or_subject, id))
-      .skip((parseInt(req.params.page) - 1) * parseInt(req.params.pageSize))
-      .limit(parseInt(req.params.pageSize)).exec().then(sendRelationshipTable(res, id, req.params.delegate_or_subject));
+  router.get('/table/:delegate_or_subject/:value/:type/page/:page/size/:pagesize', (req, res) => {
+    PartyModel.getPartyByIdentity(req.params.type, req.params.value).then((party) => {
+      RelationshipModel.find(createQueryObject(req.params.delegate_or_subject, party._id))
+        .skip((parseInt(req.params.page) - 1) * parseInt(req.params.pageSize))
+        .limit(parseInt(req.params.pageSize)).exec()
+        .then(sendRelationshipTable(res, party._id, req.params.delegate_or_subject), sendNotFoundError(res));
+    }, sendNotFoundError(res));
   });
   return router;
 };
