@@ -6,15 +6,17 @@ import 'rxjs/Rx';
 // import 'ng2-bootstrap';
 import {bootstrap} from 'angular2/platform/browser';
 import {AppComponent} from './components/app/app.component';
-import { HTTP_PROVIDERS, Http, Response } from 'angular2/http';
-import {Injector} from 'angular2/core';
+import {HTTP_PROVIDERS, Http, Response } from 'angular2/http';
 import {IResponse} from '../../commons/RamAPI';
-
-const injector = Injector.resolveAndCreate([HTTP_PROVIDERS]);
-const http = injector.get(Http);
 
 // import {enableProdMode} from 'angular2/core';
 // enableProdMode();
+
+
+import {Injector} from 'angular2/core';
+const injector = Injector.resolveAndCreate([HTTP_PROVIDERS]);
+const http = injector.get(Http);
+
 
 const url = '/api/1/Party/Identity/'+
 sessionStorage.getItem('RAM_identity_value')+'/'+

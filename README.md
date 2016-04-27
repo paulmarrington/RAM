@@ -46,9 +46,20 @@
     * Clones a local copy of your FORK of RAM
     * Uses _npm/tsd/jspm_ to install dependencies
     * Installs MongoDB
-    * Installs Node
+    * Installs Node 6.x.x
     * Installs Visual Studio Code
 
+## Windows Manual installation - Windows 7
+ * Download and install latest version of MongoDB
+ * Install python 2.7 and make sure it is also on the PATH 
+ * Install NodeJs 6.x.x 
+ * npm config set python python2.7 --global
+ * npm config set msvs_version 2015 --global
+ * Install VC++ Build Tools Technical Preview from http://go.microsoft.com/fwlink/?LinkId=691132, choose Custom Install, and select both Windows 8.1 and Windows 10 SDKs.
+ * npm install typescript tslint eslint gulp-cli jasmine jspm -g
+ * cd backend; npm install
+ * cd frontend; npm install; jspm install
+ 
 ## AWS Install
 
 * Each server requires its own configuration file. Template configuration file at _conf/conf.js_. You must set an environment variable called *RAM_CONF* pointing to the absolute path of your configuration file.

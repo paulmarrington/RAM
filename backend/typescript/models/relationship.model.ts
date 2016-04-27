@@ -27,7 +27,7 @@ export interface IRelationship extends mongoose.Document {
   delegateName: string;
   delegateAbn: string;
   delegateRole: string;
-  /* when does this relationship start to be usable - this will be different to the creation timestamp */
+  /* when does thissour relationship start to be usable - this will be different to the creation timestamp */
   startTimestamp: Date;
   /* when does this relationship finish being usable */
   endTimestamp: Date;
