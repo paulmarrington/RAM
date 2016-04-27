@@ -25,7 +25,7 @@ gulp.task("ts:lint", function () {
 });
 
 gulp.task("ts:compile", ["ts:lint"], function () {
-    var tsResult = gulp.src(["typescript/**/*.ts","../commons/**/*.ts"])
+    var tsResult = gulp.src(["typescript/**/*.ts", "../commons/**/*.ts"])
         .pipe(sourcemaps.init())
         .pipe(ts(tsProject));
 
@@ -35,32 +35,33 @@ gulp.task("ts:compile", ["ts:lint"], function () {
 });
 
 gulp.task("ts:watch", ["ts:compile"], function () {
-    gulp.watch(["typescript/**/*.ts","../commons/**/*.ts","typings/**/*.d.ts"], ["ts:compile"]);
+    gulp.watch(["typescript/**/*.ts", "../commons/**/*.ts", "typings/**/*.d.ts"], ["ts:compile"]);
 });
 
 
-gulp.task('serve',["ts:watch"], function () {
-  nodemon({ script: 'dist/backend/typescript/Server.js',
-          "verbose":true,
-           "delay": 5,
-            "execMap": {
-                "js": "node --harmony"
-            }
-           })
-    .on('restart', function () {
-      console.log('RAM Backend Server: restarted [OK]')
+gulp.task('serve', ["ts:watch"], function () {
+    nodemon({
+        script: 'dist/backend/typescript/Server.js',
+        "verbose": true,
+        "delay": 5,
+        "execMap": {
+            "js": "node --harmony"
+        }
     })
+        .on('restart', function () {
+            console.log('RAM Backend Server: restarted [OK]')
+        });
 });
 
-gulp.task("copy:resources",function (params) {
-   return gulp.src(["package.json", "pm2.json"])
+gulp.task("copy:resources", function (params) {
+    return gulp.src(["package.json", "pm2.json"])
         .pipe(gulp.dest("dist/"));
 });
 
 gulp.task("publish:tarball",
-["ts:compile","copy:resources"], function () {
-    return gulp.src("dist/**/*")
-        .pipe(tar('backend-dist.tar', {mode: null}))
-        .pipe(gzip())
-        .pipe(gulp.dest('./'));
-});
+    ["ts:compile", "copy:resources"], function () {
+        return gulp.src("dist/**/*")
+            .pipe(tar('backend-dist.tar', { mode: null }))
+            .pipe(gzip())
+            .pipe(gulp.dest('./'));
+    });

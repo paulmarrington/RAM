@@ -4,6 +4,7 @@ import * as winston from 'winston';
 import * as morgan from 'morgan';
 import * as api from './ram/ServerAPI';
 
+/* tslint:disable:no-var-requires */
 const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
 
 export const logger = new (winston.Logger)({
@@ -28,8 +29,10 @@ export const logger = new (winston.Logger)({
     ]
 });
 
-export const logStream: morgan.StreamOptions = {
-    write (message: string) {
+class ConsoleLogWriter implements morgan.StreamOptions {
+    public write(message: string) {
         logger.info(message);
     }
-};
+}
+
+export const logStream: morgan.StreamOptions = new ConsoleLogWriter();

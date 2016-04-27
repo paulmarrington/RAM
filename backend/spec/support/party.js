@@ -6,7 +6,7 @@ function fake_abn() {
 }
 
 var get_party = function(abn) {
-  return rest.get("Party/Identity/" + abn + "/abn")
+  return rest.get("party/identity/" + abn + "/abn")
 }
 
 var new_party = function(abn) {
