@@ -66,21 +66,3 @@ export interface IRelationshipTableRow {
     access: string;
     status: string;
 }
-
-/***************************************************
- *            NAVIGATION
- ***************************************************/
-
-export class NavReq {
-    constructor(public relId?: string) { }
-}
-
-export class NavRes {
-    partyChain: IRelationshipQuickInfo[];
-}
-
-export interface IRelationshipQuickInfo {
-    id: string;
-    name: string;
-    subName?: string;
-}

@@ -5,15 +5,15 @@ import * as bodyParser from 'body-parser';
 import * as methodOverride from 'method-override';
 import * as cApi from '../../commons/RamAPI';
 import * as api from './ram/ServerAPI';
-import {ResetCtrl} from './controllers/Reset.server.ctrl';
-import {logStream} from './Logger';
+import {ResetCtrl} from './controllers/reset.server.controller';
+import {logStream} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
 // Prepare mongoose for daily operations
 import * as mongoose from 'mongoose';
 mongoose.connect('mongodb://localhost/ram');
 
-import {PartyAPI} from './controllers/Party';
-import {RelationshipAPI} from './controllers/Relationship';
+import {PartyAPI} from './controllers/party.controller';
+import {RelationshipAPI} from './controllers/relationship.controller';
 
 if (process.env.RAM_CONF === void 0 ||
 process.env.RAM_CONF.trim().length === 0) {
@@ -21,7 +21,7 @@ process.env.RAM_CONF.trim().length === 0) {
     process.exit(1);
 }
 
-const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
+/* tslint:disable:no-var-requires */ const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
 
  const server = express();
 
@@ -44,7 +44,7 @@ server.use(methodOverride());
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
 server.use('/api/reset', ResetCtrl());
-server.use('/api/1/party', PartyAPI())
+server.use('/api/1/party', PartyAPI());
 server.use('/api/1/relationship', RelationshipAPI());
 
 // catch 404 and forward to error handler
