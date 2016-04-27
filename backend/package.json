@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {},
   "dependencies": {
+    "async": "^2.0.0-rc.3",
     "body-parser": "^1.15.0",
     "debug": "^2.2.0",
     "express": "^4.13.4",
@@ -11,6 +12,7 @@
     "gulp": "^3.9.1",
     "jade": "^1.11.0",
     "jsonwebtoken": "^5.7.0",
+    "lodash": "^4.11.1",
     "method-override": "^2.3.5",
     "mongodb": "^2.1.9",
     "mongoose": "^4.4.10",
@@ -28,7 +30,7 @@
   "devDependencies": {
     "codelyzer": "0.0.15",
     "expect.js": "^0.3.1",
-    "faker":  "^3.1.0",
+    "faker": "^3.1.0",
     "gulp-gzip": "^1.2.0",
     "gulp-nodemon": "^2.0.6",
     "gulp-rename": "^1.2.2",
