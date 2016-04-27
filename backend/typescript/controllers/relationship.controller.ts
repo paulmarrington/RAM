@@ -85,7 +85,7 @@ export const RelationshipAPI = () => {
 
   function mapRows(delegate_or_subject: string, relDocs: IRelationship[]) {
     return relDocs.map(relDoc => {
-      if (delegate_or_subject === 'subject') {
+      if (delegate_or_subject === 'delegate') {
         return {
           name: relDoc.subjectsNickName || relDoc.subjectName,
           subName: relDoc.subjectAbn,

@@ -10,6 +10,10 @@ export const access_levels = [
   'Universal', 'Limited', 'Fixed', 'Legal Attorney'
 ];
 
+export const relationship_types = [
+  'Business', 'Online Service Provider'
+];
+
 export interface IRelationship extends mongoose.Document {
   /* A Subject is the party being effected (changed) by a transaction performed by the Delegate */
   type: string;
@@ -23,7 +27,7 @@ export interface IRelationship extends mongoose.Document {
   delegateName: string;
   delegateAbn: string;
   delegateRole: string;
-  /* when does this relationship start to be usable - this will be different to the creation timestamp */
+  /* when does thissour relationship start to be usable - this will be different to the creation timestamp */
   startTimestamp: Date;
   /* when does this relationship finish being usable */
   endTimestamp: Date;
@@ -46,7 +50,7 @@ export interface IRelationship extends mongoose.Document {
 const RelationshipSchema = new mongoose.Schema({
   type: {
     type: String,
-    enum: ['Business', 'Online Service Provider']
+    //enum: relationship_types
   },
   subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
   subjectName: String,
