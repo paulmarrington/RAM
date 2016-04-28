@@ -5,7 +5,7 @@ import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RelationshipsComponent} from '../relationships/relationships.component';
-import {HashLocationStrategy, LocationStrategy} from 'angular2/router';
+import {HashLocationStrategy, LocationStrategy} from 'angular2/platform/common';
 import {provide} from 'angular2/core';
 import 'ng2-bootstrap';
 

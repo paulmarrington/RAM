@@ -16,7 +16,9 @@ export class RAMRestService {
     public getRelationshipTableData(identityResolver: string, identityValue: string, isDelegate: boolean, relPathIds: string[],
         filters: RelationshipTableReq, pageNo: number, pageSize: number
     ): Rx.Observable<IRelationshipTableRes> {
-        const url = `/api/1/relationship/table/${isDelegate ? 'delegate' : 'subject'}/${identityValue}/${identityResolver}/page/${pageNo}/size/${pageSize}`;
+        const url = `/api/1/relationship/table/${isDelegate ? 'delegate' : 'subject'}`
+            +
+            `/${identityValue}/${identityResolver}/page/${pageNo}/size/${pageSize}`;
         return this.http.get(url).map(this.extractData).publishReplay().refCount();
     }
 
