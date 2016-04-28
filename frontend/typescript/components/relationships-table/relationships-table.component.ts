@@ -1,4 +1,5 @@
 import {Component, OnInit, Input} from 'angular2/core';
+import {RouteParams} from 'angular2/router';
 import Rx from 'rxjs/Rx';
 import {ControlGroup, Control, FORM_DIRECTIVES} from 'angular2/common';
 import {
@@ -74,6 +75,7 @@ export class RelationshipsTableComponent implements OnInit {
 
     constructor(
         private constants: RAMConstantsService,
+        private routeParams:RouteParams,
         private nav: RAMNavService,
         private rest: RAMRestService) {
         this._filters$ = new ControlGroup({
@@ -99,9 +101,11 @@ export class RelationshipsTableComponent implements OnInit {
     private refreshContents(relIds: string[]) {
         this._relIds = relIds;
         this._isLoading = true;
-        const partyId:string = sessionStorage.getItem('RAM_identity_id');
-        const response = this.rest.getRelationshipTableData(
-        partyId, this._delegate, relIds, this._filters$.value,
+        const identityValue = this.routeParams.get('identityValue');
+        const identityResolver = this.routeParams.get('identityResolver');
+        console.log(identityValue);
+        const response = this.rest.getRelationshipTableData(identityResolver,
+        identityValue, this._delegate, relIds, this._filters$.value,
         this._pageNo, this._pageSize)
             .do(() => {
                 this._isLoading = false;

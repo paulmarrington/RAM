@@ -8,6 +8,5 @@ import {RAMRestService} from '../../services/ram-rest.service';
     templateUrl: 'relationships.component.html',
     directives: [RelationshipsTableComponent, NavCrumbComponent]
 })
-export class RelationshipsComponent {
-    constructor(private rest: RAMRestService) { }
+export class RelationshipsComponent {    
 }
