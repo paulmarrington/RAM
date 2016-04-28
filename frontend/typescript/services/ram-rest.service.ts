@@ -13,10 +13,12 @@ export class RAMRestService {
     constructor(private http: Http) {
     }
 
-    public getRelationshipTableData(partyId: string, isDelegate: boolean, relPathIds: string[],
+    public getRelationshipTableData(identityResolver: string, identityValue: string, isDelegate: boolean, relPathIds: string[],
         filters: RelationshipTableReq, pageNo: number, pageSize: number
     ): Rx.Observable<IRelationshipTableRes> {
-        const url = `/api/1/relationship/table/${isDelegate ? 'delegate' : 'subject'}/${partyId}/page/${pageNo}/size/${pageSize}`;
+        const url = `/api/1/relationship/table/${isDelegate ? 'delegate' : 'subject'}`
+            +
+            `/${identityValue}/${identityResolver}/page/${pageNo}/size/${pageSize}`;
         return this.http.get(url).map(this.extractData).publishReplay().refCount();
     }
 

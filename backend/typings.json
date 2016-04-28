@@ -7,6 +7,7 @@
     "express-unless": "registry:dt/express-unless#0.0.0+20160317120654",
     "express-validator": "registry:dt/express-validator#2.9.0+20160317120654",
     "jsonwebtoken": "registry:dt/jsonwebtoken#0.0.0+20160316155526",
+    "lodash": "registry:dt/lodash#3.10.0+20160330154726",
     "method-override": "registry:dt/method-override#0.0.0+20160317120654",
     "mime": "registry:dt/mime#0.0.0+20160316155526",
     "mongoose": "registry:dt/mongoose#3.8.5+20160316155526",

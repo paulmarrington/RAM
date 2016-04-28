@@ -63,7 +63,7 @@ if ! type curl > /dev/null; then
   apt-get install -y curl
 fi
 export NPM_CONFIG_LOGLEVEL=info
-export NODE_VERSION=4.2.6
+export NODE_VERSION=6.0.0
 export NV=$NODE_VERSION
 export NVF=node-v$NV-linux-x64.tar.gz
 
@@ -90,7 +90,7 @@ cat > update.sh << EOF
   # The latter is gained by going to a comits page
   # and press the button for copying hash.
   export ramrel="\${1:-develop}"
-  rm -f *end-dist.zip
+  rm -f *end-dist.tar.gz
   cd /ram/frontend
   curl -SLO "https://rawgit.com/atogov/RAM/\$ramrel/frontend/frontend-dist.tar.gz"
   tar -xzf frontend-dist.tar.gz
@@ -112,7 +112,6 @@ chmod +x update.sh
 npm install -g pm2
 pm2 completion install
 
-apt-get install -y unzip
 /ram/update.sh develop
 chown -R ubuntu /ram
 chgrp -R ubuntu /ram
