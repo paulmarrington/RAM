@@ -13,7 +13,7 @@ import * as mongoose from 'mongoose';
 mongoose.connect('mongodb://localhost/ram');
 
 import {PartyAPI} from './controllers/party.controller';
-import {RelationshipAPI} from './controllers/relationship.controller';
+import {RelationshipController} from './controllers/relationship.controller';
 
 if (process.env.RAM_CONF === void 0 ||
 process.env.RAM_CONF.trim().length === 0) {
@@ -45,7 +45,7 @@ server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
 server.use('/api/reset', ResetCtrl());
 server.use('/api/1/party', PartyAPI());
-server.use('/api/1/relationship', RelationshipAPI());
+server.use('/api/1/relationship', new RelationshipController().assignRoutes(express.Router()));
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
