@@ -1,7 +1,7 @@
 import {Component, OnInit, Input} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 import Rx from 'rxjs/Rx';
-import {ControlGroup, Control, FORM_DIRECTIVES} from 'angular2/common';
+import {ControlGroup, Control, FORM_DIRECTIVES,FORM_PROVIDERS} from 'angular2/common';
 import {
     IRelationshipTableRow
 }  from '../../../../commons/RamAPI';
@@ -12,7 +12,8 @@ import {RAMRestService} from '../../services/ram-rest.service';
 @Component({
     selector: 'ram-relationships-table',
     templateUrl: 'relationships-table.component.html',
-    providers: [FORM_DIRECTIVES]
+    providers: [FORM_PROVIDERS],
+    directives: [FORM_DIRECTIVES]
 })
 export class RelationshipsTableComponent implements OnInit {
 
@@ -103,7 +104,6 @@ export class RelationshipsTableComponent implements OnInit {
         this._isLoading = true;
         const identityValue = this.routeParams.get('identityValue');
         const identityResolver = this.routeParams.get('identityResolver');
-        console.log(identityValue);
         const response = this.rest.getRelationshipTableData(identityResolver,
         identityValue, this._delegate, relIds, this._filters$.value,
         this._pageNo, this._pageSize)
