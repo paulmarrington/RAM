@@ -5,15 +5,15 @@ import * as bodyParser from 'body-parser';
 import * as methodOverride from 'method-override';
 import * as cApi from '../../commons/RamAPI';
 import * as api from './ram/ServerAPI';
-import {ResetCtrl} from './controllers/reset.server.controller';
 import {logStream} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
 // Prepare mongoose for daily operations
 import * as mongoose from 'mongoose';
 mongoose.connect('mongodb://localhost/ram');
 
-import {PartyAPI} from './controllers/party.controller';
+import {PartyController} from './controllers/party.controller';
 import {RelationshipController} from './controllers/relationship.controller';
+import {ResetController} from './controllers/reset.server.controller';
 
 if (process.env.RAM_CONF === void 0 ||
 process.env.RAM_CONF.trim().length === 0) {
@@ -43,9 +43,12 @@ server.use(methodOverride());
 
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 
-server.use('/api/reset', ResetCtrl());
-server.use('/api/1/party', PartyAPI());
-server.use('/api/1/relationship', new RelationshipController().assignRoutes(express.Router()));
+server.use('/api/reset',
+    new ResetController().assignRoutes(express.Router()));
+server.use('/api/1/party',
+    new PartyController().assignRoutes(express.Router()));
+server.use('/api/1/relationship',
+    new RelationshipController().assignRoutes(express.Router()));
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
