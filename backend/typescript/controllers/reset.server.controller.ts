@@ -9,30 +9,30 @@
  * check-in.
  */
 
-import * as express from 'express';
+import {Router, Request, Response} from 'express';
 import * as url from 'url';
 import * as path from 'path';
 import {exec} from 'child_process';
-import {ErrorResponse} from '../../../commons/RamAPI';
+import {sendError} from './helpers';
 
 interface Query { tag?: string; }
 
-export const ResetCtrl = () => {
-    const router: express.Router = express.Router();
+export class ResetController {
 
-    router.get('/', (req: express.Request,
-    res: express.Response, next: express.NextFunction) => {
-
-      const query: Query = url.parse(req.url, true).query;
-      if (!query.tag) {
-        res.send(new ErrorResponse(400, 'usage: #url#/api/reset?tag=develop'));
-      } else {
-        const cmd = path.join('..', 'update.sh ' + query.tag);
-        exec(cmd, (err, stdout, stderr) => {
-            res.send(new ErrorResponse(404, 'tag/branch/hash not found for ' + query.tag));
-        });
-      }
-
-    });
+  private reset = (req: Request, res: Response) => {
+    const query: Query = url.parse(req.url, true).query;
+    if (!query.tag) {
+      sendError(res);
+    } else {
+      const cmd = path.join('..', 'update.sh ' + query.tag);
+      exec(cmd, (err, stdout, stderr) => {
+        // don't need a non-error response as server restarts
+        sendError(res);
+      });
+    }
+  };
+  public assignRoutes = (router: Router) => {
+    router.get('/', this.reset);
     return router;
-};
+  }
+}
