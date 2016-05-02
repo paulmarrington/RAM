@@ -8,12 +8,12 @@ System.config({
   },
 
   map: {
-    "angular2": "npm:angular2@2.0.0-beta.16",
+    "angular2": "npm:angular2@2.0.0-beta.17",
     "es6-shim": "github:es-shims/es6-shim@0.35.0",
     "lodash": "npm:lodash@4.11.1",
-    "ng2-bootstrap": "npm:ng2-bootstrap@1.0.14",
+    "ng2-bootstrap": "npm:ng2-bootstrap@1.0.15",
     "rxjs": "npm:rxjs@5.0.0-beta.7",
-    "urijs": "npm:urijs@1.17.1",
+    "urijs": "npm:urijs@1.18.0",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
@@ -27,6 +27,11 @@ System.config({
       "util": "npm:util@0.10.3"
     },
     "npm:angular2@2.0.0-beta.16": {
+      "reflect-metadata": "npm:reflect-metadata@0.1.2",
+      "rxjs": "npm:rxjs@5.0.0-beta.7",
+      "zone.js": "npm:zone.js@0.6.12"
+    },
+    "npm:angular2@2.0.0-beta.17": {
       "reflect-metadata": "npm:reflect-metadata@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.7",
       "zone.js": "npm:zone.js@0.6.12"
@@ -49,7 +54,7 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:ng2-bootstrap@1.0.14": {
+    "npm:ng2-bootstrap@1.0.15": {
       "angular2": "npm:angular2@2.0.0-beta.16",
       "moment": "npm:moment@2.13.0"
     },
@@ -65,7 +70,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "symbol-observable": "npm:symbol-observable@0.2.4"
     },
-    "npm:urijs@1.17.1": {
+    "npm:urijs@1.18.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:util@0.10.3": {
