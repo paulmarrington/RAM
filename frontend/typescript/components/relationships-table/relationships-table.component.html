@@ -22,27 +22,27 @@
                         <th>
                             <select class="form-control" [ngFormControl]="filters$.controls['relationship']">
                                 <option value="">(All)</option>
-                                <option *ngFor="#item of relationshipOptions$ | async" value="{{item}}">
+                                <option *ngFor="let item of relationshipOptions$ | async" value="{{item}}">
                                     {{item}}</option>
                             </select>
                         </th>
                         <th class="hidden-xs">
                             <select [ngFormControl]="filters$.controls['accessLevel']" class="form-control">
                                 <option value="">(All)</option>
-                                <option *ngFor="#item of accessLevelOptions$ |async " value="{{item}}">{{item}}</option>
+                                <option *ngFor="let item of accessLevelOptions$ |async " value="{{item}}">{{item}}</option>
                             </select>
                         </th>
                         <th class="hidden-xs">
                             <select class="form-control" [ngFormControl]="filters$.controls['status']">
                                 <option value="">(All)</option>
-                                <option *ngFor="#item of statusOptions$|async" value="{{item}}">{{item}}</option>
+                                <option *ngFor="let item of statusOptions$|async" value="{{item}}">{{item}}</option>
                             </select>
                         </th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody *ngIf="!isLoading">
-                    <tr *ngFor="#row of relationshipTableResponse$ | async">
+                    <tr *ngFor="let row of relationshipTableResponse$ | async">
                         <td><a href="">{{row.name}}</a><small class="show" *ngIf="row.abn"> ABN: {{row.abn}}</small></td>
                         <td>{{row.rel}}</td>
                         <td class="hidden-xs ">{{row.access}}</td>
@@ -78,7 +78,7 @@
     <div class="col-md-4">
         <div class="pull-md-right text-xs-center">
             <div class="btn-group pagination" data-toggle="buttons">
-                <label class="btn btn-primary" *ngFor="#pSizeValue of pageSizeOptions" [class.active]="pSizeValue == pageSize">
+                <label class="btn btn-primary" *ngFor="let pSizeValue of pageSizeOptions" [class.active]="pSizeValue == pageSize">
                     <input type="radio" autocomplete="off" (ngModelChange)="setPageSize(pSizeValue)" name="{{pSizeValue}}"> {{pSizeValue}}
                 </label>
             </div>
