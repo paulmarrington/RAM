@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import {IRAMObject, RAMSchema} from './base';
 
 //todo:enum
 export const status_options = [
@@ -14,7 +15,7 @@ export const relationship_types = [
   'Business', 'Online Service Provider'
 ];
 
-export interface IRelationship extends mongoose.Document {
+export interface IRelationship extends IRAMObject {
   /* A Subject is the party being effected (changed) by a transaction performed by the Delegate */
   type: string;
 
@@ -47,7 +48,7 @@ export interface IRelationship extends mongoose.Document {
 
   deleted: boolean;
 }
-const RelationshipSchema = new mongoose.Schema({
+const RelationshipSchema = RAMSchema({
   type: {
     type: String,
     //enum: relationship_types
@@ -69,7 +70,7 @@ const RelationshipSchema = new mongoose.Schema({
   subjectsNickName: String,
   delegatesNickName: String,
   deleted: { type: Boolean, default: false }
-}, { timestamps: true });
+});
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
   getRelationshipById: (id: mongoose.Types.ObjectId) => mongoose.Promise<IRelationship>;

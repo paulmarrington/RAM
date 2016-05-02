@@ -1,9 +1,10 @@
 /// <reference path='../_BackendTypes.ts' />
 import * as mongoose from 'mongoose';
+import {IRAMObject, RAMSchema} from './base';
 
 // Due to 'Machinary of Government' changes, agencies frequently change
 // their names & abbrieviations.
-export interface Agency extends mongoose.Document {
+export interface Agency extends IRAMObject {
   currentAbbrieviation: string;
   previousAbbrieviations: string[];
   currentName: string;
@@ -13,7 +14,7 @@ export interface Agency extends mongoose.Document {
   // identifier is for (assuming it is relevant)
   consumer: string;
 }
-const AgencySchema = new mongoose.Schema({
+const AgencySchema = RAMSchema({
   currentAbbrieviation: { type: String, trim: true },
   previousAbbrieviations: { type: [String], default: [] },
   currentName: { type: String, trim: true },
@@ -21,18 +22,18 @@ const AgencySchema = new mongoose.Schema({
   consumer: String
 });
 
-export interface IRole extends mongoose.Document {
+export interface IRole extends IRAMObject {
   name: string;
   attributes: { string: string };
   sharingAgencyIds: string;
 }
-const RoleSchema = new mongoose.Schema({
+const RoleSchema = RAMSchema({
   name: String,
   attributes: {},
   sharingAgencyIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agency' }]
 });
 
-export interface IIdentity extends mongoose.Document {
+export interface IIdentity extends IRAMObject {
   type: string;   // 'abn', scheme, ...
   value: string;   // abn, scheme link id
   agency: Agency;  // agency the identifier is for
@@ -40,12 +41,12 @@ export interface IIdentity extends mongoose.Document {
   // the party.  TBD whether RAM this record this from ABN or WofG CSPs.   
   name: string;
 }
-const IdentitySchema = new mongoose.Schema({
+const IdentitySchema = RAMSchema({
   type: String,
   value: String,
   agency: AgencySchema,
   name: String
-}, { timestamps: true });
+});
 
 // A Party is the concept that participates in Relationships.
 /* see https://books.google.com.au/books?id=_fSVKDn7v04C&lpg=PP1&
@@ -54,18 +55,18 @@ const IdentitySchema = new mongoose.Schema({
    q=enterprise%20patterns%20and%20mda%20chapter%20party%20relationship&
    f=false
  */
-export interface IParty extends mongoose.Document {
+export interface IParty extends IRAMObject {
   roles: IRole[];
   identities: IIdentity[];
   attributes: { string: string };
   deleted: boolean;
 }
-const PartySchema = new mongoose.Schema({
+const PartySchema = RAMSchema({
   roles: [RoleSchema],
   identities: { type: [IdentitySchema], index: true },
   attributes: {},
   deleted: { type: Boolean, default: false }
-}, { timestamps: true });
+});
 
 export interface IPartyModel extends mongoose.Model<IParty> {
   getPartyById: (id: mongoose.Types.ObjectId) => mongoose.Promise<IParty>;
