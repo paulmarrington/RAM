@@ -33,19 +33,31 @@ const RoleSchema = RAMSchema({
   sharingAgencyIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agency' }]
 });
 
+export interface Name extends IRAMObject {
+  givenName?:         string;
+  familyName?:        string;
+  unstructuredName?:  string;
+}
+
+const NameSchema = RAMSchema({
+  givenName:          String,
+  familyName:         String,
+  unstructuredName:   String
+})
+
 export interface IIdentity extends IRAMObject {
   type: string;   // 'abn', scheme, ...
   value: string;   // abn, scheme link id
   agency: Agency;  // agency the identifier is for
   //The Identity 'provider' will supply a name by which to refer to
   // the party.  TBD whether RAM this record this from ABN or WofG CSPs.   
-  name: string;
+  name: Name;
 }
 const IdentitySchema = RAMSchema({
-  type: String,
-  value: String,
+  type:   String,
+  value:  String,
   agency: AgencySchema,
-  name: String
+  name:   NameSchema
 });
 
 // A Party is the concept that participates in Relationships.

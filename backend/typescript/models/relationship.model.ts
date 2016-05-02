@@ -16,7 +16,9 @@ export const relationship_types = [
 ];
 
 export interface IRelationship extends IRAMObject {
-  /* A Subject is the party being effected (changed) by a transaction performed by the Delegate */
+  /* A Subject is the party being effected (changed) by a transaction
+   * performed by the Delegate
+   */
   type: string;
 
   subjectId: string;

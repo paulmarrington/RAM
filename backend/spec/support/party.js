@@ -9,14 +9,29 @@ var get_party = function(abn) {
   return rest.get("party/identity/" + abn + "/abn")
 }
 
+var new_company_name = function() {
+  return {
+    givenName:        "",
+    familyName:       "",
+    unstructuredName: faker.company.companyName()
+  }
+}
+
+var new_identity_name = function() {
+  return {
+    givenName:        faker.name.firstName(),
+    familyName:       faker.name.lastName(),
+    unstructuredName: ""
+  }
+}
+
 var new_party = function(abn) {
-  var name = faker.company.companyName()
   var doc = {
     roles: [
       {name:faker.name.jobArea(), attributes:{}, sharingAgencyIds:[]}
     ],
     attributes: {},
-    identities: [{type: "abn", value: abn, name: name}]
+    identities: [{type: "abn", value: abn, name: new_company_name()}]
   }
   return rest.post("Party", doc)
 }
@@ -28,7 +43,7 @@ var new_two_identity_party = function(abn_1) {
       var identity = {
         type:     "abn",
         value:    abn_2,
-        name:     faker.company.companyName()
+        name:     new_company_name()
       }
       rest.put("party/identity/" + abn_1 + "/abn",
       
