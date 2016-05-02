@@ -1,7 +1,3 @@
-# APIs
-
- 1. [Back-end APIs](docs/api.md)
-
 # Architecture
 
 ![System Architecture](https://raw.githubusercontent.com/atogov/RAM/develop/docs/images/system-architecture.png)
@@ -10,6 +6,11 @@
 
 ![High Level Functionality ](https://raw.githubusercontent.com/atogov/RAM/develop/docs/images/ui-flow.png)
 
+# Data Model (*In TypeScript format* [here](https://raw.githubusercontent.com/atogov/RAM/develop/docs/data-types.ts))
+![Data Model](https://raw.githubusercontent.com/atogov/RAM/develop/docs/images/data-model.png)
+
+# Rest API - Work in progress - [here](https://raw.githubusercontent.com/atogov/RAM/develop/docs/data-types.ts)
+ 
 # Useful resources:
  1. [Development Environment](docs/environment.md)
 
