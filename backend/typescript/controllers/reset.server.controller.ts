@@ -34,5 +34,5 @@ export class ResetController {
   public assignRoutes = (router: Router) => {
     router.get('/', this.reset);
     return router;
-  }
+  };
 }

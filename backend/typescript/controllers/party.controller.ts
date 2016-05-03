@@ -1,11 +1,15 @@
 import {Router, Request, Response} from 'express';
-import {PartyModel} from '../models/party.model';
 import {sendDocument, sendError} from './helpers';
+import {IPartyModel} from '../models/party.model';
 
 export class PartyController {
+
+  constructor(private partyModel: IPartyModel) {
+
+  }
   /* given identity type and value, retrieve identity and party documents */
   private getParty = (req: Request, res: Response) => {
-    PartyModel.getPartyByIdentity(req.params.type, req.params.value)
+    this.partyModel.getPartyByIdentity(req.params.type, req.params.value)
       .then(sendDocument(res), sendError(res));
   };
 
@@ -13,13 +17,13 @@ export class PartyController {
    * Add a Party. It must have one identity to be valid.
    */
   private addParty = (req: Request, res: Response) => {
-    PartyModel.create(req.body)
+    this.partyModel.create(req.body)
       .then(sendDocument(res), sendError(res));
   };
 
   /* We can change roles and other party attributes here */
   private updateParty = (req: Request, res: Response) => {
-    PartyModel.findOneAndUpdate({
+    this.partyModel.findOneAndUpdate({
       'identities.type': req.params.type,
       'identities.value': req.params.value,
       deleted: false
