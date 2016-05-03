@@ -25,7 +25,11 @@ gulp.task("ts:lint", function () {
 });
 
 gulp.task("ts:compile", ["ts:lint"], function () {
-    var tsResult = gulp.src(["typescript/**/*.ts", "../commons/**/*.ts"])
+    var tsResult = gulp.src([
+      "typescript/**/*.ts",
+      "slec.**/*.ts",
+      "../commons/**/*.ts"
+    ])
         .pipe(sourcemaps.init())
         .pipe(ts(tsProject));
 
