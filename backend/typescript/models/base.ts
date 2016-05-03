@@ -3,18 +3,18 @@ import * as mongoose from 'mongoose';
  * model will contain.
  * Most objects in RAM extend off the RAMObject
  */
-export interface  IRAMObject extends mongoose.Document {
-  createdAt:            Date;
-  updatedAt:            Date;
-  deleteInd:            boolean;
-  resourceVersion:      string;
+export interface IRAMObject extends mongoose.Document {
+  createdAt: Date;
+  updatedAt: Date;
+  deleteInd: boolean;
+  resourceVersion: string;
 }
 
-export const RAMSchema = (schema:Object) => {
+export const RAMSchema = (schema: Object) => {
   const result = new mongoose.Schema({
-    deleteInd:        { type: Boolean, default: false },
-    resourceVersion:  { type: String,  default: '1' }
+    deleteInd: { type: Boolean, default: false },
+    resourceVersion: { type: String, default: '1' }
   }, { timestamps: true });
   result.add(schema);
   return result;
-}
+};

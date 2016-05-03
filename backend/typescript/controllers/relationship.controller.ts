@@ -1,9 +1,11 @@
 import {sendDocument, sendNotFoundError, sendError} from './helpers';
 import {Router, Request, Response} from 'express';
-import {PartyModel} from '../models/party.model';
 import {
-  RelationshipModel, IRelationship, status_options, access_levels
+  IRelationship, status_options, access_levels, IRelationshipModel
 } from '../models/relationship.model';
+import {
+  IPartyModel
+} from '../models/party.model';
 import * as mongoose from 'mongoose';
 
 // Todo: DelegateOrSubject to become Enum so it is then type checked
@@ -15,7 +17,8 @@ type QueryRelationship = {
 };
 
 export class RelationshipController {
-
+  constructor(private relationshipModel: IRelationshipModel,
+    private partyModel: IPartyModel) { }
   private createQueryObject(delegateOrSubject: string, id: mongoose.Types.ObjectId): QueryRelationship {
     const isSubject = delegateOrSubject === 'subject';
     const query: QueryRelationship = { deleted: false };
@@ -29,11 +32,11 @@ export class RelationshipController {
   }
 
   private getRowCount = (delegate_or_subject: string, id: mongoose.Types.ObjectId): mongoose.Promise<number> => {
-    return RelationshipModel.count(this.createQueryObject(delegate_or_subject, id)).exec();
+    return this.relationshipModel.count(this.createQueryObject(delegate_or_subject, id)).exec();
   };
 
   private getDistinct = (delegate_or_subject: string, id: mongoose.Types.ObjectId, field: string): mongoose.Promise<IRelationship[]> => {
-    return RelationshipModel.distinct(field, this.createQueryObject(delegate_or_subject, id)).exec();
+    return this.relationshipModel.distinct(field, this.createQueryObject(delegate_or_subject, id)).exec();
   };
 
   private sendRelationshipTable = (res: Response, id: mongoose.Types.ObjectId, delegate_or_subject: string) => {
@@ -79,7 +82,7 @@ export class RelationshipController {
    */
   private getById(req: Request, res: Response) {
     const id = new mongoose.Types.ObjectId(req.params.id);
-    RelationshipModel.getRelationshipById(id).then(sendDocument(res), sendNotFoundError(res));
+    this.relationshipModel.getRelationshipById(id).then(sendDocument(res), sendNotFoundError(res));
   };
 
   /* 
@@ -87,7 +90,7 @@ export class RelationshipController {
    */
   private getList = (req: Request, res: Response) => {
     const query = this.createQueryObject(req.params.delegate_or_subject, req.params.id);
-    RelationshipModel.find(query)
+    this.relationshipModel.find(query)
       .skip((req.params.page - 1) * req.params.page_size)
       .limit(req.params.page_size)
       .exec()
@@ -98,7 +101,7 @@ export class RelationshipController {
    * Add a relationship.
    */
   private addRelationship = (req: Request, res: Response) => {
-    RelationshipModel.create(req.body).then(sendDocument(res), sendError(res));
+    this.relationshipModel.create(req.body).then(sendDocument(res), sendError(res));
   };
 
   /** 
@@ -107,13 +110,13 @@ export class RelationshipController {
    * Only send back fields that have changed.
    */
   private updateRelationship = (req: Request, res: Response) => {
-    RelationshipModel.findByIdAndUpdate(req.params.id, req.body,
+    this.relationshipModel.findByIdAndUpdate(req.params.id, req.body,
       { new: true }).exec().then(sendDocument(res), sendError(res));
   };
 
   private getRelationdhipTable = (req: Request, res: Response) => {
-    PartyModel.getPartyByIdentity(req.params.type, req.params.value).then((party) => {
-      RelationshipModel.find(this.createQueryObject(req.params.delegate_or_subject, party._id))
+    this.partyModel.getPartyByIdentity(req.params.type, req.params.value).then((party) => {
+      this.relationshipModel.find(this.createQueryObject(req.params.delegate_or_subject, party._id))
         .skip((parseInt(req.params.page) - 1) * parseInt(req.params.pageSize))
         .limit(parseInt(req.params.pageSize)).exec()
         .then(this.sendRelationshipTable(res, party._id, req.params.delegate_or_subject), sendNotFoundError(res));
