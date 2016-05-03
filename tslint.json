@@ -1,0 +1,104 @@
+{
+  "rulesDirectory": [
+    "node_modules/codelyzer",
+    "node_modules/tslint-microsoft-contrib"
+  ],
+  "rules": {
+    "use-isnan": true,
+    "missing-jsdoc": false,
+    "no-banned-terms": true,
+    "no-constant-condition": true,
+    "no-control-regex": true,
+    "no-delete-expression": true,
+    "no-duplicate-parameter-names": true,
+    "no-duplicate-case": true,
+    "no-empty-interfaces": true,
+    "no-exec-script": true,
+    "no-function-constructor-with-string-args": true,
+    "no-function-expression": true,
+    "no-http-string": true,
+    "no-increment-decrement": true,
+    "no-for-in": true,
+    "no-invalid-regexp": true,
+    "no-missing-visibility-modifiers": true,
+    "no-multiple-var-decl": true,
+    "no-regex-spaces": true,
+    "no-sparse-arrays": true,
+    "no-string-based-set-immediate": true,
+    "no-string-based-set-interval": true,
+    "no-string-based-set-timeout": true,
+    "no-unnecessary-semicolons": true,
+    "no-unnecessary-bind": true,
+    "no-unused-imports": true,
+    "no-with-statement": true,
+    "promise-must-complete": true,
+    "valid-typeof": true,
+    "class-name": true,
+    "curly": true,
+    "jsdoc-format": true,
+    "indent": [
+      "spaces"
+    ],
+    "max-line-length": [
+      true,
+      140
+    ],
+    "member-ordering": [
+      true,
+      "static-before-instance",
+      "variables-before-functions"
+    ],
+    "no-arg": true,
+    "no-construct": true,
+    "no-duplicate-key": true,
+    "no-duplicate-variable": true,
+    "no-empty": true,
+    "no-eval": true,
+    "no-trailing-whitespace": true,
+    "no-unused-expression": true,
+    "no-unused-variable": true,
+    "no-unreachable": true,
+    "no-use-before-declare": true,
+    "one-line": [
+      true,
+      "check-open-brace",
+      "check-catch",
+      "check-else",
+      "check-whitespace"
+    ],
+    "use-strict": [
+      "check-module",
+      "check-function"
+    ],
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "semicolon": true,
+    "trailing-comma": true,
+    "triple-equals": true,
+    "variable-name": false,
+    "switch-default": true,
+    "no-switch-case-fall-through": true,
+    "no-var-keyword": true,
+    "no-var-requires": true,
+    "no-any": true,
+    "no-consecutive-blank-lines": true,
+    "component-selector-name": [
+      true,
+      "kebab-case"
+    ],
+    "component-selector-type": [
+      true,
+      "element"
+    ],
+    "no-angle-bracket-type-assertion": true,
+    "jquery-deferred-must-complete": true,
+    "no-disable-auto-sanitization": true,
+    "no-document-write": true,
+    "max-func-body-length": [
+      true,
+      30
+    ]
+  }
+}
