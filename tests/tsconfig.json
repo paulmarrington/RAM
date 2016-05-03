@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "target": "es6",
+        "declaration": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "outDir": "dist/",
+        "module": "commonjs"
+    },
+    "compileOnSave": true,
+    "exclude": [
+        "typings",
+        "node_modules"
+    ],
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true
+    }
+}
