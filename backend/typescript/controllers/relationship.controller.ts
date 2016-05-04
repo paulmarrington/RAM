@@ -80,7 +80,7 @@ export class RelationshipController {
   /* 
    * given id, retrieve relationship
    */
-  private getById(req: Request, res: Response) {
+  private getById = (req: Request, res: Response) => {
     const id = new mongoose.Types.ObjectId(req.params.id);
     this.relationshipModel.getRelationshipById(id).then(sendDocument(res), sendNotFoundError(res));
   };

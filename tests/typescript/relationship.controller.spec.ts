@@ -42,13 +42,14 @@ const new_relationships = (count) => {
             list.push(res);
             if (!counter) resolve(list.length == 1 ? list[0] : list);
             else add_relationship(counter - 1);
-          })
+          });
         }
         add_relationship(count - 1);
-      })
-    })
-  })
-}
+      });
+    });
+  });
+};
+
 describe('a RAM Relationship', () => {
   it('can be created', (done) => {
     new_relationships(1).then(rel => {

@@ -1,7 +1,7 @@
 import {
   new_party, fake_abn, new_two_identity_party,
   get_party, update_party
-}  from '../spec/support/party';
+}  from './support/party';
 
 const contains = (obj) => jasmine.objectContaining(obj);
 
@@ -19,8 +19,8 @@ describe('a RAM Party', () => {
     }).catch((err) => { fail(err); done(); });
   });
   it('can retrieve a party based on identity', (done) => {
-    const abn = partyHelper.fake_abn();
-    partyHelper.new_party(abn).then((result) => {
+    const abn = fake_abn();
+    new_party(abn).then((result) => {
       get_party(abn).then((result) => {
         expect(result.identities.length).toEqual(1);
         done();
@@ -28,7 +28,7 @@ describe('a RAM Party', () => {
     }).catch((err) => { fail(err); done(); });
   });
   it('can retrieve a list of identities for a party', (done) => {
-    new_two_identity_party(partyHelper.fake_abn()).then((result) => {
+    new_two_identity_party(fake_abn()).then((result) => {
       expect(result.identities.length).toEqual(2);
       done();
     }).catch((err) => { fail(err); done(); });
