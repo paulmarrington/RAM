@@ -1,12 +1,12 @@
 import * as http  from 'http';
-
+import * as supertest from 'supertest';
 const options = (method: string, api: string) => {
   return {
-    method:   method,
-    host:     'localhost',
-    port:     3000,
-    path:     '/api/1/'+api ,
-    headers:  {}
+    method: method,
+    host: 'localhost',
+    port: 3000,
+    path: '/api/1/' + api,
+    headers: {}
   };
 };
 
@@ -15,7 +15,7 @@ const request = (method: string, api: string, body?: {}) => {
   const body_as_json = body ? JSON.stringify(body) : '';
   if (body) {
     opts.headers = {
-      'Content-Type':   'application/json',
+      'Content-Type': 'application/json',
       'Content-Length': body_as_json.length
     };
   }
@@ -41,24 +41,34 @@ export const post = (api: string, body: {}) => request('POST', api, body);
 export const put = (api: string, body: {}) => request('PUT', api, body);
 export const deleter = (api: string) => request('DELETE', api);
 export const uuid = () =>
-    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-      return v.toString(16);
+  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
   });
 
 
-// import * as http  from 'http';
-// import * as request from 'supertest';
-// const options = (method: string, api: string) => {
-//   return {
-//     method: method,
-//     host: 'localhost',
-//     port: 3000,
-//     path: '/api/1/' + api,
-//     headers: {}
-//   };
-// };
-// class RestCalls {
+export class RestCalls {
+  private server: string;
+  private urlPrefix: string = '/api/1/';
+
+  constructor(private serverAddress: string, private serverPort: number) {
+    this.server = `${this.serverAddress}:${this.serverPort}`;
+  }
+
+  public get = <T>(api: string) =>
+    supertest(this.server).get(this.urlPrefix + api);
+
+  public post = <T, B>(api: string, body: B) =>
+    supertest(this.server).post(this.urlPrefix + api).send(body);
+
+  public put = <T, B>(api: string, body: B) =>
+    supertest(this.server).put(this.urlPrefix + api).send(body);
+
+  public delete = <T>(api: string) =>
+    supertest(this.server).delete(this.urlPrefix + api);
+
+}
+
 //   public static request<T>(method: string, api: string, body?: {}): Promise<T> {
 //     const opts = options(method, api);
 //     const body_as_json = body ? JSON.stringify(body) : '';
@@ -88,9 +98,6 @@ export const uuid = () =>
 //     return RestCalls.request<T>('GET', api);
 //   }
 
-//   // public static get2<T>(api: string) {
-//   //   return request('localhost:3000').get('/api/1/' + api).expect();
-//   // }
 //   public static post<T>(api: string, body: {}) {
 //     return RestCalls.request<T>('POST', api, body);
 //   }
