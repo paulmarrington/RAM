@@ -21,7 +21,9 @@ export class PartyController {
       .then(sendDocument(res), sendError(res));
   };
 
-  /* We can change roles and other party attributes here */
+  /* We can change roles and other party attributes here
+   * Important Todo: Replace req.body with validated request and selectively update fields.
+   */
   private updateParty = (req: Request, res: Response) => {
     this.partyModel.findOneAndUpdate({
       'identities.type': req.params.type,
