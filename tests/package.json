@@ -5,7 +5,6 @@
   "scripts": {},
   "dependencies": {},
   "devDependencies": {
-    "async": "^2.0.0-rc.3",
     "codelyzer": "0.0.19",
     "faker": "^3.1.0",
     "gulp": "^3.9.1",
@@ -13,7 +12,7 @@
     "gulp-tslint": "^4.3.5",
     "gulp-typescript": "^2.13.0",
     "gulp-util": "^3.0.7",
-    "supertest": "latest",
+    "superagent": "latest",
     "tslint": "latest",
     "tslint-microsoft-contrib": "latest",
     "typescript": "latest",
