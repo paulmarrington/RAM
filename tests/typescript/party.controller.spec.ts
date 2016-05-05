@@ -47,10 +47,12 @@ describe('more RAM Party', () => {
     const partyDoc = await createNewPartyByABN(abn);
     await updateParty(FakerTestHelper.fakeABNGenerator(), {
       'attributes.magic': 'light'
+    });
       expect(partyDoc.body.data.attributes.magic).toEqual('light');
     done();
-
   });
+});  
+describe('and more RAM Party', () => {
   it('can delete identities', async (done) => {
     const abn = FakerTestHelper.fakeABNGenerator();
     const partyDoc = await createNewPartyByABN(abn);
