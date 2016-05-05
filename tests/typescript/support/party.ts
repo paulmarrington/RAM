@@ -33,5 +33,5 @@ export const attachFakeABNIdentityToParty = (abn) => {
   ));
 };
 
-export const updateParty = (abn, updates) =>
+export const updatePartyByABN = (abn, updates) =>
   rest.promisify(rest.put('party/identity/' + abn + '/abn', updates));
