@@ -5,7 +5,6 @@ import {IPartyModel} from '../models/party.model';
 export class PartyController {
 
   constructor(private partyModel: IPartyModel) {
-
   }
   /* given identity type and value, retrieve identity and party documents */
   private getParty = (req: Request, res: Response) => {
@@ -21,22 +20,9 @@ export class PartyController {
       .then(sendDocument(res), sendError(res));
   };
 
-  /* We can change roles and other party attributes here
-   * Important Todo: Replace req.body with validated request and selectively update fields.
-   */
-  private updateParty = (req: Request, res: Response) => {
-    this.partyModel.findOneAndUpdate({
-      'identities.type': req.params.type,
-      'identities.value': req.params.value,
-      deleted: false
-    }, req.body, { new: true }).exec()
-      .then(sendDocument(res), sendError(res));
-  };
-
   public assignRoutes = (router: Router) => {
     router.get('/identity/:value/:type', this.getParty);
     router.post('/', this.addParty);
-    router.put('/identity/:value/:type', this.updateParty);
     return router;
   };
 }

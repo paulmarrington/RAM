@@ -1,4 +1,4 @@
-import {FakerTestHelper} from '../support/faker.test.helper'
+import {FakerTestHelper} from '../support/faker.test.helper';
 import {RestCalls} from '../support/rest';
 const rest = new RestCalls('localhost', 3000);
 
