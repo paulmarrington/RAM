@@ -2,12 +2,12 @@ import {FakerTestHelper} from '../support/faker.test.helper';
 import {RestCalls} from '../support/rest';
 const rest = new RestCalls('localhost', 3000);
 
-const aShortBusinessName = FakerTestHelper.aShortBusinessName();
-const aLongBusinessName = FakerTestHelper.aLongBusinessName();
-const aBizWhoGaveYouFullAccess = FakerTestHelper.aBizWhoGaveYouFullAccess();
-const aBizWhoGaveYouLimitedAccess = FakerTestHelper.aBizWhoGaveYouFullAccess();
-const b2bBusinessThatHasTrustsInMind = FakerTestHelper.b2bBusinessThatHasTrustsInMind();
-const cloudSoftwareForUSI = FakerTestHelper.cloudSoftwareForUSI();
+const shortBusinessName = FakerTestHelper.shortBusinessName();
+const longBusinessName = FakerTestHelper.longBusinessName();
+const bizWhoGaveYouFullAccess = FakerTestHelper.shortBusinessName();
+const bizWhoGaveYouLimitedAccess = FakerTestHelper.shortBusinessName();
+const b2bBusinessThatHasTrustsInMind = FakerTestHelper.companyNameWithPostfix(' Trustees')();
+const cloudSoftwareForUSI = FakerTestHelper.companyNameWithPostfix(' Clouds')();
 
 const parties = [{
   identities: [{
@@ -16,12 +16,12 @@ const parties = [{
     value: 'bob'
   }],
   i_can_act_for: [{
-    name: aShortBusinessName,
+    name: shortBusinessName,
     relationship: 'Associate',
     access_level: 'Universal',
     status: 'Active'
   }, {
-      name: aLongBusinessName,
+      name: longBusinessName,
       relationship: 'User',
       access_level: 'Limited',
       status: 'Active'
@@ -57,7 +57,7 @@ const parties = [{
     can_act_for_me: []
   }, {
     identities: [{
-      name: aShortBusinessName,
+      name: shortBusinessName,
       type: 'abn',
       value: '51515151151'
     }],
@@ -65,17 +65,17 @@ const parties = [{
     can_act_for_me: []
   }, {
     identities: [{
-      name: aLongBusinessName,
+      name: longBusinessName,
       type: 'abn',
       value: '61616161161'
     }],
     i_can_act_for: [{
-      name: aBizWhoGaveYouFullAccess,
+      name: bizWhoGaveYouFullAccess,
       relationship: 'Business you can act for',
       access_level: 'Universal',
       status: 'Active'
     }, {
-        name: aBizWhoGaveYouLimitedAccess,
+        name: bizWhoGaveYouLimitedAccess,
         relationship: 'Trust to trustee',
         access_level: 'Limited',
         status: 'Active'
@@ -108,7 +108,7 @@ const parties = [{
       }]
   }, {
     identities: [{
-      name: aBizWhoGaveYouFullAccess,
+      name: bizWhoGaveYouFullAccess,
       type: 'abn',
       value: '21215251251'
     }],
@@ -116,7 +116,7 @@ const parties = [{
     can_act_for_me: []
   }, {
     identities: [{
-      name: aBizWhoGaveYouLimitedAccess,
+      name: bizWhoGaveYouLimitedAccess,
       type: 'abn',
       value: '68686868868'
     }],
@@ -170,92 +170,94 @@ const buildName = (type: string, name: string) => {
   if (type === 'abn') {
     return {
       unstructuredName: name,
-      givenName:        '',
-      familyName:       ''
+      givenName: '',
+      familyName: ''
     };
   } else {
     const parts = name.split(' ');
     return {
       unstructuredName: name,
-      givenName:        parts[0],
-      familyName:       parts[1]
+      givenName: parts[0],
+      familyName: parts[1]
     };
   }
-}
-const addIdentities = (party) =>
+};
+
+const mapIdentitiesToName = (party) =>
   party.identities.map((identity) => {
     return {
-      type:   identity.type,
-      value:  identity.value,
-      name:   buildName(identity.type, identity.name)
+      type: identity.type,
+      value: identity.value,
+      name: buildName(identity.type, identity.name)
     };
   });
 
-const dbParties = {};
+const partiesInDBFormatCache = {};
 
-const buildRelaltionshipDocument = (rel) => {
+const buildRelaltionship = (rel) => {
   const now = new Date();
-  const next_year = new Date(now.getTime() + 1000 * 60 * 60 * 12 * 365);
+  const nextYear = new Date(now.getTime() + 1000 * 60 * 60 * 24 * 365);
   return {
     type: rel.relationship || 'Universal',
     startTimestamp: now,
-    endTimestamp: next_year,
+    endTimestamp: nextYear,
     status: rel.status || 'Active'
   };
 };
 
-const addRelationship = (rel, myParty, subdel) => {
-  const myDBParty = dbParties[myParty.identities[0].name];
-  const theirDBParty = dbParties[rel.name];
+const addRelationship = (rel, myParty, subjectOrDelegate) => {
+  const myDBParty = partiesInDBFormatCache[myParty.identities[0].name];
+  const theirDBParty = partiesInDBFormatCache[rel.name];
   if (!theirDBParty) {
     console.log('No target party for ', rel.name, 'from',
-    myParty.identities[0].name);
+      myParty.identities[0].name);
     return;
   }
-  const doc = buildRelaltionshipDocument(rel);
-  const me = (subdel === 'subject') ? 'delegate' : 'subject';
-  doc[me + 'Id'] = myDBParty._id;
-  doc[subdel + 'Id'] = theirDBParty.identities[0]._id;
+  const relationship = buildRelaltionship(rel);
+  const me = (subjectOrDelegate === 'subject') ? 'delegate' : 'subject';
+  relationship[me + 'Id'] = myDBParty._id;
+  relationship[subjectOrDelegate + 'Id'] = theirDBParty.identities[0]._id;
+
   if (theirDBParty.identities[0].type === 'abn') {
-    doc[subdel + 'Abn'] = theirDBParty.identities[0].value;
+    relationship[subjectOrDelegate + 'Abn'] = theirDBParty.identities[0].value;
   }
   if (myDBParty.identities[0].type === 'abn') {
-    doc[me + 'Abn'] = myDBParty.identities[0].value;
+    relationship[me + 'Abn'] = myDBParty.identities[0].value;
   }
-  doc[subdel + 'Name'] = rel.name;
-  doc[me + 'Name'] = myDBParty.identities[0].name.unstructuredName;
-  doc[subdel + 'Role'] = rel.relationship;
+  relationship[subjectOrDelegate + 'Name'] = rel.name;
+  relationship[me + 'Name'] = myDBParty.identities[0].name.unstructuredName;
+  relationship[subjectOrDelegate + 'Role'] = rel.relationship;
   if (myDBParty.roles.length > 0) {
-    doc[me + 'Role'] = myDBParty.roles[0];
+    relationship[me + 'Role'] = myDBParty.roles[0];
   }
   if (rel.nick_name) {
-    doc[subdel + 'NickName'] = rel.nick_name;
+    relationship[subjectOrDelegate + 'NickName'] = rel.nick_name;
   }
-  rest.promisify(rest.post('relationship', doc));
+  rest.promisify(rest.post('relationship', relationship));
 };
 
 describe('Seeding Test RAM Database...', () => {
-  it('create parties', (done) => {
-    parties.forEach(async (party) => {
+  it('create parties', async (done) => {
+    await Promise.all(parties.map(async (party) => {
       const res = await rest.promisify(rest.post('party', {
         roles: addRoles(party),
         attributes: addAttributes(party),
-        identities: addIdentities(party)
+        identities: mapIdentitiesToName(party)
       }));
-      dbParties[party.identities[0].name] = res.body.data;
-    });
+      partiesInDBFormatCache[party.identities[0].name] = res.body.data;
+    }));
     done();
   });
-  it('create relationships', (done) => {
+  it('create relationships', async (done) => {
     // wait for parties to be written - too lazy to use promises here
-    parties.forEach((party) => {
+    await Promise.all(parties.map((party) => {
       party.i_can_act_for.forEach(async (rel) => {
         await addRelationship(rel, party, 'delegate');
       });
       party.can_act_for_me.forEach(async (rel) => {
         await addRelationship(rel, party, 'subject');
       });
-    });
+    }));
     done();
   });
 });
