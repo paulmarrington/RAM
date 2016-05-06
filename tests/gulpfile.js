@@ -21,7 +21,7 @@ gulp.task('default', ['ts:compile','test'], function () {
     return gulp.watch(['typescript/{**,./}/*.ts', 'typescript/{**,./}/*.html'], ['ts:compile','test']);
 });
 
-gulp.task('ts:compile', function () {
+gulp.task('ts:compile',['ts:lint'], function () {
     return gulp.src(['typescript/{**,./}/*.ts'])
         .pipe(ts(tsProject, { sortOutput: true }))
         .pipe(gulp.dest('dist/'));

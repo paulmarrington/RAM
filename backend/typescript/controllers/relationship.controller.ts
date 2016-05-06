@@ -104,16 +104,6 @@ export class RelationshipController {
     this.relationshipModel.create(req.body).then(sendDocument(res), sendError(res));
   };
 
-  /** 
-   * Body must include updates - either fields that have
-   * changed or a mongo update command.
-   * Only send back fields that have changed.
-   */
-  private updateRelationship = (req: Request, res: Response) => {
-    this.relationshipModel.findByIdAndUpdate(req.params.id, req.body,
-      { new: true }).exec().then(sendDocument(res), sendError(res));
-  };
-
   private getRelationdhipTable = (req: Request, res: Response) => {
     this.partyModel.getPartyByIdentity(req.params.type, req.params.value).then((party) => {
       this.relationshipModel.find(this.createQueryObject(req.params.delegate_or_subject, party._id))
@@ -127,7 +117,6 @@ export class RelationshipController {
     router.get('/list/:delegate_or_subject/:id/page/:page/size/:pagesize', this.getList);
     router.get('/table/:delegate_or_subject/:value/:type/page/:page/size/:pagesize', this.getRelationdhipTable);
     router.post('/', this.addRelationship);
-    router.put('/:id', this.updateRelationship);
     router.get('/:id', this.getById);
     return router;
   };

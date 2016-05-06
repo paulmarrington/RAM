@@ -43,7 +43,7 @@ const NameSchema = RAMSchema({
   givenName:          String,
   familyName:         String,
   unstructuredName:   String
-})
+});
 
 export interface IIdentity extends IRAMObject {
   type: string;   // 'abn', scheme, ...
