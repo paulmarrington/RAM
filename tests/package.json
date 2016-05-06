@@ -5,9 +5,7 @@
   "scripts": {},
   "dependencies": {
     "jasmine": "^2.4.1",
-    "superagent": "^1.8.3"
-  },
-  "devDependencies": {
+    "superagent": "^1.8.3",
     "codelyzer": "0.0.19",
     "faker": "^3.1.0",
     "gulp": "^3.9.1",

@@ -5,7 +5,7 @@ export class FakerTestHelper {
         return {
             givenName: '',
             familyName: '',
-            unstructuredName: faker.company.companyName()
+            unstructuredName: FakerTestHelper.shortBusinessName()
         };
     };
 
@@ -15,8 +15,8 @@ export class FakerTestHelper {
 
     public static fakeIdentityNameGenerator() {
         return {
-            givenName: faker.name.firstName(),
-            familyName: faker.name.lastName(),
+            givenName: FakerTestHelper.firstName(),
+            familyName: FakerTestHelper.lastName(),
             unstructuredName: ''
         };
     };
@@ -25,27 +25,22 @@ export class FakerTestHelper {
         return faker.name.jobArea();
     };
 
-    public static aLongBusinessName() {
+    public static longBusinessName() {
         return 'A longish business name for the trust entity of another trusting bunch of people';
     };
 
     public static firstName() {
         return faker.name.firstName();
     }
-    public static aShortBusinessName() {
+    public static lastName() {
+        return faker.name.lastName();
+    }
+    public static shortBusinessName() {
         return faker.company.companyName();
-    };
-    public static aBizWhoGaveYouFullAccess() {
-        return faker.company.companyName();
-    };
-    public static aBizWhoGaveYouLimitedAccess() {
-        return faker.company.companyName();
-    };
-    public static b2bBusinessThatHasTrustsInMind() {
-        return faker.company.companyName() + ' Trustees';
-    };
-    public static cloudSoftwareForUSI() {
-        return faker.company.companyName() + ' Clouds';
+    }
+
+    public static companyNameWithPostfix(postfix: string) {
+        return () => FakerTestHelper.shortBusinessName() + postfix;
     };
 
     public static randomRelationshipType() {
