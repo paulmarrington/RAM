@@ -40,3 +40,16 @@ gulp.task('test',['ts:compile'], function () {
         })
     );
 });
+
+gulp.task('seed',['ts:compile'], function () {
+    return gulp.src(['dist/seeding/{**,./}/*.seed.js']).pipe(
+        jasmine({
+            verbose: true,
+            includeStackTrace: true,
+            config: {
+                stopSpecOnExpectationFailure: false,
+                random: false
+            }
+        })
+    );
+});
