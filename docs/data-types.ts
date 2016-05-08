@@ -303,7 +303,7 @@ export interface RoleAttributePermittedValue extends ICodeDecodeReferenceData {
 export interface PageOptions {
     pageNumber:string,
     pageSize:string
-    //properties for specifying sort critera are yet to be defined
+    //properties for specifying sort critera are yet to be defined 
 }
 
 export enum IdentityTypeCode {
