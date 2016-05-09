@@ -1,5 +1,6 @@
 import {Response} from 'express';
 import {IResponse, ErrorResponse} from '../../../commons/RamAPI';
+import * as _ from 'lodash';
 
 export function sendDocument<T>(res: Response) {
     return (doc: T): T => {
@@ -14,12 +15,29 @@ export function sendDocument<T>(res: Response) {
     };
 }
 
-export function sendError<T>(res: Response, errCode: number = 500) {
-    return (errMsg: string): string => {
-        if (errMsg) {
-            res.json(new ErrorResponse(errCode, errMsg));
+type ValidationError = {
+    errors: { [index: string]: ValidationError };
+    message: string;
+}
+
+export function sendError<T>(res: Response) {
+    return (error: string | Error | ValidationError) => {
+        switch (error.constructor.name) {
+            case 'String':
+                res.json(new ErrorResponse(500, error as string));
+                break;
+            case 'MongooseError':
+                res.json(new ErrorResponse(400,
+                    _.values<string>(_.mapValues((error as ValidationError).errors, (v) => v.message))
+                ));
+                break;
+            case 'Error':
+                res.json(new ErrorResponse(500, (error as Error).message));
+                break;
+            default:
+                res.json(new ErrorResponse(500, error.toString()));
+                break;
         }
-        return errMsg;
     };
 }
 
