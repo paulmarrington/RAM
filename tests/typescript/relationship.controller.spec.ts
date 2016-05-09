@@ -48,6 +48,7 @@ describe('RAM Relationship', () => {
         expect(rels[0]._id).toEqual(res.body.data._id);
         done();
     });
+    
     // Fixme: This test must use identityValue/identityType to retrive relationship belonging to a delegate
     // it('can list relationships', async (done) => {
     //     const rels = await generateRelationships(12);
@@ -64,7 +65,6 @@ describe('RAM Relationship', () => {
     //         const rels = await generateRelationships(12);
     //         const url = 'relationship/table/delegate/' +
     //             rels[0].delegateIdentityValue + '/' + rels[0].delegateIdentityType + '/page/1/size/20';
-    //         console.log(url);
     //         const res = await rest.promisify(rest.get(url));
     //         expect(res.body.data.table.length).toEqual(12);
     //         done();

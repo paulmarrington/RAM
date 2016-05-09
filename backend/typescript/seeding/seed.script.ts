@@ -83,7 +83,7 @@
 //       return res;
 //     });
 //   });
-  
+
 // const createRelationships = (parties done) => {
 //     // wait for parties to be written - too lazy to use promises here
 //     parties.forEach((party) => {
