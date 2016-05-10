@@ -16,7 +16,11 @@ const newRelationship = (party1, abn1, party2, abn2) => {
         status: 'Active',
         subjectsNickName: FakerTestHelper.firstName(),
         delegatesNickName: FakerTestHelper.firstName(),
-        attributes: {}
+        attributes: {},
+        delegateRole: 'bamboozled',
+        subjectRole: 'sneezy',
+        delegateId: party2._id,
+        subjectId: party1._id
     };
 };
 
@@ -30,7 +34,7 @@ const generateRelationships = async (count) => {
     for (let i = 0; i < count; i += 1) {
         const rel = newRelationship(party1, abn1, party2, abn2);
         const res = await rest.promisify(rest.post('relationship', rel));
-        list.push(res.body.data);
+        list.push(res.body);
     }
     return list;
 };
@@ -38,17 +42,21 @@ const generateRelationships = async (count) => {
 describe('RAM Relationship', () => {
     it('can be created', async (done) => {
         const rels = await generateRelationships(1);
-        expect(rels[0]._id);
+        if (! rels[0].data) {
+            fail(JSON.stringify(rels[0], null, 2));
+        } else {
+            expect(rels[0].data._id);
+        }
         done();
     });
 
     it('can retrieve a relationship by ID', async (done) => {
         const rels = await generateRelationships(1);
-        const res = await rest.promisify(rest.get('relationship/' + rels[0]._id));
-        expect(rels[0]._id).toEqual(res.body.data._id);
+        const res = await rest.promisify(rest.get('relationship/' + rels[0].data._id));
+        expect(rels[0].data._id).toEqual(res.body.data._id);
         done();
     });
-    
+
     // Fixme: This test must use identityValue/identityType to retrive relationship belonging to a delegate
     // it('can list relationships', async (done) => {
     //     const rels = await generateRelationships(12);

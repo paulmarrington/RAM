@@ -13,10 +13,17 @@ export const getPartyByABN = (abn: string) =>
 export const createNewPartyByABN = (abn: string): Promise<Response> => {
   const doc = {
     roles: [
-      { name: FakerTestHelper.fakeJobArea(), attributes: {}, sharingAgencyIds: [] }
+      {
+        name: FakerTestHelper.fakeJobArea(),
+        attributes: {}, sharingAgencyIds: []
+      }
     ],
     attributes: {},
-    identities: [{ type: 'abn', value: abn, name: FakerTestHelper.fakeCompanyNameGenerator() }]
+    identities: [{
+      type: 'abn',
+      value: abn,
+      name: FakerTestHelper.fakeCompanyNameGenerator()
+    }]
   };
   return rest.promisify(rest.post('party', doc));
 };

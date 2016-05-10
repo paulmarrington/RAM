@@ -1,5 +1,5 @@
 import {Router, Request, Response} from 'express';
-import {sendDocument, sendError} from './helpers';
+import {processRequest} from './helpers';
 import {IPartyModel} from '../models/party.model';
 
 export class PartyController {
@@ -8,16 +8,15 @@ export class PartyController {
   }
   /* given identity type and value, retrieve identity and party documents */
   private getParty = (req: Request, res: Response) => {
-    this.partyModel.getPartyByIdentity(req.params.type, req.params.value)
-      .then(sendDocument(res), sendError(res));
+    processRequest( res, ()=> this.partyModel.getPartyByIdentity(
+        req.params.type, req.params.value));
   };
 
   /*
    * Add a Party. It must have one identity to be valid.
    */
   private addParty = (req: Request, res: Response) => {
-    this.partyModel.create(req.body)
-      .then(sendDocument(res), sendError(res));
+    processRequest( res, ()=> this.partyModel.create(req.body));
   };
 
   public assignRoutes = (router: Router) => {

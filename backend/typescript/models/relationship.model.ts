@@ -90,12 +90,11 @@ const RelationshipSchema = RAMSchema({
     required: [true, 'Delegate role is required']
   },
   startTimestamp: {
-    type: Date, 
+    type: Date,
     required: [true, 'StartTimestamp value is required and must be in ISO format e.g., 2016-01-30']
   },
   endTimestamp: {
     type: Date
-
   },
   endEventTimestamp: {
     type: Date
@@ -112,7 +111,7 @@ const RelationshipSchema = RAMSchema({
   subjectsNickName: {
     type: String,
     minLength: 3,
-    maxLength: 20
+    maxLength: 64
   },
   delegatesNickName: {
     type: String
