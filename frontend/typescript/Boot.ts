@@ -1,8 +1,6 @@
 /// <reference path="../typings/browser.d.ts" />
 
 import 'es6-shim';
-import 'jquery';
-import 'bootstrap';
 import 'zone';
 import 'reflect-metadata';
 import 'rxjs/Rx';
