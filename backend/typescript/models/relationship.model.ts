@@ -1,17 +1,18 @@
 import * as mongoose from 'mongoose';
 import {IRAMObject, RAMSchema} from './base';
+/* tslint:disable:no-var-requires */ const mongooseIdValidator = require('mongoose-id-validator');
 
 //todo:enum
-export const status_options = [
+export const statusOptions = [
   'Invalid', 'Pending', 'Active', 'Deleted', 'Cancelled'
 ];
 
 //todo:enum
-export const access_levels = [
+export const accessLevels = [
   'Universal', 'Limited', 'Fixed', 'Legal Attorney'
 ];
 
-export const relationship_types = [
+export const relationshipTypes = [
   'Business', 'Online Service Provider'
 ];
 
@@ -53,26 +54,77 @@ export interface IRelationship extends IRAMObject {
 const RelationshipSchema = RAMSchema({
   type: {
     type: String,
-    //enum: relationship_types
+    required: true,
+    enum: relationshipTypes
   },
-  subjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
-  subjectName: String,
-  subjectAbn: { type: String, default: '' },
-  subjectRole: String,
-  delegateId: { type: mongoose.Schema.Types.ObjectId, ref: 'Party' },
-  delegateName: String,
-  delegateAbn: { type: String, default: '' },
-  delegateRole: String,
-  startTimestamp: Date,
-  endTimestamp: Date,
-  endEventTimestamp: Date,
-  status: { type: String, enum: status_options },
-  attributes: {},
+  subjectId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'Party'
+  },
+  subjectName: { // TODO, PAUL
+    type: String
+  },
+  subjectAbn: { // TODO, PAUL
+    type: String,
+    default: ''
+  },
+  subjectRole: {
+    type: String,
+    required: true
+  },
+  delegateId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Party',
+    required: true
+  },
+  delegateName: { // TODO, PAUL
+    type: String
+  },
+  delegateAbn: {// TODO, PAUL
+    type: String,
+    default: ''
+  },
+  delegateRole: {
+    type: String,
+    required: [true, 'Delegate role is required']
+  },
+  startTimestamp: {
+    type: Date, 
+    required: [true, 'StartTimestamp value is required and must be in ISO format e.g., 2016-01-30']
+  },
+  endTimestamp: {
+    type: Date
+
+  },
+  endEventTimestamp: {
+    type: Date
+  },
+  status: {
+    type: String,
+    enum: statusOptions,
+    required: [true, 'Relationship Status value is required'],
+  },
+  attributes: {
+
+  },
   sharingAgencyIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agency' }],
-  subjectsNickName: String,
-  delegatesNickName: String,
-  deleted: { type: Boolean, default: false }
+  subjectsNickName: {
+    type: String,
+    minLength: 3,
+    maxLength: 20
+  },
+  delegatesNickName: {
+    type: String
+  },
+  deleted: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 });
+
+RelationshipSchema.plugin(mongooseIdValidator);
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
   getRelationshipById: (id: mongoose.Types.ObjectId) => mongoose.Promise<IRelationship>;

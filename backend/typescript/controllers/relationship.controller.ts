@@ -1,7 +1,7 @@
 import {sendDocument, sendNotFoundError, sendError} from './helpers';
 import {Router, Request, Response} from 'express';
 import {
-  IRelationship, status_options, access_levels, IRelationshipModel
+  IRelationship, statusOptions, accessLevels, IRelationshipModel
 } from '../models/relationship.model';
 import {
   IPartyModel
@@ -47,8 +47,8 @@ export class RelationshipController {
         total: rowCount,
         table: this.mapRows(delegate_or_subject, relDocs),
         relationshipOptions: types,
-        accessLevelOptions: access_levels,
-        statusValueOptions: status_options
+        accessLevelOptions: accessLevels,
+        statusValueOptions: statusOptions
       });
     };
   };
@@ -100,8 +100,14 @@ export class RelationshipController {
   /**
    * Add a relationship.
    */
-  private addRelationship = (req: Request, res: Response) => {
-    this.relationshipModel.create(req.body).then(sendDocument(res), sendError(res));
+  private addRelationship = async (req: Request, res: Response) => {
+    try {
+      let newRelationship = new this.relationshipModel(req.body);
+      let toReturn = await this.relationshipModel.create(newRelationship);
+      sendDocument(res)(toReturn);
+    } catch (e) {
+      sendError(res)(e);
+    }
   };
 
   private getRelationdhipTable = (req: Request, res: Response) => {

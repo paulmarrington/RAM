@@ -8,18 +8,25 @@ export interface IResponse<T> {
     data?: T;
     token?: string;
     status: number; // status code
-    message?: Message;
+    alert?: Alert;
 }
 
-export interface Message {
-    message: string;
-    messageType: RAMMessageType;
+export interface Alert {
+    messages: string[];
+    alertType: RAMMessageType;
 }
 
 export class ErrorResponse implements IResponse<void>{
-    message: Message;
-    constructor(public status: number, message: string) {
-        this.message = { message: message, messageType: RAMMessageType.Error }
+    alert: Alert;
+    constructor(public status: number,
+        messages: string | string[],
+        alertType: number = RAMMessageType.Error) {
+        
+        if (Array.isArray(messages)) {
+            this.alert = { messages: messages, alertType: alertType };
+        } else {
+            this.alert = { messages: [messages], alertType: alertType };
+        }
     }
 }
 
