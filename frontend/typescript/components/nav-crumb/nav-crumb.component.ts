@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMRestService} from '../../services/ram-rest.service';
 // import * as _ from 'lodash';

@@ -1,11 +1,11 @@
-import { Injectable } from 'angular2/core';
+import { Injectable } from '@angular/core';
 import {
     RelationshipTableReq,
     IRelationshipTableRes
 } from '../../../commons/RamAPI';
 
 import Rx from 'rxjs/Rx';
-import {Response, Http} from 'angular2/http';
+import {Response, Http} from '@angular/http';
 
 @Injectable()
 export class RAMRestService {

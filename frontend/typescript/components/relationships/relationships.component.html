@@ -5,8 +5,8 @@
                 <div class='btn-toolbar'>
                     <div class="row">
                         <div class="col-sm-12">
-                            <button type="button" class="btn btn-sm btn-primary col-xs-12 col-sm-6">Add a relationship</button>
-                            <button type="button" class="btn btn-sm btn-primary col-xs-12 col-sm-6">Accept an invitation</button>
+                            <button type="button" (click)="addRelationship.open()" class="btn btn-sm btn-primary col-xs-12 col-sm-6">Add a relationship</button>
+                            <button type="button" (click)="acceptRelationship.open()" class="btn btn-sm btn-primary col-xs-12 col-sm-6">Accept an invitation</button>
                         </div>
                         <div class="col-md-12 padding-btn-30 visible-xs visible-sm">
                             <p></p>
@@ -42,3 +42,24 @@
         </div>
     </div>
 </div>
+
+
+<modal #addRelationship>
+    <modal-header [show-close]="true">
+        <h4 class="modal-title">I'm a modal!</h4>
+    </modal-header>
+    <modal-body>
+        Hello World!
+    </modal-body>
+    <modal-footer [show-default-buttons]="true"></modal-footer>
+</modal>
+
+<modal #acceptRelationship>
+    <modal-header [show-close]="true">
+        <h4 class="modal-title">I'm a modal!</h4>
+    </modal-header>
+    <modal-body>
+        Hello World!
+    </modal-body>
+    <modal-footer [show-default-buttons]="true"></modal-footer>
+</modal>
