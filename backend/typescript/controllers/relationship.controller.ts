@@ -1,4 +1,4 @@
-import {sendDocument, sendNotFoundError, sendError, processRequest} from './helpers';
+import {processRequest} from './helpers';
 import {Router, Request, Response} from 'express';
 import {
   IRelationship, statusOptions, accessLevels, IRelationshipModel
@@ -108,7 +108,7 @@ export class RelationshipController {
 
     const relationships = await this.relationshipModel.find(
       this.createQueryObject(req.params.delegate_or_subject, party._id))
-      .skip(start).limit(parseInt(req.params.pageSize)).exec()
+      .skip(start).limit(parseInt(req.params.pageSize)).exec();
 
     const rowCount = await this.getRowCount(
       req.params.delegate_or_subject, party._id);
