@@ -5,6 +5,8 @@ import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RelationshipsComponent} from '../relationships/relationships.component';
+import {AddRelationshipComponent} from '../add-relationship/add-relationship.component';
+
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {provide} from '@angular/core';
 import 'ng2-bootstrap';
@@ -27,7 +29,11 @@ import 'ng2-bootstrap';
         path: '/relationships/:identityValue/:identityResolver',
         name: 'Relationships',
         component: RelationshipsComponent
-    }
+    },{
+        path: '/relationships/addRelationship',
+        name: 'AddRelationship',
+        component: AddRelationshipComponent
+    },
 ])
 export class AppComponent {
 }

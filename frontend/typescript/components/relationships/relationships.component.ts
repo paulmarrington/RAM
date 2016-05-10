@@ -8,10 +8,4 @@ import {NavCrumbComponent} from '../nav-crumb/nav-crumb.component';
     directives: [RelationshipsTableComponent, NavCrumbComponent]
 })
 export class RelationshipsComponent {
-    public showAddRelationship = () => {
-        console.log('ADD ONE');
-    }
-    public showAcceptRelationship = () => {
-        console.log('ADD ONE');
-    }
 }
