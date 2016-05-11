@@ -6,6 +6,7 @@ export class PartyController {
 
   constructor(private partyModel: IPartyModel) {
   }
+
   /* given identity type and value, retrieve identity and party documents */
   private getParty = (req: Request, res: Response) => {
     this.partyModel.getPartyByIdentity(req.params.type, req.params.value)

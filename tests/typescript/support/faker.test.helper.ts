@@ -44,7 +44,9 @@ export class FakerTestHelper {
     };
 
     public static randomRelationshipType() {
-        return faker.random.arrayElement['Business', 'Online Service Provider'];
+        return faker.random.arrayElement([
+            'Business', 'Online Service Provider'
+        ]);
     }
     public static generateUUID() {
         return faker.random.uuid();

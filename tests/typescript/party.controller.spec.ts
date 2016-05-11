@@ -23,7 +23,11 @@ describe('RAM Party', () => {
     const abn = FakerTestHelper.fakeABNGenerator();
     await createNewPartyByABN(abn);
     const partyRetrieved = await getPartyByABN(abn);
-    expect(partyRetrieved.body.data.identities.length).toEqual(1);
+    if (!partyRetrieved.body.data) {
+      fail(JSON.stringify(partyRetrieved.body, null, 2));
+    } else {
+      expect(partyRetrieved.body.data.identities.length).toEqual(1);
+    }
     done();
   });
 });
