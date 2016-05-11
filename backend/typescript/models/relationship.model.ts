@@ -55,6 +55,7 @@ const RelationshipSchema = RAMSchema({
   type: {
     type: String,
     required: true,
+    trim: true,
     enum: relationshipTypes
   },
   subjectId: {
@@ -63,14 +64,17 @@ const RelationshipSchema = RAMSchema({
     ref: 'Party'
   },
   subjectName: { // TODO, PAUL
-    type: String
+    type: String,
+    trim: true
   },
   subjectAbn: { // TODO, PAUL
     type: String,
+    trim: true,
     default: ''
   },
   subjectRole: {
     type: String,
+    trim: true,
     required: true
   },
   delegateId: {
@@ -79,14 +83,17 @@ const RelationshipSchema = RAMSchema({
     required: true
   },
   delegateName: { // TODO, PAUL
-    type: String
+    type: String,
+    trim: true
   },
   delegateAbn: {// TODO, PAUL
     type: String,
+    trim: true,
     default: ''
   },
   delegateRole: {
     type: String,
+    trim: true,
     required: [true, 'Delegate role is required']
   },
   startTimestamp: {
@@ -94,13 +101,14 @@ const RelationshipSchema = RAMSchema({
     required: [true, 'StartTimestamp value is required and must be in ISO format e.g., 2016-01-30']
   },
   endTimestamp: {
-    type: Date
+    type: Date // todo: endTimestamp to be after startTimestamp    
   },
   endEventTimestamp: {
-    type: Date
+    type: Date //todo: endEventTimestamp must be after startTimestamp and only when endTimestamp is provided
   },
   status: {
     type: String,
+    trim: true,
     enum: statusOptions,
     required: [true, 'Relationship Status value is required'],
   },
@@ -110,11 +118,15 @@ const RelationshipSchema = RAMSchema({
   sharingAgencyIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agency' }],
   subjectsNickName: {
     type: String,
-    minLength: 3,
-    maxLength: 64
+    trim: true,
+    minLength: [2, 'Nickname must have at least two characters'],
+    maxLength: [30, 'Nickname must have at most 30 characters'],
   },
   delegatesNickName: {
-    type: String
+    type: String,
+    trim: true,
+    minLength: [2, 'Nickname must have at least two characters'],
+    maxLength: [30, 'Nickname must have at most 30 characters']
   },
   deleted: {
     type: Boolean,

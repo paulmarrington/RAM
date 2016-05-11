@@ -16,32 +16,35 @@ export interface Agency extends IRAMObject {
   consumer: string;
 }
 const AgencySchema = RAMSchema({
-  currentAbbrieviation: {
+  currentAbbreviation: {
     type: String,
     trim: true,
-    minLength: 2,
-    maxLength: 8,
+    minLength: [2, 'Agency abbreviation must have at least two characters'],
+    maxLength: [10, 'Agency abbreviation must have at most 10 characters'],
     required: [true, 'agency abbreviation required']
   },
   previousAbbrieviations: {
     type: [String],
-    default: []
+    default: [],
+    required: true
   },
   currentName: {
     type: String,
     trim: true,
-    minLength: 3,
-    required: [true, 'agency name required'],
-    maxLength: 64
+    minLength: [2, 'Agency name must have at least two characters'],
+    required: [true, 'Agency name required'],
+    maxLength: [64, 'Agency name must have at most 64 characters']
   },
   previousNames: {
     type: [String],
-    default: []
+    default: [],
+    required: true
   },
   consumer: {
     type: String,
-    minLength: 3,
-    maxLength: 64
+    trim: true,
+    minLength: [2, 'Agency name must have at least two characters'],
+    maxLength: [64, 'Agency name must have at most 64 characters'],
   }
 });
 
@@ -53,6 +56,7 @@ export interface IRole extends IRAMObject {
 const RoleSchema = RAMSchema({
   name: {
     type: String,
+    trim: true,
     required: [true, 'A role must have a name']
   },
   attributes: {},
@@ -63,19 +67,22 @@ const RoleSchema = RAMSchema({
 });
 
 export interface Name extends IRAMObject {
-  givenName?:         string;
-  familyName?:        string;
-  unstructuredName?:  string;
+  givenName?: string;
+  familyName?: string;
+  unstructuredName?: string;
 }
 
-const NameSchema = RAMSchema({
+const NameSchema = RAMSchema({ // todo: validate the Validation required, cross structural, givenName/familyName OR unstructuredName
   givenName: {
+    trim: true,
     type: String
   },
   familyName: {
+    trim: true,
     type: String
   },
   unstructuredName: {
+    trim: true,
     type: String
   },
 });
@@ -91,18 +98,20 @@ export interface IIdentity extends IRAMObject {
 const IdentitySchema = RAMSchema({
   type: {
     type: String,
-    required: [true, 'Itentity type required']
+    trim: true,
+    required: [true, 'Identity type required']
   },
   value: {
     type: String,
-    required: [true, 'Itentity type value required']
+    trim: true,
+    required: [true, 'Identity value required']
   },
   agency: {
     type: AgencySchema
   },
-  name:   {
+  name: {
     type: NameSchema,
-    required: [true, 'Itentity must have a name']
+    required: [true, 'Identity must have a name']
   }
 });
 
@@ -124,7 +133,8 @@ const PartySchema = RAMSchema({
   },
   identities: {
     type: [IdentitySchema],
-    minLength: 1,
+    minLength: [1, 'A party must have at least one identity'],
+    required: [true, 'A party must have at least one identity'],
     index: true
   },
   attributes: {},
