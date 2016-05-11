@@ -54,13 +54,13 @@ export interface IRelationship extends IRAMObject {
 const RelationshipSchema = RAMSchema({
   type: {
     type: String,
-    required: true,
+    required: [true, 'Relationship type is required'],
     trim: true,
     enum: relationshipTypes
   },
   subjectId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    required: [true, 'SubjectId is required'],
     ref: 'Party'
   },
   subjectName: { // TODO, PAUL
@@ -75,12 +75,12 @@ const RelationshipSchema = RAMSchema({
   subjectRole: {
     type: String,
     trim: true,
-    required: true
+    required: [false, 'Subject role is required']
   },
   delegateId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Party',
-    required: true
+    required: [true, 'DelegateId is required']
   },
   delegateName: { // TODO, PAUL
     type: String,
@@ -98,10 +98,17 @@ const RelationshipSchema = RAMSchema({
   },
   startTimestamp: {
     type: Date,
-    required: [true, 'StartTimestamp value is required and must be in ISO format e.g., 2016-01-30']
+    required: [true, 'StartTimestamp value is required and must be in ISO format e.g., 2016-01-30'],
+    default: Date.now
   },
   endTimestamp: {
-    type: Date // todo: endTimestamp to be after startTimestamp    
+    type: Date,
+    validate: {
+      validator: function (v: Date) {
+        return v.getTime() >= this.startTimestamp.getTime();
+      },
+      message: 'End timestamp {VALUE} shouldn\'t be before start timestamp'
+    }
   },
   endEventTimestamp: {
     type: Date //todo: endEventTimestamp must be after startTimestamp and only when endTimestamp is provided

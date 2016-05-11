@@ -9,6 +9,8 @@ import {logStream} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
 // Prepare mongoose for daily operations
 import * as mongoose from 'mongoose';
+import expressValidator = require('express-validator');
+
 mongoose.connect('mongodb://localhost/ram');
 
 import {PartyController} from './controllers/party.controller';
@@ -19,14 +21,14 @@ import {PartyModel} from './models/party.model';
 import {RelationshipModel} from './models/relationship.model';
 
 if (process.env.RAM_CONF === void 0 ||
-process.env.RAM_CONF.trim().length === 0) {
+    process.env.RAM_CONF.trim().length === 0) {
     console.log('Missing RAM_CONF environment variable');
     process.exit(1);
 }
 
 /* tslint:disable:no-var-requires */ const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
 
- const server = express();
+const server = express();
 
 switch (conf.devMode) {
     case false:
@@ -39,6 +41,14 @@ switch (conf.devMode) {
 }
 
 server.use(bodyParser.json());
+server.use(expressValidator({
+    customValidators: {
+        exampleValidator: (value: string) => {
+            return value === 'yes';
+        }
+    }
+}));
+
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(methodOverride());
 
@@ -51,11 +61,11 @@ server.use('/api/reset',
 server.use('/api/v1/party',
     new PartyController(PartyModel).assignRoutes(express.Router()));
 server.use('/api/v1/relationship',
-    new RelationshipController(RelationshipModel,PartyModel).assignRoutes(express.Router()));
+    new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
-    const err = new cApi.ErrorResponse(404, 'Not Found');
+    const err = new cApi.ErrorResponse(404, 'Request Not Found');
     res.send(err);
 });
 

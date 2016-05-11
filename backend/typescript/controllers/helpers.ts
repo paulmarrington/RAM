@@ -1,4 +1,3 @@
-import * as mongoose from 'mongoose';
 import {Response} from 'express';
 import {IResponse, ErrorResponse} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
@@ -22,8 +21,11 @@ type ValidationError = {
 }
 
 export function sendError<T>(res: Response) {
-    return (error: string | Error | ValidationError) => {
+    return (error: string | Error | ValidationError | string[]) => {
         switch (error.constructor.name) {
+            case 'Array':
+                res.json(new ErrorResponse(400, error as string[]));
+                break;
             case 'String':
                 res.json(new ErrorResponse(500, error as string));
                 break;

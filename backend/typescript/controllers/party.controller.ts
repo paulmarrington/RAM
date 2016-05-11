@@ -1,12 +1,12 @@
 import {Router, Request, Response} from 'express';
-import {sendDocument, sendError, sendNotFoundError} from './helpers';
+import {sendDocument, sendError} from './helpers';
 import {IPartyModel} from '../models/party.model';
 
 export class PartyController {
 
   constructor(private partyModel: IPartyModel) {
   }
-  
+
   /* given identity type and value, retrieve identity and party documents */
   private getParty = (req: Request, res: Response) => {
     this.partyModel.getPartyByIdentity(req.params.type, req.params.value)
