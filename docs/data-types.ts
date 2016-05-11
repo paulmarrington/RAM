@@ -356,7 +356,8 @@ interface RAM{
  *          requestedFields.name=:attr-name, requestedFields.value=:attr-value,...']
  * 
  * This resource identifies a single instance of a relationship.  A get of this resource may be used to confirm the existence 
- * of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship.
+ * of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship, 
+ * including relationship attributes.
  */
 // Get
     hasRelationship(subjectPartyIdentifer:string, 
@@ -366,18 +367,17 @@ interface RAM{
                     filterDelegatePartyRole?:string[], 
                     filterRelationshipAttribute?:string[],
                     requestedFields?:string[]  ): 
-                        {response:Response, requestedRelationship:Relationship, requestedFields:RelationshipAttribute[]};
+                        {response:Response, requestedRelationship:Relationship};
 // in the above service, a null requestedFields implies return all relationshipAttribute(s) 
 // where the requestedFields contains a list of relationshhip attributes only those 
 // relationshipAttribute(s) should be returned.  Thus an empty list would see no 
 // relationshipAttribute(s) returned.
-// Is too overloaded and an explicit flag should be added????
 //
 // This service may be called by 
 // * VANguard, in which case they will populate the subject & delegate party identifiers appropriately.
 // * a relying agency   
-//      ** the relying party may be querying this outside of a party authentication session, in which case they will need a way of communicating the identity known to them and us.
-//                                            
+//      ** the relying party may be querying this outside of a party authentication session, in which case they 
+//         will need a way of communicating the identity known to them and us.
 
 //This is the same method as the previous one, but typed.                         
     hasRelationship(subjectPartyIdentifer:Identity, 
@@ -387,7 +387,7 @@ interface RAM{
                     filterDelegatePartyRole?:Role[], 
                     filterRelationshipAttribute?:RelationshipAttribute[], 
                     requestedFields?:RelationshipAttributeCode[]  ): 
-                        {response:Response, requestedRelationship:Relationship, requestedFields:RelationshipAttribute[]};
+                        {response:Response, requestedRelationship:Relationship};
                         
 /** https://<fqdn>/api/v1
  *     /Parties/Identities/:Identity.type/:Identity.idValue
@@ -429,7 +429,6 @@ interface RAM{
                     pageOptions?:PageOptions,
                     requestedFields?:RelationshipAttributeCode[]  ): 
                         {response:Response, 
-                         relationships:Relationship[],
                          relationshipsWithParties:{relationship:Relationship,relatedParty:Party}[] }; 
 
 /** https://<fqdn>/api/v1
@@ -486,7 +485,7 @@ interface RAM{
 // Get  
      readParty(partyIdentifer:Identity,  
                         requestedRoleAttributes?:RoleAttributeNameCode[]  ): 
-                        {response:Response, party:IRAMObject};  
+                        {response:Response, party:Party};  
 // in the above service, a null requestedRoleAttributes implies return all roleAttribute(s) 
 // where a where the requestedRoleAttributes contains a list of roleAttribute(s) only those 
 // roleAttribute(s) should be returned.  thus an empty list would see no 
@@ -495,12 +494,6 @@ interface RAM{
 // 
 // Note - the above readParty takes in the logical identifier for party (based on Identity), not the technical identifer (Party.id)
 //
-// Delete  
-     deleteParty(partyIdentifer:Identity):
-                 {response:Response};     
-/** https://<fqdn>/api/v1
- *     /Parties
- */ 
 // Post  
      createParty(party:Party):
                  {response:Response, party:Party};  
@@ -508,6 +501,9 @@ interface RAM{
      updateParty(party:Party):
                  {response:Response, party:Party};  
               
+// Delete  
+     deleteParty(partyIdentifer:Identity):
+                 {response:Response};     
 /**  https://<fqdn>/api/v1
  *     /Parties/InvitationCode/:Identity.idValue,
  *       ?fields='
@@ -528,7 +524,7 @@ interface RAM{
 // Put 
      updateInvitationCode(partyIdentifer:Identity,  
                           invitationCode:InvitationCode):  
-                        {response:Response, party:IRAMObject, relationship:Relationship};  
+                        {response:Response, party:Party, relationship:Relationship};  
                         
 /** https://<fqdn>/api/v1
  *     /Parties/Identities/:Identity.type/:Identity.idValue/Identity
@@ -544,11 +540,11 @@ interface RAM{
 //Post
     createIdentity(partyIdentifier: Identity,
                    newPartyIdentifer:Identity[]):
-                        {response:Response, party:IRAMObject};
+                        {response:Response, party:Party};
           
 //Put
     updateIdentity(partyIdentifier: Identity[]):
-                        {response:Response, party:IRAMObject};                        
+                        {response:Response, party:Party};                        
                         
 /**  https://<fqdn>/api/v1
  *     /Parties/Identities/:Identity.type/:Identity.idValue
