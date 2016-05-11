@@ -63,7 +63,7 @@ if ! type curl > /dev/null; then
   apt-get install -y curl
 fi
 export NPM_CONFIG_LOGLEVEL=info
-export NODE_VERSION=6.0.0
+export NODE_VERSION=6.1.0
 export NV=$NODE_VERSION
 export NVF=node-v$NV-linux-x64.tar.gz
 

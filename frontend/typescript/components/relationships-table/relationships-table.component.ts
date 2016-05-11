@@ -1,7 +1,7 @@
-import {Component, OnInit, Input} from 'angular2/core';
-import {RouteParams} from 'angular2/router';
+import {Component, OnInit, Input} from '@angular/core';
+import {RouteParams} from '@angular/router-deprecated';
 import Rx from 'rxjs/Rx';
-import {ControlGroup, Control, FORM_DIRECTIVES,FORM_PROVIDERS} from 'angular2/common';
+import {ControlGroup, Control, FORM_DIRECTIVES,FORM_PROVIDERS} from '@angular/common';
 import {
     IRelationshipTableRow
 }  from '../../../../commons/RamAPI';

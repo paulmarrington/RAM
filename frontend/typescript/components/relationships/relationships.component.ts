@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {RelationshipsTableComponent} from '../relationships-table/relationships-table.component';
 import {NavCrumbComponent} from '../nav-crumb/nav-crumb.component';
 

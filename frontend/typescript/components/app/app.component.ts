@@ -1,12 +1,14 @@
-import { Component } from 'angular2/core';
-import { HTTP_PROVIDERS } from 'angular2/http';
-import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from 'angular2/router';
+import {Component} from '@angular/core';
+import {HTTP_PROVIDERS} from '@angular/http';
+import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from '@angular/router-deprecated';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RelationshipsComponent} from '../relationships/relationships.component';
-import {HashLocationStrategy, LocationStrategy} from 'angular2/platform/common';
-import {provide} from 'angular2/core';
+import {AddRelationshipComponent} from '../add-relationship/add-relationship.component';
+
+import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {provide} from '@angular/core';
 import 'ng2-bootstrap';
 
 @Component({
@@ -27,7 +29,11 @@ import 'ng2-bootstrap';
         path: '/relationships/:identityValue/:identityResolver',
         name: 'Relationships',
         component: RelationshipsComponent
-    }
+    },{
+        path: '/relationships/addRelationship',
+        name: 'AddRelationship',
+        component: AddRelationshipComponent
+    },
 ])
 export class AppComponent {
 }
