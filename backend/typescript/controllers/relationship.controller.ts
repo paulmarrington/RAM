@@ -1,4 +1,4 @@
-import {processRequest} from './helpers';
+import {sendDocument, sendError, sendNotFoundError} from './helpers';
 import {Router, Request, Response} from 'express';
 import {
   IRelationship, statusOptions, accessLevels, IRelationshipModel
@@ -68,68 +68,55 @@ export class RelationshipController {
    */
   private getById = async (req: Request, res: Response) => {
     const id = new mongoose.Types.ObjectId(req.params.id);
-    processRequest(res, () =>
-      this.relationshipModel.getRelationshipById(id)
-    );
+    this.relationshipModel.getRelationshipById(id).then(sendDocument(res), sendNotFoundError(res));
   };
 
   /* 
    * list relationships for a specific delegate party
+   * TODO: Express-Validator
    */
   private getList = async (req: Request, res: Response) => {
-    const query = this.createQueryObject(
-      req.params.delegate_or_subject, req.params.id);
-    processRequest(res, () =>
-      this.relationshipModel.find(query)
-        .skip((req.params.page - 1) * req.params.page_size)
-        .limit(req.params.page_size)
-        .exec()
-    );
+    const query = this.createQueryObject(req.params.delegate_or_subject, req.params.id);
+    this.relationshipModel.find(query)
+      .skip((req.params.page - 1) * req.params.page_size)
+      .limit(req.params.page_size)
+      .exec()
+      .then(sendDocument(res), sendError(res));
   };
 
-  /**
-   * Add a relationship.
-   */
   private addRelationship = async (req: Request, res: Response) => {
-    const newRelationship = new this.relationshipModel(req.body);
-    processRequest(res, () =>
-      this.relationshipModel.create(newRelationship)
-    );
+    this.relationshipModel.create(req.body).then(sendDocument(res), sendError(res));
   };
+/**
+ * TODO: Express-Validator
+ */
+  private getRelationdhipTable = async (req: Request, res: Response) => {
+    try {
+      const party = await this.partyModel.getPartyByIdentity(req.params.type, req.params.value);
 
-  private getRelationshipTableAction = async (req: Request) => {
+      const relationships = await this.relationshipModel.find(
+        this.createQueryObject(req.params.delegate_or_subject, party._id))
+        .skip((req.params.page - 1) * req.params.page_size).limit(req.params.pageSize).exec();
 
-    const party = await this.partyModel.getPartyByIdentity(
-      req.params.type, req.params.value
-    );
+      const rowCount = await this.getRowCount(
+        req.params.delegate_or_subject, party._id);
 
-    const start = (parseInt(req.params.page) - 1) *
-      parseInt(req.params.pageSize);
+      const types = await this.getDistinct(
+        req.params.delegate_or_subject, party._id, 'type');
 
-    const relationships = await this.relationshipModel.find(
-      this.createQueryObject(req.params.delegate_or_subject, party._id))
-      .skip(start).limit(parseInt(req.params.pageSize)).exec();
+      const table = this.mapRows(
+        req.params.delegate_or_subject, relationships);
 
-    const rowCount = await this.getRowCount(
-      req.params.delegate_or_subject, party._id);
-
-    const types = await this.getDistinct(
-      req.params.delegate_or_subject, party._id, 'type');
-
-    const table = this.mapRows(
-      req.params.delegate_or_subject, relationships);
-
-    return {
-      total: rowCount,
-      table: table,
-      relationshipOptions: types,
-      accessLevelOptions: accessLevels,
-      statusValueOptions: statusOptions
-    };
-  };
-
-  private getRelationdhipTable = (req: Request, res: Response) => {
-    processRequest(res, () => this.getRelationshipTableAction(req));
+      sendDocument(res)({
+        total: rowCount,
+        table: table,
+        relationshipOptions: types,
+        accessLevelOptions: accessLevels,
+        statusValueOptions: statusOptions
+      });
+    } catch (e) {
+      sendError(res)(e);
+    }
   };
 
   public assignRoutes = (router: Router) => {

@@ -50,13 +50,3 @@ export function sendNotFoundError<T>(res: Response) {
         return doc;
     };
 }
-
-export async function processRequest<T>(res: Response,
-    action: (() => Promise<T> | mongoose.Promise<T>)) {
-    try {
-        const result: T = await action();
-        sendDocument(res)(result);
-    } catch (e) {
-        sendError(res)(e);
-    }
-}
