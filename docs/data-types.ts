@@ -363,7 +363,7 @@ interface RAM{
     hasRelationship(subjectPartyIdentifer:string, 
                     delegatePartyIdentifier:string, 
                     relationshipType:RelationshipTypeCode, 
-                    filterSubjectPartyRole?: string[],          //discussion point, I've left this as optional so can close brackets from here and don't have to supply an empty array. 
+                    filterSubjectPartyRole?: string[],          
                     filterDelegatePartyRole?:string[], 
                     filterRelationshipAttribute?:string[],
                     requestedFields?:string[]  ): 
