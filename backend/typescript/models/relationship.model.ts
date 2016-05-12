@@ -54,8 +54,7 @@ export interface IRelationship extends IRAMObject {
 const RelationshipSchema = RAMSchema({
   type: {
     type: String,
-    required: [true, 'Relationship type is required'],
-    trim: true,
+    required: [true, 'Relationships have to have a type'],
     enum: relationshipTypes
   },
   subjectId: {
@@ -67,7 +66,7 @@ const RelationshipSchema = RAMSchema({
     type: String,
     trim: true
   },
-  subjectAbn: { // TODO, PAUL
+  subjectAbn: { // TODO, remove once full retrieval implemented
     type: String,
     trim: true,
     default: ''
@@ -86,7 +85,7 @@ const RelationshipSchema = RAMSchema({
     type: String,
     trim: true
   },
-  delegateAbn: {// TODO, PAUL
+  delegateAbn: {// TODO, remove once full retrieval implemented
     type: String,
     trim: true,
     default: ''
