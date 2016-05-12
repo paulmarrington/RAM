@@ -58,48 +58,62 @@ const RelationshipSchema = RAMSchema({
   },
   subjectId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    required: [true, 'SubjectId is required'],
     ref: 'Party'
   },
-  subjectName: { // TODO, remove once full retrieval implemented
-    type: String
+  subjectName: { // TODO, PAUL
+    type: String,
+    trim: true
   },
   subjectAbn: { // TODO, remove once full retrieval implemented
     type: String,
+    trim: true,
     default: ''
   },
   subjectRole: {
     type: String,
-    required: true
+    trim: true,
+    required: [false, 'Subject role is required']
   },
   delegateId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Party',
-    required: true
+    required: [true, 'DelegateId is required']
   },
-  delegateName: { // TODO, remove once full retrieval implemented
-    type: String
+  delegateName: { // TODO, PAUL
+    type: String,
+    trim: true
   },
   delegateAbn: {// TODO, remove once full retrieval implemented
     type: String,
+    trim: true,
     default: ''
   },
   delegateRole: {
     type: String,
+    trim: true,
     required: [true, 'Delegate role is required']
   },
   startTimestamp: {
     type: Date,
-    required: [true, 'StartTimestamp value is required and must be in ISO format e.g., 2016-01-30']
+    required: [true, 'StartTimestamp value is required and must be in ISO format e.g., 2016-01-30'],
+    default: Date.now
   },
   endTimestamp: {
-    type: Date
+    type: Date,
+    validate: {
+      validator: function (v: Date) {
+        return v.getTime() >= this.startTimestamp.getTime();
+      },
+      message: 'End timestamp {VALUE} shouldn\'t be before start timestamp'
+    }
   },
   endEventTimestamp: {
-    type: Date
+    type: Date //todo: endEventTimestamp must be after startTimestamp and only when endTimestamp is provided
   },
   status: {
     type: String,
+    trim: true,
     enum: statusOptions,
     required: [true, 'Relationship Status value is required'],
   },
@@ -109,11 +123,15 @@ const RelationshipSchema = RAMSchema({
   sharingAgencyIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agency' }],
   subjectsNickName: {
     type: String,
-    minLength: 3,
-    maxLength: 64
+    trim: true,
+    minLength: [2, 'Nickname must have at least two characters'],
+    maxLength: [30, 'Nickname must have at most 30 characters'],
   },
   delegatesNickName: {
-    type: String
+    type: String,
+    trim: true,
+    minLength: [2, 'Nickname must have at least two characters'],
+    maxLength: [30, 'Nickname must have at most 30 characters']
   },
   deleted: {
     type: Boolean,

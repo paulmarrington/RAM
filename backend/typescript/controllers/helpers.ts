@@ -1,4 +1,3 @@
-import * as mongoose from 'mongoose';
 import {Response} from 'express';
 import {IResponse, ErrorResponse} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
@@ -22,8 +21,11 @@ type ValidationError = {
 }
 
 export function sendError<T>(res: Response) {
-    return (error: string | Error | ValidationError) => {
+    return (error: string | Error | ValidationError | string[]) => {
         switch (error.constructor.name) {
+            case 'Array':
+                res.json(new ErrorResponse(400, error as string[]));
+                break;
             case 'String':
                 res.json(new ErrorResponse(500, error as string));
                 break;
@@ -49,14 +51,4 @@ export function sendNotFoundError<T>(res: Response) {
         }
         return doc;
     };
-}
-
-export async function processRequest<T>(res: Response,
-    action: (() => Promise<T> | mongoose.Promise<T>)) {
-    try {
-        const result: T = await action();
-        sendDocument(res)(result);
-    } catch (e) {
-        sendError(res)(e);
-    }
 }
