@@ -1,5 +1,5 @@
 
-import {seed, BParty} from './seed.script';
+import {seed, ISeedParty} from './seed.script';
 
 const bob = 'Bob Bartholomew';
 const barb = 'Barbara Bartholomew';
@@ -13,13 +13,13 @@ const aBizWhoGaveYouLimitedAccess = 'A business that limited your access because
 const b2bBusinessThatHasTrustsInMind = 'B2B busines that has trusts in mind';
 const cloudSoftwareForUSI = 'Cloud software for USI';
 
-const parties:[BParty] = [{
+const parties:[ISeedParty] = [{
   identities: [{
     name: bob,
     type: 'pi',
     value: 'bob'
   }],
-  i_can_act_for: [{
+  iCanActFor: [{
     name: aShortBusinessName,
     relationship: 'Business',
     access_level: 'Universal',
@@ -35,7 +35,7 @@ const parties:[BParty] = [{
       nick_name: 'Barb',
       status: 'Active'
     }],
-  can_act_for_me: [{
+  canActForMe: [{
     name: susan,
     access_level: 'Universal',
     nick_name: 'Suzy',
@@ -65,7 +65,7 @@ const parties:[BParty] = [{
       type: 'abn',
       value: '61616161161'
     }],
-    i_can_act_for: [{
+    iCanActFor: [{
       name: aBizWhoGaveYouFullAccess,
       relationship: 'Business',
       access_level: 'Universal',
@@ -76,7 +76,7 @@ const parties:[BParty] = [{
         access_level: 'Limited',
         status: 'Active'
       }],
-    can_act_for_me: [{
+    canActForMe: [{
       name: alex,
       access_level: 'Universal',
       status: 'Active'

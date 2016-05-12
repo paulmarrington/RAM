@@ -36,6 +36,48 @@ export interface IKeyValue<T> {
 }
 
 /***************************************************
+ ***************************************************/
+
+export interface IName {
+  givenName:        string;
+  familyName:         string;
+  unstructuredName: string;
+}
+
+export interface IIdentity {
+  _id?:    string;
+  type:   string;
+  value:  string;
+  name:   IName;
+}
+
+export interface IParty {
+  _id:            string;
+  roles:          [string];
+  attributes:     {};
+  identities:     [IIdentity];
+  iCanActFor:  [IRelationship];
+  canActForMe: [IRelationship];
+}
+
+export interface IRelationship {
+  type?:             string;
+  status?:           string;
+  startTimestamp?:   Date;
+  endTimestamp?:     Date;
+  delegateId?:       string;
+  delegateAbn?:      string;
+  delegateName?:     string;
+  delegateRole?:     string;
+  delegateNickName?: string;
+  subjectId?:        string;
+  subjectAbn?:       string;
+  subjectName?:      string;
+  subjectRole?:      string;
+  subjectNickName?:  string;
+}
+
+/***************************************************
  *            RELATIONSHIP TABLE
  ***************************************************/
 export class RelationshipTableReq {

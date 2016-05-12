@@ -54,6 +54,7 @@ export interface IRelationship extends IRAMObject {
 const RelationshipSchema = RAMSchema({
   type: {
     type: String,
+    required: [true, 'Relationships have to have a type'],
     enum: relationshipTypes
   },
   subjectId: {
