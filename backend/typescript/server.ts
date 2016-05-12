@@ -60,7 +60,7 @@ server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
 server.use('/api/v1/party',
     new PartyController(PartyModel).assignRoutes(express.Router()));
-server.use('/api/v1/relationship',
+server.use('/api/',
     new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
 
 // catch 404 and forward to error handler

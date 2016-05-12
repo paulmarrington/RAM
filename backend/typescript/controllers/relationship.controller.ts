@@ -70,6 +70,9 @@ export class RelationshipController {
     });
   }
 
+  private mergeIdentities(relationshipTable) {
+  }
+
   /* 
    * given id, retrieve relationship
    */
@@ -131,8 +134,6 @@ export class RelationshipController {
     });
   }
   private getList = async (req: Request, res: Response) => {
-
-    // TODO: Changing casing to pageSize and pageNo
     try {
       const params = await this.parsePaginationParams(req);
       const query = this.createQueryObject(params.delegateOrSubject, params.id);
@@ -148,8 +149,9 @@ export class RelationshipController {
   private addRelationship = async (req: Request, res: Response) => {
     this.relationshipModel.create(req.body).then(sendDocument(res), sendError(res));
   };
-  /**
-   * TODO: Express-Validator
+  /*
+   * DEPRECATED. Early implementation (< May 2016).
+   * Remove once all clients use v2 URL.
    */
   private getRelationdhipTable = async (req: Request, res: Response) => {
     try {
@@ -157,7 +159,8 @@ export class RelationshipController {
 
       const relationships = await this.relationshipModel.find(
         this.createQueryObject(req.params.delegate_or_subject, party._id))
-        .skip((req.params.page - 1) * req.params.page_size).limit(req.params.pageSize).exec();
+        .skip((req.params.page - 1) * req.params.page_size).
+        limit(+req.params.pageSize).exec();
 
       const rowCount = await this.getRowCount(
         req.params.delegate_or_subject, party._id);
@@ -179,10 +182,61 @@ export class RelationshipController {
       sendError(res)(e);
     }
   };
+  /*
+   * Version that matches HLD as of 13-May-2016
+   */
+  private getRelationdhipTable2 = async (req: Request, res: Response) => {
+    try {
+      const party = await this.partyModel.getPartyByIdentity(
+        req.params.type, req.params.value
+      );
+
+      const pageSize = (req.query.pageSize || 5);
+      const pageNo   = (req.query.pageNo   || 1);
+
+      const relationships = await this.relationshipModel.find(
+        this.createQueryObject(
+          req.params.delegate_or_subject, party._id))
+        .skip((pageNo - 1) * pageSize).limit(pageSize).
+        populate('delegateId').populate('subjectId')
+        .select({'delegateId._id': 0})
+        .select({'subjectId._id': 0})
+        .select({'delegateId.agency': 0})
+        .select({'subjectId.agency': 0})
+        .select({_id: 0}).exec();
+
+      const rowCount = await this.getRowCount(
+        req.params.delegate_or_subject, party._id);
+
+      const types = await this.getDistinct(
+        req.params.delegate_or_subject, party._id, 'type');
+
+      const relationshipTable = this.mapRows(
+        req.params.delegate_or_subject, relationships);
+       const tableTuples = this.mergeIdentities(relationshipTable)
+
+      sendDocument(res)({
+        total: rowCount,
+        table: tableTuples,
+        relationshipOptions: types,
+        accessLevelOptions: accessLevels,
+        statusValueOptions: statusOptions
+      });
+    } catch (e) {
+      sendError(res)(e);
+    }
+  };
 
   public assignRoutes = (router: Router) => {
-    router.get('/list/:delegateOrSubject/:id/page/:pageNo/size/:pageSize', this.getList);
-    router.get('/table/:delegateOrSubject/:value/:type/page/:pageNo/size/:pageSize', this.getRelationdhipTable);
+    router.get(
+    '/v1/relationship/list/:delegateOrSubject'
+    +'/:id/page/:pageNo/size/:pageSize', this.getList);
+    router.get(
+    '/v1/relationship/table/:delegateOrSubject'+
+    '/:value/:type/page/:pageNo/size/:pageSize', this.getRelationdhipTable);
+    router.get(
+    '/v2/relationship/table/:delegateOrSubject'+
+    '/:type/:value', this.getRelationdhipTable2);
     router.post('/', this.addRelationship);
     router.get('/:id', this.getById);
     return router;
