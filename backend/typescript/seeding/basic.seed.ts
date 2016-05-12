@@ -1,4 +1,6 @@
 
+import {seed, BParty} from './seed.script';
+
 const bob = 'Bob Bartholomew';
 const barb = 'Barbara Bartholomew';
 const susan = 'Susan Bartholomew';
@@ -11,7 +13,7 @@ const aBizWhoGaveYouLimitedAccess = 'A business that limited your access because
 const b2bBusinessThatHasTrustsInMind = 'B2B busines that has trusts in mind';
 const cloudSoftwareForUSI = 'Cloud software for USI';
 
-const parties = [{
+const parties:[BParty] = [{
   identities: [{
     name: bob,
     type: 'pi',
@@ -19,24 +21,22 @@ const parties = [{
   }],
   i_can_act_for: [{
     name: aShortBusinessName,
-    relationship: 'Associate',
+    relationship: 'Business',
     access_level: 'Universal',
     status: 'Active'
   }, {
       name: aLongBusinessName,
-      relationship: 'User',
+      relationship: 'Business',
       access_level: 'Limited',
       status: 'Active'
     }, {
       name: barb,
-      relationship: 'Family',
       access_level: 'Legal attorney',
       nick_name: 'Barb',
       status: 'Active'
     }],
   can_act_for_me: [{
     name: susan,
-    relationship: 'Spouse',
     access_level: 'Universal',
     nick_name: 'Suzy',
     status: 'Active'
@@ -47,24 +47,18 @@ const parties = [{
       type: 'pi',
       value: 'barbara'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }, {
     identities: [{
       name: susan,
       type: 'pi',
       value: 'susan'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }, {
     identities: [{
       name: aShortBusinessName,
       type: 'abn',
       value: '51515151151'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }, {
     identities: [{
       name: aLongBusinessName,
@@ -73,38 +67,35 @@ const parties = [{
     }],
     i_can_act_for: [{
       name: aBizWhoGaveYouFullAccess,
-      relationship: 'Business you can act for',
+      relationship: 'Business',
       access_level: 'Universal',
       status: 'Active'
     }, {
         name: aBizWhoGaveYouLimitedAccess,
-        relationship: 'Trust to trustee',
+        relationship: 'Business',
         access_level: 'Limited',
         status: 'Active'
       }],
     can_act_for_me: [{
       name: alex,
-      relationship: 'User',
       access_level: 'Universal',
       status: 'Active'
     }, {
         name: b2bBusinessThatHasTrustsInMind,
-        relationship: 'Business acts for you',
+        relationship: 'Business',
         access_level: 'Limited',
         status: 'Active'
       }, {
         name: cloudSoftwareForUSI,
-        relationship: 'Hosted software provider',
+        relationship: 'Online Service Provider',
         access_level: 'Fixed',
         status: 'Active'
       }, {
         name: 'Henry Puffandstuff',
-        relationship: 'User',
         access_level: 'Limited',
         status: 'Active'
       }, {
         name: 'Horatio Elvistar',
-        relationship: 'User',
         access_level: 'Limited',
         status: 'Active'
       }]
@@ -114,56 +105,42 @@ const parties = [{
       type: 'abn',
       value: '21215251251'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }, {
     identities: [{
       name: aBizWhoGaveYouLimitedAccess,
       type: 'abn',
       value: '68686868868'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }, {
     identities: [{
       name: alex,
       type: 'pi',
       value: 'alex'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }, {
     identities: [{
       name: b2bBusinessThatHasTrustsInMind,
       type: 'abn',
       value: '68686868868'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }, {
     identities: [{
       name: cloudSoftwareForUSI,
       type: 'abn',
       value: '22222222222'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }, {
     identities: [{
       name: 'Henry Puffandstuff',
       type: 'pi',
       value: 'henry'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }, {
     identities: [{
       name: 'Horatio Elvistar',
       type: 'pi',
       value: 'horatio'
     }],
-    i_can_act_for: [],
-    can_act_for_me: []
   }];
 
-console.log(parties)
+seed(parties);
