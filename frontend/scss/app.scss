@@ -225,3 +225,14 @@ color: $color;
   }
 }
 
+.big-checkbox {
+    width: 30px; 
+    height: 30px;
+}
+
+.panel-heading .badge.square {
+    border-radius: 0;
+    padding: 10px 15px;
+    font-size:15px;
+    margin-right: 10px;
+}
