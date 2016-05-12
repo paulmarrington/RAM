@@ -13,38 +13,59 @@ basePath: /api/v1
 produces:
   - application/json
 paths:
-  /party:
+  /party/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}:
     get:
-      summary: Product Types
+      summary: Get relationship
       description: |
-        The Products endpoint returns information about the *Uber* products
-        offered at a given location. The response includes the display name
-        and other details about each product, and lists the products in the
-        proper display order.
+        This resource identifies a single instance of a relationship.  A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship including relationship attributes.
       parameters:
-        - name: latitude
-          in: query
-          description: Latitude component of location.
+        - name: idType
+          in: path
+          description: Type of identity resolver, possible values are [abn, acn, etc.]
           required: true
-          type: number
-          format: double
-        - name: longitude
-          in: query
-          description: Longitude component of location.
+          type: string
+        - name: idValue
+          in: path
+          description: identity value that can be used by identity resolver 
           required: true
-          type: number
-          format: double
+          type: string
+        - name: relType
+          in: path
+          description: Type of relationship
+          required: true
+          type: string
+        - name: filter
+          in: query
+          description: Filtering parameters
+          required: false
+          type: array
+          items:
+            type: string
+        - name: fields
+          in: query
+          description: List of fields to be included in the results
+          required: false
+          type: array
+          items:
+            type: string
+        - name: sort
+          in: query
+          description: Name of the fields to have the results sorted by
+          required: false
+          type: string
       tags:
         - Party
       responses:
         200:
-          description: An array of products
+          description: A relationship document
           schema:
-            type: array
-            items:
               $ref: '#/definitions/Product'
-        default:
-          description: Unexpected error
+        400:
+          description: Bad Input Error 
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Server Error
           schema:
             $ref: '#/definitions/Error'
   /estimates/price:
@@ -85,7 +106,7 @@ paths:
           type: number
           format: double
       tags:
-        - Relationship
+        - Party
       responses:
         200:
           description: An array of price estimates by product
@@ -266,10 +287,21 @@ definitions:
   Error:
     type: object
     properties:
-      code:
+      status:
         type: integer
         format: int32
-      message:
-        type: string
-      fields:
-        type: string
+        description: HTTP status code
+      alert:
+        $ref: '#/definitions/Alert'
+  Alert:
+    type: object
+    properties: 
+        alertType:            
+            type: string
+            format: can be one of the following values, success, notice or error 
+        messages:
+            type: array
+            description: Array of string presenting one or more messages 
+            items:
+                type: string 
+        
