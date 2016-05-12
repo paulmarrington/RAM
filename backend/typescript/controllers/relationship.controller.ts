@@ -130,9 +130,7 @@ export class RelationshipController {
       }
     });
   }
-  private getList = async (req: Request, res: Response) => {
-
-    // TODO: Changing casing to pageSize and pageNo
+  private getList = async (req: Request, res: Response) => {   
     try {
       const params = await this.parsePaginationParams(req);
       const query = this.createQueryObject(params.delegateOrSubject, params.id);
@@ -157,7 +155,7 @@ export class RelationshipController {
 
       const relationships = await this.relationshipModel.find(
         this.createQueryObject(req.params.delegate_or_subject, party._id))
-        .skip((req.params.page - 1) * req.params.page_size).limit(req.params.pageSize).exec();
+        .skip((req.params.page - 1) * req.params.page_size).limit(+req.params.pageSize).exec();
 
       const rowCount = await this.getRowCount(
         req.params.delegate_or_subject, party._id);
