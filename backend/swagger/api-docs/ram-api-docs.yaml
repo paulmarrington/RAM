@@ -365,7 +365,7 @@
             in: body
             required: true
             schema:
-              $ref: "#/definitions/CreateParty" 
+              $ref: "#/definitions/PartyCreateRequest" 
         responses:
           200:   
             description: The updated party returned
@@ -475,17 +475,6 @@
             type: string
             in: path
             required: true
-          - name: fields
-            required: false
-            description: |
-              The fields to be retrieved. Each field is in the format of:
-              'requestedRoleAttribute.name=:attr-name, :attr-name...'. 
-              Possible values are TBD.
-            type: array
-            collectionFormat: multi
-            in: query
-            items:
-              type: string
         summary: Find party by invitation code        
         description: | 
           This service may be use to find a party with the specified invitation code (sub type of identity) and update details of that invitation
@@ -499,7 +488,7 @@
           owns the InvitationCode, and thus now the logged on user has a Party record.      
         responses:
           200:   
-            description: The updated party returned
+            description: The party returned
             schema:
               $ref: "#/definitions/PartyResponse"
           400: 
@@ -583,6 +572,7 @@
   definitions:
     RelationshipResponse:
       type: object
+      required: ["relationshipTypes","parties","roleTypes","relationships"]
       properties:
         relationshipTypes:
           type: array
@@ -592,7 +582,6 @@
           type: array
           items:
             $ref: '#/definitions/Party'
-          minItems: 1
         roleTypes:
           type: array
           items:
@@ -604,6 +593,7 @@
     
     PartyResponse:
       type: object
+      required: ["parties","roleTypes"]
       properties:
         parties:
           type: array
@@ -617,6 +607,7 @@
     
     RoleTypeResponse:
       type: object
+      required: ["roleTypes"]
       properties:
         roleTypes:
           type: array
@@ -626,6 +617,7 @@
     Party:
       description: A Party is the concept that participates in Relationships.
       type: object
+      required: ["uri","roles","identities"]
       properties:
         uri: 
           type: string
@@ -639,9 +631,10 @@
           items:
             $ref: '#/definitions/Identity'
     
-    CreateParty:
+    PartyCreateRequest:
       description: A Party description to be created.
       type: object
+      required: ["roles","identities"]
       properties:
         roles:
           type: array
@@ -656,6 +649,7 @@
       description: |
         Profile Provider. TBD        
       type: object
+      required: ["uri","code","shortDecodeText","longDecodeText","startDate"]
       properties:
         uri: 
           type: string
@@ -682,6 +676,7 @@
         A myGov profile consists of Name and Date of Birth
         The CSP may or may not supply the profile.  Not all identities will be supplied by the CSP.  Some profiles may be self asserted.
       type: object
+      required: ["provider","name"]
       properties:
         provider:
           $ref: '#/definitions/ProfileProvider'
@@ -690,7 +685,7 @@
            
     Name:
       type: object
-      description: Name of a party 
+      description: Name of a party. Either givenName and familyName are provider or unstructuredName is provided. 
       properties:
         givenName:
           type: string
@@ -704,12 +699,14 @@
           
     Identity:
       type: object
+      required: ["profile"]
       properties:
         profile:
           $ref: '#/definitions/Profile'
              
     Relationship:
       type: object
+      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","subjectPartyRoleURI","delegatePartyRoleURI","status","startDate","uri","attributes"]
       properties:
         relationshipTypeURI:
           type: string
@@ -734,11 +731,11 @@
           type: string
           description: Date in ISO format
           enum: ['invalid','pending','active','deleted','cancelled']
-        startTimestamp:
+        startDate:
           type: string
           description: Date in ISO format
           format: date
-        endTimestamp:
+        endDate:
           type: string
           description: Date in ISO format
           format: date
@@ -757,6 +754,7 @@
           
     RelationshipCreateRequest:
       type: object
+      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","subjectPartyRoleURI","delegatePartyRoleURI","startDate","attributes"]
       properties:
         relationshipTypeURI:
           type: string
@@ -777,11 +775,11 @@
             $ref: '#/definitions/Name'
         delegatesNickname:
             $ref: '#/definitions/Name'
-        startTimestamp:
+        startDate:
           type: string
           description: Date in ISO format
           format: date
-        endTimestamp:
+        endDate:
           type: string
           description: Date in ISO format
           format: date
@@ -793,6 +791,7 @@
           
     IdentityUpdateRequest:
       type: object
+      required: ["default","subjectsNickname","delegatesNickname"]
       properties:
         subjectsNickname:
             $ref: '#/definitions/Name'
@@ -804,22 +803,24 @@
           
     RelationshipUpdateRequest:
       type: object
+      required: ["subjectsNickname","delegatesNickname","startDate"]
       properties:
         subjectsNickname:
             $ref: '#/definitions/Name'
         delegatesNickname:
             $ref: '#/definitions/Name'
-        startTimestamp:
+        startDate:
           type: string
           description: Date in ISO format
           format: date
-        endTimestamp:
+        endDate:
           type: string
           description: Date in ISO format
           format: date
           
     RoleAttributeValue:
       type: object
+      required: ["name","value"]
       properties:
         name: 
           type: string
@@ -830,6 +831,7 @@
             
     RelationshipAttributeValue:
       type: object
+      required: ["name","value"]
       properties:
         name: 
           type: string
@@ -840,6 +842,7 @@
             
     RoleAttributeDef:
       type: object
+      required: ["name","mandatory","defaultValue","acceptedValues"]
       properties:
         name: 
           type: string
@@ -858,6 +861,7 @@
 
     RelationshipAttributeDef:
       type: object
+      required: ["name","mandatory","defaultValue","acceptedValues"]
       properties:
         name: 
           type: string
@@ -875,6 +879,7 @@
             type: string     
     Error:
       type: object
+      required: ["status","alert"]
       properties:
         status:
           type: integer
@@ -884,6 +889,7 @@
           $ref: '#/definitions/Alert'
     Alert:
       type: object
+      required: ["alertType","messages"]
       properties: 
           alertType:            
               type: string
@@ -895,6 +901,7 @@
                   type: string 
     RoleType:
       type: object
+      required: ["uri","name","attributeDefs"]
       properties:
         uri: 
           type: string
@@ -906,11 +913,14 @@
         attributeDefs:
           type: array
           description: Role attributes
+          minItems: 1
           items: 
             $ref: '#/definitions/RoleAttributeDef'
 
     RelationshipType:
       type: object
+      required: ["uri","name","attributeDefs"]
+
       properties:
         uri: 
           type: string
@@ -922,19 +932,22 @@
         attributeDefs:
           type: array
           description: Relationship attributes
+          minItems: 1
           items: 
             $ref: '#/definitions/RelationshipAttributeDef'
 
     RelationshipTypeResponse:
       type: object
+      required: ["relationshipTypes"]
       properties:
-        relationships: 
+        relationshipTypes: 
           type: array
-          description: Array of relationships
+          description: Array of relationship types
           items: 
             $ref: '#/definitions/RelationshipType'
     Role:
       type: object
+      required: ["roleTypeURI","attributeValues","sharing"]
       properties:
         roleTypeURI: 
           type: string
@@ -944,6 +957,7 @@
           items: 
             $ref: '#/definitions/RoleAttributeValue'
           description: Role attributes
+          minItems: 1
         sharing:
           type: array
           description: Agencies which can see existance of this role.
@@ -954,6 +968,7 @@
       description: |
         A LegislativeProgram represents some course-grained grouping of functionality offered by government to citizens. Due to "Machinary of Government" changes these LegislativePrograms are moved between agencies. Generally, LegislativePrograms survive these moves, just in a newly named agency.
       type: object
+      required: ["uri","name"]
       properties:
         uri: 
           type: string
@@ -967,7 +982,8 @@
     idType:
       name: idType
       in: path
-      description: Type of identity resolver, possible values are [abn, acn, etc.]
+      description: |
+         Type of identity resolver, possible values are [abn, acn, etc.]
       required: true
       type: string
       enum: ['abn','authorisationCode','linkId']  
