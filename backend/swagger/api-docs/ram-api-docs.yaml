@@ -91,47 +91,48 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}/subjectRole/{roleCode}/{roleIndex}/delegateRole/{roleCode}/{roleIndex}/{startTime}: 
+    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}/{startTimestamp}: 
       get:
         summary: GetRelationship
         description: |
-          This resource identifies a single instance of a relationship.  A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship including relationship attributes.
+          This resource identifies a single instance of a relationship.   
+          A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties. 
+          The result of a get will be to return details about that relationship including relationship attributes. 
+          This call returns error if it can't uniquely identify the resource.
+          
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
           - $ref: "#/parameters/relType"
-          - $ref: "#/parameters/roleCode"
-          - $ref: "#/parameters/roleIndex"
-          - $ref: "#/parameters/startTime"
+          - $ref: "#/parameters/startTimestamp"
         tags:
           - Relationship
         responses:
           200:
             description: A relationship document
             schema:
-                $ref: '#/definitions/RelationshipResponse'
+                $ref: '#/definitions/SingleRelationshipResponse'
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
+
       delete:
         summary: DeleteRelationship
         description: |
-          This resource identifies a single instance of a relationship.  A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship including relationship attributes.
+          This resource identifies a single instance of a relationship.
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
           - $ref: "#/parameters/relType"
-          - $ref: "#/parameters/roleCode"
-          - $ref: "#/parameters/roleIndex"
-          - $ref: "#/parameters/startTime"
+          - $ref: "#/parameters/startTimestamp"
         tags:
           - Relationship
         responses:
           200:
             description: A relationship document
             schema:
-                $ref: '#/definitions/RelationshipResponse'
+                $ref: '#/definitions/SingleRelationshipResponse'
           400: 
             $ref: '#/responses/400'
           500:
@@ -139,14 +140,245 @@
       put:
         summary: UpdateRelationship
         description: |
-          This resource identifies a single instance of a relationship.  A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship including relationship attributes.
+          This resource identifies a single instance of a relationship.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/startTimestamp"
+          - name: relationship
+            in: body
+            description: Updated relationship attribute
+            required: true
+            schema:
+              $ref: '#/definitions/RelationshipUpdateRequest'
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/RelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'            
+    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}/subjectRole/{roleCode}/{roleIndex}/delegateRole/{roleCode}/{roleIndex}/{startTimestamp}: 
+      get:
+        summary: GetRelationship
+        description: |
+          This resource identifies a single instance of a relationship.   
+          A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties. 
+          The result of a get will be to return details about that relationship including relationship attributes. 
+          This call returns error if it can't uniquely identify the resource.
+          
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
           - $ref: "#/parameters/relType"
           - $ref: "#/parameters/roleCode"
           - $ref: "#/parameters/roleIndex"
-          - $ref: "#/parameters/startTime"
+          - $ref: "#/parameters/startTimestamp"
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/SingleRelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+            
+      delete:
+        summary: DeleteRelationship
+        description: |
+          This resource identifies a single instance of a relationship.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTimestamp"
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/SingleRelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      put:
+        summary: UpdateRelationship
+        description: |
+          This resource identifies a single instance of a relationship.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTimestamp"
+          - name: relationship
+            in: body
+            description: Updated relationship attribute
+            required: true
+            schema:
+              $ref: '#/definitions/RelationshipUpdateRequest'
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/RelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'            
+    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}/subjectRole/{roleCode}/{roleIndex}/{startTimestamp}: 
+      get:
+        summary: GetRelationship
+        description: |
+          This resource identifies a single instance of a relationship.  
+          A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties. 
+           The result of a get will be to return details about that relationship including relationship attributes.
+           This call returns error if it can't uniquely identify the resource.
+           
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTimestamp"
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/SingleRelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+            
+      delete:
+        summary: DeleteRelationship
+        description: |
+          This resource identifies a single instance of a relationship.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTimestamp"
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/SingleRelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      put:
+        summary: UpdateRelationship
+        description: |
+          This resource identifies a single instance of a relationship.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTimestamp"
+          - name: relationship
+            in: body
+            description: Updated relationship attribute
+            required: true
+            schema:
+              $ref: '#/definitions/RelationshipUpdateRequest'
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/RelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'            
+    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}/delegateRole/{roleCode}/{roleIndex}/{startTimestamp}: 
+      get:
+        summary: GetRelationship
+        description: |
+          This resource identifies a single instance of a relationship.  
+          A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties. 
+           The result of a get will be to return details about that relationship including relationship attributes.
+           This call returns error if it can't uniquely identify the resource.
+           
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTimestamp"
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/SingleRelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      delete:
+        summary: DeleteRelationship
+        description: |
+          This resource identifies a single instance of a relationship.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTimestamp"
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/SingleRelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      put:
+        summary: UpdateRelationship
+        description: |
+          This resource identifies a single instance of a relationship.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTimestamp"
           - name: relationship
             in: body
             description: Updated relationship attribute
@@ -574,6 +806,10 @@
       type: object
       required: ["relationshipTypes","parties","roleTypes","relationships"]
       properties:
+        totalRecordsMatched:
+          description: Total number of records matched for this query.
+          type: integer
+          format: int32
         relationshipTypes:
           type: array
           items:
@@ -590,6 +826,22 @@
           type: array
           items:
             $ref: '#/definitions/Relationship'
+    SingleRelationshipResponse:
+      type: object
+      required: ["relationshipType","parties","roleTypes","relationship"]
+      properties:
+        relationshipType:
+          $ref: '#/definitions/RelationshipType'
+        relationship:
+          $ref: '#/definitions/Relationship'
+        parties:
+          type: array
+          items:
+            $ref: '#/definitions/Party'
+        roleTypes:
+          type: array
+          items:
+            $ref: '#/definitions/RoleType'
     
     PartyResponse:
       type: object
@@ -649,7 +901,7 @@
       description: |
         Profile Provider. TBD        
       type: object
-      required: ["uri","code","shortDecodeText","longDecodeText","startDate"]
+      required: ["uri","code","shortDecodeText","longDecodeText","startTimestamp"]
       properties:
         uri: 
           type: string
@@ -661,11 +913,11 @@
           type: string
         longDecodeText:
           type: string
-        startDate:
+        startTimestamp:
           type: string
           description: date in ISO format
           format: date
-        endDate:
+        endTimestamp:
           type: string
           description: date in ISO format
           format: date
@@ -706,7 +958,7 @@
              
     Relationship:
       type: object
-      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","subjectPartyRoleURI","delegatePartyRoleURI","status","startDate","uri","attributes"]
+      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","subjectPartyRoleURI","delegatePartyRoleURI","status","startTimestamp","uri","attributes"]
       properties:
         relationshipTypeURI:
           type: string
@@ -731,11 +983,11 @@
           type: string
           description: Date in ISO format
           enum: ['invalid','pending','active','deleted','cancelled']
-        startDate:
+        startTimestamp:
           type: string
           description: Date in ISO format
           format: date
-        endDate:
+        endTimestamp:
           type: string
           description: Date in ISO format
           format: date
@@ -754,7 +1006,7 @@
           
     RelationshipCreateRequest:
       type: object
-      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","subjectPartyRoleURI","delegatePartyRoleURI","startDate","attributes"]
+      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","subjectPartyRoleURI","delegatePartyRoleURI","startTimestamp","attributes"]
       properties:
         relationshipTypeURI:
           type: string
@@ -775,11 +1027,11 @@
             $ref: '#/definitions/Name'
         delegatesNickname:
             $ref: '#/definitions/Name'
-        startDate:
+        startTimestamp:
           type: string
           description: Date in ISO format
           format: date
-        endDate:
+        endTimestamp:
           type: string
           description: Date in ISO format
           format: date
@@ -803,17 +1055,17 @@
           
     RelationshipUpdateRequest:
       type: object
-      required: ["subjectsNickname","delegatesNickname","startDate"]
+      required: ["subjectsNickname","delegatesNickname","startTimestamp"]
       properties:
         subjectsNickname:
             $ref: '#/definitions/Name'
         delegatesNickname:
             $ref: '#/definitions/Name'
-        startDate:
+        startTimestamp:
           type: string
           description: Date in ISO format
           format: date
-        endDate:
+        endTimestamp:
           type: string
           description: Date in ISO format
           format: date
@@ -993,8 +1245,8 @@
       description: identity value that can be used by identity resolver 
       required: true
       type: string        
-    startTime:
-      name: startTime
+    startTimestamp:
+      name: startTimestamp
       in: path
       description: Starting time of a relationship. In ISO date Format
       required: true
