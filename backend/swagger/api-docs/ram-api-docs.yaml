@@ -263,7 +263,6 @@
         operationId: CreateRelationshipType
         tags:
           - RelationshipType
-          - Relationship
         description: |
           creating a new relationship type
         responses:
@@ -280,7 +279,6 @@
         summary: Update relationship type
         tags:
           - RelationshipType
-          - Relationship
         description: |
           Updating a relationship type
         responses:
@@ -295,7 +293,6 @@
       get:
         tags:
           - RelationshipType
-          - Relationship
         operationId: GetRelationshipTypes
         summary: Get relationship types
         description: |
@@ -321,7 +318,6 @@
             required: true
             description: Relationship type to be deleted
         tags:
-          - Relationship
           - RelationshipType
         summary: Delete relationship type
         description: |
@@ -342,7 +338,6 @@
             required: true
             description: Relationship type URI to be retrieved
         tags:
-          - Relationship
           - RelationshipType
         summary: Get a relationship type by relationship type URI
         responses:
@@ -387,7 +382,6 @@
         operationId: GetParty
         tags:
           - Party
-          - Identity
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
@@ -440,7 +434,6 @@
         operationId: DeleteParty
         tags:
           - Party
-          - Identity
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"  
@@ -493,7 +486,7 @@
             in: query
             items:
               type: string
-                
+        summary: Find party by invitation code        
         description: | 
           This service may be use to find a party with the specified invitation code (sub type of identity) and update details of that invitation
           code to signal it has been accepted, rejected, etc.  
@@ -529,7 +522,6 @@
           creating a Relationship to an unidentified party.           
         tags:
           - Party
-          - Identity
         responses:
           200:   
             description: The updated party returned
