@@ -413,22 +413,6 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-      put:
-        operationId: UpdateRoleType
-        summary: Update role type
-        tags:
-          - RoleType
-        description: |
-          Updating a role type
-        responses:
-          200:   
-            description: The updated role type returned back
-            schema:
-              $ref: "#/definitions/RoleTypeResponse"
-          400: 
-            $ref: '#/responses/400'
-          500:
-            $ref: '#/responses/500'
       get:
         tags:
           - RoleType
@@ -447,11 +431,11 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-    /roleTypes/{roleTypeURI}:
+    /roleTypes/{roleTypeId}:
       delete:
         operationId: deleteRoleType
         parameters:
-          - name: roleTypeURI
+          - name: roleTypeId
             in: path
             type: string
             required: true
@@ -471,15 +455,15 @@
       get:
         operationId: GetRoleType
         parameters:
-          - name: roleTypeURI
+          - name: roleTypeId
             in: path
             type: string
             required: true
-            description: Role type URI to be retrieved
+            description: Role type id to be retrieved
         tags:
           - RoleType
-        summary: Get a role type by role type URI
-        description: Get a role type by role type URI
+        summary: Get a role type by role type id
+        description: Get a role type by role type id
         responses:
           200:   
             description: Role types in RAM
@@ -489,6 +473,28 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
+      put:
+        parameters:
+          - name: roleTypeId
+            in: path
+            type: string
+            required: true
+            description: Role type id to be updated
+        operationId: UpdateRoleType
+        summary: Update role type
+        tags:
+          - RoleType
+        description: |
+          Updating a role type
+        responses:
+          200:   
+            description: The updated role type returned back
+            schema:
+              $ref: "#/definitions/RoleTypeResponse"
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'            
     /relationshipTypes:
       post:
         summary: Create relationship type
@@ -500,22 +506,6 @@
         responses:
           200:   
             description: The newly created relationship returned back
-            schema:
-              $ref: "#/definitions/RelationshipTypeResponse"
-          400: 
-            $ref: '#/responses/400'
-          500:
-            $ref: '#/responses/500'
-      put:
-        operationId: UpdateRelationshipType
-        summary: Update relationship type
-        tags:
-          - RelationshipType
-        description: |
-          Updating a relationship type
-        responses:
-          200:   
-            description: The updated relationship type returned back
             schema:
               $ref: "#/definitions/RelationshipTypeResponse"
           400: 
@@ -540,11 +530,11 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-    /relationshipTypes/{relationshipTypeURI}:
+    /relationshipTypes/{relationshipTypeId}:
       delete:
         operationId: deleteRelationshipType
         parameters:
-          - name: relationshipTypeURI
+          - name: relationshipTypeId
             in: path
             type: string
             required: true
@@ -561,17 +551,39 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-      get:
-        operationId: GetRelationshipType
+      put:
+        operationId: UpdateRelationshipType
+        summary: Update relationship type
+        tags:
+          - RelationshipType
         parameters:
-          - name: relationshipTypeURI
+          - name: relationshipTypeId
             in: path
             type: string
             required: true
-            description: Relationship type URI to be retrieved
+            description: Relationship type to be updated
+        description: |
+          Updating a relationship type
+        responses:
+          200:   
+            description: The updated relationship type returned back
+            schema:
+              $ref: "#/definitions/RelationshipTypeResponse"
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      get:
+        operationId: GetRelationshipType
+        parameters:
+          - name: relationshipTypeId
+            in: path
+            type: string
+            required: true
+            description: Relationship type id to be retrieved
         tags:
           - RelationshipType
-        summary: Get a relationship type by relationship type URI
+        summary: Get a relationship type by relationship type id
         responses:
           200:   
             description: Relationship types in RAM
