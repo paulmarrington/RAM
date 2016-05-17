@@ -13,13 +13,34 @@
   produces:
     - application/json
   paths:
-    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}:
+    /parties/identities/{idType}/{idValue}/relationships:
+      post:
+        summary: CreateRelationship
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - name: relationship
+            in: body
+            description: Information about the new relationship to be created
+            required: true
+            schema:
+              $ref: '#/definitions/RelationshipCreateRequest'
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/RelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
       get:
         summary: ListRelationships
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
-          - $ref: "#/parameters/relType"
           - name: filter
             in: query
             description: Filtering parameters - Format TBD
@@ -36,11 +57,29 @@
             type: array
             items:
               type: string
+          - name: pageSize
+            in: query
+            description: Page size is used for pagination
+            required: false
+            type: number
+            format: int32
+          - name: pageNo
+            in: query
+            description: Page number is used for pagination
+            required: false
+            type: number
+            format: int32
           - name: sort
             in: query
             description: Name of the fields to have the results sorted by
             required: false
             type: string
+          - name: sortOrder
+            in: query
+            description: Can be either ascending or descending Name of the fields to have the results sorted by
+            required: false
+            type: string
+            enum: ['ascending','descending']
         tags:
           - Relationship
         responses:
@@ -52,7 +91,7 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}/{roleTypeURI}/{startTime}: 
+    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}/subjectRole/{roleCode}/{roleIndex}/delegateRole/{roleCode}/{roleIndex}/{startTime}: 
       get:
         summary: GetRelationship
         description: |
@@ -61,8 +100,59 @@
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
           - $ref: "#/parameters/relType"
-          - $ref: "#/parameters/roleType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
           - $ref: "#/parameters/startTime"
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/RelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      delete:
+        summary: DeleteRelationship
+        description: |
+          This resource identifies a single instance of a relationship.  A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship including relationship attributes.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTime"
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/RelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      put:
+        summary: UpdateRelationship
+        description: |
+          This resource identifies a single instance of a relationship.  A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship including relationship attributes.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleCode"
+          - $ref: "#/parameters/roleIndex"
+          - $ref: "#/parameters/startTime"
+          - name: relationship
+            in: body
+            description: Updated relationship attribute
+            required: true
+            schema:
+              $ref: '#/definitions/RelationshipUpdateRequest'
         tags:
           - Relationship
         responses:
@@ -167,7 +257,103 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-
+    /relationshipTypes:
+      post:
+        summary: Create relationship type
+        operationId: CreateRelationshipType
+        tags:
+          - RelationshipType
+          - Relationship
+        description: |
+          creating a new relationship type
+        responses:
+          200:   
+            description: The newly created relationship returned back
+            schema:
+              $ref: "#/definitions/RelationshipTypeResponse"
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      put:
+        operationId: UpdateRelationshipType
+        summary: Update relationship type
+        tags:
+          - RelationshipType
+          - Relationship
+        description: |
+          Updating a relationship type
+        responses:
+          200:   
+            description: The updated relationship type returned back
+            schema:
+              $ref: "#/definitions/RelationshipTypeResponse"
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      get:
+        tags:
+          - RelationshipType
+          - Relationship
+        operationId: GetRelationshipTypes
+        summary: Get relationship types
+        description: |
+          Returns an array of all relationship types in RAM.
+        responses:
+          200:   
+            description: Array of all relationship types in RAM
+            schema:
+              type: array
+              items: 
+                $ref: '#/definitions/RelationshipTypeResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+    /relationshipTypes/{relationshipTypeURI}:
+      delete:
+        operationId: deleteRelationshipType
+        parameters:
+          - name: relationshipTypeURI
+            in: path
+            type: string
+            required: true
+            description: Relationship type to be deleted
+        tags:
+          - Relationship
+          - RelationshipType
+        summary: Delete relationship type
+        description: |
+          delete a relationship type
+        responses:
+          200:   
+            description: Item deleted successfully
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+      get:
+        operationId: GetRelationshipType
+        parameters:
+          - name: relationshipTypeURI
+            in: path
+            type: string
+            required: true
+            description: Relationship type URI to be retrieved
+        tags:
+          - Relationship
+          - RelationshipType
+        summary: Get a relationship type by relationship type URI
+        responses:
+          200:   
+            description: Relationship types in RAM
+            schema:
+              $ref: '#/definitions/RelationshipTypeResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
     /parties:
       post:
         summary: Create a party 
@@ -216,6 +402,30 @@
               Possible values are TBD. 
             items:
               type: string                
+        responses:
+          200:   
+            description: The updated party returned
+            schema:
+              $ref: "#/definitions/PartyResponse"
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'                
+      put:
+        summary: Update party identity
+        operationId: UpdateIdentity
+        tags:
+          - Identity
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - name: Identity
+            in: body
+            required: true
+            schema:
+              $ref: "#/definitions/IdentityUpdateRequest"
+            description: |
+              Required information to update an identity.
         responses:
           200:   
             description: The updated party returned
@@ -553,6 +763,69 @@
           type: string
           description: URI that uniquely identifying this resource.
           
+    RelationshipCreateRequest:
+      type: object
+      properties:
+        relationshipTypeURI:
+          type: string
+          description: URI that uniquely identifying the type of this relationship
+        subjectPartyURI:
+          type: string
+          description: URI that uniquely identifying the subject party of this relationship
+        delegatePartyURI:
+          type: string
+          description: URI that uniquely identifying the delegate party of this relationship
+        subjectPartyRoleURI:
+          type: string
+          description: URI that uniquely identifying the subject's role in this relationship
+        delegatePartyRoleURI:
+          type: string
+          description: URI that uniquely identifying the delegate's role in this relationship
+        subjectsNickname:
+            $ref: '#/definitions/Name'
+        delegatesNickname:
+            $ref: '#/definitions/Name'
+        startTimestamp:
+          type: string
+          description: Date in ISO format
+          format: date
+        endTimestamp:
+          type: string
+          description: Date in ISO format
+          format: date
+        attributes:
+          type: array
+          description: Attributes attached to this relationship based on role type
+          items:
+            $ref: '#/definitions/RelationshipAttributeValue'
+          
+    IdentityUpdateRequest:
+      type: object
+      properties:
+        subjectsNickname:
+            $ref: '#/definitions/Name'
+        delegatesNickname:
+            $ref: '#/definitions/Name'
+        default:
+          type: boolean
+          description: Set this to be the default identity of this party
+          
+    RelationshipUpdateRequest:
+      type: object
+      properties:
+        subjectsNickname:
+            $ref: '#/definitions/Name'
+        delegatesNickname:
+            $ref: '#/definitions/Name'
+        startTimestamp:
+          type: string
+          description: Date in ISO format
+          format: date
+        endTimestamp:
+          type: string
+          description: Date in ISO format
+          format: date
+          
     RoleAttributeValue:
       type: object
       properties:
@@ -659,17 +932,15 @@
           description: Relationship attributes
           items: 
             $ref: '#/definitions/RelationshipAttributeDef'
-    TBD:
+
+    RelationshipTypeResponse:
       type: object
-      description: Placeholder until defined.
       properties:
-        unknown1: 
-          type: string
-        unknown2: 
-          type: string
-        unknown3: 
-          type: string
-        
+        relationships: 
+          type: array
+          description: Array of relationships
+          items: 
+            $ref: '#/definitions/RelationshipType'
     Role:
       type: object
       properties:
@@ -721,12 +992,19 @@
       required: true
       type: string
       format: date
-    roleType:
-      name: roleTypeURI
+    roleCode:
+      name: roleCode
       in: path
-      description: Role type URI
+      description: Role code TBD
       required: true
       type: string
+    roleIndex:
+      name: roleIndex
+      in: path
+      description: Role index TBD
+      required: true
+      type: integer
+      format: int32
     relType:
       name: relType
       in: path
