@@ -13,6 +13,67 @@
   produces:
     - application/json
   paths:
+    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}:
+      get:
+        summary: ListRelationships
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - name: filter
+            in: query
+            description: Filtering parameters - Format TBD
+            required: false
+            type: array
+            collectionFormat: multi
+            items:
+              type: string
+          - name: fields
+            in: query
+            collectionFormat: multi
+            description: List of fields to be included in the results - Format TBD
+            required: false
+            type: array
+            items:
+              type: string
+          - name: sort
+            in: query
+            description: Name of the fields to have the results sorted by
+            required: false
+            type: string
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/RelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
+    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}/{roleTypeURI}/{startTime}: 
+      get:
+        summary: GetRelationship
+        description: |
+          This resource identifies a single instance of a relationship.  A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship including relationship attributes.
+        parameters:
+          - $ref: "#/parameters/idType"
+          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
+          - $ref: "#/parameters/roleType"
+          - $ref: "#/parameters/startTime"
+        tags:
+          - Relationship
+        responses:
+          200:
+            description: A relationship document
+            schema:
+                $ref: '#/definitions/RelationshipResponse'
+          400: 
+            $ref: '#/responses/400'
+          500:
+            $ref: '#/responses/500'
     /roleTypes:
       post:
         summary: Create role type
@@ -134,7 +195,7 @@
           500:
             $ref: '#/responses/500'               
         
-    /parties/identities/{idType}/{idValue}/:
+    /parties/identities/{idType}/{idValue}:
       get:
         summary: Get party using identity
         operationId: GetParty
@@ -180,7 +241,7 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'                
-    /parties/identities/{idType}/{idValue}/roles/:
+    /parties/identities/{idType}/{idValue}/roles:
       post:
         parameters:
           - $ref: "#/parameters/idType"
@@ -204,6 +265,8 @@
 
     /parties/invidationCode/{invitationCode}:
       get: 
+        tags:
+          - Identity
         parameters:
           - name: invitationCode
             type: string
@@ -241,12 +304,12 @@
           500:
             $ref: '#/responses/500'
               
-    /parties/identities/{idType}/{idValue}/identity/:
+    /parties/identities/{idType}/{idValue}/identity:
       post:
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
-        summary: Add a identity to a party. Party is identified by identity.
+        summary: Add an identity to a party. Party is identified by identity.
         operationId: AddIdentity
         description: |
           In general RAM doesn't create Identity(s) (that is done by the credential service provider, etc),
@@ -314,52 +377,29 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-            
-    /party/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}:
-      get:
-        summary: GetRelationship
-        description: |
-          This resource identifies a single instance of a relationship.  A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties.  The result of a get will be to return details about that relationship including relationship attributes.
-        parameters:
-          - $ref: "#/parameters/idType"
-          - $ref: "#/parameters/idValue"
-          - name: relType
-            in: path
-            description: Type of relationship
-            required: true
-            type: string
-          - name: filter
-            in: query
-            description: Filtering parameters
-            required: false
-            type: array
-            items:
-              type: string
-          - name: fields
-            in: query
-            description: List of fields to be included in the results
-            required: false
-            type: array
-            items:
-              type: string
-          - name: sort
-            in: query
-            description: Name of the fields to have the results sorted by
-            required: false
-            type: string
-        tags:
-          - Party
-        responses:
-          200:
-            description: A relationship document
-            schema:
-                $ref: '#/definitions/Relationship'
-          400: 
-            $ref: '#/responses/400'
-          500:
-            $ref: '#/responses/500'
+    
   definitions:
-      
+    RelationshipResponse:
+      type: object
+      properties:
+        relationshipTypes:
+          type: array
+          items:
+            $ref: '#/definitions/RelationshipType'
+        parties:
+          type: array
+          items:
+            $ref: '#/definitions/Party'
+          minItems: 1
+        roleTypes:
+          type: array
+          items:
+            $ref: '#/definitions/RoleType'
+        relationships:
+          type: array
+          items:
+            $ref: '#/definitions/Relationship'
+    
     PartyResponse:
       type: object
       properties:
@@ -427,10 +467,12 @@
           type: string
         startDate:
           type: string
-          description: date in iso format
+          description: date in ISO format
+          format: date
         endDate:
           type: string
-          description: date in iso format
+          description: date in ISO format
+          format: date
           
     Profile:
       description: |
@@ -446,14 +488,17 @@
            
     Name:
       type: object
-      description: TBD 
+      description: Name of a party 
       properties:
         givenName:
           type: string
+          description: Used for individual entities
         familyName:
           type: string
+          description: Used for individual entities
         unstructuredName:
           type: string
+          description: Used for non-individual entities
           
     Identity:
       type: object
@@ -464,8 +509,46 @@
     Relationship:
       type: object
       properties:
-        nickname:
+        relationshipTypeURI:
           type: string
+          description: URI that uniquely identifying the type of this relationship
+        subjectPartyURI:
+          type: string
+          description: URI that uniquely identifying the subject party of this relationship
+        delegatePartyURI:
+          type: string
+          description: URI that uniquely identifying the delegate party of this relationship
+        subjectPartyRoleURI:
+          type: string
+          description: URI that uniquely identifying the subject's role in this relationship
+        delegatePartyRoleURI:
+          type: string
+          description: URI that uniquely identifying the delegate's role in this relationship
+        subjectsNickname:
+            $ref: '#/definitions/Name'
+        delegatesNickname:
+            $ref: '#/definitions/Name'
+        status:
+          type: string
+          description: Date in ISO format
+          enum: ['invalid','pending','active','deleted','cancelled']
+        startTimestamp:
+          type: string
+          description: Date in ISO format
+          format: date
+        endTimestamp:
+          type: string
+          description: Date in ISO format
+          format: date
+        endEventTimestamp:
+          type: string
+          description: Date that one has set endTimestamp value. Value is in ISO format
+          format: date
+        attributes:
+          type: array
+          description: Attributes attached to this relationship based on role type
+          items:
+            $ref: '#/definitions/RelationshipAttributeValue'
         uri: 
           type: string
           description: URI that uniquely identifying this resource.
@@ -480,7 +563,35 @@
           type: string
           description: Value assigned to this attribute
             
+    RelationshipAttributeValue:
+      type: object
+      properties:
+        name: 
+          type: string
+          description: Name of an attribute definition
+        value:
+          type: string
+          description: Value assigned to this attribute
+            
     RoleAttributeDef:
+      type: object
+      properties:
+        name: 
+          type: string
+          description: Relationship attribute name. The rest to TBD.
+        mandatory:
+          type: boolean
+          description: should a value to be provided for this attribute
+        defaultValue:
+          type: string
+          description: The default value for this attribute
+        acceptedValues:
+          description: what are the accepted value types
+          type: array
+          items:
+            type: string     
+
+    RelationshipAttributeDef:
       type: object
       properties:
         name: 
@@ -532,7 +643,22 @@
           description: Role attributes
           items: 
             $ref: '#/definitions/RoleAttributeDef'
-                  
+
+    RelationshipType:
+      type: object
+      properties:
+        uri: 
+          type: string
+          description: URI that uniquely identifying this relationship type.
+        name: 
+          type: string
+          description: |
+            A short name for the relationship type. Must be unique with no space.
+        attributeDefs:
+          type: array
+          description: Relationship attributes
+          items: 
+            $ref: '#/definitions/RelationshipAttributeDef'
     TBD:
       type: object
       description: Placeholder until defined.
@@ -581,12 +707,32 @@
       description: Type of identity resolver, possible values are [abn, acn, etc.]
       required: true
       type: string
+      enum: ['abn','authorisationCode','linkId']  
     idValue:
       name: idValue
       in: path
       description: identity value that can be used by identity resolver 
       required: true
       type: string        
+    startTime:
+      name: startTime
+      in: path
+      description: Starting time of a relationship. In ISO date Format
+      required: true
+      type: string
+      format: date
+    roleType:
+      name: roleTypeURI
+      in: path
+      description: Role type URI
+      required: true
+      type: string
+    relType:
+      name: relType
+      in: path
+      description: Type of relationship
+      required: true
+      type: string
 
   responses:
     400:
