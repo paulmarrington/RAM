@@ -69,3 +69,14 @@ gulp.task("publish:tarball",
             .pipe(gzip())
             .pipe(gulp.dest('./'));
     });
+
+gulp.task('seed',['ts:compile'], function () {
+    return gulp.src(['dist/seeding/{**,./}/*.seed.js']).pipe(
+        exec('node typescript/seeding/basic.seed.ts',
+        function (err, stdout, stderr) {
+            console.log(stdout);
+            console.log(stderr);
+            cb(err);
+        })
+    );
+});

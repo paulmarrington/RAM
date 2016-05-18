@@ -234,11 +234,8 @@ export class RelationshipController {
     router.get(
     '/v1/relationship/table/:delegateOrSubject'+
     '/:value/:type/page/:pageNo/size/:pageSize', this.getRelationdhipTable);
-    router.get(
-    '/v2/relationship/table/:delegateOrSubject'+
-    '/:type/:value', this.getRelationdhipTable2);
-    router.post('/', this.addRelationship);
-    router.get('/:id', this.getById);
+    router.post('/v1/relationship', this.addRelationship);
+    router.get('/v1/relationship/:id', this.getById);
     return router;
   };
 }
