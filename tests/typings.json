@@ -1,0 +1,12 @@
+{
+  "name": "test-backend",
+  "version": false,
+  "dependencies": {},
+  "ambientDependencies": {
+    "faker": "registry:dt/faker#0.0.0+20160406111603",
+    "jasmine": "registry:dt/jasmine#2.2.0+20160412134438",
+    "node": "registry:dt/node#4.0.0+20160501135006",
+    "superagent": "registry:dt/superagent#1.4.0+20160317120654",
+    "urijs": "registry:dt/urijs#1.15.1+20160326065022"
+  }
+}

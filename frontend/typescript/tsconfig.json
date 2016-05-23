@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "noImplicitReturns": false,
+        "noFallthroughCasesInSwitch": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "dist/js/app.js",
+        "module": "system",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "target": "es5",
+        "declaration": false,
+        "inlineSources": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "noLib": false,
+        "pretty": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false
+    },
+    "files": [
+        "./Boot.ts"
+    ],
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true
+    }
+}

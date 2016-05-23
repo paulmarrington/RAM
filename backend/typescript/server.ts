@@ -1,54 +1,83 @@
-/// <reference path="all_types" />
+import * as express from 'express';
+import * as path from 'path';
+import * as loggerMorgan from 'morgan';
+import * as bodyParser from 'body-parser';
+import * as methodOverride from 'method-override';
+import * as cApi from '../../commons/RamAPI';
+import * as api from './ram/ServerAPI';
+import swagger = require('swagger-node-express');
+import {logStream} from './logger';
+// import {continueOnlyIfJWTisValid} from './security'
+// Prepare mongoose for daily operations
+import * as mongoose from 'mongoose';
+import expressValidator = require('express-validator');
 
-import * as express from "express";
-import * as path from "path";
-import * as logger from "morgan";
-import * as cookieParser from "cookie-parser";
-import * as bodyParser from "body-parser";
-import * as methodOverride from "method-override";
-import * as ram from "./ram/API";
+mongoose.connect('mongodb://localhost/ram');
 
-const conf:ram.IRamConf = require(`${process.env.RAM_CONF}`);
-const port = conf.httpPort || 3000
+import {PartyController} from './controllers/party.controller';
+import {RelationshipController} from './controllers/relationship.controller';
+import {ResetController} from './controllers/reset.server.controller';
 
+import {PartyModel} from './models/party.model';
+import {RelationshipModel} from './models/relationship.model';
 
-var server = express();
+if (process.env.RAM_CONF === void 0 ||
+    process.env.RAM_CONF.trim().length === 0) {
+    console.log('Missing RAM_CONF environment variable');
+    process.exit(1);
+}
+
+/* tslint:disable:no-var-requires */ const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
+
+const server = express();
 
 switch (conf.devMode) {
     case false:
-        server.use(logger("dev")); // todo: Log to file: https://github.com/expressjs/morgan
+        // todo: Log to file: https://github.com/expressjs/morgan
+        server.use(loggerMorgan('prod', { stream: logStream }));
         break;
     default:
-        server.use(logger("dev"));
+        server.use(loggerMorgan('dev', { stream: logStream }));
         break;
 }
 
 server.use(bodyParser.json());
+server.use(expressValidator({
+    customValidators: {
+        exampleValidator: (value: string) => {
+            return value === 'yes';
+        }
+    }
+}));
+
 server.use(bodyParser.urlencoded({ extended: true }));
-server.use(cookieParser());
 server.use(methodOverride());
 
+// server.use(continueOnlyIfJWTisValid(conf.jwtSecretKey,true));
+
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
+server.use(express.static('swagger'));
 
-import homeRte from "./routes/home";
-import usersRte from "./routes/users";
-
-server.use("/api/home", homeRte);
-server.use("/api/users", usersRte);
+server.use('/api/reset',
+    new ResetController().assignRoutes(express.Router()));
+server.use('/api/v1/party',
+    new PartyController(PartyModel).assignRoutes(express.Router()));
+server.use('/api/v1/relationship',
+    new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
-    var err = new ram.ErrorResponse(404, "Not Found");
+    const err = new cApi.ErrorResponse(404, 'Request Not Found');
     res.send(err);
 });
 
-server.use((ramResponse: ram.IResponse, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if (ramResponse.isError) {
-        res.send(ramResponse); // Todo: More specific error handling
-    } else {
-        res.send(ramResponse);
-    }
-});
+// server.use((ramResponse: cApi.IResponse, req: express.Request, res: express.Response, next: express.NextFunction) => {
+//     if (ramResponse.isError) {
+//         res.send(ramResponse); // Todo: More specific error handling
+//     } else {
+//         res.send(ramResponse);
+//     }
+// });
 
 server.listen(conf.httpPort);
 console.log(`RAM Server running on port ${conf.httpPort}`);

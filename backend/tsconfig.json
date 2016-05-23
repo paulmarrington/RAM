@@ -4,14 +4,22 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "target": "es5",
+        "target": "es6",
         "declaration": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "module": "commonjs",
-        "outDir": "dist/"
+        "inlineSources": true,
+        "outDir": "dist/",
+        "module": "commonjs"
     },
+    "compileOnSave": true,
     "files": [
-        "typescript/server.ts"
-    ]
+        "typescript/server.ts",
+        "typings/main.d.ts"
+    ],
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true,
+        "**/jspm_packages/**": true
+    }
 }

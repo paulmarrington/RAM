@@ -18,3 +18,16 @@ server/typings/
 backend/node_modules/
 backend/typings/
 backend/dist/
+/.vs/RAM/v14/.suo
+.ntvs_analysis.dat
+backend/log/ram.log
+.vscode/
+*.log
+test-backend/node_modules/
+test-backend/typings/
+integration-tests/node_modules/
+integration-tests/typings/
+integration-tests/dist/
+tests/dist/
+tests/node_modules/
+tests/typings/

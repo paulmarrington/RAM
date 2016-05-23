@@ -1,5 +1,62 @@
+$brand-primary:    #0F979B;
+$brand-primary-bg: darken($brand-primary,10%);
+$brand-primary-border: darken($brand-primary,12%);
+
+$pagination-color:                     $brand-primary;
+$pagination-bg:                        #fff !default;
+$pagination-border:                    $brand-primary;
+
+$pagination-hover-color:               #f5f5f5 ;
+$pagination-hover-bg:                  $brand-primary-bg;
+$pagination-hover-border:              $brand-primary-bg;
+
+$pagination-active-color:              #f5f5f5 ;
+$pagination-active-bg:                 $brand-primary;
+$pagination-active-border:             $brand-primary;
+
+$pagination-disabled-color:            $brand-primary;
+$pagination-disabled-bg:               #fff !default;
+$pagination-disabled-border:           $brand-primary;
+
 @import "bootstrap_ram";
 @import "ie10-viewport-bug-workaround";
+
+/******************************************************************************************************/
+.text-xs-left { text-align: left; }
+.text-xs-right { text-align: right; }
+.text-xs-center { text-align: center;  }
+.text-xs-justify { text-align: justify; }
+.pull-xs-left { float: left !important;}
+.pull-xs-right { float: right !important;}
+
+@media (min-width: $screen-sm-min) {
+   .text-sm-left { text-align: left;  }
+   .text-sm-right { text-align: right; }
+   .text-sm-center { text-align: center; }
+   .text-sm-justify { text-align: justify; }
+   .pull-sm-left { float: left !important;}
+   .pull-sm-right { float: right !important;}
+}
+
+@media (min-width: $screen-md-min) {
+    .text-md-left { text-align: left; }
+    .text-md-right { text-align: right; }
+    .text-md-center { text-align: center; }
+    .text-md-justify { text-align: justify; }
+   .pull-md-left { float: left !important;}
+   .pull-md-right { float: right !important;}
+}
+
+@media (min-width: $screen-lg-min) {
+   .text-lg-left { text-align: left; }
+   .text-lg-right { text-align: right; }
+   .text-lg-center { text-align: center; }
+   .text-lg-justify { text-align: justify; }
+   .pull-lg-left { float: left !important;}
+   .pull-lg-right { float: right !important;}
+}
+
+/******************************************************************************************************/
 
 .page-header {
     margin-top:0px;
@@ -72,21 +129,27 @@ div.navbar-header {
 }
 
 .section{
-    .btn.btn-default{
+    .btn-width-70.btn.btn-default ,.btn-width-70.btn.btn-primary  {
         width:70px;
     }
     thead tr {
         background: #EEE;
     }
-    thead tr.super-header{
-        background: #555;
-        color:#fff;
-        th {
-            border-bottom: 0px;
-        }
+    thead tr th.header {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 15px;
     }
     margin-bottom: 50px;
     margin-top: 50px;
+    .pagination.ng-table-pagination{
+        margin:0;
+    }
+    .ng-table-pager {
+        .btn {
+            margin-left:1px;
+        }
+    }
 }
 footer {
     font-size: 20px;
@@ -103,4 +166,73 @@ footer {
     padding-top: 50px;
     padding-bottom: 50px;
 
+}
+
+.btn.btn-inverse {
+    $color:              $gray-darker !default;
+    $background:         #fff !default;
+    $border:             $btn-default-bg !default;
+
+color: $color;
+  background-color: $background;
+  border-color: $border;
+
+  &:focus,
+  &.focus {
+    color: $background;
+    background-color: darken($color, 10%);
+        border-color: darken($border, 25%);
+  }
+  &:hover {
+    color: $background;
+    background-color: lighten($color, 30%);
+        border-color: darken($border, 12%);
+  }
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    color: $background;
+    background-color: darken($color, 10%);
+        border-color: darken($border, 12%);
+
+    &:hover,
+    &:focus,
+    &.focus {
+      color: $background;
+      background-color: darken($color, 17%);
+          border-color: darken($border, 25%);
+    }
+  }
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    background-image: none;
+  }
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    &:hover,
+    &:focus,
+    &.focus {
+      background-color: $border;
+          border-color: $background;
+    }
+  }
+
+  .badge {
+    color: $color;
+    background-color: $background;
+  }
+}
+
+.big-checkbox {
+    width: 30px; 
+    height: 30px;
+}
+
+.panel-heading .badge.square {
+    border-radius: 0;
+    padding: 10px 15px;
+    font-size:15px;
+    margin-right: 10px;
 }
