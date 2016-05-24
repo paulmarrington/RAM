@@ -5,3 +5,8 @@ node_js:
 branches:
  only:
   - develop
+
+before_script:
+  - npm install -g gulp
+
+script: gulp
