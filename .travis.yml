@@ -17,4 +17,4 @@ before_script:
   - sleep 5
   - npm install -g gulp typings jspm pm2 jasmine
 
-script: cd $TEST_DIR && npm install && tsd install && jspm install
+script: cd $TEST_DIR && npm install && typings install && jspm install
