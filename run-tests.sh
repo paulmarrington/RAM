@@ -9,3 +9,7 @@ jspm install
 cd ../backend
 npm install
 typings install
+
+cd ../tests
+npm install
+jasmine
