@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-dir=$(PWD)
+dir=$(pwd)
 export RAM_CONF=$dir/backend/conf/conf.js
 
 echo RAM_CONF is $RAM_CONF
