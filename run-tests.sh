@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ev
 
+export RAM_CONF=../../../conf/conf.js
+
 cd frontend
 npm install
 node_modules/.bin/typings install
