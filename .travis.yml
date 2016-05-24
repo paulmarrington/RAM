@@ -6,7 +6,11 @@ branches:
  only:
   - develop
 
-before_script:
-  - npm install -g gulp
+env:
+ - TEST_DIR=backend
+ - TEST_DIR=frontend
 
-script: gulp
+before_script:
+  - npm install -g gulp typings jspm pm2 jasmine
+
+script: cd $TEST_DIR && npm install
