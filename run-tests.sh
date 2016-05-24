@@ -4,7 +4,8 @@ set -ev
 cd frontend
 npm install
 typings install
-jspm install
+jspm cc
+jspm install -y
 
 cd ../backend
 npm install
