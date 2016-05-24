@@ -1,16 +1,22 @@
 language: node_js
+
 node_js:
- - 6.1.0
+- 6.1.0
 
 branches:
- only:
+  only:
   - develop
 
 services:
-  - mongodb
+- mongodb
+
+env:
+  global:
+    secure: xNKdZ8/Obdu6ACGZeB/snhsYkNf3kDsqu7fU/5IocPyKbdGmvgzYCYS6Xtr5tYasi6lacFNivi6UCfscJN2ATC54kB+Vg0RtErsOCGqyLPNg/+mu1R/zIWM7A77ISnUwmYqpel+WK59Gg8CJEmocspZ2Op3/xhpMY7DpcG82Ga7tyU5bviwML/3wKGU+/rtk9Yl5jgnPZJ7sYWcFX8h8Rq+CswYRqn2aoukaRU3ZiWtfNJN0Cdy5InPgcUwPuxeH8CfYYV+FSZXjAFtS7LPHINstQxIUCm62zJdmfeQFJnYJ3cJYpYXfcOeCQg374DDHw0AlWnHwIBwWO6W3DzQ1Wf4ZP2EXhkECJtmIApCPi0qM9VVKuBjs6sfLi58nF91np1gKlDPou44Hy+1BARl67o9axJgQLLUfyM7sePcAQxDJeI6J1iPWsM3vL8HA7fxoJvyAF+ArC1T7tK2o+4tSXUWZ7jE7w3S4NNvQ1fBy/4HqIhzd9tloXH72bI8QQRyQhVVYOxjoEeXJVKz/tq3WzzXEMH57bPPj7Tm9hs/N7vAJ9ksz0FNOLO+KDNQ7daUR3UPSqYOQInl0ET4QHyj7NJ2Lr6wxvn8MlF0RIMOtLeB6sP+VvzLnnGC4YKhHsPvX3oXvn+MV+8s0ZU/wC1K6RSIpp/Au3Wzl/0COnTgCg1M=
 
 before_script:
-  - sleep 5
-  - npm install -g gulp typings jspm pm2 jasmine
+- sleep 5
+- npm install -g gulp typings jspm pm2 jasmine
+- jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
 
-script: ./run-tests.sh
+script: "./run-tests.sh"
