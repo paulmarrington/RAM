@@ -10,7 +10,8 @@ jspm install -y
 cd ../backend
 npm install
 typings install
+gulp serve &
 
 cd ../tests
 npm install
-jasmine
+gulp test
