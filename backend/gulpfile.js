@@ -45,7 +45,7 @@ gulp.task("ts:watch", ["ts:compile"], function () {
 
 gulp.task('serve', ["ts:watch"], function () {
     nodemon({
-        script: 'dist/backend/typescript/Server.js',
+        script: 'dist/backend/typescript/server.js',
         "verbose": true,
         "delay": 5,
         "execMap": {
