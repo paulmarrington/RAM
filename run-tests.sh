@@ -1,7 +1,10 @@
 #!/bin/bash
 set -ev
 
-export RAM_CONF=../../../conf/conf.js
+rswd="\$(cd \$(dirname "\$0"); pwd)"
+export RAM_CONF="\$rswd/backend/conf/conf.js"
+
+echo RAM_CONF is $RAM_CONF
 
 cd frontend
 npm install
