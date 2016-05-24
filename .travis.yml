@@ -16,7 +16,7 @@ env:
 
 before_script:
 - sleep 5
-- npm install -g gulp typings jspm pm2 jasmine
+- npm install -g gulp jspm pm2 jasmine
 - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
 
 script: "./run-tests.sh"

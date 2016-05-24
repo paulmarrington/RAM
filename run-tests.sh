@@ -3,8 +3,7 @@ set -ev
 
 dir=$(pwd)
 export RAM_CONF=$dir/backend/conf/conf.js
-
-echo RAM_CONF is $RAM_CONF
+echo $RAM_CONF
 
 cd frontend
 npm install
@@ -16,9 +15,7 @@ cd ../backend
 npm install
 node_modules/.bin/typings install
 gulp ts:compile
-pwd
-find dist
-RAM_CONF=$dir/backend/conf/conf.js gulp serve &
+gulp serve &
 
 cd ../tests
 npm install
