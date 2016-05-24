@@ -16,6 +16,7 @@ npm install
 node_modules/.bin/typings install
 gulp ts:compile
 gulp serve &
+sleep 15
 
 cd ../tests
 npm install
