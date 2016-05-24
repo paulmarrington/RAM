@@ -1,8 +1,8 @@
 #!/bin/bash
 set -ev
 
-rswd="\$(cd \$(dirname "\$0"); pwd)"
-export RAM_CONF="\$rswd/backend/conf/conf.js"
+dir=$(PWD)
+export RAM_CONF=$dir/backend/conf/conf.js
 
 echo RAM_CONF is $RAM_CONF
 
