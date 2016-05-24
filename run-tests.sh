@@ -15,7 +15,7 @@ jspm install -y
 cd ../backend
 npm install
 node_modules/.bin/typings install
-gulp serve &
+RAM_CONF=$dir/backend/conf/conf.js gulp serve &
 
 cd ../tests
 npm install
