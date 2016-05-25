@@ -26,6 +26,7 @@ export const relationshipTypes = [
 export interface IRelationshipType extends IRAMObject {
 
     type: string;
+    voluntaryInd: boolean;
 
 }
 
@@ -35,7 +36,14 @@ const RelationshipTypeSchema = RAMSchema({
         type: String,
         required: [true, 'Relationship Types have to have a type'],
         enum: relationshipTypes
+    },
+
+    deleted: {
+      type: Boolean,
+      required: true,
+      default: false
     }
+
 
 });
 
