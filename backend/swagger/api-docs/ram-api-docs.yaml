@@ -297,11 +297,11 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-    /relationshipTypes/{relationshipTypeId}:
+    /relationshipTypes/{code}:
       delete:
         operationId: deleteRelationshipType
         parameters:
-          - name: relationshipTypeId
+          - name: code
             in: path
             type: string
             required: true
@@ -324,7 +324,7 @@
         tags:
           - RelationshipType
         parameters:
-          - name: relationshipTypeId
+          - name: code
             in: path
             type: string
             required: true
@@ -343,7 +343,7 @@
       get:
         operationId: GetRelationshipType
         parameters:
-          - name: relationshipTypeId
+          - name: code
             in: path
             type: string
             required: true
