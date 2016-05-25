@@ -13,11 +13,11 @@ describe('RAM Relationship Type', () => {
     beforeEach(async (done) => {
 
         existingValidModel = new RelationshipTypeModel();
-        existingValidModel.type = relationshipTypes[0];
+        existingValidModel.name = relationshipTypes[0];
         await existingValidModel.save();
 
         existingDeletedModel = new RelationshipTypeModel();
-        existingDeletedModel.type = relationshipTypes[0];
+        existingDeletedModel.name = relationshipTypes[1];
         existingDeletedModel.deleteInd = true;
         await existingDeletedModel.save();
 
@@ -73,12 +73,12 @@ describe('RAM Relationship Type', () => {
         try {
 
             const model = new RelationshipTypeModel();
-            model.type = relationshipTypes[0];
+            model.name = relationshipTypes[0];
             await model.save();
 
             expect(model).not.toBeNull();
             expect(model.id).not.toBeNull();
-            expect(model.type).not.toBeNull();
+            expect(model.name).not.toBeNull();
             expect(model.createdAt).not.toBeNull();
             expect(model.updatedAt).not.toBeNull();
 
@@ -99,7 +99,7 @@ describe('RAM Relationship Type', () => {
         try {
 
             const model = new RelationshipTypeModel();
-            model.type = '__BOGUS__';
+            model.name = '__BOGUS__';
             await model.save();
             fail();
 
