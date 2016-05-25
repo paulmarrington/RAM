@@ -52,9 +52,4 @@ RelationshipTypeSchema.static('findValidById', (id:String) => {
         .exec();
 });
 
-RelationshipTypeSchema.method('delete', function() {
-    this.deleteInd = true;
-    this.save();
-});
-
 export const RelationshipTypeModel = mongoose.model('RelationshipType', RelationshipTypeSchema) as IRelationshipTypeModel;
