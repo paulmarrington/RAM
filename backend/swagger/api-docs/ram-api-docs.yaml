@@ -938,7 +938,7 @@
       allOf:
         - $ref: '#/definitions/ICode'
         - type: object
-          required: ["uri","name","attributeDefs"]
+          required: ["attributeDefs"]
           properties:
             code: 
               type: string
@@ -952,16 +952,18 @@
                 $ref: '#/definitions/RoleAttributeDef'
 
     RelationshipType:
-      type: object
-      required: ["name","attributeDefs"]
-
-      properties:       
-        attributeDefs:
-          type: array
-          description: Relationship attributes
-          minItems: 1
-          items: 
-            $ref: '#/definitions/RelationshipAttributeDef'
+      allOf:
+        - $ref: '#/definitions/ICode'
+        - type: object
+          required: ["attributeDefs"]
+    
+          properties:       
+            attributeDefs:
+              type: array
+              description: Relationship attributes
+              minItems: 1
+              items: 
+                $ref: '#/definitions/RelationshipAttributeDef'
 
     RelationshipTypeResponse:
       allOf: 
@@ -1012,7 +1014,7 @@
           
     ICode:
       type: object
-      required: ['shortDecodeText','longDecodeText','startDate']
+      required: ['shortDecodeText','longDecodeText','startDate','url','code']
       properties:
         code: 
           type: string
@@ -1020,8 +1022,6 @@
         url:
           type: string
           description: URL that uniquely identifying this resource.
-        longDecodeText:
-          type: string
         shortDecodeText:
           type: string
         longDecodeText:
