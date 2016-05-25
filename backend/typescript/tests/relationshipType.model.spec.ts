@@ -109,18 +109,18 @@ describe('RAM Relationship Type', () => {
 
     });
 
-    xit('deletes logically', async (done) => {
+    it('deletes logically', async (done) => {
 
         try {
 
-            existingValidModel.delete();
-
-            const retrievedModel = await RelationshipTypeModel.findById(existingValidModel.id);
+            const retrievedModel = await RelationshipTypeModel.findValidById(existingValidModel.id);
             expect(retrievedModel).not.toBeNull();
             expect(retrievedModel.id).toBe(existingValidModel.id);
 
+            await existingValidModel.delete();
+
             const retrievedModel2 = await RelationshipTypeModel.findValidById(existingValidModel.id);
-            expect(retrievedModel).toBeNull();
+            expect(retrievedModel2).toBeNull();
 
             done();
 

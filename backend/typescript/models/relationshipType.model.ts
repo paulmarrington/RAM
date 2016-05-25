@@ -43,12 +43,18 @@ RelationshipTypeSchema.plugin(mongooseIdValidator);
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
     findValidById: (id:String) => mongoose.Promise<IRelationshipType>;
+    delete: () => void
 }
 
 RelationshipTypeSchema.static('findValidById', (id:String) => {
     return this.RelationshipTypeModel
         .findOne({_id: id, deleteInd: false})
         .exec();
+});
+
+RelationshipTypeSchema.method('delete', function() {
+    this.deleteInd = true;
+    this.save();
 });
 
 export const RelationshipTypeModel = mongoose.model('RelationshipType', RelationshipTypeSchema) as IRelationshipTypeModel;
