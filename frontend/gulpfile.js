@@ -77,18 +77,6 @@ gulp.task("clean", function() {
 
 gulp.task("ts:compile", ["ts:lint"], function() {
     return gulp.src(["typescript/{**,./}/*.ts", "../commons/{**,./}/*.ts", "../commons/{**,./}/*.html"])
-        .pipe(embedTemplates({
-            sourceType: 'ts',
-            minimize: {
-                empty: true,
-                spare: true,
-                quotes: true,
-                dom: {
-                    lowerCaseAttributeNames: false,
-                    lowerCaseTags: false
-                }
-            }
-        }))
         .pipe(sourcemaps.init())
         .pipe(ts(tsProject, { sortOutput: true }))
         .pipe(sourcemaps.write("."))
