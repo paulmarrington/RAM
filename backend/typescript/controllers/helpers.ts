@@ -58,8 +58,8 @@ export function sendError<T>(res: Response) {
 
 export function sendNotFoundError<T>(res: Response) {
     return (doc: T): T => {
+        res.status(404);
         if (!doc) {
-            res.status(404);
             res.json(new ErrorResponse(404, 'Can\'t find the requested resource.'));
         }
         return doc;
