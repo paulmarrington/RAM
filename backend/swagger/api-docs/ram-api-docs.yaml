@@ -893,23 +893,25 @@
             type: string     
 
     RelationshipAttributeDef:
-      type: object
-      required: ["name","mandatory","defaultValue","acceptedValues"]
-      properties:
-        name: 
-          type: string
-          description: Relationship attribute name. The rest to TBD.
-        mandatory:
-          type: boolean
-          description: should a value to be provided for this attribute
-        defaultValue:
-          type: string
-          description: The default value for this attribute
-        acceptedValues:
-          description: what are the accepted value types
-          type: array
-          items:
-            type: string     
+      allOf:
+        - $ref: '#/definitions/ICode'
+        - type: object
+          required: ["name","mandatory","defaultValue","acceptedValues"]
+          properties:
+            name: 
+              type: string
+              description: Relationship attribute name. The rest to TBD.
+            mandatory:
+              type: boolean
+              description: should a value to be provided for this attribute
+            defaultValue:
+              type: string
+              description: The default value for this attribute
+            acceptedValues:
+              description: what are the accepted value types
+              type: array
+              items:
+                type: string     
     Error:
       type: object
       required: ["status","alert"]
@@ -933,51 +935,40 @@
               items:
                   type: string 
     RoleType:
-      type: object
-      required: ["uri","name","attributeDefs"]
-      properties:
-        uri: 
-          type: string
-          description: URI that uniquely identifying this resource.
-        name: 
-          type: string
-          description: |
-            A short name for the role type. Must be unique with no space.          
-        attributeDefs:
-          type: array
-          description: Role attributes
-          minItems: 1
-          items: 
-            $ref: '#/definitions/RoleAttributeDef'
+      allOf:
+        - $ref: '#/definitions/ICode'
+        - type: object
+          required: ["attributeDefs"]
+          properties:
+            code: 
+              type: string
+              description: |
+                role type code          
+            attributeDefs:
+              type: array
+              description: Role attributes
+              minItems: 1
+              items: 
+                $ref: '#/definitions/RoleAttributeDef'
 
     RelationshipType:
-      type: object
-      required: ["uri","name","attributeDefs"]
-
-      properties:
-        uri: 
-          type: string
-          description: URI that uniquely identifying this relationship type.
-        name: 
-          type: string
-          description: |
-            A short name for the relationship type. Must be unique with no space.
-        attributeDefs:
-          type: array
-          description: Relationship attributes
-          minItems: 1
-          items: 
-            $ref: '#/definitions/RelationshipAttributeDef'
+      allOf:
+        - $ref: '#/definitions/ICode'
+        - type: object
+          required: ["attributeDefs"]
+    
+          properties:       
+            attributeDefs:
+              type: array
+              description: Relationship attributes
+              minItems: 1
+              items: 
+                $ref: '#/definitions/RelationshipAttributeDef'
 
     RelationshipTypeResponse:
-      type: object
-      required: ["relationshipTypes"]
-      properties:
-        relationshipTypes: 
-          type: array
-          description: Array of relationship types
-          items: 
-            $ref: '#/definitions/RelationshipType'
+      allOf: 
+        - $ref: '#/definitions/ICode'
+        - $ref: '#/definitions/RelationshipType'
     Role:
       type: object
       required: ["roleTypeURI","attributeValues","sharing"]
@@ -998,18 +989,13 @@
             $ref: '#/definitions/LegislativeProgram'    
             
     LegislativeProgram:
-      description: |
-        A LegislativeProgram represents some course-grained grouping of functionality offered by government to citizens. Due to "Machinary of Government" changes these LegislativePrograms are moved between agencies. Generally, LegislativePrograms survive these moves, just in a newly named agency.
-      type: object
-      required: ["uri","name"]
-      properties:
-        uri: 
-          type: string
-          description: URI that uniquely identifying this resource.
-        name: 
-          type: string
+      allOf: 
+        - $ref: '#/definitions/ICode'      
+        - type: object
           description: |
-            Name of legislative program.
+            A LegislativeProgram represents some course-grained grouping of functionality offered by government to citizens. 
+            Due to "Machinary of Government" changes these LegislativePrograms are moved between agencies. Generally, LegislativePrograms survive these moves, just in a newly named agency.
+
     IRamObject:
       type: object
       required: ['id','lastUpdatedTimestamp','lastUpdatedByPartyId','deleteIndicator','resourceVersionNumber']
@@ -1025,6 +1011,27 @@
           type: boolean
         resourceVersionNumber:
           type: number
+          
+    ICode:
+      type: object
+      required: ['shortDecodeText','longDecodeText','startDate','url','code']
+      properties:
+        code: 
+          type: string
+          description: Name of legislative program.
+        url:
+          type: string
+          description: URL that uniquely identifying this resource.
+        shortDecodeText:
+          type: string
+        longDecodeText:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
 
   parameters:
     idType:
