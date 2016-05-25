@@ -25,8 +25,6 @@ export class RelationshipTypeController {
             const results = await this.relationshipTypeModel.listValid();
             if (results) {
                 sendDocument(res)(results);
-            } else {
-                sendNotFoundError(res)();
             }
         } catch (e) {
             sendError(res)(e);
