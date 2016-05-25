@@ -9,9 +9,7 @@ export class RelationshipTypeController {
 
     private findById = async (req:Request, res:Response) => {
         try {
-            console.log('RelationshipTypeController.findById() :: ', this.relationshipTypeModel);
             const model = await this.relationshipTypeModel.findValidById(req.params.id);
-            console.log('Got it :: ' + model);
             if (model) {
                 sendDocument(res)(model);
             } else {
