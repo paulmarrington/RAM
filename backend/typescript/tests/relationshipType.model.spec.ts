@@ -1,10 +1,11 @@
 import * as mongoose from 'mongoose';
-import {connectDisconnectMongo} from './helpers';
+import {connectDisconnectMongo, dropMongo} from './helpers';
 import {RelationshipTypeModel, relationshipTypes} from '../models/relationshipType.model';
 
 describe('RAM Relationship Type', () => {
 
     connectDisconnectMongo();
+    dropMongo();
 
     var existingValidModel;
     var existingDeletedModel;

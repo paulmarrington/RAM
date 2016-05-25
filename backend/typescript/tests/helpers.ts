@@ -21,3 +21,13 @@ export function connectDisconnectMongo() {
 
 }
 
+export function dropMongo() {
+
+    afterEach((done) => {
+        mongoose.connection.db.dropDatabase().then(() => {
+            //console.log('Dropped db');
+            done();
+        })
+    });
+
+}
