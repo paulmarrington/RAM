@@ -1,53 +1,53 @@
-import * as mongoose from 'mongoose';
-import {connectDisconnectMongo, dropMongo} from './helpers';
-import {RelationshipTypeModel, relationshipTypes} from '../models/relationshipType.model';
+import {connectDisconnectMongo} from './helpers';
+import {IRelationshipTypeModel,IRelationshipType,RelationshipTypeModel,relationshipTypes} from '../models/relationshipType.model';
 
+/* tslint:disable:max-func-body-length */
 describe('RAM Relationship Type', () => {
 
     connectDisconnectMongo();
-    dropMongo();
 
-    var existingValidModel;
-    var existingDeletedModel;
+    let relTypeModel:IRelationshipTypeModel = RelationshipTypeModel;
+
+    let existingInstance:IRelationshipType;
+    let existingDeletedInstance:IRelationshipType;
 
     beforeEach(async (done) => {
 
-        existingValidModel = new RelationshipTypeModel();
-        existingValidModel.name = relationshipTypes[0];
-        await existingValidModel.save();
+        //existingInstance = await relTypeModel.create({type: relationshipTypes[0]});
+        //console.log(existingInstance);
+        //existingDeletedInstance = await relTypeModel.create({ type: relationshipTypes[0], deleteInd: true});
+        //console.log(existingDeletedInstance);
 
-        existingDeletedModel = new RelationshipTypeModel();
-        existingDeletedModel.name = relationshipTypes[1];
-        existingDeletedModel.deleteInd = true;
-        await existingDeletedModel.save();
+        existingInstance = new RelationshipTypeModel();
+        existingInstance.name = relationshipTypes[0];
+        await existingInstance.save();
+
+        existingDeletedInstance = new RelationshipTypeModel();
+        existingDeletedInstance.name = relationshipTypes[1];
+        existingDeletedInstance.deleteInd = true;
+        await existingDeletedInstance.save();
 
         done();
 
     });
 
     it('find valid by id', async (done) => {
-
         try {
-
-            const model = await RelationshipTypeModel.findValidById(existingValidModel.id);
-            expect(model).not.toBeNull();
+            const instance = await relTypeModel.findValidById(existingInstance.id);
+            expect(instance).not.toBeNull();
             done();
-
         } catch (e) {
             fail(e);
         }
-
     });
 
     it('fails find valid by non-existent id', async (done) => {
 
         try {
-
             const id = '111111111111111111111111';
-            const model = await RelationshipTypeModel.findValidById(id);
-            expect(model).toBeNull();
+            const instance = await relTypeModel.findValidById(id);
+            expect(instance).toBeNull();
             done();
-
         } catch (e) {
             fail(e);
         }
@@ -55,73 +55,30 @@ describe('RAM Relationship Type', () => {
     });
 
     it('fails find invalid by id', async (done) => {
-
         try {
-
-            const model = await RelationshipTypeModel.findValidById(existingDeletedModel.id);
-            expect(model).toBeNull();
+            const instance = await relTypeModel.findValidById(existingDeletedInstance.id);
+            expect(instance).toBeNull();
             done();
-
         } catch (e) {
             fail(e);
         }
-
     });
 
     it('inserts with valid type', async (done) => {
 
         try {
 
-            const model = new RelationshipTypeModel();
-            model.name = relationshipTypes[0];
-            await model.save();
+            const instance = await relTypeModel.create({name: relationshipTypes[0]});
 
-            expect(model).not.toBeNull();
-            expect(model.id).not.toBeNull();
-            expect(model.name).not.toBeNull();
-            expect(model.createdAt).not.toBeNull();
-            expect(model.updatedAt).not.toBeNull();
+            expect(instance).not.toBeNull();
+            expect(instance.id).not.toBeNull();
+            expect(instance.name).not.toBeNull();
+            expect(instance.createdAt).not.toBeNull();
+            expect(instance.updatedAt).not.toBeNull();
 
-            const retrievedModel = await RelationshipTypeModel.findValidById(model.id);
-            expect(retrievedModel).not.toBeNull();
-            expect(retrievedModel.id).toBe(model.id);
-
-            done();
-
-        } catch (e) {
-            fail(e)
-        }
-
-    });
-
-    it('fails inserts with invalid type', async (done) => {
-
-        try {
-
-            const model = new RelationshipTypeModel();
-            model.name = '__BOGUS__';
-            await model.save();
-            fail();
-
-        } catch (e) {
-            expect(e.name).toBe('ValidationError');
-            done();
-        }
-
-    });
-
-    it('deletes logically', async (done) => {
-
-        try {
-
-            const retrievedModel = await RelationshipTypeModel.findValidById(existingValidModel.id);
-            expect(retrievedModel).not.toBeNull();
-            expect(retrievedModel.id).toBe(existingValidModel.id);
-
-            await existingValidModel.delete();
-
-            const retrievedModel2 = await RelationshipTypeModel.findValidById(existingValidModel.id);
-            expect(retrievedModel2).toBeNull();
+            const retrievedInstance = await relTypeModel.findValidById(instance.id);
+            expect(retrievedInstance).not.toBeNull();
+            expect(retrievedInstance.id).toBe(instance.id);
 
             done();
 
@@ -131,5 +88,35 @@ describe('RAM Relationship Type', () => {
 
     });
 
+    it('fails inserts with invalid type', async (done) => {
+        try {
+            await relTypeModel.create({type: '__BOGUS__'});
+            fail();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
+    it('deletes logically', async (done) => {
+
+        try {
+
+            const retrievedInstance = await relTypeModel.findValidById(existingInstance.id);
+            expect(retrievedInstance).not.toBeNull();
+            expect(retrievedInstance.id).toBe(existingInstance.id);
+
+            await existingInstance.delete();
+
+            const retrievedInstance2 = await relTypeModel.findValidById(existingInstance.id);
+            expect(retrievedInstance2).toBeNull();
+
+            done();
+
+        } catch (e) {
+            fail(e);
+        }
+
+    });
 
 });
