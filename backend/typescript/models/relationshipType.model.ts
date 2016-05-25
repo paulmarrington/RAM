@@ -49,11 +49,19 @@ RelationshipTypeSchema.plugin(mongooseIdValidator);
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
     findValidById: (id:String) => mongoose.Promise<IRelationshipType>;
+    listValid: () => mongoose.Promise<[IRelationshipType]>;
 }
 
 RelationshipTypeSchema.static('findValidById', (id:String) => {
     return this.RelationshipTypeModel
         .findOne({_id: id, deleteInd: false})
+        .exec();
+});
+
+RelationshipTypeSchema.static('listValid', (id:String) => {
+    return this.RelationshipTypeModel
+        .find({deleteInd: false})
+        .sort({name: 1})
         .exec();
 });
 

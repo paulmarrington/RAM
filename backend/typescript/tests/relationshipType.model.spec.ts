@@ -64,6 +64,20 @@ describe('RAM Relationship Type', () => {
         }
     });
 
+    it('list valid', async (done) => {
+        try {
+            const instances = await relTypeModel.listValid();
+            expect(instances).not.toBeNull();
+            expect(instances.length).toBeGreaterThan(0);
+            for (var instance in instances) {
+                expect(instances.deleteInd).toBeFalsy();
+            }
+            done();
+        } catch (e) {
+            fail(e);
+        }
+    });
+
     it('inserts with valid type', async (done) => {
 
         try {
