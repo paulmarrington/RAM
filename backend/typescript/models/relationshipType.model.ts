@@ -42,11 +42,13 @@ const RelationshipTypeSchema = RAMSchema({
 RelationshipTypeSchema.plugin(mongooseIdValidator);
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
-    findByObjectId: (id:mongoose.Types.ObjectId) => mongoose.Promise<IRelationshipType>;
+    findValidById: (id:String) => mongoose.Promise<IRelationshipType>;
 }
 
-RelationshipTypeSchema.static('findByObjectId', (id:mongoose.Types.ObjectId) => {
-    return this.RelationshipTypeModel.findOne({_id: id}).exec();
+RelationshipTypeSchema.static('findValidById', (id:String) => {
+    return this.RelationshipTypeModel
+        .findOne({_id: id, deleteInd: false})
+        .exec();
 });
 
 export const RelationshipTypeModel = mongoose.model('RelationshipType', RelationshipTypeSchema) as IRelationshipTypeModel;
