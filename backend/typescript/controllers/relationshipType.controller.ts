@@ -23,9 +23,7 @@ export class RelationshipTypeController {
     private listValid = async (req:Request, res:Response) => {
         try {
             const results = await this.relationshipTypeModel.listValid();
-            if (results) {
-                sendDocument(res)(results);
-            }
+            sendDocument(res)(results);
         } catch (e) {
             sendError(res)(e);
         }
