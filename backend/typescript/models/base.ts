@@ -8,13 +8,25 @@ export interface IRAMObject extends mongoose.Document {
   updatedAt: Date;
   deleteInd: boolean;
   resourceVersion: string;
+
+  /** Instance methods */
+  delete(): void;
 }
 
 export const RAMSchema = (schema: Object) => {
+
   const result = new mongoose.Schema({
     deleteInd: { type: Boolean, default: false },
     resourceVersion: { type: String, default: '1' }
   }, { timestamps: true });
+
   result.add(schema);
+
+  result.method('delete', function() {
+      this.deleteInd = true;
+      this.save();
+  });
+
   return result;
+
 };
