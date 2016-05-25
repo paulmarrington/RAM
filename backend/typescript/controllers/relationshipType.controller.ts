@@ -31,7 +31,7 @@ export class RelationshipTypeController {
         } catch (e) {
             sendError(res)(e);
         }
-    }
+    };
 
     public assignRoutes = (router:Router) => {
         router.get('/:id', this.findValidById);
