@@ -15,7 +15,7 @@
     "compileOnSave": true,
     "files": [
         "typescript/server.ts",
-        "typings/main.d.ts"
+        "typings/index.d.ts"
     ],
     "files.watcherExclude": {
         "**/.git/objects/**": true,
