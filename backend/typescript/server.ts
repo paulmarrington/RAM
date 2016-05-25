@@ -5,7 +5,6 @@ import * as bodyParser from 'body-parser';
 import * as methodOverride from 'method-override';
 import * as cApi from '../../commons/RamAPI';
 import * as api from './ram/ServerAPI';
-import swagger = require('swagger-node-express');
 import {logStream} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
 // Prepare mongoose for daily operations

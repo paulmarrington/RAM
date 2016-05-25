@@ -40,7 +40,7 @@ export interface UnknownParty extends IRAMObject {
 /** RAM will often need to record some attributes about a Relationship, e.g. what
  *  "host services" the relationship confers upon the delegate.
  *  The attributes to be recorded will be arbitaryily set by RAM admin staff  */
-interface RelationshipAttribute extends SharableAttribute {
+export interface RelationshipAttribute extends SharableAttribute {
     name: RelationshipAttributeCode;
 }
 
@@ -95,10 +95,11 @@ export interface Relationship extends IRAMObject {
 
 //at the moment this is here just to give semantic meaning to the "foreign key" reference from Party to Relationship.  This FK could be done using the mongo surogate id.
 //if this type survives, we should give consideration to using it in the relationshp type.
-interface RelationshipIdentifier{
+export interface RelationshipIdentifier{
     type: RelationshipTypeCode;
     subjectPartyId:string;
-    delegatePartyId:string;    
+    delegatePartyId:string;  
+    startTimestamp: Date;
 }
 
 // A Party is the concept that participates in Relationships.
@@ -115,22 +116,22 @@ export interface Party extends IRAMObject {
 /** A Role is some characteristic that a Party has. Roles will only likely to be collected when there is something that needs to be build into a business rule for relationships.
  *  A Role is independant of relationships, e.g. you a doctor even if you have no patients.  In essanse a Role is just a collection of attributes.
  */
-interface Role extends IRAMObject {
+export interface Role extends IRAMObject {
     type:RoleTypeCode
     roleAttributes: RoleAttribute[];
     sharing: LegislativeProgram[];          //which agencies can see the existence of this Role - not sure if this is overkill.
 }
 
-interface RoleAttribute extends SharableAttribute {
+export interface RoleAttribute extends SharableAttribute {
     name: RoleAttributeName;
 }
 
-interface SharableAttribute extends IRAMObject{
+export interface SharableAttribute extends IRAMObject{
     value: string;
     sharing: SharingConsent[];          //which agencies can see the existence of this RoleAttribute   
 }
 
-interface IdentityType extends ICodeDecodeReferenceData {
+export interface IdentityType extends ICodeDecodeReferenceData {
     code:IdentityTypeCode
 }
 /** The link between the Credention from the Credential Service Provider will be
@@ -186,7 +187,7 @@ export interface SharedSecret {
     value:string;
 }
 
-interface SharedSecretType extends ICodeDecodeReferenceData{
+export interface SharedSecretType extends ICodeDecodeReferenceData{
     code: SharedSecretTypeCode,
     domain:string
 }
@@ -195,18 +196,18 @@ interface SharedSecretType extends ICodeDecodeReferenceData{
  *  A myGov profile consists of Name and Date of Birth
  *  The CSP may or may not supply the profile.  Not all identities will be supplied by the CSP.  Some profiles may be self asserted.
  */
-interface Profile extends IRAMObject{
+export interface Profile extends IRAMObject{
     provider: ProfileProvider,
     name:Name,
     dateOfBirth:SharedSecret}
 
-enum ProfileProviderCode{
+export enum ProfileProviderCode{
     SELF_ASSERTED =1,
     MYGOV = 2,
     VANGUARD=3,
     AUTHAPP=4
 }
-interface ProfileProvider extends ICodeDecodeReferenceData{
+export interface ProfileProvider extends ICodeDecodeReferenceData{
     code: ProfileProviderCode
 }
 
@@ -347,11 +348,12 @@ interface RAM{
  *     /Parties/Identities/:Identity.type/:Identity.idValue
  *     /Relationships/:Relationship.type
  *     /Parties/Identities/:Identity.type/:Identity.idValue
+ *     /:Relationship.startTimestamp
  *     [?filter=
  *         'filterRelationshipAttribute.name=:attr-name, filterRelationshipAttribute.value=:attr-value,...
  *          filterSubjectPartyRole.type=:Role.type, ... 
  *          filterDelegatePartyRole.type=:Role.type, ... 
- *          filterStartTimestamp=:Relationship.startTimestamp, filterEndTimestamp=:Relationship.endTimestamp, '
+ *          filterEndTimestamp=:Relationship.endTimestamp, '
  *      &fields='
  *          requestedFields.name=:attr-name, requestedFields.value=:attr-value,...']
  * 
@@ -360,12 +362,14 @@ interface RAM{
  * including relationship attributes.
  */
 // Get
-    hasRelationship(subjectPartyIdentifer:string, 
+    readRelationship(subjectPartyIdentifer:string, 
                     delegatePartyIdentifier:string, 
                     relationshipType:RelationshipTypeCode, 
+                    startTimestamp: Date,
                     filterSubjectPartyRole?: string[],          
                     filterDelegatePartyRole?:string[], 
                     filterRelationshipAttribute?:string[],
+                    filterEndTimestamp: Date,
                     requestedFields?:string[]  ): 
                         {response:Response, requestedRelationship:Relationship};
 // in the above service, a null requestedFields implies return all relationshipAttribute(s) 
@@ -380,12 +384,14 @@ interface RAM{
 //         will need a way of communicating the identity known to them and us.
 
 //This is the same method as the previous one, but typed.                         
-    hasRelationship(subjectPartyIdentifer:Identity, 
+    readRelationship(subjectPartyIdentifer:Identity, 
                     delegatePartyIdentifier:Identity, 
                     relationshipType:RelationshipTypeCode, 
+                    startTimestamp: Date,
                     filterSubjectPartyRole?: Role[], 
                     filterDelegatePartyRole?:Role[], 
                     filterRelationshipAttribute?:RelationshipAttribute[], 
+                    filterEndTimestamp: Date,
                     requestedFields?:RelationshipAttributeCode[]  ): 
                         {response:Response, requestedRelationship:Relationship};
                         

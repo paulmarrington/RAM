@@ -7,6 +7,7 @@ var rimraf = require("gulp-rimraf");
 var seq = require("gulp-sequence");
 var gzip = require('gulp-gzip');
 var tar = require('gulp-tar');
+var jasmine = require('gulp-jasmine');
 
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript")
@@ -70,13 +71,15 @@ gulp.task("publish:tarball",
             .pipe(gulp.dest('./'));
     });
 
-gulp.task('seed',['ts:compile'], function () {
-    return gulp.src(['dist/seeding/{**,./}/*.seed.js']).pipe(
-        exec('node typescript/seeding/basic.seed.ts',
-        function (err, stdout, stderr) {
-            console.log(stdout);
-            console.log(stderr);
-            cb(err);
+gulp.task('test', ['ts:compile'], function () {
+    return gulp.src(['dist/{**,./}/*.spec.js']).pipe(
+        jasmine({
+            verbose: true,
+            includeStackTrace: true,
+            config: {
+                stopSpecOnExpectationFailure: false,
+                random: false
+            }
         })
     );
 });
