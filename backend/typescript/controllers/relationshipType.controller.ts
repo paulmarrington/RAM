@@ -7,7 +7,7 @@ export class RelationshipTypeController {
     constructor(private relationshipTypeModel:IRelationshipTypeModel) {
     }
 
-    private findById = async (req:Request, res:Response) => {
+    private findValidById = async (req:Request, res:Response) => {
         try {
             const model = await this.relationshipTypeModel.findValidById(req.params.id);
             if (model) {
@@ -16,13 +16,22 @@ export class RelationshipTypeController {
                 sendNotFoundError(res)();
             }
         } catch (e) {
-            console.log('error with findById: ', e);
+            sendError(res)(e);
+        }
+    };
+
+    private listValid = async (req:Request, res:Response) => {
+        try {
+            const results = await this.relationshipTypeModel.listValid();
+            sendDocument(res)(results);
+        } catch (e) {
             sendError(res)(e);
         }
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/:id', this.findById);
+        router.get('/:id', this.findValidById);
+        router.get('', this.listValid);
         return router;
     };
 
