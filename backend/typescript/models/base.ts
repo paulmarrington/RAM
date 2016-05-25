@@ -30,3 +30,4 @@ export const RAMSchema = (schema: Object) => {
   return result;
 
 };
+
