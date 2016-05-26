@@ -76,7 +76,12 @@ gulp.task("clean", function() {
 });
 
 gulp.task("ts:compile", ["ts:lint"], function() {
-    return gulp.src(["typescript/{**,./}/*.ts", "../commons/{**,./}/*.ts", "../commons/{**,./}/*.html"])
+    return gulp.src([
+        "typescript/{**,./}/*.ts",
+        "../commons/{**,./}/*.ts",
+        "../commons/{**,./}/*.html"
+        ])
+        .pipe(embedTemplates())
         .pipe(sourcemaps.init())
         .pipe(ts(tsProject, { sortOutput: true }))
         .pipe(sourcemaps.write("."))
