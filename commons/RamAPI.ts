@@ -6,6 +6,7 @@ export enum RAMMessageType {
 
 export interface IResponse<T> {
     data?: T;
+    token?: string;
     status: number; // status code
     alert?: Alert;
 }
