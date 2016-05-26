@@ -21,8 +21,9 @@ echo $RAM_CONF
 cd frontend
 npm install
 node_modules/.bin/typings install
-jspm cc
-jspm install -y
+node_modules/.bin/jspm -v
+node_modules/.bin/jspm cc
+node_modules/.bin/jspm install -y
 
 cd ../backend
 npm install
