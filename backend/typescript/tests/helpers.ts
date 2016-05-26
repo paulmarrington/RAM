@@ -17,7 +17,7 @@ export function connectDisconnectMongo() {
 }
 
 export function dropMongo() {
-    afterEach((done) => {
+    beforeEach((done) => {
         mongoose.connection.db.dropDatabase(done);
     });
 }

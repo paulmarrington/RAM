@@ -1,4 +1,7 @@
 import * as mongoose from 'mongoose';
+
+const mongooseUniqueValidator = require('mongoose-unique-validator');
+
 /* A RAMObject defines the common attributes that all objects in the RAM
  * model will contain.
  * Most objects in RAM extend off the RAMObject
@@ -68,5 +71,6 @@ export const CodeDecodeSchema = (schema: Object) => {
     }
   });
   result.add(schema);
+  result.plugin(mongooseUniqueValidator);
   return result;
 };
