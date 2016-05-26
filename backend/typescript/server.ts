@@ -61,11 +61,6 @@ server.use(methodOverride());
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 server.use(express.static('swagger'));
 
-//server.use('/api/reset', new ResetController().assignRoutes(express.Router()));
-//server.use('/api/v1/party', new PartyController(PartyModel).assignRoutes(express.Router()));
-//server.use('/api/v1/relationship', new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
-//server.use('/api/v1/relationshipType', new RelationshipTypeController(RelationshipTypeModel).assignRoutes(express.Router()));
-
 server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
 server.use('/api/v1/party',
