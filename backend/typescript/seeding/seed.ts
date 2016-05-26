@@ -28,7 +28,7 @@ class Seeder {
     }
 
     public static async createRelationshipTypeModel(values:Object) {
-        const code:String = ['code'] as String;
+        const code:String = values['code'] as String;
         const existingModel = await RelationshipTypeModel.findValidByCode(code);
         if (existingModel === null) {
             console.log('Inserting RelationshipType: ', code);
