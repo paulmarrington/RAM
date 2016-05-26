@@ -2,7 +2,6 @@ import {Response, Request} from 'express';
 import {IResponse, ErrorResponse} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
 
-
 export function sendResource<T>(res: Response) {
     'use strict';
     return (doc: T): T => {

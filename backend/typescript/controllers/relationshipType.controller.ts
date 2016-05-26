@@ -21,7 +21,7 @@ export class RelationshipTypeController {
     };
 
     private listValid = async (req: Request, res: Response) => {
-        var schema = {};
+        const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipTypeModel.listValid())
             .then(sendDocument(res), sendError(res))

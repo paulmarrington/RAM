@@ -1,9 +1,9 @@
 import * as mongoose from 'mongoose';
 import {conf} from '../bootstrap';
 
-import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
+import {RelationshipTypeModel} from '../models/relationshipType.model';
 
-var now = new Date();
+const now = new Date();
 
 // seeder .............................................................................................................
 
@@ -18,8 +18,7 @@ class Seeder {
         if (conf.devMode) {
             console.info('Dropping database in dev mode (starting fresh)');
             await mongoose.connection.db.dropDatabase();
-        }
-        else {
+        } else {
             console.info('Not dropping database in prod mode (appending)');
         }
     }
@@ -28,15 +27,14 @@ class Seeder {
         mongoose.connection.close();
     }
 
-    public static async createRelationshipTypeModel(values: any) {
-        const code = values['code'];
+    public static async createRelationshipTypeModel(values:Object) {
+        const code:String = ['code'] as String;
         const existingModel = await RelationshipTypeModel.findValidByCode(code);
-        if (existingModel == null) {
+        if (existingModel === null) {
             console.log('Inserting RelationshipType: ', code);
             const model = await RelationshipTypeModel.create(values);
             return model;
-        }
-        else {
+        } else {
             console.log('Skipping RelationshipType: ', code);
             return existingModel;
         }
@@ -46,6 +44,7 @@ class Seeder {
 
 // load reference data ................................................................................................
 
+/* tslint:disable:max-func-body-length */
 const loadRelationshipTypes = async () => {
 
     //'Business Representative',
@@ -82,7 +81,6 @@ const loadRelationshipTypes = async () => {
 };
 
 // load sample data ...................................................................................................
-
 
 // rock and roll ......................................................................................................
 
