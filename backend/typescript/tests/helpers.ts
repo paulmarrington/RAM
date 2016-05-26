@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 const mongoDbUrl = 'mongodb://localhost/ram-test';
 console.log('\nUsing mongo: ', mongoDbUrl, '\n');
 
-export function connectDisconnectMongo() {
+export const connectDisconnectMongo = () => {
 
     beforeEach((done) => {
         mongoose.connect(mongoDbUrl, {}, done);
@@ -14,10 +14,10 @@ export function connectDisconnectMongo() {
         mongoose.connection.close(done);
     });
 
-}
+};
 
-export function dropMongo() {
+export const dropMongo = () => {
     beforeEach((done) => {
         mongoose.connection.db.dropDatabase(done);
     });
-}
+};

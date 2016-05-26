@@ -2,6 +2,53 @@ import {Response, Request} from 'express';
 import {IResponse, ErrorResponse} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
 
+export function sendResource<T>(res: Response) {
+    'use strict';
+    return (doc: T): T => {
+        if (doc) {
+            res.json(doc);
+        }
+        return doc;
+    };
+}
+
+export function sendList<R, T extends { value?: T, href: string }>(res: Response) {
+    'use strict';
+    return (size: number, results: T[]): T[] => {
+        if (results) {
+            res.json(results);
+        }
+        return results;
+    };
+}
+
+export function sendResultResponse<R, T extends { value?: T, href: string }>(res: Response) {
+    'use strict';
+    return (size: number, results: T[]): T[] => {
+        if (results) {
+            res.json({
+                totalCount: size,
+                results: results
+            });
+        }
+        return results;
+    };
+}
+
+export function sendResourceWithRef<T>(res: Response) {
+    'use strict';
+    return (ref: string, doc: T): T => {
+        if (doc) {
+            res.json({
+                ref: ref,
+                value: doc
+            });
+        }
+        return doc;
+    };
+}
+
+// @deprecated
 export function sendDocument<T>(res: Response) {
     'use strict';
     return (doc: T): T => {

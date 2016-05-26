@@ -1,5 +1,5 @@
-var gulp = require('gulp')
-var nodemon = require('gulp-nodemon')
+var gulp = require('gulp');
+var nodemon = require('gulp-nodemon');
 var ts = require("gulp-typescript");
 var sourcemaps = require("gulp-sourcemaps");
 var tslint = require("gulp-tslint");
@@ -8,6 +8,7 @@ var seq = require("gulp-sequence");
 var gzip = require('gulp-gzip');
 var tar = require('gulp-tar');
 var jasmine = require('gulp-jasmine');
+var exec = require('child_process').exec;
 
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript")
@@ -56,6 +57,18 @@ gulp.task('serve', ["ts:watch"], function () {
         .on('restart', function () {
             console.log('RAM Backend Server: restarted [OK]')
         });
+});
+
+gulp.task('seed', ["ts:compile"], function () {
+    console.log('Seeding the database ...');
+    exec('node dist/backend/typescript/seeding/seed.js', function (err, stdout, stderr) {
+        if (stdout) {
+            console.log(stdout);
+        }
+        if (err) {
+            console.log(err);
+        }
+    });
 });
 
 gulp.task("copy:resources", function (params) {

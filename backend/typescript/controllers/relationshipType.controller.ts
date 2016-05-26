@@ -21,12 +21,11 @@ export class RelationshipTypeController {
     };
 
     private listValid = async (req: Request, res: Response) => {
-        try {
-            const results = await this.relationshipTypeModel.listValid();
-            sendDocument(res)(results);
-        } catch (e) {
-            sendError(res)(e);
-        }
+        const schema = {};
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipTypeModel.listValid())
+            .then(sendDocument(res), sendError(res))
+            .then(sendNotFoundError(res));
     };
 
     public assignRoutes = (router: Router) => {
