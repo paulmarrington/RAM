@@ -10,19 +10,17 @@ describe('RAM Relationship Type', () => {
     let existingDeletedInstance: IRelationshipType;
 
     beforeEach(async (done) => {
-        try {
-            existingInstance = await RelationshipTypeModel.create({
-                name: relationshipTypes[0]
-            });
 
-            existingDeletedInstance = await RelationshipTypeModel.create({
-                name: relationshipTypes[0], deleteInd: true
-            });
+        try {
+
+            existingInstance = await RelationshipTypeModel.create({ name: relationshipTypes[0] });
+            existingDeletedInstance = await RelationshipTypeModel.create({ name: relationshipTypes[0], deleteInd: true });
+
+            done();
+
         } catch (e) {
             fail(e);
         }
-
-        done();
 
     });
 
@@ -98,7 +96,7 @@ describe('RAM Relationship Type', () => {
 
     it('fails inserts with invalid type', async (done) => {
         try {
-            await RelationshipTypeModel.create({ type: '__BOGUS__' });
+            await RelationshipTypeModel.create({ name: '__BOGUS__' });
             fail();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
