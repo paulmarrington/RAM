@@ -47,9 +47,9 @@ describe('RAM Relationship Type', () => {
 
     });
 
-    it('find valid with no end date by id', async (done) => {
+    it('find valid with no end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidById(existingInstanceNoEndDate.id);
+            const instance = await RelationshipTypeModel.findValidByCode(existingInstanceNoEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -57,9 +57,9 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('find valid with future end date by id', async (done) => {
+    it('find valid with future end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidById(existingInstanceFutureEndDate.id);
+            const instance = await RelationshipTypeModel.findValidByCode(existingInstanceFutureEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -67,11 +67,11 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('fails find valid by non-existent id', async (done) => {
+    it('fails find valid by non-existent code', async (done) => {
 
         try {
-            const id = '111111111111111111111111';
-            const instance = await RelationshipTypeModel.findValidById(id);
+            const code = '__BOGUS__';
+            const instance = await RelationshipTypeModel.findValidByCode(code);
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -80,9 +80,9 @@ describe('RAM Relationship Type', () => {
 
     });
 
-    it('fails find invalid by id', async (done) => {
+    it('fails find invalid by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidById(existingExpiredInstance.id);
+            const instance = await RelationshipTypeModel.findValidByCode(existingExpiredInstance.code);
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -122,7 +122,7 @@ describe('RAM Relationship Type', () => {
             expect(instance.id).not.toBeNull();
             expect(instance.code).not.toBeNull();
 
-            const retrievedInstance = await RelationshipTypeModel.findValidById(instance.id);
+            const retrievedInstance = await RelationshipTypeModel.findValidByCode(instance.code);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
 

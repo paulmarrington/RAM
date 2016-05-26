@@ -20,21 +20,21 @@ const RelationshipTypeSchema = CodeDecodeSchema({
 RelationshipTypeSchema.plugin(mongooseIdValidator);
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
-    findValidById: (id:String) => mongoose.Promise<IRelationshipType>;
+    findValidByCode: (id:String) => mongoose.Promise<IRelationshipType>;
     listValid: () => mongoose.Promise<IRelationshipType[]>;
 }
 
-RelationshipTypeSchema.static('findValidById', (id:String) => {
+RelationshipTypeSchema.static('findValidByCode', (code:String) => {
     return this.RelationshipTypeModel
         .findOne({
-            _id: id,
+            code: code,
             startDate: {$lte: new Date()},
             $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
         })
         .exec();
 });
 
-RelationshipTypeSchema.static('listValid', (id:String) => {
+RelationshipTypeSchema.static('listValid', () => {
     return this.RelationshipTypeModel
         .find({
             startDate: {$lte: new Date()},
