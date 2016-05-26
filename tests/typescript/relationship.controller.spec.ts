@@ -39,6 +39,15 @@ const generateRelationships = async (count) => {
     return list;
 };
 
+const lookForId = (obj) => {
+ Object.keys(obj).forEach((key) => {
+   const value = obj[key];
+   if (value instanceof String && /^[\da-f]{24}/.test(value)) {
+       fail('ID found for ' + key);
+   }
+ });
+};
+
 describe('RAM Relationship', () => {
     it('can be created', async (done) => {
         const rels = await generateRelationships(1);
@@ -56,6 +65,18 @@ describe('RAM Relationship', () => {
         expect(rels[0].data._id).toEqual(res.body.data._id);
         done();
     });
+});
+
+describe('Relationship Internals', () => {
+
+    it('does not include any Mongo internal IDs', async (done) => {
+        const rel = await generateRelationships(1)[0];
+        lookForId(rel);
+        done();
+    })
+
+    it('has delegate and subject information populated', async (done) => {
+    })
 
     // Fixme: This test must use identityValue/identityType to retrive relationship belonging to a delegate
     // it('can list relationships', async (done) => {

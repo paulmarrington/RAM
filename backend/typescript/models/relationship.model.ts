@@ -54,22 +54,15 @@ export interface IRelationship extends IRAMObject {
 const RelationshipSchema = RAMSchema({
   type: {
     type: String,
-    required: [true, 'Relationships have to have a type'],
+    // *** only until p2p relationship type has been decided
+    // *** or we can confirm that relationship type is optional
+    // required: [true, 'Relationships have to have a type'],
     enum: relationshipTypes
   },
   subjectId: {
     type: mongoose.Schema.Types.ObjectId,
     required: [true, 'SubjectId is required'],
     ref: 'Party'
-  },
-  subjectName: { // TODO, PAUL
-    type: String,
-    trim: true
-  },
-  subjectAbn: { // TODO, remove once full retrieval implemented
-    type: String,
-    trim: true,
-    default: ''
   },
   subjectRole: {
     type: String,
@@ -80,15 +73,6 @@ const RelationshipSchema = RAMSchema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Party',
     required: [true, 'DelegateId is required']
-  },
-  delegateName: { // TODO, PAUL
-    type: String,
-    trim: true
-  },
-  delegateAbn: {// TODO, remove once full retrieval implemented
-    type: String,
-    trim: true,
-    default: ''
   },
   delegateRole: {
     type: String,
@@ -110,7 +94,7 @@ const RelationshipSchema = RAMSchema({
     }
   },
   endEventTimestamp: {
-    type: Date //todo: endEventTimestamp must be after startTimestamp and only when endTimestamp is provided
+    type: Date
   },
   status: {
     type: String,
@@ -134,11 +118,21 @@ const RelationshipSchema = RAMSchema({
     minLength: [2, 'Nickname must have at least two characters'],
     maxLength: [30, 'Nickname must have at most 30 characters']
   },
-  deleted: {
-    type: Boolean,
-    required: true,
-    default: false
-  }
+  subjectName: { // TODO, remove once full retrieval implemented
+    type: String
+  },
+  subjectAbn: { // TODO, remove once full retrieval implemented
+    type: String,
+    trim: true
+  },
+  delegateName: { // TODO, remove once full retrieval implemented
+    type: String,
+    trim: true
+  },
+  delegateAbn: {// TODO, remove once full retrieval implemented
+    type: String,
+    trim: true
+  },
 });
 
 RelationshipSchema.plugin(mongooseIdValidator);

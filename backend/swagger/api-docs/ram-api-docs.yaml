@@ -263,22 +263,6 @@
           500:
             $ref: '#/responses/500'            
     /relationshipTypes:
-      post:
-        summary: Create relationship type
-        operationId: CreateRelationshipType
-        tags:
-          - RelationshipType
-        description: |
-          creating a new relationship type
-        responses:
-          200:   
-            description: The newly created relationship returned back
-            schema:
-              $ref: "#/definitions/RelationshipTypeResponse"
-          400: 
-            $ref: '#/responses/400'
-          500:
-            $ref: '#/responses/500'
       get:
         tags:
           - RelationshipType
@@ -292,39 +276,64 @@
             schema:
               type: array
               items: 
-                $ref: '#/definitions/RelationshipTypeResponse'
+                $ref: '#/definitions/RelationshipTypeListResponse'
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-    /relationshipTypes/{relationshipTypeId}:
-      delete:
-        operationId: deleteRelationshipType
+    /relationshipType/{code}:
+      post:
         parameters:
-          - name: relationshipTypeId
+          - name: code
             in: path
             type: string
             required: true
-            description: Relationship type to be deleted
+            description: Relationship type code to be retrieved
+
+        summary: Create relationship type
+        operationId: CreateRelationshipType
         tags:
           - RelationshipType
-        summary: Delete relationship type
         description: |
-          delete a relationship type
+          creating a new relationship type
         responses:
           200:   
-            description: Item deleted successfully
+            description: The newly created relationship returned back
+            schema:
+              $ref: "#/definitions/RelationshipTypeResponseSingle"
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
+                
+      # delete:
+      #   operationId: DeleteRelationshipType
+      #   parameters:
+      #     - name: code
+      #       in: path
+      #       type: string
+      #       required: true
+      #       description: Relationship type to be deleted
+      #   tags:
+      #     - RelationshipType
+      #   summary: Delete relationship type
+      #   description: |
+      #     delete a relationship type
+      #   responses:
+      #     200:   
+      #       description: Item deleted successfully
+      #     400: 
+      #       $ref: '#/responses/400'
+      #     500:
+      #       $ref: '#/responses/500'
+      
       put:
         operationId: UpdateRelationshipType
         summary: Update relationship type
         tags:
           - RelationshipType
         parameters:
-          - name: relationshipTypeId
+          - name: code
             in: path
             type: string
             required: true
@@ -335,7 +344,7 @@
           200:   
             description: The updated relationship type returned back
             schema:
-              $ref: "#/definitions/RelationshipTypeResponse"
+              $ref: "#/definitions/RelationshipTypeResponseSingle"
           400: 
             $ref: '#/responses/400'
           500:
@@ -343,7 +352,7 @@
       get:
         operationId: GetRelationshipType
         parameters:
-          - name: relationshipTypeId
+          - name: code
             in: path
             type: string
             required: true
@@ -355,7 +364,7 @@
           200:   
             description: Relationship types in RAM
             schema:
-              $ref: '#/definitions/RelationshipTypeResponse'
+              $ref: '#/definitions/RelationshipTypeResponseSingle'
           400: 
             $ref: '#/responses/400'
           500:
@@ -893,23 +902,25 @@
             type: string     
 
     RelationshipAttributeDef:
-      type: object
-      required: ["name","mandatory","defaultValue","acceptedValues"]
-      properties:
-        name: 
-          type: string
-          description: Relationship attribute name. The rest to TBD.
-        mandatory:
-          type: boolean
-          description: should a value to be provided for this attribute
-        defaultValue:
-          type: string
-          description: The default value for this attribute
-        acceptedValues:
-          description: what are the accepted value types
-          type: array
-          items:
-            type: string     
+      allOf:
+        - $ref: '#/definitions/ICode'
+        - type: object
+          required: ["name","mandatory","defaultValue","acceptedValues"]
+          properties:
+            name: 
+              type: string
+              description: Relationship attribute name. The rest to TBD.
+            mandatory:
+              type: boolean
+              description: should a value to be provided for this attribute
+            defaultValue:
+              type: string
+              description: The default value for this attribute
+            acceptedValues:
+              description: what are the accepted value types
+              type: array
+              items:
+                type: string     
     Error:
       type: object
       required: ["status","alert"]
@@ -933,51 +944,39 @@
               items:
                   type: string 
     RoleType:
-      type: object
-      required: ["uri","name","attributeDefs"]
-      properties:
-        uri: 
-          type: string
-          description: URI that uniquely identifying this resource.
-        name: 
-          type: string
-          description: |
-            A short name for the role type. Must be unique with no space.          
-        attributeDefs:
-          type: array
-          description: Role attributes
-          minItems: 1
-          items: 
-            $ref: '#/definitions/RoleAttributeDef'
+      allOf:
+        - $ref: '#/definitions/ICode'
+        - type: object
+          required: ["attributeDefs"]
+          properties:
+            code: 
+              type: string
+              description: |
+                role type code          
+            attributeDefs:
+              type: array
+              description: Role attributes
+              minItems: 1
+              items: 
+                $ref: '#/definitions/RoleAttributeDef'
 
     RelationshipType:
-      type: object
-      required: ["uri","name","attributeDefs"]
+      allOf:
+        - $ref: '#/definitions/ICode'
+        - type: object
+          required: ["attributeDefs","voluntaryInd"]
+          properties:       
+            voluntaryInd:
+              type: boolean
+              description: Whether this field is voluntary
+            attributeDefs:
+              type: array
+              description: Relationship attributes
+              minItems: 1
+              items: 
+                $ref: '#/definitions/RelationshipAttributeDef'
 
-      properties:
-        uri: 
-          type: string
-          description: URI that uniquely identifying this relationship type.
-        name: 
-          type: string
-          description: |
-            A short name for the relationship type. Must be unique with no space.
-        attributeDefs:
-          type: array
-          description: Relationship attributes
-          minItems: 1
-          items: 
-            $ref: '#/definitions/RelationshipAttributeDef'
 
-    RelationshipTypeResponse:
-      type: object
-      required: ["relationshipTypes"]
-      properties:
-        relationshipTypes: 
-          type: array
-          description: Array of relationship types
-          items: 
-            $ref: '#/definitions/RelationshipType'
     Role:
       type: object
       required: ["roleTypeURI","attributeValues","sharing"]
@@ -998,18 +997,13 @@
             $ref: '#/definitions/LegislativeProgram'    
             
     LegislativeProgram:
-      description: |
-        A LegislativeProgram represents some course-grained grouping of functionality offered by government to citizens. Due to "Machinary of Government" changes these LegislativePrograms are moved between agencies. Generally, LegislativePrograms survive these moves, just in a newly named agency.
-      type: object
-      required: ["uri","name"]
-      properties:
-        uri: 
-          type: string
-          description: URI that uniquely identifying this resource.
-        name: 
-          type: string
+      allOf: 
+        - $ref: '#/definitions/ICode'      
+        - type: object
           description: |
-            Name of legislative program.
+            A LegislativeProgram represents some course-grained grouping of functionality offered by government to citizens. 
+            Due to "Machinary of Government" changes these LegislativePrograms are moved between agencies. Generally, LegislativePrograms survive these moves, just in a newly named agency.
+
     IRamObject:
       type: object
       required: ['id','lastUpdatedTimestamp','lastUpdatedByPartyId','deleteIndicator','resourceVersionNumber']
@@ -1025,6 +1019,59 @@
           type: boolean
         resourceVersionNumber:
           type: number
+          
+    ICode:
+      type: object
+      required: ['shortDecodeText','longDecodeText','startDate','url','code']
+      properties:
+        code: 
+          type: string
+          description: Name of legislative program.
+        shortDecodeText:
+          type: string
+        longDecodeText:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+
+    RelationshipTypeListResponse:
+      type: object
+      required: ['totalCount','results']
+      properties:
+        totalCount:
+          type: number
+        results:
+          type: array
+          items:
+            $ref: '#/definitions/RelationshipTypeListResource'
+
+    RelationshipTypeResponseSingle:
+      allOf: 
+        - $ref: '#/definitions/RelationshipType'
+        
+    RelationshipTypeListResource:
+      type: object
+      properties:
+        href: 
+          type: string
+          description: URL reference to uniquely identified resource
+        value:
+          $ref: '#/definitions/RelationshipType'
+          
+    Resource:
+      type: object
+      required: ['href']
+      properties:
+        href: 
+          type: string
+          description: URL reference to uniquely identified resource
+        value:
+          type: object
+          description: Optional value that represent the respond if one sends a GET request to resource url
 
   parameters:
     idType:
