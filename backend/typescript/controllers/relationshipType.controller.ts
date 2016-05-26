@@ -15,8 +15,9 @@ export class RelationshipTypeController {
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipTypeModel.findValidByCode(req.params.code), sendError(res))
-            .then(sendDocument(res), sendNotFoundError(res));
+            .then((req:Request) => this.relationshipTypeModel.findValidByCode(req.params.code))
+            .then(sendDocument(res), sendError(res))
+            .then(sendNotFoundError(res));
     };
 
     private listValid = async (req: Request, res: Response) => {
