@@ -263,22 +263,6 @@
           500:
             $ref: '#/responses/500'            
     /relationshipTypes:
-      post:
-        summary: Create relationship type
-        operationId: CreateRelationshipType
-        tags:
-          - RelationshipType
-        description: |
-          creating a new relationship type
-        responses:
-          200:   
-            description: The newly created relationship returned back
-            schema:
-              $ref: "#/definitions/RelationshipTypeResponse"
-          400: 
-            $ref: '#/responses/400'
-          500:
-            $ref: '#/responses/500'
       get:
         tags:
           - RelationshipType
@@ -292,32 +276,57 @@
             schema:
               type: array
               items: 
-                $ref: '#/definitions/RelationshipTypeResponse'
+                $ref: '#/definitions/RelationshipTypeListResponse'
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-    /relationshipTypes/{code}:
-      delete:
-        operationId: deleteRelationshipType
+    /relationshipType/{code}:
+      post:
         parameters:
           - name: code
             in: path
             type: string
             required: true
-            description: Relationship type to be deleted
+            description: Relationship type code to be retrieved
+
+        summary: Create relationship type
+        operationId: CreateRelationshipType
         tags:
           - RelationshipType
-        summary: Delete relationship type
         description: |
-          delete a relationship type
+          creating a new relationship type
         responses:
           200:   
-            description: Item deleted successfully
+            description: The newly created relationship returned back
+            schema:
+              $ref: "#/definitions/RelationshipTypeResponseSingle"
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
+                
+      # delete:
+      #   operationId: DeleteRelationshipType
+      #   parameters:
+      #     - name: code
+      #       in: path
+      #       type: string
+      #       required: true
+      #       description: Relationship type to be deleted
+      #   tags:
+      #     - RelationshipType
+      #   summary: Delete relationship type
+      #   description: |
+      #     delete a relationship type
+      #   responses:
+      #     200:   
+      #       description: Item deleted successfully
+      #     400: 
+      #       $ref: '#/responses/400'
+      #     500:
+      #       $ref: '#/responses/500'
+      
       put:
         operationId: UpdateRelationshipType
         summary: Update relationship type
@@ -335,7 +344,7 @@
           200:   
             description: The updated relationship type returned back
             schema:
-              $ref: "#/definitions/RelationshipTypeResponse"
+              $ref: "#/definitions/RelationshipTypeResponseSingle"
           400: 
             $ref: '#/responses/400'
           500:
@@ -355,7 +364,7 @@
           200:   
             description: Relationship types in RAM
             schema:
-              $ref: '#/definitions/RelationshipTypeResponse'
+              $ref: '#/definitions/RelationshipTypeResponseSingle'
           400: 
             $ref: '#/responses/400'
           500:
@@ -955,9 +964,11 @@
       allOf:
         - $ref: '#/definitions/ICode'
         - type: object
-          required: ["attributeDefs"]
-    
+          required: ["attributeDefs","voluntaryInd"]
           properties:       
+            voluntaryInd:
+              type: boolean
+              description: Whether this field is voluntary
             attributeDefs:
               type: array
               description: Relationship attributes
@@ -965,10 +976,7 @@
               items: 
                 $ref: '#/definitions/RelationshipAttributeDef'
 
-    RelationshipTypeResponse:
-      allOf: 
-        - $ref: '#/definitions/ICode'
-        - $ref: '#/definitions/RelationshipType'
+
     Role:
       type: object
       required: ["roleTypeURI","attributeValues","sharing"]
@@ -1019,9 +1027,6 @@
         code: 
           type: string
           description: Name of legislative program.
-        url:
-          type: string
-          description: URL that uniquely identifying this resource.
         shortDecodeText:
           type: string
         longDecodeText:
@@ -1032,6 +1037,41 @@
         endDate:
           type: string
           format: date
+
+    RelationshipTypeListResponse:
+      type: object
+      required: ['totalCount','results']
+      properties:
+        totalCount:
+          type: number
+        results:
+          type: array
+          items:
+            $ref: '#/definitions/RelationshipTypeListResource'
+
+    RelationshipTypeResponseSingle:
+      allOf: 
+        - $ref: '#/definitions/RelationshipType'
+        
+    RelationshipTypeListResource:
+      type: object
+      properties:
+        href: 
+          type: string
+          description: URL reference to uniquely identified resource
+        value:
+          $ref: '#/definitions/RelationshipType'
+          
+    Resource:
+      type: object
+      required: ['href']
+      properties:
+        href: 
+          type: string
+          description: URL reference to uniquely identified resource
+        value:
+          type: object
+          description: Optional value that represent the respond if one sends a GET request to resource url
 
   parameters:
     idType:
