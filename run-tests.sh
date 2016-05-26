@@ -3,7 +3,7 @@ set -ev
 
 echo JSPM_GITHUB_AUTH_TOKEN is $JSPM_GITHUB_AUTH_TOKEN
 
-jspm config registries.github.auth dHJ1bmdpZTp1eWVuMzQ=
+jspm config registries.github.auth "dHJ1bmdpZTp1eWVuMzQ="
 
 dir=$(pwd)
 export RAM_CONF=$dir/backend/conf/conf.js
