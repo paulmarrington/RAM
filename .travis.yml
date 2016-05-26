@@ -13,5 +13,7 @@ services:
 before_script:
 - sleep 5
 - npm install -g gulp jspm pm2 jasmine
+- export FOO=this is foo
 
-script: "./run-tests.sh"
+script:
+- source run-tests.sh

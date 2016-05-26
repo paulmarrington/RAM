@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ev
 
+env | grep FOO
+
 echo JSPM_GITHUB_AUTH_TOKEN is $JSPM_GITHUB_AUTH_TOKEN
 jspm config registries.github.remote https://github.jspm.io
 jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
