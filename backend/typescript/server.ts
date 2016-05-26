@@ -11,14 +11,18 @@ import {logStream} from './logger';
 import * as mongoose from 'mongoose';
 import expressValidator = require('express-validator');
 
-mongoose.connect('mongodb://localhost/ram');
+mongoose.connect('mongodb://localhost/ram', {}, () => {
+    console.log('Connected to db');
+});
 
 import {PartyController} from './controllers/party.controller';
 import {RelationshipController} from './controllers/relationship.controller';
+import {RelationshipTypeController} from './controllers/relationshipType.controller';
 import {ResetController} from './controllers/reset.server.controller';
 
 import {PartyModel} from './models/party.model';
 import {RelationshipModel} from './models/relationship.model';
+import {RelationshipTypeModel} from './models/relationshipType.model';
 
 if (process.env.RAM_CONF === void 0 ||
     process.env.RAM_CONF.trim().length === 0) {
@@ -63,6 +67,8 @@ server.use('/api/v1/party',
     new PartyController(PartyModel).assignRoutes(express.Router()));
 server.use('/api/',
     new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
+server.use('/api/',
+    new RelationshipTypeController(RelationshipTypeModel).assignRoutes(express.Router()));
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {

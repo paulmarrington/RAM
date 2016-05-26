@@ -24,14 +24,13 @@ export const relationshipTypes = [
 ];
 
 export interface IRelationshipType extends IRAMObject {
-
-    type: string;
-
+    name: string;
+    voluntaryInd: boolean;
 }
 
 const RelationshipTypeSchema = RAMSchema({
 
-    type: {
+    name: {
         type: String,
         required: [true, 'Relationship Types have to have a type'],
         enum: relationshipTypes
@@ -42,11 +41,21 @@ const RelationshipTypeSchema = RAMSchema({
 RelationshipTypeSchema.plugin(mongooseIdValidator);
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
-    findByObjectId: (id:mongoose.Types.ObjectId) => mongoose.Promise<IRelationshipType>;
+    findValidById: (id:String) => mongoose.Promise<IRelationshipType>;
+    listValid: () => mongoose.Promise<IRelationshipType[]>;
 }
 
-RelationshipTypeSchema.static('findByObjectId', (id:mongoose.Types.ObjectId) => {
-    return this.RelationshipTypeModel.findOne({_id: id}).exec();
+RelationshipTypeSchema.static('findValidById', (id:String) => {
+    return this.RelationshipTypeModel
+        .findOne({_id: id, deleteInd: false})
+        .exec();
+});
+
+RelationshipTypeSchema.static('listValid', (id:String) => {
+    return this.RelationshipTypeModel
+        .find({deleteInd: false})
+        .sort({name: 1})
+        .exec();
 });
 
 export const RelationshipTypeModel = mongoose.model('RelationshipType', RelationshipTypeSchema) as IRelationshipTypeModel;
