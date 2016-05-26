@@ -1,5 +1,7 @@
 import * as api from './ram/ServerAPI';
 
+// load environmental config ..........................................................................................
+
 // ensure RAM_CONF is specified
 if (process.env.RAM_CONF === void 0 ||
     process.env.RAM_CONF.trim().length === 0) {
