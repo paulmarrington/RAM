@@ -34,6 +34,11 @@ const RelationshipTypeSchema = RAMSchema({
         type: String,
         required: [true, 'Relationship Types have to have a type'],
         enum: relationshipTypes
+    },
+
+    voluntaryInd: {
+        type: Boolean,
+        default: false
     }
 
 });
