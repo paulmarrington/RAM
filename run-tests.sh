@@ -1,6 +1,12 @@
 #!/bin/bash
 set -ev
 
+if [ $TRAVIS_PULL_REQUEST != "false" ]; then
+    echo "THIS IS A PULL REQUEST"
+else
+    echo "NOT A PULL REQUEST"
+fi
+
 dir=$(pwd)
 export RAM_CONF=$dir/backend/conf/conf.js
 echo $RAM_CONF
