@@ -22,5 +22,6 @@ before_script:
 - jspm config registries.github.maxRepoSize 100
 - jspm config registries.github.handler jspm-github
 - ls -la ~/
+- jspm --version
 
 script: "./run-tests.sh"
