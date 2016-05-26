@@ -22,12 +22,51 @@ export const RAMSchema = (schema: Object) => {
 
   result.add(schema);
 
-  result.method('delete', function() {
-      this.deleteInd = true;
-      this.save();
+  result.method('delete', function () {
+    this.deleteInd = true;
+    this.save();
   });
 
   return result;
-
 };
 
+export interface ICodeDecode extends mongoose.Document {
+  shortDecodeText: string;
+  longDecodeText: string;
+  startDate: Date;
+  endDate: Date;
+  code: string;
+
+  /** Instance methods below */
+
+}
+
+export const CodeDecodeSchema = (schema: Object) => {
+  const result = new mongoose.Schema({
+    shortDecodeText: {
+      type: String,
+      required: [true, 'Short description text is required'],
+      trim: true
+    },
+    longDecodeText: {
+      type: String,
+      required: [true, 'Long description text is required'],
+      trim: true
+    },
+    code: {
+      type: String,
+      required: [true, 'Code is required and must be string and unique'],
+      trim: true,
+      index: { unique: true }
+    },
+    startDate: {
+      type: Date,
+      required: [true, 'Start date is required'],
+    },
+    endDate: {
+      type: Date
+    }
+  });
+  result.add(schema);
+  return result;
+};
