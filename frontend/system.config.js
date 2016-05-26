@@ -6,6 +6,7 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+
   map: {
     "@angular/common": "npm:@angular/common@2.0.0-rc.1",
     "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.1",

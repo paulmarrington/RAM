@@ -29,7 +29,7 @@
     "swagger": "^0.7.5",
     "systemjs": "^0.19.26",
     "typescript": "^1.8.10",
-    "typings": "^0.8.1",
+    "typings": "^1.0.0",
     "validator-js": "^0.2.1",
     "winston": "^2.2.0"
   },
