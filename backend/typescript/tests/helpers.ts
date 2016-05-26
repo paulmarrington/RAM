@@ -6,18 +6,18 @@ console.log('\nUsing mongo: ', mongoDbUrl, '\n');
 export function connectDisconnectMongo() {
 
     beforeEach((done) => {
-        mongoose.connect(mongoDbUrl).then(() => {
-            //console.log('\nConnected to db');
-            done();
-        });
+        mongoose.connect(mongoDbUrl, {}, done);
     });
 
     afterEach((done) => {
-        mongoose.disconnect().then(() => {
-            //console.log('Disconnected from db');
-            done();
-        });
+        // mongoose.disconnect().then(done); // TODO: disconnect(fn) doesn't work !
+        mongoose.connection.close(done);
     });
 
 }
 
+export function dropMongo() {
+    afterEach((done) => {
+        mongoose.connection.db.dropDatabase(done);
+    });
+}
