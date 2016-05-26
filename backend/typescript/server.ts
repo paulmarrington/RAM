@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser';
 import * as methodOverride from 'method-override';
 import * as cApi from '../../commons/RamAPI';
 import * as api from './ram/ServerAPI';
+import {conf} from './bootstrap';
 import {logStream} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
 import * as mongoose from 'mongoose';
@@ -18,18 +19,6 @@ import {ResetController} from './controllers/reset.server.controller';
 import {PartyModel} from './models/party.model';
 import {RelationshipModel} from './models/relationship.model';
 import {RelationshipTypeModel} from './models/relationshipType.model';
-
-// load configuration .................................................................................................
-
-// ensure RAM_CONF is specified
-if (process.env.RAM_CONF === void 0 ||
-    process.env.RAM_CONF.trim().length === 0) {
-    console.log('Missing RAM_CONF environment variable');
-    process.exit(1);
-}
-
-/* tslint:disable:no-var-requires */
-const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
 
 // connect to the database ............................................................................................
 
