@@ -1,20 +1,43 @@
 import {connectDisconnectMongo} from './helpers';
-import {IRelationshipType, RelationshipTypeModel, relationshipTypes} from '../models/relationshipType.model';
+import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
+import {dropMongo} from "./helpers";
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Relationship Type', () => {
 
     connectDisconnectMongo();
+    dropMongo();
 
-    let existingInstance: IRelationshipType;
-    let existingDeletedInstance: IRelationshipType;
+    let existingInstanceNoEndDate: IRelationshipType;
+    let existingInstanceFutureEndDate: IRelationshipType;
+    let existingExpiredInstance: IRelationshipType;
 
     beforeEach(async (done) => {
 
         try {
 
-            existingInstance = await RelationshipTypeModel.create({ name: relationshipTypes[0] });
-            existingDeletedInstance = await RelationshipTypeModel.create({ name: relationshipTypes[0], deleteInd: true });
+            existingInstanceNoEndDate = await RelationshipTypeModel.create({
+                code: 'BUSINESS_REPRESENTATIVE',
+                shortDecodeText: 'Business Representative',
+                longDecodeText: 'Business Representative',
+                startDate: new Date()
+            });
+
+            existingInstanceFutureEndDate = await RelationshipTypeModel.create({
+                code: 'ONLINE_SERVICE_PROVIDER',
+                shortDecodeText: 'Online Service Provider',
+                longDecodeText: 'Online Service Provider',
+                startDate: new Date(),
+                endDate: new Date(2099, 1, 1)
+            });
+
+            existingExpiredInstance = await RelationshipTypeModel.create({
+                code: 'INSOLVENCY_PRACTITIONER',
+                shortDecodeText: 'Insolvency practitioner',
+                longDecodeText: 'Insolvency practitioner',
+                startDate: new Date(2016, 1, 1),
+                endDate: new Date(2016, 1, 2)
+            });
 
             done();
 
@@ -24,9 +47,19 @@ describe('RAM Relationship Type', () => {
 
     });
 
-    it('find valid by id', async (done) => {
+    it('find valid with no end date by id', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidById(existingInstance.id);
+            const instance = await RelationshipTypeModel.findValidById(existingInstanceNoEndDate.id);
+            expect(instance).not.toBeNull();
+            done();
+        } catch (e) {
+            fail(e);
+        }
+    });
+
+    it('find valid with future end date by id', async (done) => {
+        try {
+            const instance = await RelationshipTypeModel.findValidById(existingInstanceFutureEndDate.id);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -49,7 +82,7 @@ describe('RAM Relationship Type', () => {
 
     it('fails find invalid by id', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidById(existingDeletedInstance.id);
+            const instance = await RelationshipTypeModel.findValidById(existingExpiredInstance.id);
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -63,7 +96,11 @@ describe('RAM Relationship Type', () => {
             expect(instances).not.toBeNull();
             expect(instances.length).toBeGreaterThan(0);
             for (let i = 0; i < instances.length; i += 1) {
-                expect(instances[i].deleteInd).toBeFalsy();
+                var instance = instances[i];
+                expect(instance.startDate.valueOf()).toBeLessThan(new Date().valueOf());
+                if (instance.endDate) {
+                    expect(instance.endDate.valueOf()).toBeGreaterThan(new Date().valueOf());
+                }
             }
             done();
         } catch (e) {
@@ -71,16 +108,19 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('inserts with valid type', async (done) => {
+    it('inserts with non-empty code', async (done) => {
         try {
 
-            const instance = await RelationshipTypeModel.create({ name: relationshipTypes[0] });
+            const instance = await RelationshipTypeModel.create({
+                code: 'CODE_1',
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date()
+            });
 
             expect(instance).not.toBeNull();
             expect(instance.id).not.toBeNull();
-            expect(instance.name).not.toBeNull();
-            expect(instance.createdAt).not.toBeNull();
-            expect(instance.updatedAt).not.toBeNull();
+            expect(instance.code).not.toBeNull();
 
             const retrievedInstance = await RelationshipTypeModel.findValidById(instance.id);
             expect(retrievedInstance).not.toBeNull();
@@ -94,33 +134,46 @@ describe('RAM Relationship Type', () => {
 
     });
 
-    it('fails inserts with invalid type', async (done) => {
+    it('fails inserts with empty code', async (done) => {
         try {
-            await RelationshipTypeModel.create({ name: '__BOGUS__' });
-            fail();
+            await RelationshipTypeModel.create({
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date()
+            });
+            fail("should not have inserted with empty code");
         } catch (e) {
             expect(e.name).toBe('ValidationError');
             done();
         }
     });
 
-    it('deletes logically', async (done) => {
+    it('fails inserts with duplicate code', async (done) => {
 
         try {
 
-            const retrievedInstance = await RelationshipTypeModel.findValidById(existingInstance.id);
-            expect(retrievedInstance).not.toBeNull();
-            expect(retrievedInstance.id).toBe(existingInstance.id);
+            const code = 'CODE_DUPLICATE';
 
-            await existingInstance.delete();
+            await RelationshipTypeModel.create({
+                code: code,
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date()
+            });
 
-            const retrievedInstance2 = await RelationshipTypeModel.findValidById(existingInstance.id);
-            expect(retrievedInstance2).toBeNull();
+            await RelationshipTypeModel.create({
+                code: code,
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date()
+            });
 
-            done();
+            fail("should not have inserted with duplicate code");
 
         } catch (e) {
-            fail(e);
+            expect(e.name).toBe('ValidationError');
+            expect(e.errors.code.message).toContain('unique');
+            done();
         }
 
     });
