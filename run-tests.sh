@@ -10,7 +10,7 @@ if [ "$TRAVIS_SECURE_ENV_VARS" == "false" ]; then
     # - all non upstream repo forks should provide their own JSPM_GITHUB_AUTH_TOKEN in travis environment variables
 
     # auth key owned by @sundriver - public_repo only
-    jspm config registries.github.auth c3VuZHJpdmVyOjI4NTU3ZjlkNzdhZGU4YjJhODk3NDQyOTEyMzU5NDY0ZDBjMjkwYmE=
+    node_modules/.bin/jspm config registries.github.auth c3VuZHJpdmVyOjI4NTU3ZjlkNzdhZGU4YjJhODk3NDQyOTEyMzU5NDY0ZDBjMjkwYmE=
 
 fi
 
