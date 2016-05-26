@@ -21,5 +21,6 @@ before_script:
 - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
 - jspm config registries.github.maxRepoSize 100
 - jspm config registries.github.handler jspm-github
+- ls -la ~/
 
 script: "./run-tests.sh"
