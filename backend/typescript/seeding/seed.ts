@@ -29,10 +29,16 @@ class Seeder {
     }
 
     public static async createRelationshipTypeModel(values: Object) {
-        console.log('inserting createRelationshipTypeModel ... ');
-        const model = await RelationshipTypeModel.create(values);
-        console.log(model);
-        return model;
+        const existingModel = await RelationshipTypeModel.findValidByCode(values.code);
+        if (existingModel == null) {
+            console.log('Inserting RelationshipType: ', values.code);
+            const model = await RelationshipTypeModel.create(values);
+            return model;
+        }
+        else {
+            console.log('Skipping RelationshipType: ', values.code);
+            return existingModel;
+        }
     }
 
 }
