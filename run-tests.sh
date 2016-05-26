@@ -1,6 +1,12 @@
 #!/bin/bash
 set -ev
 
+echo JSPM_GITHUB_AUTH_TOKEN is $JSPM_GITHUB_AUTH_TOKEN
+jspm config registries.github.remote https://github.jspm.io
+jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
+jspm config registries.github.maxRepoSize 100
+jspm config registries.github.handler jspm-github
+
 dir=$(pwd)
 export RAM_CONF=$dir/backend/conf/conf.js
 echo $RAM_CONF
