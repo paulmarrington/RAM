@@ -34,14 +34,7 @@ const RelationshipTypeSchema = RAMSchema({
         type: String,
         required: [true, 'Relationship Types have to have a type'],
         enum: relationshipTypes
-    },
-
-    deleted: {
-      type: Boolean,
-      required: true,
-      default: false
     }
-
 
 });
 
@@ -49,7 +42,7 @@ RelationshipTypeSchema.plugin(mongooseIdValidator);
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
     findValidById: (id:String) => mongoose.Promise<IRelationshipType>;
-    listValid: () => mongoose.Promise<[IRelationshipType]>;
+    listValid: () => mongoose.Promise<IRelationshipType[]>;
 }
 
 RelationshipTypeSchema.static('findValidById', (id:String) => {

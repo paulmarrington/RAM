@@ -1,31 +1,26 @@
 import {connectDisconnectMongo} from './helpers';
-import {IRelationshipTypeModel,IRelationshipType,RelationshipTypeModel,relationshipTypes} from '../models/relationshipType.model';
+import {IRelationshipType, RelationshipTypeModel, relationshipTypes} from '../models/relationshipType.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Relationship Type', () => {
 
     connectDisconnectMongo();
 
-    let relTypeModel:IRelationshipTypeModel = RelationshipTypeModel;
-
-    let existingInstance:IRelationshipType;
-    let existingDeletedInstance:IRelationshipType;
+    let existingInstance: IRelationshipType;
+    let existingDeletedInstance: IRelationshipType;
 
     beforeEach(async (done) => {
+        try {
+            existingInstance = await RelationshipTypeModel.create({
+                name: relationshipTypes[0]
+            });
 
-        //existingInstance = await relTypeModel.create({type: relationshipTypes[0]});
-        //console.log(existingInstance);
-        //existingDeletedInstance = await relTypeModel.create({ type: relationshipTypes[0], deleteInd: true});
-        //console.log(existingDeletedInstance);
-
-        existingInstance = new RelationshipTypeModel();
-        existingInstance.name = relationshipTypes[0];
-        await existingInstance.save();
-
-        existingDeletedInstance = new RelationshipTypeModel();
-        existingDeletedInstance.name = relationshipTypes[1];
-        existingDeletedInstance.deleteInd = true;
-        await existingDeletedInstance.save();
+            existingDeletedInstance = await RelationshipTypeModel.create({
+                name: relationshipTypes[0], deleteInd: true
+            });
+        } catch (e) {
+            fail(e);
+        }
 
         done();
 
@@ -33,7 +28,7 @@ describe('RAM Relationship Type', () => {
 
     it('find valid by id', async (done) => {
         try {
-            const instance = await relTypeModel.findValidById(existingInstance.id);
+            const instance = await RelationshipTypeModel.findValidById(existingInstance.id);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -45,7 +40,7 @@ describe('RAM Relationship Type', () => {
 
         try {
             const id = '111111111111111111111111';
-            const instance = await relTypeModel.findValidById(id);
+            const instance = await RelationshipTypeModel.findValidById(id);
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -56,7 +51,7 @@ describe('RAM Relationship Type', () => {
 
     it('fails find invalid by id', async (done) => {
         try {
-            const instance = await relTypeModel.findValidById(existingDeletedInstance.id);
+            const instance = await RelationshipTypeModel.findValidById(existingDeletedInstance.id);
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -66,11 +61,11 @@ describe('RAM Relationship Type', () => {
 
     it('list valid', async (done) => {
         try {
-            const instances = await relTypeModel.listValid();
+            const instances = await RelationshipTypeModel.listValid();
             expect(instances).not.toBeNull();
             expect(instances.length).toBeGreaterThan(0);
-            for (var instance in instances) {
-                expect(instances.deleteInd).toBeFalsy();
+            for (let i = 0; i < instances.length; i += 1) {
+                expect(instances[i].deleteInd).toBeFalsy();
             }
             done();
         } catch (e) {
@@ -79,10 +74,9 @@ describe('RAM Relationship Type', () => {
     });
 
     it('inserts with valid type', async (done) => {
-
         try {
 
-            const instance = await relTypeModel.create({name: relationshipTypes[0]});
+            const instance = await RelationshipTypeModel.create({ name: relationshipTypes[0] });
 
             expect(instance).not.toBeNull();
             expect(instance.id).not.toBeNull();
@@ -90,7 +84,7 @@ describe('RAM Relationship Type', () => {
             expect(instance.createdAt).not.toBeNull();
             expect(instance.updatedAt).not.toBeNull();
 
-            const retrievedInstance = await relTypeModel.findValidById(instance.id);
+            const retrievedInstance = await RelationshipTypeModel.findValidById(instance.id);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
 
@@ -104,7 +98,7 @@ describe('RAM Relationship Type', () => {
 
     it('fails inserts with invalid type', async (done) => {
         try {
-            await relTypeModel.create({type: '__BOGUS__'});
+            await RelationshipTypeModel.create({ type: '__BOGUS__' });
             fail();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
@@ -116,13 +110,13 @@ describe('RAM Relationship Type', () => {
 
         try {
 
-            const retrievedInstance = await relTypeModel.findValidById(existingInstance.id);
+            const retrievedInstance = await RelationshipTypeModel.findValidById(existingInstance.id);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(existingInstance.id);
 
             await existingInstance.delete();
 
-            const retrievedInstance2 = await relTypeModel.findValidById(existingInstance.id);
+            const retrievedInstance2 = await RelationshipTypeModel.findValidById(existingInstance.id);
             expect(retrievedInstance2).toBeNull();
 
             done();
