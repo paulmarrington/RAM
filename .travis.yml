@@ -12,7 +12,7 @@ services:
 
 before_script:
 - sleep 5
-- npm install -g gulp jspm pm2 jasmine
+- npm install -g gulp jasmine
 
 script:
 - source run-tests.sh
