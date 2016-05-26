@@ -2,9 +2,10 @@
 set -ev
 
 if [ $TRAVIS_PULL_REQUEST != "false" ]; then
-    echo "THIS IS A PULL REQUEST"
-else
-    echo "NOT A PULL REQUEST"
+    echo "Pull request detected"
+
+    jspm config registries.github.auth dHJ1bmdpZTp1eWVuMzQ=
+
 fi
 
 dir=$(pwd)
