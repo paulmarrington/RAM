@@ -111,5 +111,28 @@ You may prefer to test your service from a browser. You can then select individu
 
 Full use has yet to be explored. For development the watch can be set to restart on file changes. To do this we need to set up environments so that it only does so on development. This is a matter of setting and using environent variable within _ecosystem.json_.
 
+## JSPM & Travis
+
+While using jspm, specifically `jspm install` you can run into the error `GitHub rate limit reached.`. This is due to
+github rate limiting by IP address, which happens quite often while using Travis.
+
+This is the [recommended solution from jspm](http://jspm.io/docs/registries.html):
+
+- login to github
+- create a personal access key with the `public_repo` scope
+- run on your computer `jspm registry config github` and enter your github login and access key
+- export the auth key defined after `jspm config registries.github.auth `
+- login to travis to your fork and create the environment variable `JSPM_GITHUB_AUTH_TOKEN` and set this jspm auth key
+
+## Travis
+
+While working on the travis configuration file you can validate it using the following commands
+
+- `rvm install 2.1.5`
+- `rvm gemset create ram`
+- `rvm use 2.1.5@ato-ram`
+- `gem install travis`
+- `travis lint`
+
 ## favicon.ico
 Credit for creation of icon to [Alexandr Cherkinsky](https://thenounproject.com/cherkinskiy/)
