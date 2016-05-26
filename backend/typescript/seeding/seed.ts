@@ -28,15 +28,16 @@ class Seeder {
         mongoose.connection.close();
     }
 
-    public static async createRelationshipTypeModel(values: Object) {
-        const existingModel = await RelationshipTypeModel.findValidByCode(values.code);
+    public static async createRelationshipTypeModel(values: any) {
+        const code = values['code'];
+        const existingModel = await RelationshipTypeModel.findValidByCode(code);
         if (existingModel == null) {
-            console.log('Inserting RelationshipType: ', values.code);
+            console.log('Inserting RelationshipType: ', code);
             const model = await RelationshipTypeModel.create(values);
             return model;
         }
         else {
-            console.log('Skipping RelationshipType: ', values.code);
+            console.log('Skipping RelationshipType: ', code);
             return existingModel;
         }
     }
