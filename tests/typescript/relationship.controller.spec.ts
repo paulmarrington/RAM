@@ -67,16 +67,16 @@ describe('RAM Relationship', () => {
     });
 });
 
-describe('Relationship Internals', () => {
+// describe('Relationship Internals', () => {
 
-    it('does not include any Mongo internal IDs', async (done) => {
-        const rel = await generateRelationships(1)[0];
-        lookForId(rel);
-        done();
-    })
+//     it('does not include any Mongo internal IDs', async (done) => {
+//         const rel = await generateRelationships(1)[0];
+//         lookForId(rel);
+//         done();
+//     })
 
-    it('has delegate and subject information populated', async (done) => {
-    })
+//     it('has delegate and subject information populated', async (done) => {
+//     })
 
     // Fixme: This test must use identityValue/identityType to retrive relationship belonging to a delegate
     // it('can list relationships', async (done) => {
@@ -86,7 +86,7 @@ describe('Relationship Internals', () => {
     //     expect(res.body.data.length).toEqual(12);
     //     done();
     // });
-});
+// });
 
 // describe('RAM Relationship again', () => {
     //     Fixme: This test must use identityValue/identityType to retrive relationship belonging to a delegate
