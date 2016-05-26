@@ -1,26 +1,27 @@
-import {sendDocument, sendError, sendNotFoundError} from './helpers';
+import {sendDocument, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {Router, Request, Response} from 'express';
-import { IRelationshipType, IRelationshipTypeModel } from '../models/relationshipType.model';
+import {IRelationshipTypeModel } from '../models/relationshipType.model';
 
 export class RelationshipTypeController {
 
-    constructor(private relationshipTypeModel:IRelationshipTypeModel) {
+    constructor(private relationshipTypeModel: IRelationshipTypeModel) {
     }
 
-    private findValidById = async (req:Request, res:Response) => {
-        try {
-            const model = await this.relationshipTypeModel.findValidById(req.params.id);
-            if (model) {
-                sendDocument(res)(model);
-            } else {
-                sendNotFoundError(res)();
+    private findValidById = async (req: Request, res: Response) => {
+        const schema = {
+            'id': {
+                notEmpty: true,
+                isMongoId: {
+                },
+                errorMessage: 'Id is not valid'
             }
-        } catch (e) {
-            sendError(res)(e);
-        }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipTypeModel.findValidById(req.params.id), sendError(res))
+            .then(sendDocument(res), sendNotFoundError(res));
     };
 
-    private listValid = async (req:Request, res:Response) => {
+    private listValid = async (req: Request, res: Response) => {
         try {
             const results = await this.relationshipTypeModel.listValid();
             sendDocument(res)(results);
@@ -29,7 +30,7 @@ export class RelationshipTypeController {
         }
     };
 
-    public assignRoutes = (router:Router) => {
+    public assignRoutes = (router: Router) => {
         router.get('/:id', this.findValidById);
         router.get('', this.listValid);
         return router;
