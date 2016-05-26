@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-const mongooseUniqueValidator = require('mongoose-unique-validator');
+/* tslint:disable:no-var-requires */ const mongooseUniqueValidator = require('mongoose-unique-validator');
 
 /* A RAMObject defines the common attributes that all objects in the RAM
  * model will contain.
