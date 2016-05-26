@@ -7,13 +7,8 @@ import * as cApi from '../../commons/RamAPI';
 import * as api from './ram/ServerAPI';
 import {logStream} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
-// Prepare mongoose for daily operations
 import * as mongoose from 'mongoose';
 import expressValidator = require('express-validator');
-
-mongoose.connect('mongodb://localhost/ram', {}, () => {
-    console.log('Connected to db');
-});
 
 import {PartyController} from './controllers/party.controller';
 import {RelationshipController} from './controllers/relationship.controller';
@@ -24,13 +19,25 @@ import {PartyModel} from './models/party.model';
 import {RelationshipModel} from './models/relationship.model';
 import {RelationshipTypeModel} from './models/relationshipType.model';
 
+// load configuration .................................................................................................
+
+// ensure RAM_CONF is specified
 if (process.env.RAM_CONF === void 0 ||
     process.env.RAM_CONF.trim().length === 0) {
     console.log('Missing RAM_CONF environment variable');
     process.exit(1);
 }
 
-/* tslint:disable:no-var-requires */ const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
+/* tslint:disable:no-var-requires */
+const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
+
+// connect to the database ............................................................................................
+
+mongoose.connect(conf.mongoURL, {}, () => {
+    console.log('Connected to db: ' + conf.mongoURL);
+});
+
+// configure express ..................................................................................................
 
 const server = express();
 
@@ -62,6 +69,8 @@ server.use(methodOverride());
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 server.use(express.static('swagger'));
 
+// setup route handlers ...............................................................................................
+
 server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
 server.use('/api/v1/party',
@@ -84,6 +93,8 @@ server.use((req: express.Request, res: express.Response) => {
 //         res.send(ramResponse);
 //     }
 // });
+
+// start server .......................................................................................................
 
 server.listen(conf.httpPort);
 console.log(`RAM Server running on port ${conf.httpPort}`);
