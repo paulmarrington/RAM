@@ -40,6 +40,7 @@ switch (conf.devMode) {
         server.use(loggerMorgan('prod', { stream: logStream }));
         break;
     default:
+        server.set('json spaces', 2);
         server.use(loggerMorgan('dev', { stream: logStream }));
         break;
 }

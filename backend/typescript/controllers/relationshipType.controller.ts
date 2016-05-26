@@ -7,17 +7,15 @@ export class RelationshipTypeController {
     constructor(private relationshipTypeModel: IRelationshipTypeModel) {
     }
 
-    private findValidById = async (req: Request, res: Response) => {
+    private findValidByCode = async (req: Request, res: Response) => {
         const schema = {
-            'id': {
+            'code': {
                 notEmpty: true,
-                isMongoId: {
-                },
-                errorMessage: 'Id is not valid'
+                errorMessage: 'Code is not valid'
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipTypeModel.findValidById(req.params.id), sendError(res))
+            .then((req:Request) => this.relationshipTypeModel.findValidByCode(req.params.code), sendError(res))
             .then(sendDocument(res), sendNotFoundError(res));
     };
 
@@ -31,7 +29,7 @@ export class RelationshipTypeController {
     };
 
     public assignRoutes = (router: Router) => {
-        router.get('/v1/relationshipType/:id', this.findValidById);
+        router.get('/v1/relationshipType/:code', this.findValidByCode);
         router.get('/v1/relationshipTypes', this.listValid);
         return router;
     };

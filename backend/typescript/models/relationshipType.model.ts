@@ -1,39 +1,18 @@
 import * as mongoose from 'mongoose';
-import {IRAMObject, RAMSchema} from './base';
+import {ICodeDecode, CodeDecodeSchema} from './base';
 
 /* tslint:disable:no-var-requires */
 const mongooseIdValidator = require('mongoose-id-validator');
 
-export const relationshipTypes = [
-    'Business Representative',
-    'Online Service Provider',
-    'Insolvency practitioner',
-    'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
-    'Intermediary – Real Estate Agent, Immigration Agent',
-    'Importer Export Agent',
-    'Doctor Patient',
-    'Nominated Entity',
-    'Power of Attorney (Voluntary)',
-    'Power of Attorney (Involuntary)',
-    'Executor of deceased estate',
-    'Pharmaceutical',
-    'Institution to student – relationship',
-    'Training organisations (RTO)',
-    'Parent - Child',
-    'Employment Agents – employment'
-];
-
-export interface IRelationshipType extends IRAMObject {
-    name: string;
+export interface IRelationshipType extends ICodeDecode {
     voluntaryInd: boolean;
 }
 
-const RelationshipTypeSchema = RAMSchema({
+const RelationshipTypeSchema = CodeDecodeSchema({
 
-    name: {
-        type: String,
-        required: [true, 'Relationship Types have to have a type'],
-        enum: relationshipTypes
+    voluntaryInd: {
+        type: Boolean,
+        default: false
     }
 
 });
@@ -41,19 +20,26 @@ const RelationshipTypeSchema = RAMSchema({
 RelationshipTypeSchema.plugin(mongooseIdValidator);
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
-    findValidById: (id:String) => mongoose.Promise<IRelationshipType>;
+    findValidByCode: (id:String) => mongoose.Promise<IRelationshipType>;
     listValid: () => mongoose.Promise<IRelationshipType[]>;
 }
 
-RelationshipTypeSchema.static('findValidById', (id:String) => {
+RelationshipTypeSchema.static('findValidByCode', (code:String) => {
     return this.RelationshipTypeModel
-        .findOne({_id: id, deleteInd: false})
+        .findOne({
+            code: code,
+            startDate: {$lte: new Date()},
+            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+        })
         .exec();
 });
 
-RelationshipTypeSchema.static('listValid', (id:String) => {
+RelationshipTypeSchema.static('listValid', () => {
     return this.RelationshipTypeModel
-        .find({deleteInd: false})
+        .find({
+            startDate: {$lte: new Date()},
+            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+        })
         .sort({name: 1})
         .exec();
 });
