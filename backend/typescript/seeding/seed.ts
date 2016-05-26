@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import {conf} from '../bootstrap';
 
-import {RelationshipTypeModel} from '../models/relationshipType.model';
+import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
 const now = new Date();
 
@@ -27,7 +27,7 @@ class Seeder {
         mongoose.connection.close();
     }
 
-    public static async createRelationshipTypeModel(values:Object) {
+    public static async createRelationshipTypeModel(values:IRelationshipType) {
         const code:String = values['code'] as String;
         const existingModel = await RelationshipTypeModel.findValidByCode(code);
         if (existingModel === null) {
@@ -69,14 +69,14 @@ const loadRelationshipTypes = async () => {
         shortDecodeText: 'Business Representative',
         longDecodeText: 'Business Representative',
         startDate: now
-    });
+    } as IRelationshipType);
 
     await Seeder.createRelationshipTypeModel({
         code: 'ONLINE_SERVICE_PROVIDER',
         shortDecodeText: 'Online Service Provider',
         longDecodeText: 'Online Service Provider',
         startDate: now
-    });
+    } as IRelationshipType);
 
 };
 
