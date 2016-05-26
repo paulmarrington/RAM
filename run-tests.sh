@@ -8,7 +8,9 @@ if [ "$TRAVIS_SECURE_ENV_VARS" == "false" ]; then
     # - jspm requires github authentication to avoid github rate limiting
     # - normally the github auth token is encrypted and put in .travis.yml however it's not available here
     # - all non upstream repo forks should provide their own JSPM_GITHUB_AUTH_TOKEN in travis environment variables
-    jspm config registries.github.auth dHJ1bmdpZTp1eWVuMzQ=
+
+    # auth key owned by @sundriver - public_repo only
+    jspm config registries.github.auth c3VuZHJpdmVyOjI4NTU3ZjlkNzdhZGU4YjJhODk3NDQyOTEyMzU5NDY0ZDBjMjkwYmE=
 
 fi
 
