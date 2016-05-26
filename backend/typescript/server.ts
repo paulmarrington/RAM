@@ -11,7 +11,7 @@ import {logStream} from './logger';
 import * as mongoose from 'mongoose';
 import expressValidator = require('express-validator');
 
-mongoose.connect('mongodb://localhost/ram').then(() => {
+mongoose.connect('mongodb://localhost/ram', {}, () => {
     console.log('Connected to db');
 });
 
