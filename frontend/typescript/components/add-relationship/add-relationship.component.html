@@ -7,21 +7,21 @@
         </div>
 
         <!-- Panel 1 for Individual -->
-        <div class="panel panel-default">
+        <div *ngIf="showSteps[1]" class="panel panel-default">
             <div class="panel-heading">
                 <h4><span class="badge square">1</span> Enter representative details</h4></div>
             <div class="panel-body">
                 <div class="form-group">
                     <div class="radio">
                         <div class="col-lg-2">
-                            <label><h4><input type="radio" name="repType" value="individual" >Individual</h4></label>
+                            <label><h4><input type="radio" name="repType" value="individual" (click)="setToIndividual()" >Individual</h4></label>
                         </div>
                         <div class="col-lg-2">
-                            <label><h4><input type="radio" name="repType" value="organisation">Organisation</h4></label>
+                            <label><h4><input type="radio" name="repType" value="organisation"  (click)="setToOrganisation()" >Organisation</h4></label>
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <div *ngIf="showForIndividual" class="form-group">
                     <div class="col-md-4">
                         <h4>First name*</h4>
                         <input class="form-control" type="text" name="firstname" value="" placeholder="First name ...">
@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div *ngIf="showForOrganisation" class="form-group">
                     <div class="col-md-12">
                         <h4>ABN*</h4>
                     </div>
@@ -51,7 +51,7 @@
         </div>
 
         <!-- Panel 2 for Individual -->
-        <div class="panel panel-default">
+        <div *ngIf="showSteps[2]" class="panel panel-default">
             <div class="panel-heading">
                 <h4><span class="badge square">2</span> Set authorisation type</h4>
             </div>
@@ -80,7 +80,7 @@
         </div>
 
         <!-- Panel 3 for Individual -->
-        <div class="panel panel-default">
+        <div *ngIf="showSteps[3]" class="panel panel-default">
             <div class="panel-heading">
                 <h4><span class="badge square">3</span> Set access period</h4></div>
             <div class="panel-body">
@@ -101,7 +101,7 @@
             </div>
         </div>
         <!-- Panel 4 for Individual -->
-        <div class="panel panel-default">
+        <div *ngIf="showSteps[4]" class="panel panel-default">
             <div class="panel-heading">
                 <h4><span class="badge square">4</span> Set permissions</h4></div>
             <div class="panel-body">
@@ -146,7 +146,7 @@
         </div>
 
         <!-- Panel 5 for Individual -->
-        <div class="panel panel-default">
+        <div *ngIf="showSteps[5]" class="panel panel-default">
             <div class="panel-heading">
                 <h4><span class="badge square">5</span> Declaration</h4>
             </div>
