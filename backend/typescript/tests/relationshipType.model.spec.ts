@@ -1,6 +1,5 @@
-import {connectDisconnectMongo} from './helpers';
+import {connectDisconnectMongo, dropMongo} from './helpers';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
-import {dropMongo} from "./helpers";
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Relationship Type', () => {
@@ -95,13 +94,12 @@ describe('RAM Relationship Type', () => {
             const instances = await RelationshipTypeModel.listValid();
             expect(instances).not.toBeNull();
             expect(instances.length).toBeGreaterThan(0);
-            for (let i = 0; i < instances.length; i += 1) {
-                var instance = instances[i];
+            instances.forEach((instance) => {
                 expect(instance.startDate.valueOf()).toBeLessThan(new Date().valueOf());
                 if (instance.endDate) {
                     expect(instance.endDate.valueOf()).toBeGreaterThan(new Date().valueOf());
                 }
-            }
+            });
             done();
         } catch (e) {
             fail(e);
@@ -141,7 +139,7 @@ describe('RAM Relationship Type', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date()
             });
-            fail("should not have inserted with empty code");
+            fail('should not have inserted with empty code');
         } catch (e) {
             expect(e.name).toBe('ValidationError');
             done();
@@ -168,7 +166,7 @@ describe('RAM Relationship Type', () => {
                 startDate: new Date()
             });
 
-            fail("should not have inserted with duplicate code");
+            fail('should not have inserted with duplicate code');
 
         } catch (e) {
             expect(e.name).toBe('ValidationError');

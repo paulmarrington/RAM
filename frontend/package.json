@@ -41,6 +41,7 @@
     "gulp-sourcemaps": "latest",
     "gulp-tslint": "latest",
     "gulp-uglify": "latest",
+    "jspm": "^0.16.35",
     "main-bower-files": "latest",
     "merge2": "latest",
     "phantomjs-prebuilt": "latest",
