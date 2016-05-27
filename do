@@ -28,6 +28,15 @@ case "$1" in
     echo ""
     ;;
 
+  'deps')
+    echo ""
+    echo "Downloading dependencies ..."
+    ./$me deps:frontend
+    ./$me deps:backend
+    ./$me deps:test
+    echo ""
+    ;;
+
   'deps:frontend')
     echo ""
     echo "Downloading frontend dependencies ..."
@@ -159,6 +168,7 @@ case "$1" in
     echo "Commands:"
     echo ""
     echo "$(tput setaf 3)    setup                                $(tput sgr0)      Setups local workstation"
+    echo "$(tput setaf 3)    deps                                 $(tput sgr0)      Download all dependencies"
     echo "$(tput setaf 3)    deps:frontend                        $(tput sgr0)      Download frontend dependencies"
     echo "$(tput setaf 3)    deps:backend                         $(tput sgr0)      Download backend dependencies"
     echo "$(tput setaf 3)    deps:test                            $(tput sgr0)      Download api test dependencies"
