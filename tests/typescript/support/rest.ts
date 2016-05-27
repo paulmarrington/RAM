@@ -1,10 +1,8 @@
-/// <reference path="../../typings/main.d.ts" />
-
 import * as agent  from 'superagent';
 
 export class RestCalls {
   private server: string;
-  private urlPrefix: string = '/api/v1/';
+  private urlPrefix: string = '/api';
 
   constructor(private serverAddress: string, private serverPort: number) {
     this.server = `${this.serverAddress}:${this.serverPort}`;

@@ -5,7 +5,7 @@ import {FakerTestHelper} from './faker.test.helper';
 const rest = new RestCalls('localhost', 3000);
 
 export const getPartyByResolver = (identityValue: string, resolver: string) =>
-  rest.promisify(rest.get('party/identity/' + identityValue + '/' + resolver));
+  rest.promisify(rest.get('/v1/party/identity/' + identityValue + '/' + resolver));
 
 export const getPartyByABN = (abn: string) =>
   getPartyByResolver(abn, 'abn');
