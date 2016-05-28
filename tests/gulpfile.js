@@ -28,6 +28,7 @@ gulp.task('ts:compile',['ts:lint'], function () {
 
 });
 
+
 gulp.task('test',['ts:compile'], function () {
     return gulp.src(['dist/{**,./}/*.spec.js']).pipe(
         jasmine({
