@@ -7,15 +7,15 @@ describe('RAM Relationship Type', () => {
     connectDisconnectMongo();
     dropMongo();
 
-    let existingInstanceNoEndDate: IRelationshipType;
-    let existingInstanceFutureEndDate: IRelationshipType;
-    let existingExpiredInstance: IRelationshipType;
+    let relationshipTypeNoEndDate: IRelationshipType;
+    let relationshipTypeFutureEndDate: IRelationshipType;
+    let relationshipTypeExpired: IRelationshipType;
 
     beforeEach(async (done) => {
 
         try {
 
-            existingInstanceNoEndDate = await RelationshipTypeModel.create({
+            relationshipTypeNoEndDate = await RelationshipTypeModel.create({
                 code: 'RELATIONSHIP_TYPE_1',
                 shortDecodeText: 'Relationship Type 1',
                 longDecodeText: 'Relationship Type 1',
@@ -23,7 +23,7 @@ describe('RAM Relationship Type', () => {
                 attributeNameUsages: []
             });
 
-            existingInstanceFutureEndDate = await RelationshipTypeModel.create({
+            relationshipTypeFutureEndDate = await RelationshipTypeModel.create({
                 code: 'RELATIONSHIP_TYPE_2',
                 shortDecodeText: 'Relationship Type 2',
                 longDecodeText: 'Relationship Type 2',
@@ -31,7 +31,7 @@ describe('RAM Relationship Type', () => {
                 endDate: new Date(2099, 1, 1)
             });
 
-            existingExpiredInstance = await RelationshipTypeModel.create({
+            relationshipTypeExpired = await RelationshipTypeModel.create({
                 code: 'RELATIONSHIP_TYPE_3',
                 shortDecodeText: 'Relationship Type 3',
                 longDecodeText: 'Relationship Type 3',
@@ -50,7 +50,7 @@ describe('RAM Relationship Type', () => {
 
     it('find valid with no end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(existingInstanceNoEndDate.code);
+            const instance = await RelationshipTypeModel.findValidByCode(relationshipTypeNoEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -61,7 +61,7 @@ describe('RAM Relationship Type', () => {
 
     it('find valid with future end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(existingInstanceFutureEndDate.code);
+            const instance = await RelationshipTypeModel.findValidByCode(relationshipTypeFutureEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -84,7 +84,7 @@ describe('RAM Relationship Type', () => {
 
     it('fails find invalid by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(existingExpiredInstance.code);
+            const instance = await RelationshipTypeModel.findValidByCode(relationshipTypeExpired.code);
             expect(instance).toBeNull();
             done();
         } catch (e) {
