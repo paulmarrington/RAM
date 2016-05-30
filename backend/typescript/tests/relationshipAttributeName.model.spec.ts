@@ -214,5 +214,4 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-
 });
