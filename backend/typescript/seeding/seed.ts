@@ -28,6 +28,19 @@ class Seeder {
         mongoose.connection.close();
     }
 
+    //public static async createRelationshipAttributeNameModel(values:IRelationshipAttributeName) {
+    //    const code = values.code;
+    //    const existingModel = await RelationshipAttributeNameModel.findByCode(code);
+    //    if (existingModel === null) {
+    //        console.log('Inserting RelationshipType: ', code);
+    //        const model = await RelationshipTypeModel.create(values);
+    //        return model;
+    //    } else {
+    //        console.log('Skipping RelationshipType: ', code);
+    //        return existingModel;
+    //    }
+    //}
+
     public static async createRelationshipTypeModel(values:IRelationshipType) {
         const code = values.code;
         const existingModel = await RelationshipTypeModel.findByCode(code);

@@ -9,7 +9,7 @@ describe('RAM Relationship Type', () => {
 
     let relationshipTypeNoEndDate: IRelationshipType;
     let relationshipTypeFutureEndDate: IRelationshipType;
-    let relationshipTypeExpired: IRelationshipType;
+    let relationshipTypeExpiredEndDate: IRelationshipType;
 
     beforeEach(async (done) => {
 
@@ -31,7 +31,7 @@ describe('RAM Relationship Type', () => {
                 endDate: new Date(2099, 1, 1)
             });
 
-            relationshipTypeExpired = await RelationshipTypeModel.create({
+            relationshipTypeExpiredEndDate = await RelationshipTypeModel.create({
                 code: 'RELATIONSHIP_TYPE_3',
                 shortDecodeText: 'Relationship Type 3',
                 longDecodeText: 'Relationship Type 3',
@@ -72,7 +72,7 @@ describe('RAM Relationship Type', () => {
 
     it('find valid or invalid by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCode(relationshipTypeExpired.code);
+            const instance = await RelationshipTypeModel.findByCode(relationshipTypeExpiredEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -95,7 +95,7 @@ describe('RAM Relationship Type', () => {
 
     it('fails find invalid by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(relationshipTypeExpired.code);
+            const instance = await RelationshipTypeModel.findValidByCode(relationshipTypeExpiredEndDate.code);
             expect(instance).toBeNull();
             done();
         } catch (e) {

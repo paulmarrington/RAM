@@ -9,8 +9,11 @@ describe('RAM Relationship Type', () => {
     connectDisconnectMongo();
     dropMongo();
 
-    let relationshipType1: IRelationshipType;
     let relationshipAttributeNameNoEndDate: IRelationshipAttributeName;
+    let relationshipAttributeNameFutureEndDate: IRelationshipAttributeName;
+    let relationshipAttributeNameExpiredEndDate: IRelationshipAttributeName;
+
+    let relationshipType1: IRelationshipType;
 
     beforeEach(async (done) => {
 
@@ -18,11 +21,31 @@ describe('RAM Relationship Type', () => {
 
             relationshipAttributeNameNoEndDate = await RelationshipAttributeNameModel.create({
                 code: 'ATTRIBUTE_NAME_1',
-                shortDecodeText: 'Attribute Name 1',
-                longDecodeText: 'Attribute Name 1',
+                shortDecodeText: 'Attribute Name',
+                longDecodeText: 'Attribute Name',
                 startDate: new Date(),
                 domain: 'STRING',
-                purposeText: 'This attribute is for name 1'
+                purposeText: 'This attribute purpose text'
+            });
+
+            relationshipAttributeNameFutureEndDate = await RelationshipAttributeNameModel.create({
+                code: 'ATTRIBUTE_NAME_2',
+                shortDecodeText: 'Attribute Name',
+                longDecodeText: 'Attribute Name',
+                startDate: new Date(),
+                endDate: new Date(2099, 1, 1),
+                domain: 'STRING',
+                purposeText: 'This attribute purpose text'
+            });
+
+            relationshipAttributeNameExpiredEndDate = await RelationshipAttributeNameModel.create({
+                code: 'ATTRIBUTE_NAME_3',
+                shortDecodeText: 'Attribute Name',
+                longDecodeText: 'Attribute Name',
+                startDate: new Date(2016, 1, 1),
+                endDate: new Date(2016, 1, 2),
+                domain: 'STRING',
+                purposeText: 'This attribute purpose text'
             });
 
             relationshipType1 = await RelationshipTypeModel.create({
@@ -62,10 +85,44 @@ describe('RAM Relationship Type', () => {
         }
     });
 
+    it('find valid with no end date by code', async (done) => {
+        try {
+            const instance = await RelationshipAttributeNameModel.findValidByCode(relationshipAttributeNameNoEndDate.code);
+            expect(instance).not.toBeNull();
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
     it('find valid or invalid by code', async (done) => {
         try {
             const instance = await RelationshipAttributeNameModel.findByCode(relationshipAttributeNameNoEndDate.code);
             expect(instance).not.toBeNull();
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('fails find valid by non-existent code', async (done) => {
+        try {
+            const code = '__BOGUS__';
+            const instance = await RelationshipAttributeNameModel.findValidByCode(code);
+            expect(instance).toBeNull();
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('fails find invalid by code', async (done) => {
+        try {
+            const instance = await RelationshipAttributeNameModel.findValidByCode(relationshipAttributeNameExpiredEndDate.code);
+            expect(instance).toBeNull();
             done();
         } catch (e) {
             fail('Because ' + e);
