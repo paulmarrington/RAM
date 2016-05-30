@@ -111,6 +111,17 @@ case "$1" in
     echo ""
     ;;
 
+# DB
+
+  'db:seed')
+    echo ""
+    echo "Seeding database"
+    echo ""
+    cd backend
+    RAM_CONF=$DIR/backend/conf/conf.js gulp seed
+    echo ""
+    ;;
+
 # OTHER
 
   'clean')
