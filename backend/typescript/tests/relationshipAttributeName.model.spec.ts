@@ -62,4 +62,89 @@ describe('RAM Relationship Type', () => {
         }
     });
 
+    it('fails insert with empty domain', async (done) => {
+        try {
+            await RelationshipAttributeNameModel.create({
+                code: 'ATTRIBUTE_NAME_X',
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date()
+            });
+            fail('should not have inserted with empty domain');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
+    it('fails insert with invalid domain', async (done) => {
+        try {
+            await RelationshipAttributeNameModel.create({
+                code: 'ATTRIBUTE_NAME_X',
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date(),
+                domain: '__BOGUS__',
+                purposeText: 'This attribute is for name 1'
+            });
+            fail('should not have inserted with invalid domain');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
+    it('fails insert with empty purpose text', async (done) => {
+        try {
+            await RelationshipAttributeNameModel.create({
+                code: 'ATTRIBUTE_NAME_X',
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date(),
+                domain: 'STRING'
+            });
+            fail('should not have inserted with empty purpose text');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
+    it('fails insert with duplicate code', async (done) => {
+        try {
+
+            const code = 'CODE_DUPLICATE';
+
+            await RelationshipAttributeNameModel.create({
+                code: code,
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date(),
+                domain: 'STRING',
+                purposeText: 'This attribute is for name 1'
+            });
+
+            await RelationshipAttributeNameModel.create({
+                code: code,
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date(),
+                domain: 'STRING',
+                purposeText: 'This attribute is for name 1'
+            });
+
+            fail('should not have inserted with duplicate code');
+            done();
+
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            expect(e.errors.code.message).toContain('unique');
+            done();
+        }
+    });
+
+
 });

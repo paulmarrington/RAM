@@ -1,6 +1,24 @@
 import * as mongoose from 'mongoose';
 import {ICodeDecode, CodeDecodeSchema} from './base';
 
+export const RelationshipAttributeNameNullDomain = 'NULL';
+export const RelationshipAttributeNameBooleanDomain = 'BOOLEAN';
+export const RelationshipAttributeNameNumberDomain = 'NUMBER';
+export const RelationshipAttributeNameStringDomain = 'STRING';
+export const RelationshipAttributeNameDateDomain = 'DATE';
+export const RelationshipAttributeNameSingleSelectDomain = 'SINGLE_SELECT';
+export const RelationshipAttributeNameMultiSelectDomain = 'MULTI_SELECT';
+
+export const RelationshipAttributeNameDomains = [
+    RelationshipAttributeNameNullDomain,
+    RelationshipAttributeNameBooleanDomain,
+    RelationshipAttributeNameNumberDomain,
+    RelationshipAttributeNameStringDomain,
+    RelationshipAttributeNameDateDomain,
+    RelationshipAttributeNameSingleSelectDomain,
+    RelationshipAttributeNameMultiSelectDomain
+];
+
 export interface IRelationshipAttributeName extends ICodeDecode {
     domain: string;
     purposeText: string;
@@ -10,7 +28,8 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
     domain: {
         type: String,
         required: [true, 'Domain is required'],
-        trim: true
+        trim: true,
+        enum: RelationshipAttributeNameDomains
     },
     purposeText: {
         type: String,

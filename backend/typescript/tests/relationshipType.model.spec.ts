@@ -137,7 +137,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('fails inserts with empty code', async (done) => {
+    it('fails insert with empty code', async (done) => {
         try {
             await RelationshipTypeModel.create({
                 shortDecodeText: 'Some short decode text',
@@ -152,7 +152,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('fails inserts with duplicate code', async (done) => {
+    it('fails insert with duplicate code', async (done) => {
         try {
 
             const code = 'CODE_DUPLICATE';
