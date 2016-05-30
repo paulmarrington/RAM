@@ -81,7 +81,7 @@ case "$1" in
 
   # run all API tests or, limit to one with --test <test name>
   # e.g.
-  #     ./do test:api --test relationshipType.model
+  #     ./do test:backend --test relationshipType.model
   'test:backend')
     echo ""
     echo "Starting tests"
@@ -203,7 +203,6 @@ case "$1" in
     echo "$(tput setaf 3)    start:frontend                       $(tput sgr0)      Starts local frontend server"
     echo "$(tput setaf 3)    start:backend                        $(tput sgr0)      Starts local backend server"
     echo ""
-    echo "$(tput setaf 3)    db:drop                              $(tput sgr0)      Drops local database"
     echo "$(tput setaf 3)    db:seed                              $(tput sgr0)      Seeds local database"
     echo ""
     echo "$(tput setaf 3)    clean                                $(tput sgr0)      Cleans all generated files"
