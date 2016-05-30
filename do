@@ -8,10 +8,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # prerequisites:
 #  brew
 #  git
-#  nvm
 #  npm
 
-nvm install 6.1.0
 export PATH=./node_modules/.bin:../node_modules/.bin:$PATH
 
 case "$1" in
