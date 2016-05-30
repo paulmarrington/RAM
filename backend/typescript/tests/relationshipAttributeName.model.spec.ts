@@ -1,5 +1,8 @@
 import {connectDisconnectMongo, dropMongo} from './helpers';
-import {IRelationshipAttributeName, RelationshipAttributeNameModel, RelationshipAttributeNameStringDomain} from '../models/relationshipAttributeName.model';
+import {
+    IRelationshipAttributeName,
+    RelationshipAttributeNameModel,
+    RelationshipAttributeNameStringDomain} from '../models/relationshipAttributeName.model';
 import {RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
