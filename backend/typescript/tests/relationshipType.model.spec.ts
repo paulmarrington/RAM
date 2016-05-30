@@ -42,7 +42,7 @@ describe('RAM Relationship Type', () => {
             done();
 
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
             done();
         }
 
@@ -54,7 +54,7 @@ describe('RAM Relationship Type', () => {
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
             done();
         }
     });
@@ -65,7 +65,7 @@ describe('RAM Relationship Type', () => {
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
             done();
         }
     });
@@ -77,7 +77,7 @@ describe('RAM Relationship Type', () => {
             expect(instance).toBeNull();
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
             done();
         }
     });
@@ -88,7 +88,7 @@ describe('RAM Relationship Type', () => {
             expect(instance).toBeNull();
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
             done();
         }
     });
@@ -106,7 +106,7 @@ describe('RAM Relationship Type', () => {
             });
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
             done();
         }
     });
@@ -132,7 +132,7 @@ describe('RAM Relationship Type', () => {
             done();
 
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
             done();
         }
     });

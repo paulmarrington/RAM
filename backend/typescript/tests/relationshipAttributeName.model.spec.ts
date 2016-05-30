@@ -41,8 +41,7 @@ describe('RAM Relationship Type', () => {
             done();
 
         } catch (e) {
-            console.log(e);
-            fail(e);
+            fail('Because ' + e);
             done();
         }
 
@@ -58,7 +57,7 @@ describe('RAM Relationship Type', () => {
             expect(instance.attributeNameUsages[0].attributeName.purposeText).toBe(relationshipAttributeName1.purposeText);
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
             done();
         }
     });
