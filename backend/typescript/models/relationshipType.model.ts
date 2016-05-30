@@ -23,9 +23,21 @@ const RelationshipTypeSchema = CodeDecodeSchema({
 });
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
+    findByCode: (id:String) => mongoose.Promise<IRelationshipType>;
     findValidByCode: (id:String) => mongoose.Promise<IRelationshipType>;
     listValid: () => mongoose.Promise<IRelationshipType[]>;
 }
+
+RelationshipTypeSchema.static('findByCode', (code:String) => {
+    return this.RelationshipTypeModel
+        .findOne({
+            code: code
+        })
+        .deepPopulate([
+            'attributeNameUsages.attributeName'
+        ])
+        .exec();
+});
 
 RelationshipTypeSchema.static('findValidByCode', (code:String) => {
     return this.RelationshipTypeModel
