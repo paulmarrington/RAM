@@ -1,38 +1,25 @@
 import {Component} from '@angular/core';
+import {AccessPeriodComponent} from
+  '../commons/access-period/access-period.component';
+import {AuthorisationPermissionsComponent} from
+  '../commons/authorisation-permissions/authorisation-permissions.component';
+import {AuthorisationTypeComponent} from
+  '../commons/authorisation-type/authorisation-type.component';
+import {DeclarationComponent} from
+  '../commons/declaration/declaration.component';
+import {RepresentativeDetailsComponent} from
+  '../commons/representative-details/representative-details.component';
 
 @Component({
     selector: 'add-relationship',
     templateUrl: 'add-relationship.component.html',
-    directives: []
+    directives: [
+      AccessPeriodComponent,
+      AuthorisationPermissionsComponent,
+      AuthorisationTypeComponent,
+      DeclarationComponent,
+      RepresentativeDetailsComponent
+    ]
 })
 export class AddRelationshipComponent {
-  public isIndividual        = false;
-  public showForIndividual   = false;
-  public showForOrganisation = false;
-  public showSteps           = [true,true];
-
-  private clearSteps(from:number, to:number) {
-    for (let i = from; i <= to; i += 1) {
-      this.showSteps[i] = false;
-    }
-  }
-
-  private showStep(step:number) {
-    this.showSteps[step] = true;
-  }
-
-  private setRelationshipType(isIndividual:boolean) {
-    this.isIndividual = this.showForIndividual = isIndividual;
-    this.showForOrganisation = !isIndividual;
-    this.clearSteps(2, 5)
-  }
-
-  public setToIndividual() {
-    this.setRelationshipType(true);
-    this.showStep(2);
-  }
-
-  public setToOrganisation() {
-    this.setRelationshipType(false);
-  }
 }
