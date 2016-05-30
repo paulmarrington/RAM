@@ -1,5 +1,5 @@
 import {connectDisconnectMongo, dropMongo} from './helpers';
-import {IRelationshipAttributeName, RelationshipAttributeNameModel} from '../models/relationshipAttributeName.model';
+import {IRelationshipAttributeName, RelationshipAttributeNameModel, RelationshipAttributeNameStringDomain} from '../models/relationshipAttributeName.model';
 import {RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
@@ -24,7 +24,7 @@ describe('RAM Relationship Type', () => {
                 shortDecodeText: 'Attribute Name',
                 longDecodeText: 'Attribute Name',
                 startDate: new Date(),
-                domain: 'STRING',
+                domain: RelationshipAttributeNameStringDomain,
                 purposeText: 'This attribute purpose text'
             });
 
@@ -34,7 +34,7 @@ describe('RAM Relationship Type', () => {
                 longDecodeText: 'Attribute Name',
                 startDate: new Date(),
                 endDate: new Date(2099, 1, 1),
-                domain: 'STRING',
+                domain: RelationshipAttributeNameStringDomain,
                 purposeText: 'This attribute purpose text'
             });
 
@@ -44,7 +44,7 @@ describe('RAM Relationship Type', () => {
                 longDecodeText: 'Attribute Name',
                 startDate: new Date(2016, 1, 1),
                 endDate: new Date(2016, 1, 2),
-                domain: 'STRING',
+                domain: RelationshipAttributeNameStringDomain,
                 purposeText: 'This attribute purpose text'
             });
 
@@ -171,7 +171,7 @@ describe('RAM Relationship Type', () => {
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
-                domain: 'STRING'
+                domain: RelationshipAttributeNameStringDomain
             });
             fail('should not have inserted with empty purpose text');
             done();
@@ -191,7 +191,7 @@ describe('RAM Relationship Type', () => {
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
-                domain: 'STRING',
+                domain: RelationshipAttributeNameStringDomain,
                 purposeText: 'This attribute is for name 1'
             });
 
@@ -200,7 +200,7 @@ describe('RAM Relationship Type', () => {
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
-                domain: 'STRING',
+                domain: RelationshipAttributeNameStringDomain,
                 purposeText: 'This attribute is for name 1'
             });
 
