@@ -154,6 +154,21 @@ case "$1" in
     open "https://github.com/atogov/RAM/wiki"
     echo ""
     ;;
+
+  'merge:upstream')
+    echo ""
+    echo "Merging from upstream ..."
+    echo ""
+    if [ -z "$2" ]; then
+      echo "Branch not specified!"
+    else
+      echo "Branch: $2"
+      git fetch upstream
+      git merge upstream/$2 $2
+    fi
+    echo ""
+    ;;
+
   *)
 
 # USAGE
@@ -185,6 +200,7 @@ case "$1" in
     echo "$(tput setaf 3)    staging                              $(tput sgr0)      Opens browser to staging instance"
     echo "$(tput setaf 3)    github                               $(tput sgr0)      Opens browser to github repository"
     echo "$(tput setaf 3)    wiki                                 $(tput sgr0)      Opens browser to project wiki"
+    echo "$(tput setaf 3)    merge:upstream <branch>              $(tput sgr0)      Merges from upstream, <value> is branch name (eg develop)"
     echo ""
     ;;
 
