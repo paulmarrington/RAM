@@ -30,10 +30,10 @@ import 'ng2-bootstrap';
         name: 'Relationships',
         component: RelationshipsComponent
     },{
-        path: '/relationships/addRelationship',
+        path: '/relationships/add',
         name: 'AddRelationship',
         component: AddRelationshipComponent
-    },
+    }
 ])
 export class AppComponent {
 }
