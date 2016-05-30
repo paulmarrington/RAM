@@ -83,7 +83,7 @@ case "$1" in
 
   # run all API tests or, limit to one with --test <test name>
   # e.g.
-  #     ./do.sh test:api --test relationshipType.model
+  #     ./do test:api --test relationshipType.model
   'test:backend')
     echo ""
     echo "Starting tests"
@@ -99,7 +99,7 @@ case "$1" in
 
   # run all API tests or, limit to one with --test <test name>
   # e.g.
-  #     ./do.sh test:api --test relationshipType.controller
+  #     ./do test:api --test relationshipType.controller
   'test:api')
     echo ""
     echo "Starting tests"
