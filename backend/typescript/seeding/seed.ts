@@ -1,7 +1,11 @@
 import * as mongoose from 'mongoose';
 import {conf} from '../bootstrap';
 
-import {IRelationshipAttributeName, RelationshipAttributeNameModel, RelationshipAttributeNameStringDomain} from '../models/relationshipAttributeName.model';
+import {
+    IRelationshipAttributeName,
+    RelationshipAttributeNameModel,
+    RelationshipAttributeNameStringDomain} from '../models/relationshipAttributeName.model';
+import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
 const now = new Date();
@@ -41,13 +45,33 @@ class Seeder {
         }
     }
 
-    public static async createRelationshipTypeModel(values:IRelationshipType) {
+    public static async createRelationshipTypeModel(values:IRelationshipType,attributeNames:IRelationshipAttributeName[]) {
+
         const code = values.code;
         const existingModel = await RelationshipTypeModel.findByCode(code);
+
         if (existingModel === null) {
+
             console.log('-', code);
+
+            const attributeNameUsages:IRelationshipAttributeNameUsage[] = [];
+
+            if (attributeNames) {
+                for (let i = 0; i < attributeNames.length; i = i+1) {
+                    const attributeName = attributeNames[i];
+                    const attributeNameUsage = await RelationshipAttributeNameUsageModel.create({
+                        optionalInd: true,
+                        attributeName: attributeName
+                    });
+                    attributeNameUsages.push(attributeNameUsage);
+                }
+            }
+
+            values.attributeNameUsages = attributeNameUsages;
+
             const model = await RelationshipTypeModel.create(values);
             return model;
+
         } else {
             console.log('-', code, ' ... skipped');
             return existingModel;
@@ -100,14 +124,14 @@ const load = async () => {
         shortDecodeText: 'Business Representative',
         longDecodeText: 'Business Representative',
         startDate: now
-    } as IRelationshipType);
+    } as IRelationshipType, [employeeNumber_attributeName]);
 
     await Seeder.createRelationshipTypeModel({
         code: 'ONLINE_SERVICE_PROVIDER',
         shortDecodeText: 'Online Service Provider',
         longDecodeText: 'Online Service Provider',
         startDate: now
-    } as IRelationshipType);
+    } as IRelationshipType, null);
 
 };
 
