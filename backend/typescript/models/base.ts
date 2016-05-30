@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
 
 /* tslint:disable:no-var-requires */ const mongooseUniqueValidator = require('mongoose-unique-validator');
+/* tslint:disable:no-var-requires */ const mongooseIdValidator = require('mongoose-id-validator');
+/* tslint:disable:no-var-requires */ const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
 
 /* A RAMObject defines the common attributes that all objects in the RAM
  * model will contain.
@@ -16,6 +18,7 @@ export interface IRAMObject extends mongoose.Document {
   delete(): void;
 }
 
+/* tslint:disable:max-func-body-length */
 export const RAMSchema = (schema: Object) => {
 
   const result = new mongoose.Schema({
@@ -24,6 +27,9 @@ export const RAMSchema = (schema: Object) => {
   }, { timestamps: true });
 
   result.add(schema);
+
+  result.plugin(mongooseIdValidator);
+  result.plugin(mongooseDeepPopulate);
 
   result.method('delete', function () {
     this.deleteInd = true;
@@ -44,7 +50,9 @@ export interface ICodeDecode extends mongoose.Document {
 
 }
 
+/* tslint:disable:max-func-body-length */
 export const CodeDecodeSchema = (schema: Object) => {
+
   const result = new mongoose.Schema({
     shortDecodeText: {
       type: String,
@@ -70,7 +78,12 @@ export const CodeDecodeSchema = (schema: Object) => {
       type: Date
     }
   });
+
   result.add(schema);
+
+  result.plugin(mongooseIdValidator);
+  result.plugin(mongooseDeepPopulate);
   result.plugin(mongooseUniqueValidator);
+
   return result;
 };

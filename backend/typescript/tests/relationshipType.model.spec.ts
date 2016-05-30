@@ -16,24 +16,25 @@ describe('RAM Relationship Type', () => {
         try {
 
             existingInstanceNoEndDate = await RelationshipTypeModel.create({
-                code: 'BUSINESS_REPRESENTATIVE',
-                shortDecodeText: 'Business Representative',
-                longDecodeText: 'Business Representative',
-                startDate: new Date()
+                code: 'RELATIONSHIP_TYPE_1',
+                shortDecodeText: 'Relationship Type 1',
+                longDecodeText: 'Relationship Type 1',
+                startDate: new Date(),
+                attributeNameUsages: []
             });
 
             existingInstanceFutureEndDate = await RelationshipTypeModel.create({
-                code: 'ONLINE_SERVICE_PROVIDER',
-                shortDecodeText: 'Online Service Provider',
-                longDecodeText: 'Online Service Provider',
+                code: 'RELATIONSHIP_TYPE_2',
+                shortDecodeText: 'Relationship Type 2',
+                longDecodeText: 'Relationship Type 2',
                 startDate: new Date(),
                 endDate: new Date(2099, 1, 1)
             });
 
             existingExpiredInstance = await RelationshipTypeModel.create({
-                code: 'INSOLVENCY_PRACTITIONER',
-                shortDecodeText: 'Insolvency practitioner',
-                longDecodeText: 'Insolvency practitioner',
+                code: 'RELATIONSHIP_TYPE_3',
+                shortDecodeText: 'Relationship Type 3',
+                longDecodeText: 'Relationship Type 3',
                 startDate: new Date(2016, 1, 1),
                 endDate: new Date(2016, 1, 2)
             });
@@ -42,6 +43,7 @@ describe('RAM Relationship Type', () => {
 
         } catch (e) {
             fail(e);
+            done();
         }
 
     });
@@ -53,6 +55,7 @@ describe('RAM Relationship Type', () => {
             done();
         } catch (e) {
             fail(e);
+            done();
         }
     });
 
@@ -63,11 +66,11 @@ describe('RAM Relationship Type', () => {
             done();
         } catch (e) {
             fail(e);
+            done();
         }
     });
 
     it('fails find valid by non-existent code', async (done) => {
-
         try {
             const code = '__BOGUS__';
             const instance = await RelationshipTypeModel.findValidByCode(code);
@@ -75,8 +78,8 @@ describe('RAM Relationship Type', () => {
             done();
         } catch (e) {
             fail(e);
+            done();
         }
-
     });
 
     it('fails find invalid by code', async (done) => {
@@ -86,6 +89,7 @@ describe('RAM Relationship Type', () => {
             done();
         } catch (e) {
             fail(e);
+            done();
         }
     });
 
@@ -103,6 +107,7 @@ describe('RAM Relationship Type', () => {
             done();
         } catch (e) {
             fail(e);
+            done();
         }
     });
 
@@ -128,8 +133,8 @@ describe('RAM Relationship Type', () => {
 
         } catch (e) {
             fail(e);
+            done();
         }
-
     });
 
     it('fails inserts with empty code', async (done) => {
@@ -140,6 +145,7 @@ describe('RAM Relationship Type', () => {
                 startDate: new Date()
             });
             fail('should not have inserted with empty code');
+            done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
             done();
@@ -147,7 +153,6 @@ describe('RAM Relationship Type', () => {
     });
 
     it('fails inserts with duplicate code', async (done) => {
-
         try {
 
             const code = 'CODE_DUPLICATE';
@@ -167,13 +172,13 @@ describe('RAM Relationship Type', () => {
             });
 
             fail('should not have inserted with duplicate code');
+            done();
 
         } catch (e) {
             expect(e.name).toBe('ValidationError');
             expect(e.errors.code.message).toContain('unique');
             done();
         }
-
     });
 
 });

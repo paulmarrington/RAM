@@ -1,23 +1,26 @@
 import * as mongoose from 'mongoose';
 import {ICodeDecode, CodeDecodeSchema} from './base';
+import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from './relationshipAttributeNameUsage.model';
 
-/* tslint:disable:no-var-requires */
-const mongooseIdValidator = require('mongoose-id-validator');
+// force schema to load first
+/* tslint:disable:no-unused-variable */
+const _RelationshipAttributeNameUsageModel = RelationshipAttributeNameUsageModel;
 
 export interface IRelationshipType extends ICodeDecode {
     voluntaryInd: boolean;
+    attributeNameUsages: IRelationshipAttributeNameUsage[];
 }
 
 const RelationshipTypeSchema = CodeDecodeSchema({
-
     voluntaryInd: {
         type: Boolean,
         default: false
-    }
-
+    },
+    attributeNameUsages: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'RelationshipAttributeNameUsage'
+    }]
 });
-
-RelationshipTypeSchema.plugin(mongooseIdValidator);
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
     findValidByCode: (id:String) => mongoose.Promise<IRelationshipType>;
@@ -31,6 +34,9 @@ RelationshipTypeSchema.static('findValidByCode', (code:String) => {
             startDate: {$lte: new Date()},
             $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
         })
+        .deepPopulate([
+            'attributeNameUsages.attributeName'
+        ])
         .exec();
 });
 
@@ -44,4 +50,6 @@ RelationshipTypeSchema.static('listValid', () => {
         .exec();
 });
 
-export const RelationshipTypeModel = mongoose.model('RelationshipType', RelationshipTypeSchema) as IRelationshipTypeModel;
+export const RelationshipTypeModel = mongoose.model(
+    'RelationshipType',
+    RelationshipTypeSchema) as IRelationshipTypeModel;
