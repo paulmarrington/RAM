@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import {conf} from '../bootstrap';
 
-import {IRelationshipAttributeName, RelationshipAttributeNameModel} from '../models/relationshipAttributeName.model';
+import {IRelationshipAttributeName, RelationshipAttributeNameModel, RelationshipAttributeNameStringDomain} from '../models/relationshipAttributeName.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
 const now = new Date();
@@ -12,7 +12,7 @@ class Seeder {
 
     public static async connect() {
         await mongoose.connect(conf.mongoURL);
-        console.log('Connected to the db: ', conf.mongoURL);
+        console.log('\nConnected to the db: ', conf.mongoURL);
     }
 
     public static async dropDatabase() {
@@ -28,28 +28,28 @@ class Seeder {
         mongoose.connection.close();
     }
 
-    //public static async createRelationshipAttributeNameModel(values:IRelationshipAttributeName) {
-    //    const code = values.code;
-    //    const existingModel = await RelationshipAttributeNameModel.findByCode(code);
-    //    if (existingModel === null) {
-    //        console.log('Inserting RelationshipType: ', code);
-    //        const model = await RelationshipTypeModel.create(values);
-    //        return model;
-    //    } else {
-    //        console.log('Skipping RelationshipType: ', code);
-    //        return existingModel;
-    //    }
-    //}
+    public static async createRelationshipAttributeNameModel(values:IRelationshipAttributeName) {
+        const code = values.code;
+        const existingModel = await RelationshipAttributeNameModel.findByCode(code);
+        if (existingModel === null) {
+            console.log('-', code);
+            const model = await RelationshipAttributeNameModel.create(values);
+            return model;
+        } else {
+            console.log('-', code, ' ... skipped');
+            return existingModel;
+        }
+    }
 
     public static async createRelationshipTypeModel(values:IRelationshipType) {
         const code = values.code;
         const existingModel = await RelationshipTypeModel.findByCode(code);
         if (existingModel === null) {
-            console.log('Inserting RelationshipType: ', code);
+            console.log('-', code);
             const model = await RelationshipTypeModel.create(values);
             return model;
         } else {
-            console.log('Skipping RelationshipType: ', code);
+            console.log('-', code, ' ... skipped');
             return existingModel;
         }
     }
@@ -59,7 +59,24 @@ class Seeder {
 // load reference data ................................................................................................
 
 /* tslint:disable:max-func-body-length */
-const loadRelationshipTypes = async () => {
+const load = async () => {
+
+    // relationship attribute names
+
+    console.log('\nInserting Relationship Attribute Names:');
+
+    const employeeNumber_attributeName = await Seeder.createRelationshipAttributeNameModel({
+        code: 'EMPLOYEE_NUMBER',
+        shortDecodeText: 'Employee Number',
+        longDecodeText: 'Employee Number',
+        startDate: now,
+        domain: RelationshipAttributeNameStringDomain,
+        purposeText: 'Employee Number'
+    } as IRelationshipAttributeName);
+
+    // relationship types
+
+    console.log('\nInserting Relationship Types:');
 
     //'Business Representative',
     //'Online Service Provider',
@@ -101,5 +118,5 @@ const loadRelationshipTypes = async () => {
 Seeder
     .connect()
     .then(Seeder.dropDatabase)
-    .then(loadRelationshipTypes)
+    .then(load)
     .then(Seeder.disconnect);
