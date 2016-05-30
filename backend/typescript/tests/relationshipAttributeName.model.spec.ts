@@ -10,13 +10,13 @@ describe('RAM Relationship Type', () => {
     dropMongo();
 
     let relationshipType1: IRelationshipType;
-    let relationshipAttributeName1: IRelationshipAttributeName;
+    let relationshipAttributeNameNoEndDate: IRelationshipAttributeName;
 
     beforeEach(async (done) => {
 
         try {
 
-            relationshipAttributeName1 = await RelationshipAttributeNameModel.create({
+            relationshipAttributeNameNoEndDate = await RelationshipAttributeNameModel.create({
                 code: 'ATTRIBUTE_NAME_1',
                 shortDecodeText: 'Attribute Name 1',
                 longDecodeText: 'Attribute Name 1',
@@ -33,7 +33,7 @@ describe('RAM Relationship Type', () => {
                 attributeNameUsages: [
                     await RelationshipAttributeNameUsageModel.create({
                         optionalInd: true,
-                        attributeName: relationshipAttributeName1
+                        attributeName: relationshipAttributeNameNoEndDate
                     })
                 ]
             });
@@ -47,14 +47,25 @@ describe('RAM Relationship Type', () => {
 
     });
 
-    it('find inflated attribute name usages', async (done) => {
+    it('find relationship type with inflated attributes', async (done) => {
         try {
             const instance = await RelationshipTypeModel.findValidByCode(relationshipType1.code);
             expect(instance).not.toBeNull();
             expect(instance.attributeNameUsages.length).toBe(1);
             expect(instance.attributeNameUsages[0].optionalInd).toBe(true);
-            expect(instance.attributeNameUsages[0].attributeName.domain).toBe(relationshipAttributeName1.domain);
-            expect(instance.attributeNameUsages[0].attributeName.purposeText).toBe(relationshipAttributeName1.purposeText);
+            expect(instance.attributeNameUsages[0].attributeName.domain).toBe(relationshipAttributeNameNoEndDate.domain);
+            expect(instance.attributeNameUsages[0].attributeName.purposeText).toBe(relationshipAttributeNameNoEndDate.purposeText);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('find valid or invalid by code', async (done) => {
+        try {
+            const instance = await RelationshipAttributeNameModel.findByCode(relationshipAttributeNameNoEndDate.code);
+            expect(instance).not.toBeNull();
             done();
         } catch (e) {
             fail('Because ' + e);

@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import {conf} from '../bootstrap';
 
+import {IRelationshipAttributeName, RelationshipAttributeNameModel} from '../models/relationshipAttributeName.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
 const now = new Date();
@@ -29,7 +30,7 @@ class Seeder {
 
     public static async createRelationshipTypeModel(values:IRelationshipType) {
         const code = values.code;
-        const existingModel = await RelationshipTypeModel.findValidByCode(code);
+        const existingModel = await RelationshipTypeModel.findByCode(code);
         if (existingModel === null) {
             console.log('Inserting RelationshipType: ', code);
             const model = await RelationshipTypeModel.create(values);

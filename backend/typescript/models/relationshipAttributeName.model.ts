@@ -40,7 +40,16 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
 
 /* tslint:disable:no-empty-interfaces */
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
+    findByCode: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
 }
+
+RelationshipAttributeNameSchema.static('findByCode', (code:String) => {
+    return this.RelationshipAttributeNameModel
+        .findOne({
+            code: code
+        })
+        .exec();
+});
 
 export const RelationshipAttributeNameModel = mongoose.model(
     'RelationshipAttributeName',

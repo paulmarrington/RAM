@@ -70,6 +70,17 @@ describe('RAM Relationship Type', () => {
         }
     });
 
+    it('find valid or invalid by code', async (done) => {
+        try {
+            const instance = await RelationshipTypeModel.findByCode(relationshipTypeExpired.code);
+            expect(instance).not.toBeNull();
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
     it('fails find valid by non-existent code', async (done) => {
         try {
             const code = '__BOGUS__';
@@ -86,17 +97,6 @@ describe('RAM Relationship Type', () => {
         try {
             const instance = await RelationshipTypeModel.findValidByCode(relationshipTypeExpired.code);
             expect(instance).toBeNull();
-            done();
-        } catch (e) {
-            fail('Because ' + e);
-            done();
-        }
-    });
-
-    it('fails find valid or invalid by code', async (done) => {
-        try {
-            const instance = await RelationshipTypeModel.findByCode(relationshipTypeExpired.code);
-            expect(instance).not.toBeNull();
             done();
         } catch (e) {
             fail('Because ' + e);
