@@ -38,6 +38,14 @@ export interface IKeyValue<T> {
 /***************************************************
  ***************************************************/
 
+export interface ICodeDecode {
+    code:             string;
+    shortDecodeText:  string;
+    longDecodeText:   string;
+    startDate:        Date;
+    endDate?:         Date;
+}
+
 export interface IName {
   givenName:        string;
   familyName:         string;
@@ -75,6 +83,19 @@ export interface IRelationship {
   subjectName?:      string;
   subjectRole?:      string;
   subjectNickName?:  string;
+}
+
+export interface IRelationshipType extends ICodeDecode {
+    voluntaryInd:     boolean;
+    attributeDefs:    IRelationshipAttributeName[]
+}
+
+export interface IRelationshipAttributeName extends ICodeDecode {
+    name:              string
+    domain:            string
+    mandatory:         boolean
+    defaultValue?:     string
+    permittedValues:   string[]
 }
 
 /***************************************************
