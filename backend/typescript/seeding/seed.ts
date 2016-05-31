@@ -85,7 +85,7 @@ class Seeder {
 // load reference data ................................................................................................
 
 /* tslint:disable:max-func-body-length */
-const load = async () => {
+const loadReferenceData = async () => {
 
     // relationship attribute names
 
@@ -225,5 +225,5 @@ const load = async () => {
 Seeder
     .connect()
     .then(Seeder.dropDatabase)
-    .then(load)
+    .then(loadReferenceData)
     .then(Seeder.disconnect);
