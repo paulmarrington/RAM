@@ -4,7 +4,8 @@ import {conf} from '../bootstrap';
 import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
-    RelationshipAttributeNameStringDomain} from '../models/relationshipAttributeName.model';
+    RelationshipAttributeNameStringDomain,
+    RelationshipAttributeNameSingleSelectDomain} from '../models/relationshipAttributeName.model';
 import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
@@ -100,6 +101,16 @@ const loadReferenceData = async () => {
         purposeText: 'Employee Number'
     } as IRelationshipAttributeName);
 
+    const employmentType_attributeName = await Seeder.createRelationshipAttributeNameModel({
+        code: 'EMPLOYMENT_TYPE',
+        shortDecodeText: 'Employment Type',
+        longDecodeText: 'Employment Type',
+        startDate: now,
+        domain: RelationshipAttributeNameSingleSelectDomain,
+        purposeText: 'Employee Type',
+        permittedValues: ['Permanent', 'Contractor', 'Casual']
+    } as IRelationshipAttributeName);
+
     // relationship types
 
     console.log('\nInserting Relationship Types:');
@@ -109,7 +120,7 @@ const loadReferenceData = async () => {
         shortDecodeText: 'Business Representative',
         longDecodeText: 'Business Representative',
         startDate: now
-    } as IRelationshipType, [employeeNumber_attributeName]);
+    } as IRelationshipType, [employeeNumber_attributeName, employmentType_attributeName]);
 
     await Seeder.createRelationshipTypeModel({
         code: 'ONLINE_SERVICE_PROVIDER',
