@@ -9,6 +9,7 @@ var gzip = require('gulp-gzip');
 var tar = require('gulp-tar');
 var jasmine = require('gulp-jasmine');
 var exec = require('child_process').exec;
+var args = require('yargs').argv;
 
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript")
@@ -85,14 +86,20 @@ gulp.task("publish:tarball",
     });
 
 gulp.task('test', ['ts:compile'], function () {
-    return gulp.src(['dist/{**,./}/*.spec.js']).pipe(
-        jasmine({
-            verbose: true,
-            includeStackTrace: true,
-            config: {
-                stopSpecOnExpectationFailure: false,
-                random: false
-            }
-        })
-    );
+  var pattern = ['dist/{**,./}/*.spec.js'];
+  if (args.test) {
+    pattern = ['dist/{**,./}/' + args.test + '.spec.js'];
+  }
+  console.log('Running tests with pattern ' + args.test);
+  return gulp.src(pattern).pipe(
+    jasmine({
+      verbose: true,
+      includeStackTrace: true,
+      config: {
+        stopSpecOnExpectationFailure: false,
+        random: false
+      }
+    })
+  );
 });
+

@@ -7,7 +7,7 @@ export class RelationshipTypeController {
     constructor(private relationshipTypeModel: IRelationshipTypeModel) {
     }
 
-    private findValidByCode = async (req: Request, res: Response) => {
+    private findByCodeInDateRange = async (req: Request, res: Response) => {
         const schema = {
             'code': {
                 notEmpty: true,
@@ -15,22 +15,22 @@ export class RelationshipTypeController {
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipTypeModel.findValidByCode(req.params.code))
+            .then((req:Request) => this.relationshipTypeModel.findByCodeInDateRange(req.params.code))
             .then(sendDocument(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
-    private listValid = async (req: Request, res: Response) => {
+    private listInDateRange = async (req: Request, res: Response) => {
         const schema = {};
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipTypeModel.listValid())
+            .then((req:Request) => this.relationshipTypeModel.listInDateRange())
             .then(sendDocument(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
     public assignRoutes = (router: Router) => {
-        router.get('/v1/relationshipType/:code', this.findValidByCode);
-        router.get('/v1/relationshipTypes', this.listValid);
+        router.get('/v1/relationshipType/:code', this.findByCodeInDateRange);
+        router.get('/v1/relationshipTypes', this.listInDateRange);
         return router;
     };
 
