@@ -1,5 +1,5 @@
 
-export default class InitializationSteps {
+export default class InitializationHelper {
 
     public loadData = () => {
         // TODO

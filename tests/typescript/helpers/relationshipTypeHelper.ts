@@ -8,7 +8,7 @@ const rest = new RestCalls(config.host, config.port);
  *
  * Use these steps for any tests that need to interact with the RelationshipType REST API.
  */
-export default class RelationshipTypeSteps {
+export default class RelationshipTypeHelper {
 
     public findByCode = (code:string) => {
         return rest.promisify(rest.get('/v1/relationshipType/' + code));
