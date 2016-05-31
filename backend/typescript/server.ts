@@ -15,8 +15,8 @@ import {RelationshipController} from './controllers/relationship.controller';
 import {RelationshipTypeController} from './controllers/relationshipType.controller';
 import {ResetController} from './controllers/reset.server.controller';
 
-import {PartyModel} from './models/party.model';
-import {RelationshipModel} from './models/relationship.model';
+import {PartyModel} from './models/party-old.model';
+import {RelationshipModel} from './models/relationship-old.model';
 import {RelationshipTypeModel} from './models/relationshipType.model';
 
 // connect to the database ............................................................................................

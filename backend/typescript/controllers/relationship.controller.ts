@@ -2,10 +2,10 @@ import {sendDocument, sendError, sendNotFoundError} from './helpers';
 import {Router, Request, Response} from 'express';
 import {
   IRelationship, statusOptions, accessLevels, IRelationshipModel
-} from '../models/relationship.model';
+} from '../models/relationship-old.model';
 import {
   IPartyModel
-} from '../models/party.model';
+} from '../models/party-old.model';
 import * as mongoose from 'mongoose';
 
 // Todo: DelegateOrSubject to become Enum so it is then type checked
