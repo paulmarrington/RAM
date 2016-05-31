@@ -8,9 +8,8 @@ describe('RelationshipType API', () => {
 
     beforeAll(async(done) => {
         try {
-            const x = await initializationSteps.loadData();
-        }
-        catch (e) {
+            await initializationSteps.loadData();
+        } catch (e) {
             fail(e);
         }
         done();
@@ -33,8 +32,7 @@ describe('RelationshipType API', () => {
 
             expect(relationshipType.code).toBe(code);
             expect(relationshipType.shortDecodeText).toBe('Business Representative');
-        }
-        catch (e) {
+        } catch (e) {
             fail(e);
         }
 
