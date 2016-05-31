@@ -32,6 +32,7 @@ class Seeder {
         mongoose.connection.close();
     }
 
+    /* tslint:disable:max-func-body-length */
     public static async createRelationshipAttributeNameModel(values:IRelationshipAttributeName) {
         const code = values.code;
         const existingModel = await RelationshipAttributeNameModel.findByCode(code);
@@ -45,6 +46,7 @@ class Seeder {
         }
     }
 
+    /* tslint:disable:max-func-body-length */
     public static async createRelationshipTypeModel(values:IRelationshipType,attributeNames:IRelationshipAttributeName[]) {
 
         const code = values.code;
