@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import {ICodeDecode, CodeDecodeSchema} from './base';
 
+// see https://github.com/atogov/RAM/wiki/Relationship-Attribute-Types
 export const RelationshipAttributeNameNullDomain = 'null';
 export const RelationshipAttributeNameBooleanDomain = 'boolean';
 export const RelationshipAttributeNameNumberDomain = 'number';
