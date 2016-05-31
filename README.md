@@ -140,6 +140,10 @@ Commands:
     merge:upstream <branch>                    Merges from upstream, <value> is branch name (eg develop)
 ```
 
+For the ```test```, you can limit the test by a pattern. For example:
+
+```./do test:backend --test relationshipType.model```
+
 ## Jasmine from the Client
 You may prefer to test your service from a browser. You can then select individual tests as needed. The browser will need to include
 
