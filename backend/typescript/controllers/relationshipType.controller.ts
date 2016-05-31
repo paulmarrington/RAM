@@ -26,6 +26,7 @@ export class RelationshipTypeController {
                     shortDecodeText: attributeNameUsage.attributeName.shortDecodeText,
                     longDecodeText: attributeNameUsage.attributeName.longDecodeText,
                     startDate: attributeNameUsage.attributeName.startDate,
+                    endDate: attributeNameUsage.attributeName.endDate,
                     name: attributeNameUsage.attributeName.shortDecodeText,
                     domain: attributeNameUsage.attributeName.domain,
                     mandatory: !attributeNameUsage.optionalInd,
