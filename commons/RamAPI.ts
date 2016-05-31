@@ -39,10 +39,10 @@ export interface IKeyValue<T> {
  ***************************************************/
 
 export interface ICodeDecode {
-    code?:            string;
-    shortDecodeText?: string;
-    longDecodeText?:  string;
-    startDate?:       Date;
+    code:             string;
+    shortDecodeText:  string;
+    longDecodeText:   string;
+    startDate:        Date;
     endDate?:         Date;
 }
 
@@ -86,16 +86,16 @@ export interface IRelationship {
 }
 
 export interface IRelationshipType extends ICodeDecode {
-    voluntaryInd?:    boolean;
-    attributeDefs?:   IRelationshipAttributeName[]
+    voluntaryInd:     boolean;
+    attributeDefs:    IRelationshipAttributeName[]
 }
 
 export interface IRelationshipAttributeName extends ICodeDecode {
-    name?:              string
-    domain?:            string
-    mandatory?:         boolean
-    defaultValue?:      string
-    permittedValues?:   string[]
+    name:              string
+    domain:            string
+    mandatory:         boolean
+    defaultValue?:     string
+    permittedValues:   string[]
 }
 
 /***************************************************
