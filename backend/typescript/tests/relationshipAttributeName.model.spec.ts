@@ -151,6 +151,7 @@ describe('RAM Relationship Attribute Name', () => {
             expect(instance).not.toBeNull();
             expect(instance.permittedValues).not.toBeNull();
             expect(instance.permittedValues.length).toBe(singleSelectRelationshipAttributeNameNoEndDate.permittedValues.length);
+            expect(instance.permittedValues[0]).toBe(singleSelectRelationshipAttributeNameNoEndDate.permittedValues[0]);
             done();
         } catch (e) {
             fail('Because ' + e);
