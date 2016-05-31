@@ -58,7 +58,6 @@ IdentitySchema.method('type', function () {
     return IdentityType.valueOf(this.typeName);
 });
 
-/* tslint:disable:no-empty-interfaces */
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findByIdValueAndType: (idValue:String, type:IdentityType) => mongoose.Promise<IIdentity>;
 }

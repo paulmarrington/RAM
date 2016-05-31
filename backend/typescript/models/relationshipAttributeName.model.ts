@@ -43,7 +43,6 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
     }]
 });
 
-/* tslint:disable:no-empty-interfaces */
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
     findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
     findByCodeInDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
