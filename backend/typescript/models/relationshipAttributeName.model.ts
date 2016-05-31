@@ -22,6 +22,7 @@ export const RelationshipAttributeNameDomains = [
 export interface IRelationshipAttributeName extends ICodeDecode {
     domain: string;
     purposeText: string;
+    permittedValues: string[];
 }
 
 const RelationshipAttributeNameSchema = CodeDecodeSchema({
@@ -35,7 +36,10 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
         type: String,
         required: [true, 'Purpose Text is required'],
         trim: true
-    }
+    },
+    permittedValues: [{
+        type: String
+    }]
 });
 
 /* tslint:disable:no-empty-interfaces */

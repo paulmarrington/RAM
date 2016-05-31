@@ -2,7 +2,8 @@ import {connectDisconnectMongo, dropMongo} from './helpers';
 import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
-    RelationshipAttributeNameStringDomain} from '../models/relationshipAttributeName.model';
+    RelationshipAttributeNameStringDomain,
+    RelationshipAttributeNameSingleSelectDomain} from '../models/relationshipAttributeName.model';
 import {RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
@@ -12,9 +13,10 @@ describe('RAM Relationship Attribute Name', () => {
     connectDisconnectMongo();
     dropMongo();
 
-    let relationshipAttributeNameNoEndDate: IRelationshipAttributeName;
-    let relationshipAttributeNameFutureEndDate: IRelationshipAttributeName;
-    let relationshipAttributeNameExpiredEndDate: IRelationshipAttributeName;
+    let stringRelationshipAttributeNameNoEndDate: IRelationshipAttributeName;
+    let stringRelationshipAttributeNameFutureEndDate: IRelationshipAttributeName;
+    let stringRelationshipAttributeNameExpiredEndDate: IRelationshipAttributeName;
+    let singleSelectRelationshipAttributeNameNoEndDate: IRelationshipAttributeName;
 
     let relationshipType1: IRelationshipType;
 
@@ -22,7 +24,7 @@ describe('RAM Relationship Attribute Name', () => {
 
         try {
 
-            relationshipAttributeNameNoEndDate = await RelationshipAttributeNameModel.create({
+            stringRelationshipAttributeNameNoEndDate = await RelationshipAttributeNameModel.create({
                 code: 'ATTRIBUTE_NAME_1',
                 shortDecodeText: 'Attribute Name',
                 longDecodeText: 'Attribute Name',
@@ -31,7 +33,7 @@ describe('RAM Relationship Attribute Name', () => {
                 purposeText: 'This attribute purpose text'
             });
 
-            relationshipAttributeNameFutureEndDate = await RelationshipAttributeNameModel.create({
+            stringRelationshipAttributeNameFutureEndDate = await RelationshipAttributeNameModel.create({
                 code: 'ATTRIBUTE_NAME_2',
                 shortDecodeText: 'Attribute Name',
                 longDecodeText: 'Attribute Name',
@@ -41,7 +43,7 @@ describe('RAM Relationship Attribute Name', () => {
                 purposeText: 'This attribute purpose text'
             });
 
-            relationshipAttributeNameExpiredEndDate = await RelationshipAttributeNameModel.create({
+            stringRelationshipAttributeNameExpiredEndDate = await RelationshipAttributeNameModel.create({
                 code: 'ATTRIBUTE_NAME_3',
                 shortDecodeText: 'Attribute Name',
                 longDecodeText: 'Attribute Name',
@@ -49,6 +51,16 @@ describe('RAM Relationship Attribute Name', () => {
                 endDate: new Date(2016, 1, 2),
                 domain: RelationshipAttributeNameStringDomain,
                 purposeText: 'This attribute purpose text'
+            });
+
+            singleSelectRelationshipAttributeNameNoEndDate = await RelationshipAttributeNameModel.create({
+                code: 'ATTRIBUTE_NAME_4',
+                shortDecodeText: 'Attribute Name',
+                longDecodeText: 'Attribute Name',
+                startDate: new Date(),
+                domain: RelationshipAttributeNameSingleSelectDomain,
+                purposeText: 'This attribute purpose text',
+                permittedValues: ['Choice 1', 'Choice 2', 'Choice 3']
             });
 
             relationshipType1 = await RelationshipTypeModel.create({
@@ -59,7 +71,7 @@ describe('RAM Relationship Attribute Name', () => {
                 attributeNameUsages: [
                     await RelationshipAttributeNameUsageModel.create({
                         optionalInd: true,
-                        attributeName: relationshipAttributeNameNoEndDate
+                        attributeName: stringRelationshipAttributeNameNoEndDate
                     })
                 ]
             });
@@ -79,8 +91,8 @@ describe('RAM Relationship Attribute Name', () => {
             expect(instance).not.toBeNull();
             expect(instance.attributeNameUsages.length).toBe(1);
             expect(instance.attributeNameUsages[0].optionalInd).toBe(true);
-            expect(instance.attributeNameUsages[0].attributeName.domain).toBe(relationshipAttributeNameNoEndDate.domain);
-            expect(instance.attributeNameUsages[0].attributeName.purposeText).toBe(relationshipAttributeNameNoEndDate.purposeText);
+            expect(instance.attributeNameUsages[0].attributeName.domain).toBe(stringRelationshipAttributeNameNoEndDate.domain);
+            expect(instance.attributeNameUsages[0].attributeName.purposeText).toBe(stringRelationshipAttributeNameNoEndDate.purposeText);
             done();
         } catch (e) {
             fail('Because ' + e);
@@ -90,7 +102,7 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('find valid with no end date by code', async (done) => {
         try {
-            const instance = await RelationshipAttributeNameModel.findValidByCode(relationshipAttributeNameNoEndDate.code);
+            const instance = await RelationshipAttributeNameModel.findValidByCode(stringRelationshipAttributeNameNoEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -101,7 +113,7 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('find valid or invalid by code', async (done) => {
         try {
-            const instance = await RelationshipAttributeNameModel.findByCode(relationshipAttributeNameNoEndDate.code);
+            const instance = await RelationshipAttributeNameModel.findByCode(stringRelationshipAttributeNameNoEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -124,8 +136,21 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('fails find invalid by code', async (done) => {
         try {
-            const instance = await RelationshipAttributeNameModel.findValidByCode(relationshipAttributeNameExpiredEndDate.code);
+            const instance = await RelationshipAttributeNameModel.findValidByCode(stringRelationshipAttributeNameExpiredEndDate.code);
             expect(instance).toBeNull();
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('find with permitted values by code', async (done) => {
+        try {
+            const instance = await RelationshipAttributeNameModel.findValidByCode(singleSelectRelationshipAttributeNameNoEndDate.code);
+            expect(instance).not.toBeNull();
+            expect(instance.permittedValues).not.toBeNull();
+            expect(instance.permittedValues.length).toBe(singleSelectRelationshipAttributeNameNoEndDate.permittedValues.length);
             done();
         } catch (e) {
             fail('Because ' + e);
