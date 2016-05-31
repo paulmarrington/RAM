@@ -18,7 +18,6 @@ export interface IRAMObject extends mongoose.Document {
   delete(): void;
 }
 
-/* tslint:disable:max-func-body-length */
 export const RAMSchema = (schema: Object) => {
 
   const result = new mongoose.Schema({
