@@ -1,9 +1,10 @@
-import RelationshipTypeSteps from './steps/relationshipTypes';
+import RelationshipTypeSteps from './steps/relationshipTypeSteps';
 import InitializationSteps from './steps/initialization';
 
 const relationshipTypeSteps = new RelationshipTypeSteps();
 const initializationSteps = new InitializationSteps();
 
+/* tslint:disable:max-func-body-length */
 describe('RelationshipType API', () => {
 
     beforeAll(async(done) => {
