@@ -25,7 +25,7 @@
             description: Information about the new relationship to be created
             required: true
             schema:
-              $ref: '#/definitions/RelationshipCreateRequest'
+              $ref: '#/definitions/RelationshipRequest'
         tags:
           - Relationship
           - Not Required
@@ -123,7 +123,7 @@
           200:
             description: A relationship document
             schema:
-                $ref: '#/definitions/RelationshipSingleResponse'
+                $ref: '#/definitions/RelationshipResourceReference'
           400: 
             $ref: '#/responses/400'
           500:
@@ -146,7 +146,7 @@
           200:
             description: A relationship document
             schema:
-                $ref: '#/definitions/RelationshipSingleResponse'
+                $ref: '#/definitions/RelationshipResourceReference'
           400: 
             $ref: '#/responses/400'
           500:
@@ -183,7 +183,7 @@
             description: Updated relationship attribute
             required: true
             schema:
-              $ref: '#/definitions/RelationshipUpdateRequest'
+              $ref: '#/definitions/RelationshipRequest'
         tags:
           - Relationship
         responses:
@@ -314,7 +314,7 @@
           200:   
             description: The newly created or updated relationship returned back
             schema:
-              $ref: "#/definitions/RelationshipTypeSingleResponse"
+              $ref: "#/definitions/RelationshipTypeResourceReference"
           400: 
             $ref: '#/responses/400'
           500:
@@ -357,7 +357,7 @@
      #      200:   
      #        description: The updated relationship type returned back
      #        schema:
-     #           $ref: "#/definitions/RelationshipTypeSingleResponse"
+     #           $ref: "#/definitions/RelationshipTypeResourceReference"
      #      400: 
      #        $ref: '#/responses/400'
      #      500:
@@ -377,7 +377,7 @@
           200:   
             description: Relationship types in RAM
             schema:
-              $ref: '#/definitions/RelationshipTypeSingleResponse'
+              $ref: '#/definitions/RelationshipTypeResourceReference'
           400: 
             $ref: '#/responses/400'
           500:
@@ -399,12 +399,12 @@
             in: body
             required: true
             schema:
-              $ref: "#/definitions/PartyCreateRequest" 
+              $ref: "#/definitions/PartyRequest" 
         responses:
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartySingleResponse"
+              $ref: "#/definitions/PartyResourceReference"
           400: 
             $ref: '#/responses/400'
           500:
@@ -434,7 +434,7 @@
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartySingleResponse"
+              $ref: "#/definitions/PartyResourceReference"
           400: 
             $ref: '#/responses/400'
           500:
@@ -452,14 +452,14 @@
             in: body
             required: true
             schema:
-              $ref: "#/definitions/IdentityUpdateRequest"
+              $ref: "#/definitions/IdentityRequest"
             description: |
               Required information to update a Party.
         responses:
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartySingleResponse"
+              $ref: "#/definitions/PartyResourceReference"
           400: 
             $ref: '#/responses/400'
           500:
@@ -495,7 +495,7 @@
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartySingleResponse"
+              $ref: "#/definitions/PartyResourceReference"
           400: 
             $ref: '#/responses/400'
           500:
@@ -525,7 +525,7 @@
           200:   
             description: The party returned
             schema:
-              $ref: "#/definitions/PartySingleResponse"
+              $ref: "#/definitions/PartyResourceReference"
           400: 
             $ref: '#/responses/400'
           500:
@@ -551,7 +551,7 @@
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartySingleResponse"
+              $ref: "#/definitions/PartyResourceReference"
           400: 
             $ref: '#/responses/400'
           500:
@@ -576,7 +576,7 @@
           200:   
             description: The updated party returned back
             schema:
-              $ref: "#/definitions/PartySingleResponse"
+              $ref: "#/definitions/PartyResourceReference"
           400: 
             $ref: '#/responses/400'
           500:
@@ -606,13 +606,30 @@
             $ref: '#/responses/500'
     
   definitions:
+    # the pattern is each logical entity will consist of:
+    # * an object by the same name as the <entity> which is composed of:
+    #   - IRAMObject or ICodeDecode
+    #   - <entity>BusinessIdentifier - this is the properties that make up the business id 
+    #   - <entity>Details - this is the properties that don't make up the business id
+    # * <entity>BusinessIdentifier>
+    # * <entity>Details
+    # * <entity>Request - the combination of <entity>BusinessIdentifier + <entity>Details
+    # * <entity>ResourceReference - which is composed of:
+    #   - an href to the resource
+    #   - a value property which may be null or contains the actual resource
+    # * <entity>ListResponse - which is composed of:
+    #   - IListResponse - total count + page size
+    #   - a collection of the <entity>ResourceReference    
+       
     Party:
       allOf:
       - $ref: '#/definitions/IRAMObject'
       - $ref: '#/definitions/PartyDetails'          
       description: A Party is the concept that participates in Relationships.
       type: object
-      required: ["uri","roles","identities"]
+      required: ["_self","roles","identities"]
+
+    # Parties don't have business identifiers!!
 
     PartyDetails:
       type: object
@@ -625,43 +642,48 @@
         identities:
           type: array
           items:
-            $ref: '#/definitions/Identity'
+            $ref: '#/definitions/IdentityResourceReference'
             
-    PartyCreateRequest:
+    PartyRequest:
       allOf:
-      - $ref: '#/definitions/PartyDetails' 
+      - $ref: '#/definitions/PartyDetails'
+      # there is no business identifier for a party, it is identified through an Identity  
       description: A Party description to be created.
       type: object
       required: ["roles","identities"]
-
+          
+    PartyResourceReference:
+      description: A reference to a Party 
+      type: object
+      required: ["href","value"]
+      properties:
+        href:
+          type: string
+          description: URI that uniquely identifying this Party  
+        value: 
+            $ref: '#/definitions/Party'  
+            
     PartiesListResponse:
       allOf:
       - $ref: '#/definitions/IListResponse'     
-      description: A collection of parties plus response object
+      description: A collection of references to parties
       type: object
       required: ["parties"]
       properties:
         parties:
           type: array
           items:
-            $ref: '#/definitions/Party'
-          minItems: 1
-          
-    PartySingleResponse:
-      allOf:
-      - $ref: '#/definitions/Party' 
-      description: A output party plus response object
-      type: object
-      required: ["roles","identities"]
+            $ref: '#/definitions/PartyResourceReference'
+          minItems: 1       
 
-    
+    #not yet standardised    
     ProfileProvider:
       description: |
         Profile Provider. TBD        
       type: object
-      required: ["uri","code","shortDecodeText","longDecodeText","startTimestamp"]
+      required: ["_self","code","shortDecodeText","longDecodeText","startTimestamp"]
       properties:
-        uri: 
+        _self: 
           type: string
           description: URI that uniquely identifying this resource.
         code: 
@@ -679,7 +701,8 @@
           type: string
           description: date in ISO format
           format: date
-          
+
+    #not yet standardised          
     Profile:
       description: |
         A profile is a collection of detail about the party
@@ -692,7 +715,8 @@
           $ref: '#/definitions/ProfileProvider'
         name:
           $ref: '#/definitions/Name'
-           
+
+    #not yet standardised           
     Name:
       type: object
       description: Name of a party. Either givenName and familyName are provider or unstructuredName is provided. 
@@ -710,20 +734,22 @@
     Identity:
       allOf:
       - $ref: '#/definitions/IdentityBusinessIdentifier'
+      - $ref: '#/definitions/IdentityDetails'      
       - $ref: '#/definitions/IRAMObject'    
       type: object
+      description: |
+        Parties have at least one, and possibly many identities.  There will be just one default identity.  
+        
+        Identities consist of a profile which conists of a Name & maybe recorded "shared secret".
+        
+        It is the name from the default identity that will be used when it is not possible  to use the 
+        authentication details to refer to a Party, e.g. when displaying a list of related parties.         
       required: ["idType","idValue","defaultIndictor", "profile"]
-      properties:
-        defaultIndictor:
-          type: boolean
-          description: This flag is used to identify which of the multiple possible identities a party has should be used as the default one to display on the UI      
-        profile:
-          $ref: '#/definitions/Profile'
-             
              
     IdentityBusinessIdentifier:  
       type: object
       discriminator: idType
+      required: ["idType","idValue"]
       properties:
         idType:
           type: string
@@ -731,45 +757,76 @@
              The discriminator property which indicates what kind if identifier this identity has
           enum: ['PublicIdentifer','authorisationCode','CSPlinkId','OpaqueAgencyToken']  
         idValue:
-          description: identity value that can be used by identity resolver.  It is the actual identifier value, i.e. the 11 digit ABN, or the meaningless big unique number given by myGov. 
+          description: identity value that can be used by identity resolver.  It is the actual identifier value, i.e. the 11 digit ABN, or the meaningless big unique number given by myGov.
+          # we need to have a conversation does the idValue contain the "scheme" as a prefix (if there is a scheme).         
           type: string  
+
+    IdentityDetails:
+      type: object
+      required: ["defaultIndictor", "profile"]
+      properties:
+        defaultIndictor:
+          type: boolean
+          description: This flag is used to identify which of the multiple possible identities a party has should be used as the default one to display on the UI      
+        profile:
+          $ref: '#/definitions/Profile'
+          
+    IdentityRequest:
+      allOf:
+      - $ref: '#/definitions/IdentityBusinessIdentifier'
+      - $ref: '#/definitions/IdentityDetails'     
+      type: object
+      required: ["defaultIndictor","profile"]
+
+    IdentityResourceReference:
+      type: object
+      description: A reference to a Resource      
+      required: ["href","value"]
+      properties:
+        href:
+          type: string
+          description: URI that uniquely identifying this Identity  
+        value:
+          $ref: '#/definitions/Identity'  
+                
+    IdentityListResponse:  
+      allOf:
+      - $ref: '#/definitions/IListResponse'    
+      type: object
+      required: ["parties","identitys"]
+      properties:
+        parties:
+          type: array
+          items:
+            $ref: '#/definitions/Party'
+        identitys:
+          type: array
+          items:
+            $ref: '#/definitions/IdentityResourceReference'   
       
     Relationship:
       allOf:
       - $ref: '#/definitions/IRAMObject'    
       - $ref: '#/definitions/RelationshipBusinessIdentifier'
       - $ref: '#/definitions/RelationshipDetails'
-
       type: object
-      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","startTimestamp","status"]
-
-    RelationshipCreateRequest:
-      allOf:
-      - $ref: '#/definitions/RelationshipBusinessIdentifier'  
-      - $ref: '#/definitions/RelationshipDetails'    
-      type: object
-      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","startTimestamp","attributes"]
-
-    RelationshipUpdateRequest:
-      allOf:
-      - $ref: '#/definitions/RelationshipBusinessIdentifier'  
-      - $ref: '#/definitions/RelationshipDetails'    
-      type: object
-      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","startTimestamp","attributes"]
+      description: |
+        A Relationship is a connection between two parties.
+        RAM will only record relationships if it is useful (in some way) to agencies for deciding if one party to 
+        confer authoriatation to another party        
+      required: ["relationshipTypeURI","subjectPartyRef","delegatePartyRef","startTimestamp","status"]
 
     RelationshipBusinessIdentifier:
       type: object
-      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","startTimestamp"]
+      required: ["relationshipTypeURI","subjectPartyRef","delegatePartyRef","startTimestamp"]
       properties:
         relationshipTypeURI:
           type: string
           description: URI that uniquely identifying the reference data type that gives semantic meaning to  this relationship
-        subjectPartyURI:
-          type: string
-          description: URI that uniquely identifying the subject party of this relationship
-        delegatePartyURI:
-          type: string
-          description: URI that uniquely identifying the delegate party of this relationship
+        subjectPartyRef:
+          $ref: '#/definitions/PartyResourceReference'
+        delegatePartyRef:
+          $ref: '#/definitions/PartyResourceReference'
         startTimestamp:
           type: string
           description: Defines when this relationship comes into effect.  Date in ISO format.  
@@ -779,10 +836,12 @@
       type: object
       required: ["status"]
       properties:
+        # this has not yet been standardised to a role reference
         subjectPartyRoleURI:
           type: string
           description: URI that uniquely identifying the subject's role in this relationship
         delegatePartyRoleURI:
+        # this has not yet been standardised to a role reference
           type: string
           description: URI that uniquely identifying the delegate's role in this relationship
         subjectsNickname:
@@ -797,12 +856,30 @@
           type: array
           description: Attributes attached to this relationship based on role type
           items:
-            $ref: '#/definitions/RelationshipAttributeValue'
+            $ref: '#/definitions/RelationshipAttribute'
         status:
           type: string
           description: Indicates where in the lifecycle of relationships; this one is up to.
           enum: ['invalid','pending','active','deleted','cancelled']
 
+    RelationshipRequest:
+      allOf:
+      - $ref: '#/definitions/RelationshipBusinessIdentifier'  
+      - $ref: '#/definitions/RelationshipDetails'    
+      type: object
+      required: ["relationshipTypeURI","subjectPartyRef","delegatePartyRef","startTimestamp","attributes"]
+
+    RelationshipResourceReference:
+      type: object
+      description: A reference to a Resource      
+      required: ["href","value"]
+      properties:
+        href:
+          type: string
+          description: URI that uniquely identifying this Relationship  
+        value:
+          $ref: '#/definitions/Relationship'
+          
     RelationshipListResponse:  
       allOf:
       - $ref: '#/definitions/IListResponse'    
@@ -816,35 +893,31 @@
         relationships:
           type: array
           items:
-            $ref: '#/definitions/Relationship'
+            $ref: '#/definitions/RelationshipResourceReference'
+    
+    # not standardised      
+    RoleAttribute:
+      allOf:
+      - $ref: '#/definitions/IRAMObject'    
+      type: object
+      description: |
+        A Role Attribute is a way of recording some "facts" about a Role      
+      required: ["name","value"]
+      properties:
+        name: 
+          type: string
+          description: Name of an attribute definition
+        value:
+          type: string
+          description: Value assigned to this attribute
 
-    RelationshipSingleResponse:
-      type: object
-      required: ["subjectParty","delegateParty","relationship"]
-      properties:
-        relationship:
-          $ref: '#/definitions/Relationship'
-        subjectParty:
-          $ref: '#/definitions/Party'
-        delegateParty:
-          $ref: '#/definitions/Party'
-                    
-    IdentityUpdateRequest:
-      type: object
-      required: ["default","subjectsNickname","delegatesNickname"]
-      properties:
-        subjectsNickname:
-            $ref: '#/definitions/Name'
-        delegatesNickname:
-            $ref: '#/definitions/Name'
-        default:
-          type: boolean
-          description: Set this to be the default identity of this party
-                    
-    RoleAttributeValue:
+    # not standardised                  
+    RelationshipAttribute:
       allOf:
       - $ref: '#/definitions/IRAMObject'    
       type: object
+      description: |
+        A Relationship Attribute is a way of recording some "facts" about a Role      
       required: ["name","value"]
       properties:
         name: 
@@ -853,23 +926,13 @@
         value:
           type: string
           description: Value assigned to this attribute
-            
-    RelationshipAttributeValue:
-      allOf:
-      - $ref: '#/definitions/IRAMObject'    
-      type: object
-      required: ["name","value"]
-      properties:
-        name: 
-          type: string
-          description: Name of an attribute definition
-        value:
-          type: string
-          description: Value assigned to this attribute
-            
+    
+    # not standardised                  
     RoleAttributeName:
       allOf:
       - $ref: '#/definitions/ICodeDecode'
+      description: |
+        A Role Attribute Name defines: what are the permitted set of Role Attribute and meta-data about those attributes.      
       type: object
       required: ["name","mandatory","defaultValue","acceptedValues"]
       properties:
@@ -887,27 +950,75 @@
           type: array
           items:
             type: string     
-
+                
     RelationshipAttributeName:
-        allOf:
+      allOf:
         - $ref: '#/definitions/ICodeDecode'
+        - $ref: '#/definitions/RelationshipAttributeNameBusinessIdentifier'
+        - $ref: '#/definitions/RelationshipAttributeNameDetails'         
         - type: object
-          required: ["name","mandatory","defaultValue","acceptedValues"]
-          properties:
-            name: 
-              type: string
-              description: Relationship attribute name. The rest to TBD.
-            mandatory:
-              type: boolean
-              description: should a value to be provided for this attribute
-            defaultValue:
-              type: string
-              description: The default value for this attribute
-            acceptedValues:
-              description: what are the accepted value types
-              type: array
-              items:
-                type: string    
+          description: |
+              A Role Attribute Name defines: what are the permitted set of Role Attribute and meta-data about those attributes.    
+    
+    RelationshipAttributeNameBusinessIdentifier:
+      type: object
+      required: ["name"]          
+      properties:       
+        name:
+          type: string
+          description: This is the short code value by which Relationship Types may be known    
+
+    RelationshipAttributeNameDetails:
+      type: object
+      required: ["mandatory"]    
+      properties:       
+        mandatory:
+          type: boolean
+          description: should a value to be provided for this attribute
+        defaultValue:
+          type: string
+          description: The default value for this attribute
+        acceptedValues:
+          description: what are the accepted value types
+          type: array
+          items:
+            type: string   
+        RelationshipAttributeNames:
+          type: array
+          description: Relationship attributes that may be used with this resource 
+          items: 
+            $ref: '#/definitions/RelationshipAttributeNameResourceReference'               
+
+    RelationshipAttributeNameRequest:
+      allOf:
+      - $ref: '#/definitions/RelationshipAttributeNameBusinessIdentifier'
+      - $ref: '#/definitions/RelationshipAttributeNameDetails'     
+      type: object
+      required: ["name"]
+
+    RelationshipAttributeNameResourceReference:
+      type: object
+      description: A reference to a Resource      
+      required: ["href","value"]
+      properties:
+        href:
+          type: string
+          description: URI that uniquely identifying this RelationshipAttributeName  
+        value:
+          $ref: '#/definitions/RelationshipAttributeName'              
+    
+    RelationshipAttributeNameListResponse:
+      allOf:
+      - $ref: '#/definitions/IListResponse'  
+      type: object
+      required: ['totalRecordsMatched','RelationshipAttributeNames']
+      properties:
+        RelationshipAttributeNames:
+          type: array
+          items:
+            $ref: '#/definitions/RelationshipAttributeNameResourceReference'
+    
+                
     Error:
       type: object
       required: ["status","alert"]
@@ -933,17 +1044,26 @@
     
     IListResponse:  
       type: object
-      required: [totalRecordsMatched]
+      description: |
+        This abstract object just adds common properties to a <entity>ListResponse object      
+      required: [totalRecordsMatched, pageSize]
       properties:
         totalRecordsMatched:
           description: Total number of records matched for this query.
           type: integer
-          format: int32                                   
-                      
+          format: int32   
+        pageSize:
+          description: The pageSize of the used by the server when populating the list.  The server may choose a different pageSize to the one requested by the consumer.
+          type: integer
+          format: int32   
+                                          
+    # not standardised                           
     RoleType:
       allOf:
         - $ref: '#/definitions/ICodeDecode'
         - type: object
+          description: |
+              Role Types are the list of possbile roles that can be recorded about a party        
           required: ["RoleAttributeNames"]
           properties:
             RoleAttributeNames:
@@ -973,19 +1093,51 @@
     RelationshipType:
       allOf:
         - $ref: '#/definitions/ICodeDecode'
+        - $ref: '#/definitions/RelationshipTypeBusinessIdentifier'
+        - $ref: '#/definitions/RelationshipTypeDetails'         
         - type: object
-          required: ["RelationshipAttributeNames","voluntaryInd"]
-          properties:       
-            voluntaryInd:
-              type: boolean
-              description: Whether this field is voluntary
-            RelationshipAttributeNames:
-              type: array
-              description: Relationship attributes
-              minItems: 1
-              items: 
-                $ref: '#/definitions/RelationshipAttributeName'
+          description: |
+              Relationship Types are the list of possbile Relationships that parties can have                
+    
+    RelationshipTypeBusinessIdentifier:
+      type: object
+      required: ["code"]    
+      properties:       
+        code:
+          type: string
+          description: This is the short code value by which Relationship Types may be known    
 
+    RelationshipTypeDetails:
+      type: object
+      required: ["RelationshipAttributeNames","voluntaryInd"]
+      properties:       
+        voluntaryInd:
+          type: boolean
+          description: Does the Subject Party get a say whether the delegate may have this relationship?
+        RelationshipAttributeNames:
+          type: array
+          description: Relationship attributes that may be used with this resource 
+          items: 
+            $ref: '#/definitions/RelationshipAttributeNameResourceReference'               
+
+    RelationshipTypeRequest:
+      allOf:
+      - $ref: '#/definitions/RelationshipTypeBusinessIdentifier'
+      - $ref: '#/definitions/RelationshipTypeDetails'     
+      type: object
+      required: ["code","voluntaryInd"]
+
+    RelationshipTypeResourceReference:
+      type: object
+      description: A reference to a Resource      
+      required: ["href","value"]
+      properties:
+        href:
+          type: string
+          description: URI that uniquely identifying this RelationshipType  
+        value:
+          $ref: '#/definitions/RelationshipType'              
+    
     RelationshipTypeListResponse:
       allOf:
       - $ref: '#/definitions/IListResponse'  
@@ -995,13 +1147,9 @@
         relationshipTypes:
           type: array
           items:
-            $ref: '#/definitions/RelationshipType'
-
-    RelationshipTypeSingleResponse:
-      allOf: 
-        - $ref: '#/definitions/RelationshipType'
-        
-
+            $ref: '#/definitions/RelationshipTypeResourceReference'
+       
+    # not standardised      
     Role:
       type: object
       required: ["roleTypeURI","attributeValues","sharing"]
@@ -1012,7 +1160,7 @@
         attributeValues:
           type: array
           items: 
-            $ref: '#/definitions/RoleAttributeValue'
+            $ref: '#/definitions/RoleAttribute'
           description: Role attributes
           minItems: 1
         sharing:
@@ -1020,7 +1168,8 @@
           description: Agencies which can see existance of this role.
           items:
             $ref: '#/definitions/LegislativeProgram'    
-            
+
+    # not standardised                  
     LegislativeProgram:
       allOf: 
         - $ref: '#/definitions/ICodeDecode'      
@@ -1031,9 +1180,9 @@
 
     IRAMObject:
       type: object
-      required: ['uri','lastUpdatedTimestamp','lastUpdatedBy','deletedIndicator','resourceVersionNumber']
+      required: ['_self','lastUpdatedTimestamp','lastUpdatedBy','deletedIndicator','resourceVersionNumber']
       properties:
-        uri:
+        _self:
           description: This is the hypermedia reference to each resource.
           type: string
         lastUpdatedTimestamp:
@@ -1049,13 +1198,15 @@
         resourceVersionNumber:
           type: number
           description: The definition of resources may change over time. Business rules may be linked to these version. This is to keep track of that info.
+          
     ICodeDecode:
       type: object
-      required: ['uri','code','shortDecodeText','longDecodeText','startTimestamp']
+      required: ['_self','code','shortDecodeText','longDecodeText','startTimestamp']
       properties:
-        uri:
+        _self:
           description: This is the hypermedia reference to this piece of reference data.
           type: string
+        #I want to remove this as sometimes I want to call it: Name, Type or Code.
         code:
           description: A human friendly mneumonic for this reference data concept.
           type: string
