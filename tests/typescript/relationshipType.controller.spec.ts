@@ -1,15 +1,15 @@
-import RelationshipTypeSteps from './steps/relationshipTypeSteps';
-import InitializationSteps from './steps/initialization';
+import RelationshipTypeHelper from './helpers/relationshipTypeHelper';
+import InitializationHelper from './helpers/initializationHelper';
 
-const relationshipTypeSteps = new RelationshipTypeSteps();
-const initializationSteps = new InitializationSteps();
+const relationshipTypeHelper = new RelationshipTypeHelper();
+const initializationHelper = new InitializationHelper();
 
 /* tslint:disable:max-func-body-length */
 describe('RelationshipType API', () => {
 
     beforeAll(async(done) => {
         try {
-            await initializationSteps.loadData();
+            await initializationHelper.loadData();
         } catch (e) {
             fail(e);
         }
@@ -26,10 +26,10 @@ describe('RelationshipType API', () => {
 
         try {
 
-            const response = await relationshipTypeSteps.findByCode(code);
+            const response = await relationshipTypeHelper.findByCode(code);
             const relationshipType = response.body.data;
 
-            relationshipTypeSteps.validateRelationshipType(relationshipType);
+            relationshipTypeHelper.validateRelationshipType(relationshipType);
 
             expect(relationshipType.code).toBe(code);
             expect(relationshipType.shortDecodeText).toBe('Business Representative');
@@ -44,7 +44,7 @@ describe('RelationshipType API', () => {
 
         const code = 'NOT_FOUND';
 
-        relationshipTypeSteps.findByCode(code)
+        relationshipTypeHelper.findByCode(code)
             .then((response) => {
                 fail('Expected 404');
                 done();
@@ -58,14 +58,14 @@ describe('RelationshipType API', () => {
 
     it('can list current', async(done) => {
 
-        relationshipTypeSteps.listAllCurrent()
+        relationshipTypeHelper.listAllCurrent()
             .then((response) => {
 
                 const relationshipTypes = response.body.data;
 
                 expect(relationshipTypes.length > 0).toBeTruthy();
                 for (let item of relationshipTypes) {
-                    relationshipTypeSteps.validateRelationshipType(item);
+                    relationshipTypeHelper.validateRelationshipType(item);
                 }
                 done();
             })
