@@ -14,11 +14,12 @@ export interface IRelationshipAttributeNameUsage extends mongoose.Document {
 const RelationshipAttributeNameUsageSchema = new mongoose.Schema({
     optionalInd: {
         type: Boolean,
-        default: false
+        default: false,
+        required: [true, 'Optional Indicator is required']
     },
     defaultValue: {
       type: String,
-      required: [false, 'Default Value'],
+      required: false,
       trim: true
     },
     attributeName: {
