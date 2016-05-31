@@ -58,6 +58,9 @@ RelationshipTypeSchema.static('listValid', () => {
             startDate: {$lte: new Date()},
             $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
         })
+        .deepPopulate([
+            'attributeNameUsages.attributeName'
+        ])
         .sort({name: 1})
         .exec();
 });

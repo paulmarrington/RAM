@@ -1,13 +1,13 @@
 import * as mongoose from 'mongoose';
 import {ICodeDecode, CodeDecodeSchema} from './base';
 
-export const RelationshipAttributeNameNullDomain = 'NULL';
-export const RelationshipAttributeNameBooleanDomain = 'BOOLEAN';
-export const RelationshipAttributeNameNumberDomain = 'NUMBER';
-export const RelationshipAttributeNameStringDomain = 'STRING';
-export const RelationshipAttributeNameDateDomain = 'DATE';
-export const RelationshipAttributeNameSingleSelectDomain = 'SINGLE_SELECT';
-export const RelationshipAttributeNameMultiSelectDomain = 'MULTI_SELECT';
+export const RelationshipAttributeNameNullDomain = 'null';
+export const RelationshipAttributeNameBooleanDomain = 'boolean';
+export const RelationshipAttributeNameNumberDomain = 'number';
+export const RelationshipAttributeNameStringDomain = 'string';
+export const RelationshipAttributeNameDateDomain = 'date';
+export const RelationshipAttributeNameSingleSelectDomain = 'select_single';
+export const RelationshipAttributeNameMultiSelectDomain = 'select_multi';
 
 export const RelationshipAttributeNameDomains = [
     RelationshipAttributeNameNullDomain,
