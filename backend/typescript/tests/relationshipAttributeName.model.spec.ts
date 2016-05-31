@@ -133,7 +133,41 @@ describe('RAM Relationship Attribute Name', () => {
         }
     });
 
-    it('fails insert with empty domain', async (done) => {
+    it('fails insert with null code', async (done) => {
+        try {
+            await RelationshipAttributeNameModel.create({
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                domain: RelationshipAttributeNameStringDomain,
+                purposeText: 'This attribute purpose text',
+                startDate: new Date()
+            });
+            fail('should not have inserted with null code');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
+    it('fails insert with empty code', async (done) => {
+        try {
+            await RelationshipAttributeNameModel.create({
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                domain: RelationshipAttributeNameStringDomain,
+                purposeText: 'This attribute purpose text',
+                startDate: new Date()
+            });
+            fail('should not have inserted with empty code');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
+    it('fails insert with null domain', async (done) => {
         try {
             await RelationshipAttributeNameModel.create({
                 code: 'ATTRIBUTE_NAME_X',
@@ -141,7 +175,7 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date()
             });
-            fail('should not have inserted with empty domain');
+            fail('should not have inserted with null domain');
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
@@ -157,7 +191,7 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
                 domain: '__BOGUS__',
-                purposeText: 'This attribute is for name 1'
+                purposeText: 'This attribute purpose text'
             });
             fail('should not have inserted with invalid domain');
             done();
@@ -175,6 +209,24 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
                 domain: RelationshipAttributeNameStringDomain
+            });
+            fail('should not have inserted with null purpose text');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
+    it('fails insert with empty purpose text', async (done) => {
+        try {
+            await RelationshipAttributeNameModel.create({
+                code: 'ATTRIBUTE_NAME_X',
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date(),
+                domain: RelationshipAttributeNameStringDomain,
+                purposeText: ''
             });
             fail('should not have inserted with empty purpose text');
             done();
@@ -195,7 +247,7 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
                 domain: RelationshipAttributeNameStringDomain,
-                purposeText: 'This attribute is for name 1'
+                purposeText: 'This attribute purpose text'
             });
 
             await RelationshipAttributeNameModel.create({
@@ -204,7 +256,7 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
                 domain: RelationshipAttributeNameStringDomain,
-                purposeText: 'This attribute is for name 1'
+                purposeText: 'This attribute purpose text'
             });
 
             fail('should not have inserted with duplicate code');
