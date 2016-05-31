@@ -35,7 +35,7 @@ class Seeder {
     /* tslint:disable:max-func-body-length */
     public static async createRelationshipAttributeNameModel(values:IRelationshipAttributeName) {
         const code = values.code;
-        const existingModel = await RelationshipAttributeNameModel.findByCode(code);
+        const existingModel = await RelationshipAttributeNameModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
             console.log('-', code);
             const model = await RelationshipAttributeNameModel.create(values);
@@ -50,7 +50,7 @@ class Seeder {
     public static async createRelationshipTypeModel(values:IRelationshipType,attributeNames:IRelationshipAttributeName[]) {
 
         const code = values.code;
-        const existingModel = await RelationshipTypeModel.findByCode(code);
+        const existingModel = await RelationshipTypeModel.findByCodeIgnoringDateRange(code);
 
         if (existingModel === null) {
 

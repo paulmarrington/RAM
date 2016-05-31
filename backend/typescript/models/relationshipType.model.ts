@@ -23,12 +23,12 @@ const RelationshipTypeSchema = CodeDecodeSchema({
 });
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
-    findByCode: (id:String) => mongoose.Promise<IRelationshipType>;
-    findValidByCode: (id:String) => mongoose.Promise<IRelationshipType>;
-    listValid: () => mongoose.Promise<IRelationshipType[]>;
+    findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipType>;
+    findByCodeInDateRange: (id:String) => mongoose.Promise<IRelationshipType>;
+    listInDateRange: () => mongoose.Promise<IRelationshipType[]>;
 }
 
-RelationshipTypeSchema.static('findByCode', (code:String) => {
+RelationshipTypeSchema.static('findByCodeIgnoringDateRange', (code:String) => {
     return this.RelationshipTypeModel
         .findOne({
             code: code
@@ -39,7 +39,7 @@ RelationshipTypeSchema.static('findByCode', (code:String) => {
         .exec();
 });
 
-RelationshipTypeSchema.static('findValidByCode', (code:String) => {
+RelationshipTypeSchema.static('findByCodeInDateRange', (code:String) => {
     return this.RelationshipTypeModel
         .findOne({
             code: code,
@@ -52,7 +52,7 @@ RelationshipTypeSchema.static('findValidByCode', (code:String) => {
         .exec();
 });
 
-RelationshipTypeSchema.static('listValid', () => {
+RelationshipTypeSchema.static('listInDateRange', () => {
     return this.RelationshipTypeModel
         .find({
             startDate: {$lte: new Date()},

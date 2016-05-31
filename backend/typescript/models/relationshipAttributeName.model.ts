@@ -44,11 +44,11 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
 
 /* tslint:disable:no-empty-interfaces */
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
-    findByCode: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
-    findValidByCode: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
+    findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
+    findByCodeInDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
 }
 
-RelationshipAttributeNameSchema.static('findByCode', (code:String) => {
+RelationshipAttributeNameSchema.static('findByCodeIgnoringDateRange', (code:String) => {
     return this.RelationshipAttributeNameModel
         .findOne({
             code: code
@@ -56,7 +56,7 @@ RelationshipAttributeNameSchema.static('findByCode', (code:String) => {
         .exec();
 });
 
-RelationshipAttributeNameSchema.static('findValidByCode', (code:String) => {
+RelationshipAttributeNameSchema.static('findByCodeInDateRange', (code:String) => {
     return this.RelationshipAttributeNameModel
         .findOne({
             code: code,

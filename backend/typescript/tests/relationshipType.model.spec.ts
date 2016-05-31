@@ -48,9 +48,9 @@ describe('RAM Relationship Type', () => {
 
     });
 
-    it('find valid with no end date by code', async (done) => {
+    it('find in date range with no end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(relationshipTypeNoEndDate.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeNoEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -59,9 +59,9 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('find valid with future end date by code', async (done) => {
+    it('find in date range with future end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(relationshipTypeFutureEndDate.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeFutureEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -70,9 +70,9 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('find valid or invalid by code', async (done) => {
+    it('find in date range or invalid by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCode(relationshipTypeExpiredEndDate.code);
+            const instance = await RelationshipTypeModel.findByCodeIgnoringDateRange(relationshipTypeExpiredEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -81,10 +81,10 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('fails find valid by non-existent code', async (done) => {
+    it('fails find in date range by non-existent code', async (done) => {
         try {
             const code = '__BOGUS__';
-            const instance = await RelationshipTypeModel.findValidByCode(code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(code);
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -93,9 +93,9 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('fails find invalid by code', async (done) => {
+    it('fails find not in date range by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(relationshipTypeExpiredEndDate.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeExpiredEndDate.code);
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -104,9 +104,9 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('list valid', async (done) => {
+    it('list in date range', async (done) => {
         try {
-            const instances = await RelationshipTypeModel.listValid();
+            const instances = await RelationshipTypeModel.listInDateRange();
             expect(instances).not.toBeNull();
             expect(instances.length).toBeGreaterThan(0);
             instances.forEach((instance) => {
@@ -136,7 +136,7 @@ describe('RAM Relationship Type', () => {
             expect(instance.id).not.toBeNull();
             expect(instance.code).not.toBeNull();
 
-            const retrievedInstance = await RelationshipTypeModel.findValidByCode(instance.code);
+            const retrievedInstance = await RelationshipTypeModel.findByCodeInDateRange(instance.code);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
 
