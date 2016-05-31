@@ -195,6 +195,49 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'             
+    /relationshipAttributeNames:
+      get:
+        tags:
+          - RelationshipAttributeName
+        description: Presents a list of relationship attribute resources
+        responses:
+          200:
+            schema:
+              type: array
+              items: 
+                $ref: '#/definitions/RelationshipAttributeNameResourceReference'
+        
+    /relationshipAttributeName/{code}:
+      get:
+        tags:
+          - RelationshipAttributeName
+        description: Returns relationship attribute resource
+        parameters:
+          - $ref: '#/parameters/code'
+        responses:
+          200:
+            schema:
+              $ref: '#/definitions/RelationshipAttributeName'
+      put:
+        tags:
+          - RelationshipAttributeName
+        description: Create or update a relationship attribute name resource.
+         
+        parameters:
+          - $ref: '#/parameters/code'
+          - name: RelationshipAttributeName
+            in: body
+            description: |
+              Information about the new relationship to be created. The code in path must be identical to the code in the request body.
+              If the code doesn't exist in the backend, a new resource will be created otherwise an existing resource with the same code gets updated.
+            required: true
+            schema:
+              $ref: '#/definitions/RelationshipAttributeName'
+        responses:
+          200:
+            schema:
+              $ref: '#/definitions/RelationshipAttributeName'
+
     /roleTypes:
       # post:
       #   summary: Create role type
@@ -970,11 +1013,14 @@
 
     RelationshipAttributeNameDetails:
       type: object
-      required: ["mandatory"]    
+      required: ["mandatory","fieldType"]    
       properties:       
         mandatory:
           type: boolean
           description: should a value to be provided for this attribute
+        fieldType:
+          type: string
+          enum: ['null','boolean','number','string','date','singleSelect','multiSelect']
         defaultValue:
           type: string
           description: The default value for this attribute
@@ -983,11 +1029,6 @@
           type: array
           items:
             type: string   
-        RelationshipAttributeNames:
-          type: array
-          description: Relationship attributes that may be used with this resource 
-          items: 
-            $ref: '#/definitions/RelationshipAttributeNameResourceReference'               
 
     RelationshipAttributeNameRequest:
       allOf:
@@ -999,13 +1040,15 @@
     RelationshipAttributeNameResourceReference:
       type: object
       description: A reference to a Resource      
-      required: ["href","value"]
+      required: ["href"]
       properties:
         href:
           type: string
-          description: URI that uniquely identifying this RelationshipAttributeName  
+          description: URL that uniquely identifying this RelationshipAttributeName  
         value:
-          $ref: '#/definitions/RelationshipAttributeName'              
+          description: The content of this field is optional, it is the same content for a get request on the href             
+          schema:
+            $ref: '#/definitions/RelationshipAttributeName'              
     
     RelationshipAttributeNameListResponse:
       allOf:
@@ -1265,6 +1308,12 @@
       name: idValue
       in: path
       description: identity value that can be used by identity resolver 
+      required: true
+      type: string        
+    code:
+      name: code
+      in: path
+      description: The code that identifies a resource 
       required: true
       type: string        
     delegateIdValue:
