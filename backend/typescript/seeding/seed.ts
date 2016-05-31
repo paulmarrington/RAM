@@ -104,23 +104,6 @@ const load = async () => {
 
     console.log('\nInserting Relationship Types:');
 
-    //'Business Representative',
-    //'Online Service Provider',
-    //'Insolvency practitioner',
-    //'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
-    //'Intermediary – Real Estate Agent, Immigration Agent',
-    //'Importer Export Agent',
-    //'Doctor Patient',
-    //'Nominated Entity',
-    //'Power of Attorney (Voluntary)',
-    //'Power of Attorney (Involuntary)',
-    //'Executor of deceased estate',
-    //'Pharmaceutical',
-    //'Institution to student – relationship',
-    //'Training organisations (RTO)',
-    //'Parent - Child',
-    //'Employment Agents – employment'
-
     await Seeder.createRelationshipTypeModel({
         code: 'BUSINESS_REPRESENTATIVE',
         shortDecodeText: 'Business Representative',
@@ -132,6 +115,104 @@ const load = async () => {
         code: 'ONLINE_SERVICE_PROVIDER',
         shortDecodeText: 'Online Service Provider',
         longDecodeText: 'Online Service Provider',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'INSOLVENCY_PRACTITIONER',
+        shortDecodeText: 'Insolvency Practitioner',
+        longDecodeText: 'Insolvency Practitioner',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'TRUSTED_INTERMEDIARY',
+        shortDecodeText: 'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
+        longDecodeText: 'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'INTERMEDIARY',
+        shortDecodeText: 'Intermediary – Real Estate Agent, Immigration Agent',
+        longDecodeText: 'Intermediary – Real Estate Agent, Immigration Agent',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'IMPORTER_EXPORT_AGENT',
+        shortDecodeText: 'Importer Export Agent',
+        longDecodeText: 'Importer Export Agent',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'DOCTOR_PATIENT',
+        shortDecodeText: 'Doctor Patient',
+        longDecodeText: 'Doctor Patient',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'NOMINATED_ENTITY',
+        shortDecodeText: 'Nominated Entity',
+        longDecodeText: 'Nominated Entity',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'POWER_OF_ATTORNEY_VOLUNTARY',
+        shortDecodeText: 'Power of Attorney (Voluntary)',
+        longDecodeText: 'Power of Attorney (Voluntary)',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'POWER_OF_ATTORNEY_INVOLUNTARY',
+        shortDecodeText: 'Power of Attorney (Involuntary)',
+        longDecodeText: 'Power of Attorney (Involuntary)',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'EXECUTOR_OF_DECEASED_ESTATE',
+        shortDecodeText: 'Executor of Deceased Estate',
+        longDecodeText: 'Executor of Deceased Estate',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'PHARMACEUTICAL',
+        shortDecodeText: 'Pharmaceutical',
+        longDecodeText: 'Pharmaceutical',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'INSTITUTION_TO_STUDENT',
+        shortDecodeText: 'Institution to student – relationship',
+        longDecodeText: 'Institution to student – relationship',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'RTO',
+        shortDecodeText: 'Training organisations (RTO)',
+        longDecodeText: 'Training organisations (RTO)',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'PARENT_CHILD',
+        shortDecodeText: 'Parent - Child',
+        longDecodeText: 'Parent - Child',
+        startDate: now
+    } as IRelationshipType, null);
+
+    await Seeder.createRelationshipTypeModel({
+        code: 'EMPLOYMENT_AGENT_EMPLOYMENT',
+        shortDecodeText: 'Employment Agents – employment',
+        longDecodeText: 'Employment Agents – employment',
         startDate: now
     } as IRelationshipType, null);
 
