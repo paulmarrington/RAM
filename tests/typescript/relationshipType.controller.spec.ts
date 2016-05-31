@@ -1,28 +1,21 @@
 import RelationshipTypeSteps from './steps/relationshipTypes';
+import InitializationSteps from './steps/initialization';
 
 const relationshipTypeSteps = new RelationshipTypeSteps();
+const initializationSteps = new InitializationSteps();
 
 describe('RelationshipType API', () => {
 
-    it('spike', async(done) => {
-
-        const code = 'BUSINESS_REPRESENTATIVE';
-
+    beforeAll(async(done) => {
         try {
-
-            const response = await relationshipTypeSteps.findByCode(code);
-
-            const relationshipType = response.body.data;
-
-            relationshipTypeSteps.validateRelationshipType(relationshipType);
-
-            expect(relationshipType.code).toBe(code);
-            expect(relationshipType.shortDecodeText).toBe('Business Representative');
-
+            await initializationSteps.loadData();
         } catch (e) {
-            fail('failed me');
+            fail(e);
         }
+        done();
+    });
 
+    afterAll((done) => {
         done();
     });
 
@@ -30,22 +23,20 @@ describe('RelationshipType API', () => {
 
         const code = 'BUSINESS_REPRESENTATIVE';
 
-        relationshipTypeSteps.findByCode(code)
-            .then((response) => {
+        try {
 
-                const relationshipType = response.body.data;
+            const response = await relationshipTypeSteps.findByCode(code);
+            const relationshipType = response.body.data;
 
-                relationshipTypeSteps.validateRelationshipType(relationshipType);
+            relationshipTypeSteps.validateRelationshipType(relationshipType);
 
-                expect(relationshipType.code).toBe(code);
-                expect(relationshipType.shortDecodeText).toBe('Business Representative');
+            expect(relationshipType.code).toBe(code);
+            expect(relationshipType.shortDecodeText).toBe('Business Representative');
+        } catch (e) {
+            fail(e);
+        }
 
-                done();
-            })
-            .catch((err) => {
-                fail('Error encountered ' + err);
-                done();
-            });
+        done();
     });
 
     it('returns 404 for unknown code', async(done) => {
@@ -72,7 +63,7 @@ describe('RelationshipType API', () => {
                 const relationshipTypes = response.body.data;
 
                 expect(relationshipTypes.length > 0).toBeTruthy();
-                for(let item of relationshipTypes) {
+                for (let item of relationshipTypes) {
                     relationshipTypeSteps.validateRelationshipType(item);
                 }
                 done();
