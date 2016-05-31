@@ -1,4 +1,5 @@
   swagger: '2.0'
+  #why do some defintions have summary & others operationId???
   info:
     title: RAM Public API
     description: Full documentation of Relationship Access Manager (RAM) public API. All the listed API calls must be prefixed with /api/v1
@@ -27,20 +28,29 @@
               $ref: '#/definitions/RelationshipCreateRequest'
         tags:
           - Relationship
+          - Not Required
         responses:
           200:
             description: A relationship document
             schema:
-                $ref: '#/definitions/RelationshipResponse'
+                $ref: '#/definitions/RelationshipListResponse'
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
+    /parties/identities/{idType}/{idValue}/relationships/{relType}:            
       get:
         summary: ListRelationships
+        description: |
+          This resource represents a collection of relationships for a given party for a specified list of relationship types.   
+          The other party attached to each relationship is also returned. It is optionally possible to filter the request to return 
+          just those relationships where a party is either the Subject or Delegate on that relationship. 
+          
+          Note- this defintion needs more work, particularly the filters.
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/relType"
           - name: filter
             in: query
             description: Filtering parameters - Format TBD
@@ -63,7 +73,7 @@
             required: false
             type: number
             format: int32
-          - name: pageNo
+          - name: pageNumber
             in: query
             description: Page number is used for pagination
             required: false
@@ -86,12 +96,12 @@
           200:
             description: A relationship document
             schema:
-                $ref: '#/definitions/RelationshipResponse'
+                $ref: '#/definitions/RelationshipListResponse'
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-    /parties/identities/{idType}/{idValue}/relationships/{relType}/parties/identities/{idType}/{idValue}/{startTimestamp}: 
+    /parties/identities/{subjectIdType}/{subjectIdValue}/relationships/{relType}/parties/identities/{delegateIdType}/{delegateIdValue}/{startTimestamp}:           
       get:
         summary: GetRelationship
         description: |
@@ -101,8 +111,10 @@
           This call returns error if it can't uniquely identify the resource.
           
         parameters:
-          - $ref: "#/parameters/idType"
-          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/subjectIdType"
+          - $ref: "#/parameters/subjectIdValue"
+          - $ref: "#/parameters/delegateIdType"
+          - $ref: "#/parameters/delegateIdValue"
           - $ref: "#/parameters/relType"
           - $ref: "#/parameters/startTimestamp"
         tags:
@@ -111,7 +123,7 @@
           200:
             description: A relationship document
             schema:
-                $ref: '#/definitions/SingleRelationshipResponse'
+                $ref: '#/definitions/RelationshipSingleResponse'
           400: 
             $ref: '#/responses/400'
           500:
@@ -122,8 +134,10 @@
         description: |
           This resource identifies a single instance of a relationship.
         parameters:
-          - $ref: "#/parameters/idType"
-          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/subjectIdType"
+          - $ref: "#/parameters/subjectIdValue"
+          - $ref: "#/parameters/delegateIdType"
+          - $ref: "#/parameters/delegateIdValue"
           - $ref: "#/parameters/relType"
           - $ref: "#/parameters/startTimestamp"
         tags:
@@ -132,18 +146,36 @@
           200:
             description: A relationship document
             schema:
-                $ref: '#/definitions/SingleRelationshipResponse'
+                $ref: '#/definitions/RelationshipSingleResponse'
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
       put:
-        summary: UpdateRelationship
+        summary: Create/ UpdateRelationship
         description: |
           This resource identifies a single instance of a relationship.
+          
+          When creating a relationship - 
+            one of the parties may be unknown.  The consumer may 
+            specify the Identity.type to be an invitationCode and leave out the identity.idValue .../parties/InvitationCode//relationships....
+            
+            In this case RAM will create the the Party and associate the newly created Party to the newly created Relationship.  It will 
+            return a hypermedia link to this newly created Party.  This newly created party will be identified by a newly generated Invitation Code.
+            
+            One or both of the parties to a new relationship may not yet exist in RAM.  RAM will create these parties as a side effect to creating
+            the relationship - as long as the the logged on user has the authority.  This authority may be because either: they are the party that
+            needs to be created (as identified by the authentication process), or they are some trusted party (e.g. agency staff).
+            
+            Just like the unknown party, the new party(s) are created and a hypermedia reference return to it along with the new relationship.
+            
+          Note, an Identity in the put/ posted payload may contain a profile which may contain a name, etc. which will result init being updated.
+ 
         parameters:
-          - $ref: "#/parameters/idType"
-          - $ref: "#/parameters/idValue"
+          - $ref: "#/parameters/subjectIdType"
+          - $ref: "#/parameters/subjectIdValue"
+          - $ref: "#/parameters/delegateIdType"
+          - $ref: "#/parameters/delegateIdValue"
           - $ref: "#/parameters/relType"
           - $ref: "#/parameters/startTimestamp"
           - name: relationship
@@ -158,31 +190,32 @@
           200:
             description: A relationship document
             schema:
-                $ref: '#/definitions/RelationshipResponse'
+                $ref: '#/definitions/RelationshipListResponse'
           400: 
             $ref: '#/responses/400'
           500:
-            $ref: '#/responses/500'            
+            $ref: '#/responses/500'             
     /roleTypes:
-      post:
-        summary: Create role type
-        operationId: CreateRoleType
-        tags:
-          - RoleType
-        description: |
-          creating a new role type
-        responses:
-          200:   
-            description: The newly created role returned back
-            schema:
-              $ref: "#/definitions/RoleTypeResponse"
-          400: 
-            $ref: '#/responses/400'
-          500:
-            $ref: '#/responses/500'
+      # post:
+      #   summary: Create role type
+      #   operationId: CreateRoleType
+      #   tags:
+      #     - RoleType
+      #   description: |
+      #     creating a new role type
+      #   responses:
+      #     200:   
+      #       description: The newly created role returned back
+      #       schema:
+      #         $ref: "#/definitions/RoleTypeSingleResponse"
+      #     400: 
+      #       $ref: '#/responses/400'
+      #     500:
+      #       $ref: '#/responses/500'
       get:
         tags:
           - RoleType
+          - Not Required
         operationId: GetRoleTypes
         summary: Get role types
         description: |
@@ -193,20 +226,20 @@
             schema:
               type: array
               items: 
-                $ref: '#/definitions/RoleTypeResponse'
+                $ref: '#/definitions/RoleTypeListResponse'
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-    /roleTypes/{roleTypeId}:
+    /roleTypes/{code}:
       delete:
         operationId: deleteRoleType
         parameters:
-          - name: roleTypeId
+          - name: code
             in: path
             type: string
             required: true
-            description: Role type to be deleted
+            description: Role type code to be deleted
         tags:
           - RoleType
         summary: Delete role type
@@ -222,67 +255,48 @@
       get:
         operationId: GetRoleType
         parameters:
-          - name: roleTypeId
+          - name: code
             in: path
             type: string
             required: true
-            description: Role type id to be retrieved
+            description: Role type code to be retrieved
         tags:
           - RoleType
-        summary: Get a role type by role type id
-        description: Get a role type by role type id
+        summary: Get a role type by role type code
+        description: Get a role type by role type code
         responses:
           200:   
             description: Role types in RAM
             schema:
-              $ref: '#/definitions/RoleTypeResponse'
+              $ref: '#/definitions/RoleTypeSingleResponse'
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
       put:
         parameters:
-          - name: roleTypeId
+          - name: code
             in: path
             type: string
             required: true
-            description: Role type id to be updated
+            description: Role type code to be updated
         operationId: UpdateRoleType
-        summary: Update role type
+        summary: Create/ Update Role Type
         tags:
-          - RoleType
+          - RoleType          
         description: |
           Updating a role type
         responses:
           200:   
-            description: The updated role type returned back
+            description: The created/ updated role type returned back
             schema:
-              $ref: "#/definitions/RoleTypeResponse"
+              $ref: "#/definitions/RoleTypeSingleResponse"
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'            
-    /relationshipTypes:
-      get:
-        tags:
-          - RelationshipType
-        operationId: GetRelationshipTypes
-        summary: Get relationship types
-        description: |
-          Returns an array of all relationship types in RAM.
-        responses:
-          200:   
-            description: Array of all relationship types in RAM
-            schema:
-              type: array
-              items: 
-                $ref: '#/definitions/RelationshipTypeListResponse'
-          400: 
-            $ref: '#/responses/400'
-          500:
-            $ref: '#/responses/500'
-    /relationshipType/{code}:
-      post:
+    /relationshipType/{code}:  
+      put:
         parameters:
           - name: code
             in: path
@@ -290,65 +304,64 @@
             required: true
             description: Relationship type code to be retrieved
 
-        summary: Create relationship type
-        operationId: CreateRelationshipType
+        summary: Create/ Update Relationship Type
+        operationId: CreateUpdateRelationshipType
         tags:
           - RelationshipType
         description: |
-          creating a new relationship type
+          Create or update a new relationship type
         responses:
           200:   
-            description: The newly created relationship returned back
+            description: The newly created or updated relationship returned back
             schema:
-              $ref: "#/definitions/RelationshipTypeResponseSingle"
+              $ref: "#/definitions/RelationshipTypeSingleResponse"
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
-                
-      # delete:
-      #   operationId: DeleteRelationshipType
-      #   parameters:
-      #     - name: code
-      #       in: path
-      #       type: string
-      #       required: true
-      #       description: Relationship type to be deleted
-      #   tags:
-      #     - RelationshipType
-      #   summary: Delete relationship type
-      #   description: |
-      #     delete a relationship type
-      #   responses:
-      #     200:   
-      #       description: Item deleted successfully
-      #     400: 
-      #       $ref: '#/responses/400'
-      #     500:
-      #       $ref: '#/responses/500'
-      
-      put:
-        operationId: UpdateRelationshipType
-        summary: Update relationship type
-        tags:
-          - RelationshipType
-        parameters:
-          - name: code
-            in: path
-            type: string
-            required: true
-            description: Relationship type to be updated
-        description: |
-          Updating a relationship type
-        responses:
-          200:   
-            description: The updated relationship type returned back
-            schema:
-              $ref: "#/definitions/RelationshipTypeResponseSingle"
-          400: 
-            $ref: '#/responses/400'
-          500:
-            $ref: '#/responses/500'
+
+     # delete:
+     #   operationId: DeleteRelationshipType
+     #   parameters:
+     #     - name: code
+     #       in: path
+     #       type: string
+     #       required: true
+     #       description: Relationship type to be deleted
+     #   tags:
+     #     - RelationshipTypeResponse  
+     #   summary: Delete relationship type
+     #   description: |
+     #     delete a relationship type
+     #   responses:
+     #     200:   
+     #       description: Item deleted successfully
+     #     400: 
+     #       $ref: '#/responses/400'
+     #     500:
+     #       $ref: '#/responses/500'
+     #  put:
+     #    operationId: UpdateRelationshipType
+     #    summary: Update relationship type
+     #    tags:
+     #      - RelationshipType  
+     #    parameters:
+     #      - name: code
+     #        in: path
+     #        type: string
+     #        required: true
+     #        description: Relationship type to be updated
+     #    description: |
+     #      Updating a relationship type
+     #    responses:
+     #      200:   
+     #        description: The updated relationship type returned back
+     #        schema:
+     #           $ref: "#/definitions/RelationshipTypeSingleResponse"
+     #      400: 
+     #        $ref: '#/responses/400'
+     #      500:
+     #        $ref: '#/responses/500'
       get:
         operationId: GetRelationshipType
         parameters:
@@ -358,13 +371,13 @@
             required: true
             description: Relationship type id to be retrieved
         tags:
-          - RelationshipType
+          - RelationshipType  
         summary: Get a relationship type by relationship type id
         responses:
           200:   
             description: Relationship types in RAM
             schema:
-              $ref: '#/definitions/RelationshipTypeResponseSingle'
+              $ref: '#/definitions/RelationshipTypeSingleResponse'
           400: 
             $ref: '#/responses/400'
           500:
@@ -380,6 +393,7 @@
         operationId: CreateParty
         tags:
           - Party
+          - Not Sure
         parameters:
           - name: Party
             in: body
@@ -390,7 +404,7 @@
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartyResponse"
+              $ref: "#/definitions/PartySingleResponse"
           400: 
             $ref: '#/responses/400'
           500:
@@ -420,7 +434,7 @@
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartyResponse"
+              $ref: "#/definitions/PartySingleResponse"
           400: 
             $ref: '#/responses/400'
           500:
@@ -430,6 +444,7 @@
         operationId: UpdateIdentity
         tags:
           - Identity
+          - Problem 
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
@@ -439,12 +454,12 @@
             schema:
               $ref: "#/definitions/IdentityUpdateRequest"
             description: |
-              Required information to update an identity.
+              Required information to update a Party.
         responses:
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartyResponse"
+              $ref: "#/definitions/PartySingleResponse"
           400: 
             $ref: '#/responses/400'
           500:
@@ -480,13 +495,13 @@
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartyResponse"
+              $ref: "#/definitions/PartySingleResponse"
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
 
-    /parties/invidationCode/{invitationCode}:
+    /parties/invitationCode/{invitationCode}:
       get: 
         tags:
           - Identity
@@ -510,7 +525,7 @@
           200:   
             description: The party returned
             schema:
-              $ref: "#/definitions/PartyResponse"
+              $ref: "#/definitions/PartySingleResponse"
           400: 
             $ref: '#/responses/400'
           500:
@@ -531,26 +546,27 @@
           creating a Relationship to an unidentified party.           
         tags:
           - Party
+          - Not Required
         responses:
           200:   
             description: The updated party returned
             schema:
-              $ref: "#/definitions/PartyResponse"
+              $ref: "#/definitions/PartySingleResponse"
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
             
-    /parties/identities/{idType}/{idValue}/roles/{roleName}:
+    /parties/identities/{idType}/{idValue}/roles/{code}:
       put:
-        operationId: UpdatePartyRole
-        summary: Update attributes of a role attached to a party. Party is identified by identity.  
+        operationId: CreateUpdatePartyRole
+        summary: Create/ Update Role Attributes for a role attached to a party. Party is identified by identity.  
         tags:
           - PartyRole
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
-          - name: roleName
+          - name: code
             in: path
             type: string
             required: true
@@ -560,7 +576,7 @@
           200:   
             description: The updated party returned back
             schema:
-              $ref: "#/definitions/PartyResponse"
+              $ref: "#/definitions/PartySingleResponse"
           400: 
             $ref: '#/responses/400'
           500:
@@ -571,7 +587,7 @@
         parameters:
           - $ref: "#/parameters/idType"
           - $ref: "#/parameters/idValue"
-          - name: roleName
+          - name: code
             in: path
             type: string
             required: true
@@ -583,96 +599,22 @@
           200:   
             description: The updated party returned back
             schema:
-              $ref: "#/definitions/PartyResponse"
+              $ref: "#/definitions/PartiesListResponse"
           400: 
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'
     
   definitions:
-    RelationshipResponse:
-      type: object
-      required: ["relationshipTypes","parties","roleTypes","relationships"]
-      properties:
-        totalRecordsMatched:
-          description: Total number of records matched for this query.
-          type: integer
-          format: int32
-        relationshipTypes:
-          type: array
-          items:
-            $ref: '#/definitions/RelationshipType'
-        parties:
-          type: array
-          items:
-            $ref: '#/definitions/Party'
-        roleTypes:
-          type: array
-          items:
-            $ref: '#/definitions/RoleType'
-        relationships:
-          type: array
-          items:
-            $ref: '#/definitions/Relationship'
-    SingleRelationshipResponse:
-      type: object
-      required: ["relationshipType","parties","roleTypes","relationship"]
-      properties:
-        relationshipType:
-          $ref: '#/definitions/RelationshipType'
-        relationship:
-          $ref: '#/definitions/Relationship'
-        parties:
-          type: array
-          items:
-            $ref: '#/definitions/Party'
-        roleTypes:
-          type: array
-          items:
-            $ref: '#/definitions/RoleType'
-    
-    PartyResponse:
-      type: object
-      required: ["parties","roleTypes"]
-      properties:
-        parties:
-          type: array
-          items:
-            $ref: '#/definitions/Party'
-          minItems: 1
-        roleTypes:
-          type: array
-          items:
-            $ref: '#/definitions/RoleType'
-    
-    RoleTypeResponse:
-      type: object
-      required: ["roleTypes"]
-      properties:
-        roleTypes:
-          type: array
-          items:
-            $ref: '#/definitions/RoleType'
-            
     Party:
+      allOf:
+      - $ref: '#/definitions/IRAMObject'
+      - $ref: '#/definitions/PartyDetails'          
       description: A Party is the concept that participates in Relationships.
       type: object
       required: ["uri","roles","identities"]
-      properties:
-        uri: 
-          type: string
-          description: URI that uniquely identifying this resource.
-        roles:
-          type: array
-          items:
-            $ref: '#/definitions/Role'
-        identities:
-          type: array
-          items:
-            $ref: '#/definitions/Identity'
-    
-    PartyCreateRequest:
-      description: A Party description to be created.
+
+    PartyDetails:
       type: object
       required: ["roles","identities"]
       properties:
@@ -684,7 +626,35 @@
           type: array
           items:
             $ref: '#/definitions/Identity'
+            
+    PartyCreateRequest:
+      allOf:
+      - $ref: '#/definitions/PartyDetails' 
+      description: A Party description to be created.
+      type: object
+      required: ["roles","identities"]
 
+    PartiesListResponse:
+      allOf:
+      - $ref: '#/definitions/IListResponse'     
+      description: A collection of parties plus response object
+      type: object
+      required: ["parties"]
+      properties:
+        parties:
+          type: array
+          items:
+            $ref: '#/definitions/Party'
+          minItems: 1
+          
+    PartySingleResponse:
+      allOf:
+      - $ref: '#/definitions/Party' 
+      description: A output party plus response object
+      type: object
+      required: ["roles","identities"]
+
+    
     ProfileProvider:
       description: |
         Profile Provider. TBD        
@@ -703,8 +673,8 @@
           type: string
         startTimestamp:
           type: string
-          description: date in ISO format
-          format: date
+          description: timestamp in ISO format
+          format: date-time
         endTimestamp:
           type: string
           description: date in ISO format
@@ -738,75 +708,77 @@
           description: Used for non-individual entities
           
     Identity:
+      allOf:
+      - $ref: '#/definitions/IdentityBusinessIdentifier'
+      - $ref: '#/definitions/IRAMObject'    
       type: object
-      required: ["profile"]
+      required: ["idType","idValue","defaultIndictor", "profile"]
       properties:
+        defaultIndictor:
+          type: boolean
+          description: This flag is used to identify which of the multiple possible identities a party has should be used as the default one to display on the UI      
         profile:
           $ref: '#/definitions/Profile'
              
+             
+    IdentityBusinessIdentifier:  
+      type: object
+      discriminator: idType
+      properties:
+        idType:
+          type: string
+          description: |
+             The discriminator property which indicates what kind if identifier this identity has
+          enum: ['PublicIdentifer','authorisationCode','CSPlinkId','OpaqueAgencyToken']  
+        idValue:
+          description: identity value that can be used by identity resolver.  It is the actual identifier value, i.e. the 11 digit ABN, or the meaningless big unique number given by myGov. 
+          type: string  
+      
     Relationship:
       allOf:
-        - $ref: '#/definitions/IRamObject'
-        - type: object
-          required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","subjectPartyRoleURI","delegatePartyRoleURI","status","startTimestamp","uri","attributes"]
-          properties:
-            relationshipTypeURI:
-              type: string
-              description: URI that uniquely identifying the type of this relationship
-            subjectPartyURI:
-              type: string
-              description: URI that uniquely identifying the subject party of this relationship
-            delegatePartyURI:
-              type: string
-              description: URI that uniquely identifying the delegate party of this relationship
-            subjectPartyRoleURI:
-              type: string
-              description: URI that uniquely identifying the subject's role in this relationship
-            delegatePartyRoleURI:
-              type: string
-              description: URI that uniquely identifying the delegate's role in this relationship
-            subjectsNickname:
-                $ref: '#/definitions/Name'
-            delegatesNickname:
-                $ref: '#/definitions/Name'
-            status:
-              type: string
-              description: Date in ISO format
-              enum: ['invalid','pending','active','deleted','cancelled']
-            startTimestamp:
-              type: string
-              description: Date in ISO format
-              format: date
-            endTimestamp:
-              type: string
-              description: Date in ISO format
-              format: date
-            endEventTimestamp:
-              type: string
-              description: Date that one has set endTimestamp value. Value is in ISO format
-              format: date
-            attributes:
-              type: array
-              description: Attributes attached to this relationship based on role type
-              items:
-                $ref: '#/definitions/RelationshipAttributeValue'
-            uri: 
-              type: string
-              description: URI that uniquely identifying this resource.
-          
-    RelationshipCreateRequest:
+      - $ref: '#/definitions/IRAMObject'    
+      - $ref: '#/definitions/RelationshipBusinessIdentifier'
+      - $ref: '#/definitions/RelationshipDetails'
+
       type: object
-      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","subjectPartyRoleURI","delegatePartyRoleURI","startTimestamp","attributes"]
+      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","startTimestamp","status"]
+
+    RelationshipCreateRequest:
+      allOf:
+      - $ref: '#/definitions/RelationshipBusinessIdentifier'  
+      - $ref: '#/definitions/RelationshipDetails'    
+      type: object
+      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","startTimestamp","attributes"]
+
+    RelationshipUpdateRequest:
+      allOf:
+      - $ref: '#/definitions/RelationshipBusinessIdentifier'  
+      - $ref: '#/definitions/RelationshipDetails'    
+      type: object
+      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","startTimestamp","attributes"]
+
+    RelationshipBusinessIdentifier:
+      type: object
+      required: ["relationshipTypeURI","subjectPartyURI","delegatePartyURI","startTimestamp"]
       properties:
         relationshipTypeURI:
           type: string
-          description: URI that uniquely identifying the type of this relationship
+          description: URI that uniquely identifying the reference data type that gives semantic meaning to  this relationship
         subjectPartyURI:
           type: string
           description: URI that uniquely identifying the subject party of this relationship
         delegatePartyURI:
           type: string
           description: URI that uniquely identifying the delegate party of this relationship
+        startTimestamp:
+          type: string
+          description: Defines when this relationship comes into effect.  Date in ISO format.  
+          format: date
+
+    RelationshipDetails:
+      type: object
+      required: ["status"]
+      properties:
         subjectPartyRoleURI:
           type: string
           description: URI that uniquely identifying the subject's role in this relationship
@@ -817,10 +789,6 @@
             $ref: '#/definitions/Name'
         delegatesNickname:
             $ref: '#/definitions/Name'
-        startTimestamp:
-          type: string
-          description: Date in ISO format
-          format: date
         endTimestamp:
           type: string
           description: Date in ISO format
@@ -830,7 +798,37 @@
           description: Attributes attached to this relationship based on role type
           items:
             $ref: '#/definitions/RelationshipAttributeValue'
-          
+        status:
+          type: string
+          description: Indicates where in the lifecycle of relationships; this one is up to.
+          enum: ['invalid','pending','active','deleted','cancelled']
+
+    RelationshipListResponse:  
+      allOf:
+      - $ref: '#/definitions/IListResponse'    
+      type: object
+      required: ["parties","relationships"]
+      properties:
+        parties:
+          type: array
+          items:
+            $ref: '#/definitions/Party'
+        relationships:
+          type: array
+          items:
+            $ref: '#/definitions/Relationship'
+
+    RelationshipSingleResponse:
+      type: object
+      required: ["subjectParty","delegateParty","relationship"]
+      properties:
+        relationship:
+          $ref: '#/definitions/Relationship'
+        subjectParty:
+          $ref: '#/definitions/Party'
+        delegateParty:
+          $ref: '#/definitions/Party'
+                    
     IdentityUpdateRequest:
       type: object
       required: ["default","subjectsNickname","delegatesNickname"]
@@ -842,25 +840,10 @@
         default:
           type: boolean
           description: Set this to be the default identity of this party
-          
-    RelationshipUpdateRequest:
-      type: object
-      required: ["subjectsNickname","delegatesNickname","startTimestamp"]
-      properties:
-        subjectsNickname:
-            $ref: '#/definitions/Name'
-        delegatesNickname:
-            $ref: '#/definitions/Name'
-        startTimestamp:
-          type: string
-          description: Date in ISO format
-          format: date
-        endTimestamp:
-          type: string
-          description: Date in ISO format
-          format: date
-          
+                    
     RoleAttributeValue:
+      allOf:
+      - $ref: '#/definitions/IRAMObject'    
       type: object
       required: ["name","value"]
       properties:
@@ -872,6 +855,8 @@
           description: Value assigned to this attribute
             
     RelationshipAttributeValue:
+      allOf:
+      - $ref: '#/definitions/IRAMObject'    
       type: object
       required: ["name","value"]
       properties:
@@ -882,7 +867,9 @@
           type: string
           description: Value assigned to this attribute
             
-    RoleAttributeDef:
+    RoleAttributeName:
+      allOf:
+      - $ref: '#/definitions/ICodeDecode'
       type: object
       required: ["name","mandatory","defaultValue","acceptedValues"]
       properties:
@@ -901,9 +888,9 @@
           items:
             type: string     
 
-    RelationshipAttributeDef:
-      allOf:
-        - $ref: '#/definitions/ICode'
+    RelationshipAttributeName:
+        allOf:
+        - $ref: '#/definitions/ICodeDecode'
         - type: object
           required: ["name","mandatory","defaultValue","acceptedValues"]
           properties:
@@ -920,7 +907,7 @@
               description: what are the accepted value types
               type: array
               items:
-                type: string     
+                type: string    
     Error:
       type: object
       required: ["status","alert"]
@@ -943,39 +930,77 @@
               description: Array of string presenting one or more messages 
               items:
                   type: string 
+    
+    IListResponse:  
+      type: object
+      required: [totalRecordsMatched]
+      properties:
+        totalRecordsMatched:
+          description: Total number of records matched for this query.
+          type: integer
+          format: int32                                   
+                      
     RoleType:
       allOf:
-        - $ref: '#/definitions/ICode'
+        - $ref: '#/definitions/ICodeDecode'
         - type: object
-          required: ["attributeDefs"]
+          required: ["RoleAttributeNames"]
           properties:
-            code: 
-              type: string
-              description: |
-                role type code          
-            attributeDefs:
+            RoleAttributeNames:
               type: array
               description: Role attributes
               minItems: 1
               items: 
-                $ref: '#/definitions/RoleAttributeDef'
+                $ref: '#/definitions/RoleAttributeName'
+
+    RoleTypeSingleResponse:
+      allOf:
+      - $ref: '#/definitions/RoleType'    
+      type: object
+
+    RoleTypeListResponse:
+      allOf:
+      - $ref: '#/definitions/IListResponse'    
+      type: object
+      required: ["roleTypes"]
+      properties:
+        roleTypes:
+          type: array
+          items:
+            $ref: '#/definitions/RoleType'           
+
 
     RelationshipType:
       allOf:
-        - $ref: '#/definitions/ICode'
+        - $ref: '#/definitions/ICodeDecode'
         - type: object
-          required: ["attributeDefs","voluntaryInd"]
+          required: ["RelationshipAttributeNames","voluntaryInd"]
           properties:       
             voluntaryInd:
               type: boolean
               description: Whether this field is voluntary
-            attributeDefs:
+            RelationshipAttributeNames:
               type: array
               description: Relationship attributes
               minItems: 1
               items: 
-                $ref: '#/definitions/RelationshipAttributeDef'
+                $ref: '#/definitions/RelationshipAttributeName'
 
+    RelationshipTypeListResponse:
+      allOf:
+      - $ref: '#/definitions/IListResponse'  
+      type: object
+      required: ['totalRecordsMatched','relationshipTypes']
+      properties:
+        relationshipTypes:
+          type: array
+          items:
+            $ref: '#/definitions/RelationshipType'
+
+    RelationshipTypeSingleResponse:
+      allOf: 
+        - $ref: '#/definitions/RelationshipType'
+        
 
     Role:
       type: object
@@ -998,70 +1023,57 @@
             
     LegislativeProgram:
       allOf: 
-        - $ref: '#/definitions/ICode'      
+        - $ref: '#/definitions/ICodeDecode'      
         - type: object
           description: |
             A LegislativeProgram represents some course-grained grouping of functionality offered by government to citizens. 
             Due to "Machinary of Government" changes these LegislativePrograms are moved between agencies. Generally, LegislativePrograms survive these moves, just in a newly named agency.
 
-    IRamObject:
+    IRAMObject:
       type: object
-      required: ['id','lastUpdatedTimestamp','lastUpdatedByPartyId','deleteIndicator','resourceVersionNumber']
+      required: ['uri','lastUpdatedTimestamp','lastUpdatedBy','deletedIndicator','resourceVersionNumber']
       properties:
-        id:
+        uri:
+          description: This is the hypermedia reference to each resource.
           type: string
         lastUpdatedTimestamp:
+          description: This is timestamp when this resource was first created/ subsequently updated.  Will be used for optimistic concurrency control.
           type: string
-          format: date-time
-        lastUpdatedByPartyId:
+          format: date-time          
+        lastUpdatedBy:
           type: string
-        deleteIndicator:
+          description: This is the user (party or agency staff member) who last updated the resource          
+        deletedIndicator:
           type: boolean
+          description: Has this resource been logically deleted.
         resourceVersionNumber:
           type: number
-          
-    ICode:
+          description: The definition of resources may change over time. Business rules may be linked to these version. This is to keep track of that info.
+    ICodeDecode:
       type: object
-      required: ['shortDecodeText','longDecodeText','startDate','url','code']
+      required: ['uri','code','shortDecodeText','longDecodeText','startTimestamp']
       properties:
-        code: 
+        uri:
+          description: This is the hypermedia reference to this piece of reference data.
           type: string
-          description: Name of legislative program.
+        code:
+          description: A human friendly mneumonic for this reference data concept.
+          type: string
         shortDecodeText:
-          type: string
+          description: This is a short lable for the this item of reference data
+          type: string        
         longDecodeText:
           type: string
-        startDate:
+          description:  This is a long lable for the this item of reference data          
+        startTimestamp:
           type: string
-          format: date
-        endDate:
+          description: This is the timestamp at which this reference data item may start being used.
+          format: date-time  
+        endTimestamp:
           type: string
-          format: date
+          description: This is the timestamp at which this reference data item ceased being able to be used (but may continue to exist on existing records)
+          format: date-time  
 
-    RelationshipTypeListResponse:
-      type: object
-      required: ['totalCount','results']
-      properties:
-        totalCount:
-          type: number
-        results:
-          type: array
-          items:
-            $ref: '#/definitions/RelationshipTypeListResource'
-
-    RelationshipTypeResponseSingle:
-      allOf: 
-        - $ref: '#/definitions/RelationshipType'
-        
-    RelationshipTypeListResource:
-      type: object
-      properties:
-        href: 
-          type: string
-          description: URL reference to uniquely identified resource
-        value:
-          $ref: '#/definitions/RelationshipType'
-          
     Resource:
       type: object
       required: ['href']
@@ -1074,16 +1086,44 @@
           description: Optional value that represent the respond if one sends a GET request to resource url
 
   parameters:
+    delegateIdType:
+      name: delegateIdType
+      in: path
+      description: |
+         The type of identifier used to find the delgate party
+      required: true
+      type: string
+      enum: ['PublicIdentifer','authorisationCode','CSPlinkId','OpaqueAgencyToken']  
+    subjectIdType:
+      name: subjectIdType
+      in: path
+      description: |
+         The type of identifier used to find the subject party
+      required: true
+      type: string
+      enum: ['PublicIdentifer','authorisationCode','CSPlinkId','OpaqueAgencyToken']  
     idType:
       name: idType
       in: path
       description: |
-         Type of identity resolver, possible values are [abn, acn, etc.]
+         Type of identity resolver, possible values are [publicIdentifier, cspLinkId, ...]
       required: true
       type: string
-      enum: ['abn','authorisationCode','linkId']  
+      enum: ['PublicIdentifer','authorisationCode','CSPlinkId','OpaqueAgencyToken']  
     idValue:
       name: idValue
+      in: path
+      description: identity value that can be used by identity resolver 
+      required: true
+      type: string        
+    delegateIdValue:
+      name: delegateIdValue
+      in: path
+      description: identity value that can be used by identity resolver 
+      required: true
+      type: string        
+    subjectIdValue:
+      name: subjectIdValue
       in: path
       description: identity value that can be used by identity resolver 
       required: true
