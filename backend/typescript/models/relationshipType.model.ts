@@ -3,6 +3,7 @@ import {ICodeDecode, CodeDecodeSchema} from './base';
 import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from './relationshipAttributeNameUsage.model';
 
 // force schema to load first
+// see https://github.com/atogov/RAM/pull/220#discussion_r65115456
 /* tslint:disable:no-unused-variable */
 const _RelationshipAttributeNameUsageModel = RelationshipAttributeNameUsageModel;
 
