@@ -18,7 +18,7 @@ describe('RAM Identity', () => {
 
             identity1 = await IdentityModel.create({
                 idValue: 'uuid_1',
-                typeName: IdentityType.LinkId.name,
+                identityTypeName: IdentityType.LinkId.name,
                 defaultValue: null
             });
 
@@ -33,7 +33,7 @@ describe('RAM Identity', () => {
 
     it('find identity by id value', async (done) => {
         try {
-            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.typeName));
+            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityTypeName));
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -50,20 +50,20 @@ describe('RAM Identity', () => {
 
             const instance = await IdentityModel.create({
                 idValue: idValue,
-                typeName: type.name,
+                identityTypeName: type.name,
                 defaultValue: null
             });
 
             expect(instance).not.toBeNull();
             expect(instance.id).not.toBeNull();
             expect(instance.idValue).not.toBeNull();
-            expect(instance.typeName).not.toBeNull();
+            expect(instance.identityTypeName).not.toBeNull();
 
             const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
-            expect(retrievedInstance.typeName).toBe(type.name);
-            expect(retrievedInstance.type()).toBe(type);
+            expect(retrievedInstance.identityTypeName).toBe(type.name);
+            expect(retrievedInstance.identityType()).toBe(type);
 
             done();
 
@@ -77,7 +77,7 @@ describe('RAM Identity', () => {
         try {
             await IdentityModel.create({
                 idValue: 'uuid_1',
-                typeName: '__BOGUS__',
+                identityTypeName: '__BOGUS__',
                 defaultValue: null
             });
             fail('should not have inserted with invalid type');

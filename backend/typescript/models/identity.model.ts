@@ -32,7 +32,7 @@ export class IdentityType {
 
 export interface IIdentity extends IRAMObject {
     idValue: string;
-    typeName: string;
+    identityTypeName: string;
     defaultValues: string;
     type(): IdentityType;
 }
@@ -43,7 +43,7 @@ const IdentitySchema = RAMSchema({
         required: [true, 'Id Value is required'],
         trim: true
     },
-    typeName: {
+    identityTypeName: {
         type: String,
         required: [true, 'Type is required'],
         trim: true,
@@ -54,8 +54,8 @@ const IdentitySchema = RAMSchema({
     }
 });
 
-IdentitySchema.method('type', function () {
-    return IdentityType.valueOf(this.typeName);
+IdentitySchema.method('identityType', function () {
+    return IdentityType.valueOf(this.identityTypeName);
 });
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
@@ -66,7 +66,7 @@ IdentitySchema.static('findByIdValueAndType', (idValue:String, type:IdentityType
     return this.IdentityModel
         .findOne({
             idValue: idValue,
-            typeName: type.name
+            identityTypeName: type.name
         })
         .exec();
 });
