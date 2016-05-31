@@ -148,9 +148,25 @@ describe('RAM Relationship Type', () => {
         }
     });
 
+    it('fails insert with null code', async (done) => {
+        try {
+            await RelationshipTypeModel.create({
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date()
+            });
+            fail('should not have inserted with null code');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
     it('fails insert with empty code', async (done) => {
         try {
             await RelationshipTypeModel.create({
+                code: '',
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date()
