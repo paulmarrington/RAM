@@ -1,4 +1,4 @@
-import RelationshipTypeSteps from './steps/relationshipTypes';
+import RelationshipTypeSteps from './steps/relationshipTypeSteps';
 import InitializationSteps from './steps/initialization';
 
 const relationshipTypeSteps = new RelationshipTypeSteps();

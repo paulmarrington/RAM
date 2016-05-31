@@ -3,6 +3,11 @@ import {config} from '../bootstrap';
 
 const rest = new RestCalls(config.host, config.port);
 
+/**
+ * Reusable test steps for the RelationshipType REST API.
+ *
+ * Use these steps for any tests that need to interact with the RelationshipType REST API.
+ */
 export default class RelationshipTypeSteps {
 
     public findByCode = (code:string) => {
