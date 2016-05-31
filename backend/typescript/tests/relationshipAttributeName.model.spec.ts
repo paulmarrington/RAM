@@ -7,7 +7,7 @@ import {RelationshipAttributeNameUsageModel} from '../models/relationshipAttribu
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
 /* tslint:disable:max-func-body-length */
-describe('RAM Relationship Type', () => {
+describe('RAM Relationship Attribute Name', () => {
 
     connectDisconnectMongo();
     dropMongo();
