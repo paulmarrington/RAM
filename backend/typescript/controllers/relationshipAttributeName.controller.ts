@@ -12,26 +12,26 @@ export class RelationshipAttributeNameController {
 
     private mapToIHrefValue = (relationshipAttributeName:IRelationshipAttributeName):IHrefValue<IRelationshipAttributeNameDTO> => {
         if (relationshipAttributeName) {
-            return {
-                href: '/api/v1/relationshipAttributeName/' + relationshipAttributeName.code,
-                value: this.mapToResponseObject(relationshipAttributeName)
-            };
+            return new IHrefValue(
+                '/api/v1/relationshipAttributeName/' + relationshipAttributeName.code,
+                this.mapToResponseObject(relationshipAttributeName)
+            );
         }
         return null;
     };
 
     private mapToResponseObject = (relationshipAttributeName:IRelationshipAttributeName):IRelationshipAttributeNameDTO => {
         if (relationshipAttributeName) {
-            return {
-                code: relationshipAttributeName.code,
-                shortDecodeText: relationshipAttributeName.shortDecodeText,
-                longDecodeText: relationshipAttributeName.longDecodeText,
-                startTimestamp: relationshipAttributeName.startDate,
-                endTimestamp: relationshipAttributeName.endDate,
-                name: relationshipAttributeName.shortDecodeText,
-                domain: relationshipAttributeName.domain,
-                permittedValues: relationshipAttributeName.permittedValues
-            } as IRelationshipAttributeNameDTO;
+            return new IRelationshipAttributeNameDTO(
+                relationshipAttributeName.code,
+                relationshipAttributeName.shortDecodeText,
+                relationshipAttributeName.longDecodeText,
+                relationshipAttributeName.startDate,
+                relationshipAttributeName.endDate,
+                relationshipAttributeName.shortDecodeText,
+                relationshipAttributeName.domain,
+                relationshipAttributeName.permittedValues
+            );
         }
         return null;
     };

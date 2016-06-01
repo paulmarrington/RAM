@@ -14,43 +14,44 @@ export class RelationshipTypeController {
 
     private mapToIHrefValue = (relationshipType:IRelationshipType):IHrefValue<IRelationshipTypeDTO> => {
         if (relationshipType) {
-            return {
-                href: '/api/v1/relationshipType/' + relationshipType.code,
-                value: this.mapToResponseObject(relationshipType)
-            };
+            return new IHrefValue(
+                '/api/v1/relationshipType/' + relationshipType.code,
+                this.mapToResponseObject(relationshipType)
+            );
         }
         return null;
     };
 
     private mapToResponseObject = (relationshipType:IRelationshipType):IRelationshipTypeDTO => {
         if (relationshipType) {
-            return {
-                code: relationshipType.code,
-                shortDecodeText: relationshipType.shortDecodeText,
-                longDecodeText: relationshipType.longDecodeText,
-                startTimestamp: relationshipType.startDate,
-                endTimestamp: relationshipType.endDate,
-                voluntaryInd: relationshipType.voluntaryInd,
-                relationshipAttributeNames: relationshipType.attributeNameUsages.map((attributeNameUsage) => {
-                    return {
-                        mandatory: !attributeNameUsage.optionalInd,
-                        defaultValue: attributeNameUsage.defaultValue,
-                        attributeNameDef: {
-                            href: '/api/v1/relationshipAttributeName/' + attributeNameUsage.attributeName.code,
-                            value: {
-                                code: attributeNameUsage.attributeName.code,
-                                shortDecodeText: attributeNameUsage.attributeName.shortDecodeText,
-                                longDecodeText: attributeNameUsage.attributeName.longDecodeText,
-                                startTimestamp: attributeNameUsage.attributeName.startDate,
-                                endTimestamp: attributeNameUsage.attributeName.endDate,
-                                name: attributeNameUsage.attributeName.shortDecodeText,
-                                domain: attributeNameUsage.attributeName.domain,
-                                permittedValues: attributeNameUsage.attributeName.permittedValues
-                            } as IRelationshipAttributeNameDTO
-                        } as IHrefValue<IRelationshipAttributeNameDTO>
-                    } as IRelationshipAttributeNameUsageDTO;
+            return new IRelationshipTypeDTO(
+                relationshipType.code,
+                relationshipType.shortDecodeText,
+                relationshipType.longDecodeText,
+                relationshipType.startDate,
+                relationshipType.endDate,
+                relationshipType.voluntaryInd,
+                relationshipType.attributeNameUsages.map((attributeNameUsage) => {
+                    const attributeName = attributeNameUsage.attributeName;
+                    return new IRelationshipAttributeNameUsageDTO(
+                        !attributeNameUsage.optionalInd,
+                        attributeNameUsage.defaultValue,
+                        new IHrefValue(
+                            '/api/v1/relationshipAttributeName/' + attributeNameUsage.attributeName.code,
+                            new IRelationshipAttributeNameDTO(
+                                attributeName.code,
+                                attributeName.shortDecodeText,
+                                attributeName.longDecodeText,
+                                attributeName.startDate,
+                                attributeName.endDate,
+                                attributeName.shortDecodeText,
+                                attributeName.domain,
+                                attributeName.permittedValues
+                            )
+                        )
+                    );
                 })
-            } as IRelationshipTypeDTO;
+            );
         }
         return null;
     };

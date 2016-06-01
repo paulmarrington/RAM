@@ -35,20 +35,22 @@ export interface IKeyValue<T> {
     value: T;
 }
 
-export interface IHrefValue<T> {
-    href: string;
-    value: T;
+export class IHrefValue<T> {
+    constructor(public href:string,
+                public value?:T) {
+    }
 }
 
 /***************************************************
  ***************************************************/
 
-export interface ICodeDecode {
-    code:             string;
-    shortDecodeText:  string;
-    longDecodeText:   string;
-    startTimestamp:   Date;
-    endTimestamp?:    Date;
+export class ICodeDecode {
+    constructor(public code:string,
+                public shortDecodeText:string,
+                public longDecodeText:string,
+                public startTimestamp:Date,
+                public endTimestamp:Date) {
+    };
 }
 
 export interface IName {
@@ -90,21 +92,36 @@ export interface IRelationship {
   subjectNickName?:  string;
 }
 
-export interface IRelationshipType extends ICodeDecode {
-    voluntaryInd:               boolean;
-    relationshipAttributeNames: IRelationshipAttributeNameUsage[]
+export class IRelationshipType extends ICodeDecode {
+    constructor(code:string,
+                shortDecodeText:string,
+                longDecodeText:string,
+                startTimestamp:Date,
+                endTimestamp:Date,
+                public voluntaryInd:boolean,
+                public relationshipAttributeNames:IRelationshipAttributeNameUsage[]) {
+        super(code, shortDecodeText, longDecodeText, startTimestamp, endTimestamp);
+    };
 }
 
-export interface IRelationshipAttributeNameUsage {
-    mandatory:         boolean
-    defaultValue?:     string
-    attributeNameDef:  IHrefValue<IRelationshipAttributeName>
+export class IRelationshipAttributeNameUsage {
+    constructor(public mandatory:boolean,
+                public defaultValue:string,
+                public attributeNameDef:IHrefValue<IRelationshipAttributeName>) {
+    };
 }
 
-export interface IRelationshipAttributeName extends ICodeDecode {
-    name:              string
-    domain:            string
-    permittedValues:   string[]
+export class IRelationshipAttributeName extends ICodeDecode {
+    constructor(code:string,
+                shortDecodeText:string,
+                longDecodeText:string,
+                startTimestamp:Date,
+                endTimestamp:Date,
+                public name:string,
+                public domain:string,
+                public permittedValues:string[]) {
+        super(code, shortDecodeText, longDecodeText, startTimestamp, endTimestamp);
+    };
 }
 
 /***************************************************
