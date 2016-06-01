@@ -1,7 +1,8 @@
 import {sendDocument, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {Router, Request, Response} from 'express';
 import {IRelationshipTypeModel } from '../models/relationshipType.model';
-import {sendResource} from './helpers';
+import {sendResource, sendList} from './helpers';
+import {IHrefValue} from '../../../commons/RamAPI';
 import {IRelationshipType} from '../models/relationshipType.model';
 import {IRelationshipType as IRelationshipTypeDTO} from '../../../commons/RamAPI';
 import {IRelationshipAttributeName as IRelationshipAttributeNameDTO} from '../../../commons/RamAPI';
@@ -12,29 +13,34 @@ export class RelationshipTypeController {
     }
 
     private mapToResponseObject = (relationshipType:IRelationshipType):IRelationshipTypeDTO => {
-        console.log(relationshipType.attributeNameUsages);
-        return {
-            code: relationshipType.code,
-            shortDecodeText: relationshipType.shortDecodeText,
-            longDecodeText: relationshipType.longDecodeText,
-            startDate: relationshipType.startDate,
-            endDate: relationshipType.endDate,
-            voluntaryInd: relationshipType.voluntaryInd,
-            attributeDefs: relationshipType.attributeNameUsages.map((attributeNameUsage) => {
-                return {
-                    code: attributeNameUsage.attributeName.code,
-                    shortDecodeText: attributeNameUsage.attributeName.shortDecodeText,
-                    longDecodeText: attributeNameUsage.attributeName.longDecodeText,
-                    startDate: attributeNameUsage.attributeName.startDate,
-                    endDate: attributeNameUsage.attributeName.endDate,
-                    name: attributeNameUsage.attributeName.shortDecodeText,
-                    domain: attributeNameUsage.attributeName.domain,
-                    mandatory: !attributeNameUsage.optionalInd,
-                    defaultValue: attributeNameUsage.defaultValue,
-                    permittedValues: attributeNameUsage.attributeName.permittedValues
-                } as IRelationshipAttributeNameDTO;
-            })
-        } as IRelationshipTypeDTO;
+        if (relationshipType) {
+            return {
+                code: relationshipType.code,
+                shortDecodeText: relationshipType.shortDecodeText,
+                longDecodeText: relationshipType.longDecodeText,
+                startTimestamp: relationshipType.startDate,
+                endTimestamp: relationshipType.endDate,
+                voluntaryInd: relationshipType.voluntaryInd,
+                relationshipAttributeNames: relationshipType.attributeNameUsages.map((attributeNameUsage) => {
+                    return {
+                        href: '/api/v1/relationshipAttributeName/' + attributeNameUsage.attributeName.code,
+                        value: {
+                            code: attributeNameUsage.attributeName.code,
+                            shortDecodeText: attributeNameUsage.attributeName.shortDecodeText,
+                            longDecodeText: attributeNameUsage.attributeName.longDecodeText,
+                            startTimestamp: attributeNameUsage.attributeName.startDate,
+                            endTimestamp: attributeNameUsage.attributeName.endDate,
+                            name: attributeNameUsage.attributeName.shortDecodeText,
+                            mandatory: !attributeNameUsage.optionalInd,
+                            fieldType: attributeNameUsage.attributeName.domain,
+                            defaultValue: attributeNameUsage.defaultValue,
+                            permittedValues: attributeNameUsage.attributeName.permittedValues
+                        } as IRelationshipAttributeNameDTO
+                    } as IHrefValue<IRelationshipAttributeNameDTO>;
+                })
+            } as IRelationshipTypeDTO;
+        }
+        return null;
     };
 
     private findByCodeInDateRange = async (req: Request, res: Response) => {
@@ -55,8 +61,8 @@ export class RelationshipTypeController {
         const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipTypeModel.listInDateRange())
-            .then((results) => results.map(this.mapToResponseObject))
-            .then(sendDocument(res), sendError(res))
+            .then((results) => results ? results.map(this.mapToResponseObject) : null)
+            .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 

@@ -48,7 +48,9 @@ class Seeder {
     }
 
     /* tslint:disable:max-func-body-length */
-    public static async createRelationshipTypeModel(values:IRelationshipType,attributeNames:IRelationshipAttributeName[]) {
+    public static async createRelationshipTypeModel
+    <T extends { attribute:IRelationshipAttributeName, optionalInd:boolean, defaultValue:string}>
+    (values:IRelationshipType, attributeValues:T[]) {
 
         const code = values.code;
         const existingModel = await RelationshipTypeModel.findByCodeIgnoringDateRange(code);
@@ -59,12 +61,13 @@ class Seeder {
 
             const attributeNameUsages:IRelationshipAttributeNameUsage[] = [];
 
-            if (attributeNames) {
-                for (let i = 0; i < attributeNames.length; i = i+1) {
-                    const attributeName = attributeNames[i];
+            if (attributeValues) {
+                for (let i = 0; i < attributeValues.length; i = i+1) {
+                    const attributeValue = attributeValues[i];
                     const attributeNameUsage = await RelationshipAttributeNameUsageModel.create({
-                        optionalInd: true,
-                        attributeName: attributeName
+                        attributeName: attributeValue.attribute,
+                        optionalInd: attributeValue.optionalInd,
+                        defaultValue: attributeValue.defaultValue
                     });
                     attributeNameUsages.push(attributeNameUsage);
                 }
@@ -120,7 +123,10 @@ const loadReferenceData = async () => {
         shortDecodeText: 'Business Representative',
         longDecodeText: 'Business Representative',
         startDate: now
-    } as IRelationshipType, [employeeNumber_attributeName, employmentType_attributeName]);
+    } as IRelationshipType, [
+        {attribute: employeeNumber_attributeName, optionalInd: true, defaultValue: null},
+        {attribute: employmentType_attributeName, optionalInd: false, defaultValue: 'Permanent'}
+    ]);
 
     await Seeder.createRelationshipTypeModel({
         code: 'ONLINE_SERVICE_PROVIDER',

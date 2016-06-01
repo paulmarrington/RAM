@@ -7,27 +7,30 @@ export function sendResource<T>(res: Response) {
     return (doc: T): T => {
         if (doc) {
             res.json(doc);
+            res.status(200);
         }
         return doc;
     };
 }
 
-export function sendList<R, T extends { value?: T, href: string }>(res: Response) {
+export function sendList<T>(res: Response) {
     'use strict';
-    return (size: number, results: T[]): T[] => {
+    return (results: T[]): T[] => {
         if (results) {
             res.json(results);
+            res.status(200);
         }
         return results;
     };
 }
 
-export function sendResultResponse<R, T extends { value?: T, href: string }>(res: Response) {
+export function sendResult<T>(res: Response) {
     'use strict';
-    return (size: number, results: T[]): T[] => {
+    return (totalCount: number, resultStart: number, results: T[]): T[] => {
         if (results) {
             res.json({
-                totalCount: size,
+                totalCount: totalCount,
+                resultStart: resultStart,
                 results: results
             });
         }
@@ -35,6 +38,7 @@ export function sendResultResponse<R, T extends { value?: T, href: string }>(res
     };
 }
 
+// @deprecated
 export function sendResourceWithRef<T>(res: Response) {
     'use strict';
     return (ref: string, doc: T): T => {
@@ -115,9 +119,9 @@ export function sendError<T>(res: Response) {
 export function sendNotFoundError<T>(res: Response) {
     'use strict';
     return (doc: T): T => {
-        res.status(404);
         if (!doc) {
             res.json(new ErrorResponse(404, 'Can\'t find the requested resource.'));
+            res.status(404);
         }
         return doc;
     };

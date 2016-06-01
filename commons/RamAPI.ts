@@ -35,6 +35,11 @@ export interface IKeyValue<T> {
     value: T;
 }
 
+export interface IHrefValue<T> {
+    href: string;
+    value: T;
+}
+
 /***************************************************
  ***************************************************/
 
@@ -42,8 +47,8 @@ export interface ICodeDecode {
     code:             string;
     shortDecodeText:  string;
     longDecodeText:   string;
-    startDate:        Date;
-    endDate?:         Date;
+    startTimestamp:   Date;
+    endTimestamp?:    Date;
 }
 
 export interface IName {
@@ -86,14 +91,14 @@ export interface IRelationship {
 }
 
 export interface IRelationshipType extends ICodeDecode {
-    voluntaryInd:     boolean;
-    attributeDefs:    IRelationshipAttributeName[]
+    voluntaryInd:               boolean;
+    relationshipAttributeNames: IHrefValue<IRelationshipAttributeName>[]
 }
 
 export interface IRelationshipAttributeName extends ICodeDecode {
     name:              string
-    domain:            string
     mandatory:         boolean
+    fieldType:         string
     defaultValue?:     string
     permittedValues:   string[]
 }
