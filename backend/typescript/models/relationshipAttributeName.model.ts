@@ -1,5 +1,8 @@
 import * as mongoose from 'mongoose';
 import {ICodeDecode, CodeDecodeSchema} from './base';
+import {HrefValue, RelationshipAttributeName as DTO} from '../../../commons/RamAPI';
+
+// enums, utilities, helpers ..........................................................................................
 
 // see https://github.com/atogov/RAM/wiki/Relationship-Attribute-Types
 export class RelationshipAttributeNameDomain {
@@ -43,12 +46,7 @@ export class RelationshipAttributeNameDomain {
     }
 }
 
-export interface IRelationshipAttributeName extends ICodeDecode {
-    domain: string;
-    purposeText: string;
-    permittedValues: string[];
-    domainEnum(): RelationshipAttributeNameDomain;
-}
+// schema .............................................................................................................
 
 const RelationshipAttributeNameSchema = CodeDecodeSchema({
     domain: {
@@ -67,9 +65,16 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
     }]
 });
 
-RelationshipAttributeNameSchema.method('domainEnum', function () {
-    return RelationshipAttributeNameDomain.valueOf(this.domain);
-});
+// interfaces .........................................................................................................
+
+export interface IRelationshipAttributeName extends ICodeDecode {
+    domain: string;
+    purposeText: string;
+    permittedValues: string[];
+    domainEnum(): RelationshipAttributeNameDomain;
+    toHrefValue(): HrefValue<DTO>;
+    toDTO(): DTO;
+}
 
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
     findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
@@ -77,6 +82,34 @@ export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelatio
     listIgnoringDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
     listInDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
 }
+
+// instance methods ...................................................................................................
+
+RelationshipAttributeNameSchema.method('domainEnum', function () {
+    return RelationshipAttributeNameDomain.valueOf(this.domain);
+});
+
+RelationshipAttributeNameSchema.method('toHrefValue', function () {
+    return new HrefValue(
+        '/api/v1/relationshipAttributeName/' + this.code,
+        this.toDTO()
+    );
+});
+
+RelationshipAttributeNameSchema.method('toDTO', function () {
+    return new DTO(
+        this.code,
+        this.shortDecodeText,
+        this.longDecodeText,
+        this.startDate,
+        this.endDate,
+        this.shortDecodeText,
+        this.domain,
+        this.permittedValues
+    );
+});
+
+// static methods .....................................................................................................
 
 RelationshipAttributeNameSchema.static('findByCodeIgnoringDateRange', (code:String) => {
     return this.RelationshipAttributeNameModel
@@ -119,6 +152,8 @@ RelationshipAttributeNameSchema.static('listInDateRange', () => {
         .sort({name: 1})
         .exec();
 });
+
+// concrete model .....................................................................................................
 
 export const RelationshipAttributeNameModel = mongoose.model(
     'RelationshipAttributeName',

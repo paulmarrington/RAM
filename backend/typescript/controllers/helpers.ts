@@ -6,8 +6,9 @@ export function sendResource<T>(res: Response) {
     'use strict';
     return (doc: T): T => {
         if (doc) {
-            res.json(doc);
             res.status(200);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(doc, null, 4));
         }
         return doc;
     };
@@ -17,38 +18,11 @@ export function sendList<T>(res: Response) {
     'use strict';
     return (results: T[]): T[] => {
         if (results) {
-            res.json(results);
             res.status(200);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(results, null, 4));
         }
         return results;
-    };
-}
-
-export function sendResult<T>(res: Response) {
-    'use strict';
-    return (totalCount: number, resultStart: number, results: T[]): T[] => {
-        if (results) {
-            res.json({
-                totalCount: totalCount,
-                resultStart: resultStart,
-                results: results
-            });
-        }
-        return results;
-    };
-}
-
-// @deprecated
-export function sendResourceWithRef<T>(res: Response) {
-    'use strict';
-    return (ref: string, doc: T): T => {
-        if (doc) {
-            res.json({
-                ref: ref,
-                value: doc
-            });
-        }
-        return doc;
     };
 }
 
@@ -58,9 +32,9 @@ export function sendDocument<T>(res: Response) {
     return (doc: T): T => {
         if (doc) {
             const response: IResponse<T> = {
-                data: doc,
-                status: 200
+                data: doc
             };
+            res.status(200);
             res.json(response);
         }
         return doc;
