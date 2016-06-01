@@ -22,11 +22,11 @@ export class RelationshipAttributeNameDomain {
         RelationshipAttributeNameDomain.SelectMulti
     ];
 
-    public static values():IdentityType[] {
+    public static values():RelationshipAttributeNameDomain[] {
         return RelationshipAttributeNameDomain.AllValues;
     }
 
-    public static valueOf(name:String):IdentityType {
+    public static valueOf(name:String):RelationshipAttributeNameDomain {
         for (let type of RelationshipAttributeNameDomain.AllValues) {
             if (type.name === name) {
                 return type;

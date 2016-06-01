@@ -10,7 +10,7 @@ export class RelationshipAttributeNameController {
     constructor(private relationshipAttributeNameModel: IRelationshipAttributeNameModel) {
     }
 
-    private mapToIHrefValue = (relationshipAttributeName:IRelationshipAttributeName):IRelationshipAttributeNameDTO => {
+    private mapToIHrefValue = (relationshipAttributeName:IRelationshipAttributeName):IHrefValue<IRelationshipAttributeNameDTO> => {
         if (relationshipAttributeName) {
             return {
                 href: '/api/v1/relationshipAttributeName/' + relationshipAttributeName.code,

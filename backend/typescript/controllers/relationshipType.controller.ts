@@ -12,7 +12,7 @@ export class RelationshipTypeController {
     constructor(private relationshipTypeModel: IRelationshipTypeModel) {
     }
 
-    private mapToIHrefValue = (relationshipType:IRelationshipType):IRelationshipTypeDTO => {
+    private mapToIHrefValue = (relationshipType:IRelationshipType):IHrefValue<IRelationshipTypeDTO> => {
         if (relationshipType) {
             return {
                 href: '/api/v1/relationshipType/' + relationshipType.code,
@@ -48,7 +48,7 @@ export class RelationshipTypeController {
                                 permittedValues: attributeNameUsage.attributeName.permittedValues
                             } as IRelationshipAttributeNameDTO
                         } as IHrefValue<IRelationshipAttributeNameDTO>
-                    } as IRelationshipAttributeNameUsage;
+                    } as IRelationshipAttributeNameUsageDTO;
                 })
             } as IRelationshipTypeDTO;
         }

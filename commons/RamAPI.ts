@@ -103,9 +103,7 @@ export interface IRelationshipAttributeNameUsage {
 
 export interface IRelationshipAttributeName extends ICodeDecode {
     name:              string
-    mandatory:         boolean
-    fieldType:         string
-    defaultValue?:     string
+    domain:            string
     permittedValues:   string[]
 }
 
