@@ -26,36 +26,6 @@ export function sendList<T>(res: Response) {
     };
 }
 
-export function sendResult<T>(res: Response) {
-    'use strict';
-    return (totalCount: number, resultStart: number, results: T[]): T[] => {
-        if (results) {
-            res.status(200);
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify({
-                totalCount: totalCount,
-                resultStart: resultStart,
-                results: results
-            }, null, 4));
-        }
-        return results;
-    };
-}
-
-// @deprecated
-export function sendResourceWithRef<T>(res: Response) {
-    'use strict';
-    return (ref: string, doc: T): T => {
-        if (doc) {
-            res.json({
-                ref: ref,
-                value: doc
-            });
-        }
-        return doc;
-    };
-}
-
 // @deprecated
 export function sendDocument<T>(res: Response) {
     'use strict';
