@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
 import {IRAMObject, RAMSchema} from './base';
 
+// enums, utilities, helpers ..........................................................................................
+
 export class IdentityType {
 
     public static ProvidedToken = new IdentityType('agency_provided_token');
@@ -34,12 +36,7 @@ export class IdentityType {
     }
 }
 
-export interface IIdentity extends IRAMObject {
-    idValue: string;
-    identityType: string;
-    defaultInd: boolean;
-    identityTypeEnum(): IdentityType;
-}
+// schema .............................................................................................................
 
 const IdentitySchema = RAMSchema({
     idValue: {
@@ -60,13 +57,26 @@ const IdentitySchema = RAMSchema({
     }
 });
 
-IdentitySchema.method('identityTypeEnum', function () {
-    return IdentityType.valueOf(this.identityType);
-});
+// interfaces .........................................................................................................
+
+export interface IIdentity extends IRAMObject {
+    idValue: string;
+    identityType: string;
+    defaultInd: boolean;
+    identityTypeEnum(): IdentityType;
+}
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findByIdValueAndType: (idValue:String, type:IdentityType) => mongoose.Promise<IIdentity>;
 }
+
+// instance methods ...................................................................................................
+
+IdentitySchema.method('identityTypeEnum', function () {
+    return IdentityType.valueOf(this.identityType);
+});
+
+// static methods .....................................................................................................
 
 IdentitySchema.static('findByIdValueAndType', (idValue:String, type:IdentityType) => {
     return this.IdentityModel
@@ -76,6 +86,8 @@ IdentitySchema.static('findByIdValueAndType', (idValue:String, type:IdentityType
         })
         .exec();
 });
+
+// concrete model .....................................................................................................
 
 export const IdentityModel = mongoose.model(
     'Identity',

@@ -8,12 +8,17 @@ import {
     RelationshipAttributeNameUsage as RelationshipAttributeNameUsageDTO
 } from '../../../commons/RamAPI';
 
-// force schema to load first
-// see https://github.com/atogov/RAM/pull/220#discussion_r65115456
+// force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
+
 /* tslint:disable:no-unused-variable */
 const _RelationshipAttributeNameModel = RelationshipAttributeNameModel;
+
 /* tslint:disable:no-unused-variable */
 const _RelationshipAttributeNameUsageModel = RelationshipAttributeNameUsageModel;
+
+// enums, utilities, helpers ..........................................................................................
+
+// schema .............................................................................................................
 
 const RelationshipTypeSchema = CodeDecodeSchema({
     voluntaryInd: {
@@ -26,6 +31,8 @@ const RelationshipTypeSchema = CodeDecodeSchema({
         ref: 'RelationshipAttributeNameUsage'
     }]
 });
+
+// interfaces .........................................................................................................
 
 export interface IRelationshipType extends ICodeDecode {
     voluntaryInd: boolean;
@@ -41,30 +48,7 @@ export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType
     listInDateRange: () => mongoose.Promise<IRelationshipType[]>;
 }
 
-RelationshipTypeSchema.method('toHrefValue', function () {
-    return new HrefValue(
-        '/api/v1/relationshipType/' + this.code,
-        this.toDTO()
-    );
-});
-
-RelationshipTypeSchema.method('toDTO', function () {
-    return new DTO(
-        this.code,
-        this.shortDecodeText,
-        this.longDecodeText,
-        this.startDate,
-        this.endDate,
-        this.voluntaryInd,
-        this.attributeNameUsages.map((attributeNameUsage:IRelationshipAttributeNameUsage) => {
-            return new RelationshipAttributeNameUsageDTO(
-                attributeNameUsage.optionalInd,
-                attributeNameUsage.defaultValue,
-                attributeNameUsage.attributeName.toHrefValue()
-            );
-        })
-    );
-});
+// static methods .....................................................................................................
 
 RelationshipTypeSchema.static('findByCodeIgnoringDateRange', (code:String) => {
     return this.RelationshipTypeModel
@@ -113,6 +97,35 @@ RelationshipTypeSchema.static('listInDateRange', () => {
         .sort({name: 1})
         .exec();
 });
+
+// instance methods ...................................................................................................
+
+RelationshipTypeSchema.method('toHrefValue', function () {
+    return new HrefValue(
+        '/api/v1/relationshipType/' + this.code,
+        this.toDTO()
+    );
+});
+
+RelationshipTypeSchema.method('toDTO', function () {
+    return new DTO(
+        this.code,
+        this.shortDecodeText,
+        this.longDecodeText,
+        this.startDate,
+        this.endDate,
+        this.voluntaryInd,
+        this.attributeNameUsages.map((attributeNameUsage:IRelationshipAttributeNameUsage) => {
+            return new RelationshipAttributeNameUsageDTO(
+                attributeNameUsage.optionalInd,
+                attributeNameUsage.defaultValue,
+                attributeNameUsage.attributeName.toHrefValue()
+            );
+        })
+    );
+});
+
+// concrete model .....................................................................................................
 
 export const RelationshipTypeModel = mongoose.model(
     'RelationshipType',

@@ -2,6 +2,8 @@ import * as mongoose from 'mongoose';
 import {ICodeDecode, CodeDecodeSchema} from './base';
 import {HrefValue, RelationshipAttributeName as DTO} from '../../../commons/RamAPI';
 
+// enums, utilities, helpers ..........................................................................................
+
 // see https://github.com/atogov/RAM/wiki/Relationship-Attribute-Types
 export class RelationshipAttributeNameDomain {
 
@@ -44,6 +46,8 @@ export class RelationshipAttributeNameDomain {
     }
 }
 
+// schema .............................................................................................................
+
 const RelationshipAttributeNameSchema = CodeDecodeSchema({
     domain: {
         type: String,
@@ -61,6 +65,8 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
     }]
 });
 
+// interfaces .........................................................................................................
+
 export interface IRelationshipAttributeName extends ICodeDecode {
     domain: string;
     purposeText: string;
@@ -76,6 +82,8 @@ export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelatio
     listIgnoringDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
     listInDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
 }
+
+// instance methods ...................................................................................................
 
 RelationshipAttributeNameSchema.method('domainEnum', function () {
     return RelationshipAttributeNameDomain.valueOf(this.domain);
@@ -100,6 +108,8 @@ RelationshipAttributeNameSchema.method('toDTO', function () {
         this.permittedValues
     );
 });
+
+// static methods .....................................................................................................
 
 RelationshipAttributeNameSchema.static('findByCodeIgnoringDateRange', (code:String) => {
     return this.RelationshipAttributeNameModel
@@ -142,6 +152,8 @@ RelationshipAttributeNameSchema.static('listInDateRange', () => {
         .sort({name: 1})
         .exec();
 });
+
+// concrete model .....................................................................................................
 
 export const RelationshipAttributeNameModel = mongoose.model(
     'RelationshipAttributeName',
