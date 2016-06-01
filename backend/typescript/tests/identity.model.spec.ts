@@ -19,7 +19,7 @@ describe('RAM Identity', () => {
             identity1 = await IdentityModel.create({
                 idValue: 'uuid_1',
                 identityTypeName: IdentityType.LinkId.name,
-                defaultValue: null
+                default: null
             });
 
             done();
@@ -51,7 +51,7 @@ describe('RAM Identity', () => {
             const instance = await IdentityModel.create({
                 idValue: idValue,
                 identityTypeName: type.name,
-                defaultValue: null
+                default: null
             });
 
             expect(instance).not.toBeNull();
@@ -78,7 +78,7 @@ describe('RAM Identity', () => {
             await IdentityModel.create({
                 idValue: 'uuid_1',
                 identityTypeName: '__BOGUS__',
-                defaultValue: null
+                default: null
             });
             fail('should not have inserted with invalid type');
             done();

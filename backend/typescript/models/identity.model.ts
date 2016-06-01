@@ -33,7 +33,7 @@ export class IdentityType {
 export interface IIdentity extends IRAMObject {
     idValue: string;
     identityTypeName: string;
-    defaultValues: string;
+    default: boolean;
     type(): IdentityType;
 }
 
@@ -49,8 +49,8 @@ const IdentitySchema = RAMSchema({
         trim: true,
         enum: IdentityType.values()
     },
-    defaultValue: {
-        type: String
+    default: {
+        type: Boolean
     }
 });
 
