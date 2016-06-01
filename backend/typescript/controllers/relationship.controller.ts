@@ -70,7 +70,8 @@ export class RelationshipController {
     });
   }
 
-  private mergeIdentities(relationshipTable) {
+  /* tslint:disable:no-empty */
+  private mergeIdentities(relationshipTable:Object) {
   }
 
   /* 
@@ -185,6 +186,7 @@ export class RelationshipController {
   /*
    * Version that matches HLD as of 13-May-2016
    */
+  /* tslint:disable:no-unused-variable */
   private getRelationdhipTable2 = async (req: Request, res: Response) => {
     try {
       const party = await this.partyModel.getPartyByIdentity(
@@ -213,7 +215,7 @@ export class RelationshipController {
 
       const relationshipTable = this.mapRows(
         req.params.delegate_or_subject, relationships);
-       const tableTuples = this.mergeIdentities(relationshipTable)
+      const tableTuples = this.mergeIdentities(relationshipTable);
 
       sendDocument(res)({
         total: rowCount,
