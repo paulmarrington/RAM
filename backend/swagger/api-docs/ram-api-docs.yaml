@@ -338,6 +338,17 @@
             $ref: '#/responses/400'
           500:
             $ref: '#/responses/500'            
+    /relationshipTypes:
+      get:
+        tags:
+          - RelationshipType
+        responses:
+          200:
+            schema:
+              type: array
+              items: 
+                $ref: '#/definitions/RelationshipTypeResourceReference'
+
     /relationshipType/{code}:  
       put:
         parameters:
@@ -345,7 +356,16 @@
             in: path
             type: string
             required: true
-            description: Relationship type code to be retrieved
+            description: Create or update a relationship type
+          
+          - name: RelationshipType
+            in: body
+            description: |
+              Information about the new relationship type to be created. The code in path must be identical to the code in the request body.
+              If the code doesn't exist in the backend, a new resource will be created otherwise an existing resource with the same code gets updated.
+            required: true
+            schema:
+              $ref: '#/definitions/RelationshipType'            
 
         summary: Create/ Update Relationship Type
         operationId: CreateUpdateRelationshipType
@@ -357,7 +377,7 @@
           200:   
             description: The newly created or updated relationship returned back
             schema:
-              $ref: "#/definitions/RelationshipTypeResourceReference"
+              $ref: "#/definitions/RelationshipType"
           400: 
             $ref: '#/responses/400'
           500:
@@ -420,7 +440,7 @@
           200:   
             description: Relationship types in RAM
             schema:
-              $ref: '#/definitions/RelationshipTypeResourceReference'
+              $ref: '#/definitions/RelationshipType'
           400: 
             $ref: '#/responses/400'
           500:
@@ -1138,10 +1158,7 @@
         - $ref: '#/definitions/ICodeDecode'
         - $ref: '#/definitions/RelationshipTypeBusinessIdentifier'
         - $ref: '#/definitions/RelationshipTypeDetails'         
-        - type: object
-          description: |
-              Relationship Types are the list of possbile Relationships that parties can have                
-    
+   
     RelationshipTypeBusinessIdentifier:
       type: object
       required: ["code"]    
@@ -1173,7 +1190,7 @@
     RelationshipTypeResourceReference:
       type: object
       description: A reference to a Resource      
-      required: ["href","value"]
+      required: ["href"]
       properties:
         href:
           type: string
