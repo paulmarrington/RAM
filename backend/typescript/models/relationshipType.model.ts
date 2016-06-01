@@ -26,6 +26,7 @@ const RelationshipTypeSchema = CodeDecodeSchema({
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
     findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipType>;
     findByCodeInDateRange: (id:String) => mongoose.Promise<IRelationshipType>;
+    listIgnoringDateRange: () => mongoose.Promise<IRelationshipType[]>;
     listInDateRange: () => mongoose.Promise<IRelationshipType[]>;
 }
 
@@ -50,6 +51,17 @@ RelationshipTypeSchema.static('findByCodeInDateRange', (code:String) => {
         .deepPopulate([
             'attributeNameUsages.attributeName'
         ])
+        .exec();
+});
+
+RelationshipTypeSchema.static('listIgnoringDateRange', () => {
+    return this.RelationshipTypeModel
+        .find({
+        })
+        .deepPopulate([
+            'attributeNameUsages.attributeName'
+        ])
+        .sort({name: 1})
         .exec();
 });
 
