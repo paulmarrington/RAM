@@ -2,7 +2,11 @@ import * as mongoose from 'mongoose';
 import {ICodeDecode, CodeDecodeSchema} from './base';
 import {RelationshipAttributeNameModel} from './relationshipAttributeName.model';
 import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from './relationshipAttributeNameUsage.model';
-import {HrefValue, RelationshipType as DTO, RelationshipAttributeNameUsage as RelationshipAttributeNameUsageDTO} from '../../../commons/RamAPI';
+import {
+    HrefValue,
+    RelationshipType as DTO,
+    RelationshipAttributeNameUsage as RelationshipAttributeNameUsageDTO
+} from '../../../commons/RamAPI';
 
 // force schema to load first
 // see https://github.com/atogov/RAM/pull/220#discussion_r65115456
@@ -14,6 +18,7 @@ const _RelationshipAttributeNameUsageModel = RelationshipAttributeNameUsageModel
 const RelationshipTypeSchema = CodeDecodeSchema({
     voluntaryInd: {
         type: Boolean,
+        required: [true, 'Voluntary Ind is required'],
         default: false
     },
     attributeNameUsages: [{
@@ -51,7 +56,7 @@ RelationshipTypeSchema.method('toDTO', function () {
         this.startDate,
         this.endDate,
         this.voluntaryInd,
-        this.attributeNameUsages.map((attributeNameUsage) => {
+        this.attributeNameUsages.map((attributeNameUsage:IRelationshipAttributeNameUsage) => {
             return new RelationshipAttributeNameUsageDTO(
                 attributeNameUsage.optionalInd,
                 attributeNameUsage.defaultValue,

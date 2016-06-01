@@ -62,9 +62,9 @@ export function sendDocument<T>(res: Response) {
     return (doc: T): T => {
         if (doc) {
             const response: IResponse<T> = {
-                data: doc,
-                status: 200
+                data: doc
             };
+            res.status(200);
             res.json(response);
         }
         return doc;
