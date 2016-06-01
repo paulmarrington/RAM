@@ -74,6 +74,7 @@ RelationshipAttributeNameSchema.method('domainEnum', function () {
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
     findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
     findByCodeInDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
+    listIgnoringDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
     listInDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
 }
 
@@ -92,6 +93,17 @@ RelationshipAttributeNameSchema.static('findByCodeInDateRange', (code:String) =>
             startDate: {$lte: new Date()},
             $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
         })
+        .exec();
+});
+
+RelationshipAttributeNameSchema.static('listIgnoringDateRange', () => {
+    return this.RelationshipAttributeNameModel
+        .find({
+        })
+        .deepPopulate([
+            'attributeNameUsages.attributeName'
+        ])
+        .sort({name: 1})
         .exec();
 });
 
