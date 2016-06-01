@@ -11,6 +11,16 @@ export class RelationshipTypeController {
     constructor(private relationshipTypeModel: IRelationshipTypeModel) {
     }
 
+    private mapToIHrefValue = (relationshipType:IRelationshipType):IRelationshipTypeDTO => {
+        if (relationshipType) {
+            return {
+                href: '/api/v1/relationshipType/' + relationshipType.code,
+                value: this.mapToResponseObject(relationshipType)
+            };
+        }
+        return null;
+    };
+
     private mapToResponseObject = (relationshipType:IRelationshipType):IRelationshipTypeDTO => {
         if (relationshipType) {
             return {
@@ -60,7 +70,7 @@ export class RelationshipTypeController {
         const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipTypeModel.listInDateRange())
-            .then((results) => results ? results.map(this.mapToResponseObject) : null)
+            .then((results) => results ? results.map(this.mapToIHrefValue) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };

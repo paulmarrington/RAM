@@ -10,6 +10,16 @@ export class RelationshipAttributeNameController {
     constructor(private relationshipAttributeNameModel: IRelationshipAttributeNameModel) {
     }
 
+    private mapToIHrefValue = (relationshipAttributeName:IRelationshipAttributeName):IRelationshipAttributeNameDTO => {
+        if (relationshipAttributeName) {
+            return {
+                href: '/api/v1/relationshipAttributeName/' + relationshipAttributeName.code,
+                value: this.mapToResponseObject(relationshipAttributeName)
+            };
+        }
+        return null;
+    };
+
     private mapToResponseObject = (relationshipAttributeName:IRelationshipAttributeName):IRelationshipAttributeNameDTO => {
         if (relationshipAttributeName) {
             return {
@@ -44,7 +54,7 @@ export class RelationshipAttributeNameController {
         const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipAttributeNameModel.listInDateRange())
-            .then((results) => results ? results.map(this.mapToResponseObject) : null)
+            .then((results) => results ? results.map(this.mapToIHrefValue) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
