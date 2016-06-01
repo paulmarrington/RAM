@@ -34,7 +34,7 @@ export interface IIdentity extends IRAMObject {
     idValue: string;
     identityTypeName: string;
     defaultInd: boolean;
-    type(): IdentityType;
+    identityType(): IdentityType;
 }
 
 const IdentitySchema = RAMSchema({
