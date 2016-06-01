@@ -35,7 +35,7 @@ export interface IKeyValue<T> {
     value: T;
 }
 
-export class IHrefValue<T> {
+export class HrefValue<T> {
     constructor(public href:string,
                 public value?:T) {
     }
@@ -92,26 +92,26 @@ export interface IRelationship {
   subjectNickName?:  string;
 }
 
-export class IRelationshipType extends ICodeDecode {
+export class RelationshipType extends ICodeDecode {
     constructor(code:string,
                 shortDecodeText:string,
                 longDecodeText:string,
                 startTimestamp:Date,
                 endTimestamp:Date,
                 public voluntaryInd:boolean,
-                public relationshipAttributeNames:IRelationshipAttributeNameUsage[]) {
+                public relationshipAttributeNames:RelationshipAttributeNameUsage[]) {
         super(code, shortDecodeText, longDecodeText, startTimestamp, endTimestamp);
     };
 }
 
-export class IRelationshipAttributeNameUsage {
+export class RelationshipAttributeNameUsage {
     constructor(public mandatory:boolean,
                 public defaultValue:string,
-                public attributeNameDef:IHrefValue<IRelationshipAttributeName>) {
+                public attributeNameDef:HrefValue<RelationshipAttributeName>) {
     };
 }
 
-export class IRelationshipAttributeName extends ICodeDecode {
+export class RelationshipAttributeName extends ICodeDecode {
     constructor(code:string,
                 shortDecodeText:string,
                 longDecodeText:string,
