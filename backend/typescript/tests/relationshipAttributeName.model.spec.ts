@@ -161,6 +161,24 @@ describe('RAM Relationship Attribute Name', () => {
         }
     });
 
+    it('list in date range', async (done) => {
+        try {
+            const instances = await RelationshipAttributeNameModel.listInDateRange();
+            expect(instances).not.toBeNull();
+            expect(instances.length).toBeGreaterThan(0);
+            instances.forEach((instance) => {
+                expect(instance.startDate.valueOf()).toBeLessThan(new Date().valueOf());
+                if (instance.endDate) {
+                    expect(instance.endDate.valueOf()).toBeGreaterThan(new Date().valueOf());
+                }
+            });
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
     it('fails insert with null code', async (done) => {
         try {
             await RelationshipAttributeNameModel.create({
