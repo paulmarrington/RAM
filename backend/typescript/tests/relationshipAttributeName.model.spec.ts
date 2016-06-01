@@ -2,8 +2,7 @@ import {connectDisconnectMongo, dropMongo} from './helpers';
 import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
-    RelationshipAttributeNameStringDomain,
-    RelationshipAttributeNameSingleSelectDomain} from '../models/relationshipAttributeName.model';
+    RelationshipAttributeNameDomain} from '../models/relationshipAttributeName.model';
 import {RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
@@ -29,7 +28,7 @@ describe('RAM Relationship Attribute Name', () => {
                 shortDecodeText: 'Attribute Name',
                 longDecodeText: 'Attribute Name',
                 startDate: new Date(),
-                domain: RelationshipAttributeNameStringDomain,
+                domain: RelationshipAttributeNameDomain.String.name,
                 purposeText: 'This attribute purpose text'
             });
 
@@ -39,7 +38,7 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Attribute Name',
                 startDate: new Date(),
                 endDate: new Date(2099, 1, 1),
-                domain: RelationshipAttributeNameStringDomain,
+                domain: RelationshipAttributeNameDomain.String.name,
                 purposeText: 'This attribute purpose text'
             });
 
@@ -49,7 +48,7 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Attribute Name',
                 startDate: new Date(2016, 1, 1),
                 endDate: new Date(2016, 1, 2),
-                domain: RelationshipAttributeNameStringDomain,
+                domain: RelationshipAttributeNameDomain.String.name,
                 purposeText: 'This attribute purpose text'
             });
 
@@ -58,7 +57,7 @@ describe('RAM Relationship Attribute Name', () => {
                 shortDecodeText: 'Attribute Name',
                 longDecodeText: 'Attribute Name',
                 startDate: new Date(),
-                domain: RelationshipAttributeNameSingleSelectDomain,
+                domain: RelationshipAttributeNameDomain.SelectSingle.name,
                 purposeText: 'This attribute purpose text',
                 permittedValues: ['Choice 1', 'Choice 2', 'Choice 3']
             });
@@ -184,7 +183,7 @@ describe('RAM Relationship Attribute Name', () => {
             await RelationshipAttributeNameModel.create({
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
-                domain: RelationshipAttributeNameStringDomain,
+                domain: RelationshipAttributeNameDomain.String.name,
                 purposeText: 'This attribute purpose text',
                 startDate: new Date()
             });
@@ -201,7 +200,7 @@ describe('RAM Relationship Attribute Name', () => {
             await RelationshipAttributeNameModel.create({
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
-                domain: RelationshipAttributeNameStringDomain,
+                domain: RelationshipAttributeNameDomain.String.name,
                 purposeText: 'This attribute purpose text',
                 startDate: new Date()
             });
@@ -254,7 +253,7 @@ describe('RAM Relationship Attribute Name', () => {
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
-                domain: RelationshipAttributeNameStringDomain
+                domain: RelationshipAttributeNameDomain.String.name
             });
             fail('should not have inserted with null purpose text');
             done();
@@ -271,7 +270,7 @@ describe('RAM Relationship Attribute Name', () => {
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
-                domain: RelationshipAttributeNameStringDomain,
+                domain: RelationshipAttributeNameDomain.String.name,
                 purposeText: ''
             });
             fail('should not have inserted with empty purpose text');
@@ -292,7 +291,7 @@ describe('RAM Relationship Attribute Name', () => {
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
-                domain: RelationshipAttributeNameStringDomain,
+                domain: RelationshipAttributeNameDomain.String.name,
                 purposeText: 'This attribute purpose text'
             });
 
@@ -301,7 +300,7 @@ describe('RAM Relationship Attribute Name', () => {
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
-                domain: RelationshipAttributeNameStringDomain,
+                domain: RelationshipAttributeNameDomain.String.name,
                 purposeText: 'This attribute purpose text'
             });
 
@@ -311,6 +310,18 @@ describe('RAM Relationship Attribute Name', () => {
         } catch (e) {
             expect(e.name).toBe('ValidationError');
             expect(e.errors.code.message).toContain('unique');
+            done();
+        }
+    });
+
+    it('converts domain to enum', async (done) => {
+        try {
+            expect(stringRelationshipAttributeNameNoEndDate).not.toBeNull();
+            expect(stringRelationshipAttributeNameNoEndDate.domain).toBe(RelationshipAttributeNameDomain.String.name);
+            expect(stringRelationshipAttributeNameNoEndDate.domainEnum()).toBe(RelationshipAttributeNameDomain.String);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
             done();
         }
     });

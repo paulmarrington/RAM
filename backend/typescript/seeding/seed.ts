@@ -4,8 +4,7 @@ import {conf} from '../bootstrap';
 import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
-    RelationshipAttributeNameStringDomain,
-    RelationshipAttributeNameSingleSelectDomain} from '../models/relationshipAttributeName.model';
+    RelationshipAttributeNameDomain} from '../models/relationshipAttributeName.model';
 import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
@@ -100,7 +99,7 @@ const loadReferenceData = async () => {
         shortDecodeText: 'Employee Number',
         longDecodeText: 'Employee Number',
         startDate: now,
-        domain: RelationshipAttributeNameStringDomain,
+        domain: RelationshipAttributeNameDomain.String.name,
         purposeText: 'Employee Number'
     } as IRelationshipAttributeName);
 
@@ -109,7 +108,7 @@ const loadReferenceData = async () => {
         shortDecodeText: 'Employment Type',
         longDecodeText: 'Employment Type',
         startDate: now,
-        domain: RelationshipAttributeNameSingleSelectDomain,
+        domain: RelationshipAttributeNameDomain.SelectSingle.name,
         purposeText: 'Employee Type',
         permittedValues: ['Permanent', 'Contractor', 'Casual']
     } as IRelationshipAttributeName);
