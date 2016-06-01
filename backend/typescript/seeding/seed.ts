@@ -32,7 +32,6 @@ class Seeder {
         mongoose.connection.close();
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async createRelationshipAttributeNameModel(values:IRelationshipAttributeName) {
         const code = values.code;
         const existingModel = await RelationshipAttributeNameModel.findByCodeIgnoringDateRange(code);
@@ -63,7 +62,6 @@ class Seeder {
         return attributeNameUsages;
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async createRelationshipTypeModel
     <T extends { attribute:IRelationshipAttributeName, optionalInd:boolean, defaultValue:string}>
     (values:IRelationshipType, attributeValues:T[]) {
