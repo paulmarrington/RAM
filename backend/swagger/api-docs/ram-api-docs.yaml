@@ -690,7 +690,7 @@
       - $ref: '#/definitions/PartyDetails'          
       description: A Party is the concept that participates in Relationships.
       type: object
-      required: ["_self","roles","identities"]
+      required: ["roles","identities"]
 
     # Parties don't have business identifiers!!
 
@@ -744,11 +744,8 @@
       description: |
         Profile Provider. TBD        
       type: object
-      required: ["_self","code","shortDecodeText","longDecodeText","startTimestamp"]
+      required: ["code","shortDecodeText","longDecodeText","startTimestamp"]
       properties:
-        _self: 
-          type: string
-          description: URI that uniquely identifying this resource.
         code: 
           type: string
           enum: ['self-asserted','mygov','vanguard','auth-app']  
@@ -997,7 +994,7 @@
       description: |
         A Role Attribute Name defines: what are the permitted set of Role Attribute and meta-data about those attributes.      
       type: object
-      required: ["name","mandatory","defaultValue","acceptedValues"]
+      required: ["name","mandatory","defaultValue"]
       properties:
         name: 
           type: string
@@ -1008,7 +1005,7 @@
         defaultValue:
           type: string
           description: The default value for this attribute
-        acceptedValues:
+        permittedValues:
           description: what are the accepted value types
           type: array
           items:
@@ -1019,9 +1016,6 @@
         - $ref: '#/definitions/ICodeDecode'
         - $ref: '#/definitions/RelationshipAttributeNameBusinessIdentifier'
         - $ref: '#/definitions/RelationshipAttributeNameDetails'         
-        - type: object
-          description: |
-              A Role Attribute Name defines: what are the permitted set of Role Attribute and meta-data about those attributes.    
     
     RelationshipAttributeNameBusinessIdentifier:
       type: object
@@ -1035,16 +1029,11 @@
       type: object
       required: ["mandatory","fieldType"]    
       properties:       
-        mandatory:
-          type: boolean
-          description: should a value to be provided for this attribute
-        fieldType:
+        domain:
+          description: It is the field type
           type: string
-          enum: ['null','boolean','number','string','date','singleSelect','multiSelect']
-        defaultValue:
-          type: string
-          description: The default value for this attribute
-        acceptedValues:
+          enum: ['NULL','BOOLEAN','NUMBER','STRING','DATE','SINGLE_SELECT','MULTI_SELECT']
+        permittedValues:
           description: what are the accepted value types
           type: array
           items:
@@ -1174,11 +1163,22 @@
         voluntaryInd:
           type: boolean
           description: Does the Subject Party get a say whether the delegate may have this relationship?
-        RelationshipAttributeNames:
+        relationshipAttributeNames:
           type: array
           description: Relationship attributes that may be used with this resource 
-          items: 
-            $ref: '#/definitions/RelationshipAttributeNameResourceReference'               
+          items:
+            type: object
+            properties:
+              mandatory:
+                type: boolean
+                description: should a value to be provided for this attribute
+              defaultValue:
+                type: string
+                description: The default value for this attribute
+              attributeName:
+                type: object
+                schema:
+                  $ref: '#/definitions/RelationshipAttributeNameResourceReference'               
 
     RelationshipTypeRequest:
       allOf:
@@ -1240,18 +1240,15 @@
 
     IRAMObject:
       type: object
-      required: ['_self','lastUpdatedTimestamp','lastUpdatedBy','deletedIndicator','resourceVersionNumber']
+      required: ['lastUpdatedTimestamp','lastUpdatedBy','deletedIndicator','resourceVersionNumber']
       properties:
-        _self:
-          description: This is the hypermedia reference to each resource.
-          type: string
         lastUpdatedTimestamp:
           description: This is timestamp when this resource was first created/ subsequently updated.  Will be used for optimistic concurrency control.
           type: string
           format: date-time          
         lastUpdatedBy:
           type: string
-          description: This is the user (party or agency staff member) who last updated the resource          
+          description: This is the user (party or agency staff member) who last updated the resource        
         deletedIndicator:
           type: boolean
           description: Has this resource been logically deleted.
@@ -1261,12 +1258,8 @@
           
     ICodeDecode:
       type: object
-      required: ['_self','code','shortDecodeText','longDecodeText','startTimestamp']
+      required: ['code','shortDecodeText','longDecodeText','startTimestamp']
       properties:
-        _self:
-          description: This is the hypermedia reference to this piece of reference data.
-          type: string
-        #I want to remove this as sometimes I want to call it: Name, Type or Code.
         code:
           description: A human friendly mneumonic for this reference data concept.
           type: string
