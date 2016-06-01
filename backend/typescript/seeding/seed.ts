@@ -46,34 +46,32 @@ class Seeder {
         }
     }
 
+    public static async createRelationshipAttributeNameUsageModels
+    <T extends { attribute:IRelationshipAttributeName, optionalInd:boolean, defaultValue:string}>(attributeValues:T[]) {
+        const attributeNameUsages:IRelationshipAttributeNameUsage[] = [];
+        if (attributeValues) {
+            for (let i = 0; i < attributeValues.length; i = i+1) {
+                const attributeValue = attributeValues[i];
+                const attributeNameUsage = await RelationshipAttributeNameUsageModel.create({
+                    attributeName: attributeValue.attribute,
+                    optionalInd: attributeValue.optionalInd,
+                    defaultValue: attributeValue.defaultValue
+                });
+                attributeNameUsages.push(attributeNameUsage);
+            }
+        }
+        return attributeNameUsages;
+    }
+
     /* tslint:disable:max-func-body-length */
     public static async createRelationshipTypeModel
     <T extends { attribute:IRelationshipAttributeName, optionalInd:boolean, defaultValue:string}>
     (values:IRelationshipType, attributeValues:T[]) {
-
         const code = values.code;
         const existingModel = await RelationshipTypeModel.findByCodeIgnoringDateRange(code);
-
         if (existingModel === null) {
-
             console.log('-', code);
-
-            const attributeNameUsages:IRelationshipAttributeNameUsage[] = [];
-
-            if (attributeValues) {
-                for (let i = 0; i < attributeValues.length; i = i+1) {
-                    const attributeValue = attributeValues[i];
-                    const attributeNameUsage = await RelationshipAttributeNameUsageModel.create({
-                        attributeName: attributeValue.attribute,
-                        optionalInd: attributeValue.optionalInd,
-                        defaultValue: attributeValue.defaultValue
-                    });
-                    attributeNameUsages.push(attributeNameUsage);
-                }
-            }
-
-            values.attributeNameUsages = attributeNameUsages;
-
+            values.attributeNameUsages = await Seeder.createRelationshipAttributeNameUsageModels(attributeValues);
             const model = await RelationshipTypeModel.create(values);
             return model;
 
