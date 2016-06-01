@@ -22,7 +22,7 @@ export class RelationshipAttributeNameDomain {
         RelationshipAttributeNameDomain.SelectMulti
     ];
 
-    public static values():String[] {
+    public static values():IdentityType[] {
         return RelationshipAttributeNameDomain.AllValues;
     }
 
