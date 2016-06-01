@@ -1,9 +1,8 @@
-import {sendDocument, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {Router, Request, Response} from 'express';
-import {IRelationshipTypeModel } from '../models/relationshipType.model';
-import {sendResource, sendList} from './helpers';
+import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {IHrefValue} from '../../../commons/RamAPI';
 import {IRelationshipType} from '../models/relationshipType.model';
+import {IRelationshipTypeModel } from '../models/relationshipType.model';
 import {IRelationshipType as IRelationshipTypeDTO} from '../../../commons/RamAPI';
 import {IRelationshipAttributeName as IRelationshipAttributeNameDTO} from '../../../commons/RamAPI';
 
