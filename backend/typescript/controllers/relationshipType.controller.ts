@@ -31,7 +31,7 @@ export class RelationshipTypeController {
                             endTimestamp: attributeNameUsage.attributeName.endDate,
                             name: attributeNameUsage.attributeName.shortDecodeText,
                             mandatory: !attributeNameUsage.optionalInd,
-                            fieldType: attributeNameUsage.attributeName.domain,
+                            domain: attributeNameUsage.attributeName.domain,
                             defaultValue: attributeNameUsage.defaultValue,
                             permittedValues: attributeNameUsage.attributeName.permittedValues
                         } as IRelationshipAttributeNameDTO
