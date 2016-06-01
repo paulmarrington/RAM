@@ -5,6 +5,7 @@ import {IRelationshipType} from '../models/relationshipType.model';
 import {IRelationshipTypeModel } from '../models/relationshipType.model';
 import {IRelationshipType as IRelationshipTypeDTO} from '../../../commons/RamAPI';
 import {IRelationshipAttributeName as IRelationshipAttributeNameDTO} from '../../../commons/RamAPI';
+import {IRelationshipAttributeNameUsage as IRelationshipAttributeNameUsageDTO} from '../../../commons/RamAPI';
 
 export class RelationshipTypeController {
 
@@ -32,20 +33,22 @@ export class RelationshipTypeController {
                 voluntaryInd: relationshipType.voluntaryInd,
                 relationshipAttributeNames: relationshipType.attributeNameUsages.map((attributeNameUsage) => {
                     return {
-                        href: '/api/v1/relationshipAttributeName/' + attributeNameUsage.attributeName.code,
-                        value: {
-                            code: attributeNameUsage.attributeName.code,
-                            shortDecodeText: attributeNameUsage.attributeName.shortDecodeText,
-                            longDecodeText: attributeNameUsage.attributeName.longDecodeText,
-                            startTimestamp: attributeNameUsage.attributeName.startDate,
-                            endTimestamp: attributeNameUsage.attributeName.endDate,
-                            name: attributeNameUsage.attributeName.shortDecodeText,
-                            mandatory: !attributeNameUsage.optionalInd,
-                            domain: attributeNameUsage.attributeName.domain,
-                            defaultValue: attributeNameUsage.defaultValue,
-                            permittedValues: attributeNameUsage.attributeName.permittedValues
-                        } as IRelationshipAttributeNameDTO
-                    } as IHrefValue<IRelationshipAttributeNameDTO>;
+                        mandatory: !attributeNameUsage.optionalInd,
+                        defaultValue: attributeNameUsage.defaultValue,
+                        attributeNameDef: {
+                            href: '/api/v1/relationshipAttributeName/' + attributeNameUsage.attributeName.code,
+                            value: {
+                                code: attributeNameUsage.attributeName.code,
+                                shortDecodeText: attributeNameUsage.attributeName.shortDecodeText,
+                                longDecodeText: attributeNameUsage.attributeName.longDecodeText,
+                                startTimestamp: attributeNameUsage.attributeName.startDate,
+                                endTimestamp: attributeNameUsage.attributeName.endDate,
+                                name: attributeNameUsage.attributeName.shortDecodeText,
+                                domain: attributeNameUsage.attributeName.domain,
+                                permittedValues: attributeNameUsage.attributeName.permittedValues
+                            } as IRelationshipAttributeNameDTO
+                        } as IHrefValue<IRelationshipAttributeNameDTO>
+                    } as IRelationshipAttributeNameUsage;
                 })
             } as IRelationshipTypeDTO;
         }

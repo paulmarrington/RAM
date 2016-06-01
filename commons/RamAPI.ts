@@ -92,7 +92,13 @@ export interface IRelationship {
 
 export interface IRelationshipType extends ICodeDecode {
     voluntaryInd:               boolean;
-    relationshipAttributeNames: IHrefValue<IRelationshipAttributeName>[]
+    relationshipAttributeNames: IRelationshipAttributeNameUsage[]
+}
+
+export interface IRelationshipAttributeNameUsage {
+    mandatory:         boolean
+    defaultValue?:     string
+    attributeNameDef:  IHrefValue<IRelationshipAttributeName>
 }
 
 export interface IRelationshipAttributeName extends ICodeDecode {
