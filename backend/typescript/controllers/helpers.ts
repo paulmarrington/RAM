@@ -41,59 +41,40 @@ export function sendDocument<T>(res:Response) {
     };
 }
 
-export function check<T>(req:Request, schema:Object):Promise<Request> {
-    'use strict';
-    return new Promise<Request>((resolve, reject) => {
-        req.check(schema);
-        const errors = req.validationErrors(false) as { msg: string }[];
-        if (errors) {
-            const errorMsgs = errors.map((e) => e.msg);
-            reject(errorMsgs);
+class RequestPromise extends Promise<Request> {
+    public req:Request;
+
+    public static create(req:Request,
+                         executor:(resolve:(req:Request) => void, reject:(reason?:Object) => void) => void):RequestPromise {
+        const promise = new RequestPromise(executor);
+        promise.req = req;
+        return promise;
+    }
+
+    public validate(schema:Object):Promise<Request> {
+        if (schema) {
+            this.req.check(schema);
+            const errors = this.req.validationErrors(false) as { msg: string }[];
+            if (errors) {
+                const errorMsgs = errors.map((e) => e.msg);
+                return new Promise<Request>((resolve, reject) => {
+                    reject(errorMsgs);
+                });
+            } else {
+                this.then(() => this.req);
+                return this;
+            }
         } else {
-            resolve(req);
+            this.then(() => this.req);
+            return this;
         }
-    });
+    }
 }
 
-export function checkQuery<T>(req:Request, schema:Object):Promise<Request> {
+export function given<T>(req:Request):RequestPromise {
     'use strict';
-    return new Promise<Request>((resolve, reject) => {
-        req.checkQuery(schema);
-        const errors = req.validationErrors(false) as { msg: string }[];
-        if (errors) {
-            const errorMsgs = errors.map((e) => e.msg);
-            reject(errorMsgs);
-        } else {
-            resolve(req);
-        }
-    });
-}
-
-export function checkParams<T>(req:Request, schema:Object):Promise<Request> {
-    'use strict';
-    return new Promise<Request>((resolve, reject) => {
-        req.checkParams(schema);
-        const errors = req.validationErrors(false) as { msg: string }[];
-        if (errors) {
-            const errorMsgs = errors.map((e) => e.msg);
-            reject(errorMsgs);
-        } else {
-            resolve(req);
-        }
-    });
-}
-
-export function checkHeaders<T>(req:Request, schema:Object):Promise<Request> {
-    'use strict';
-    return new Promise<Request>((resolve, reject) => {
-        req.checkHeader(schema);
-        const errors = req.validationErrors(false) as { msg: string }[];
-        if (errors) {
-            const errorMsgs = errors.map((e) => e.msg);
-            reject(errorMsgs);
-        } else {
-            resolve(req);
-        }
+    return RequestPromise.create(req, (resolve, reject) => {
+        resolve(req);
     });
 }
 
