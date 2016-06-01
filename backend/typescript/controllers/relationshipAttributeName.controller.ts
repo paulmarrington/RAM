@@ -36,7 +36,7 @@ export class RelationshipAttributeNameController {
         return null;
     };
 
-    private findByCodeInDateRange = async (req: Request, res: Response) => {
+    private findByCodeIgnoringDateRange = async (req: Request, res: Response) => {
         const schema = {
             'code': {
                 notEmpty: true,
@@ -44,24 +44,24 @@ export class RelationshipAttributeNameController {
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipAttributeNameModel.findByCodeInDateRange(req.params.code))
+            .then((req:Request) => this.relationshipAttributeNameModel.findByCodeIgnoringDateRange(req.params.code))
             .then(this.mapToResponseObject)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
-    private listInDateRange = async (req: Request, res: Response) => {
+    private listIgnoringDateRange = async (req: Request, res: Response) => {
         const schema = {};
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipAttributeNameModel.listInDateRange())
+            .then((req:Request) => this.relationshipAttributeNameModel.listIgnoringDateRange())
             .then((results) => results ? results.map(this.mapToIHrefValue) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
     public assignRoutes = (router: Router) => {
-        router.get('/v1/relationshipAttributeName/:code', this.findByCodeInDateRange);
-        router.get('/v1/relationshipAttributeNames', this.listInDateRange);
+        router.get('/v1/relationshipAttributeName/:code', this.findByCodeIgnoringDateRange);
+        router.get('/v1/relationshipAttributeNames', this.listIgnoringDateRange);
         return router;
     };
 
