@@ -18,7 +18,7 @@ export interface Alert {
 
 export class ErrorResponse implements IResponse<void>{
     alert: Alert;
-    constructor(public status: number,
+    constructor(
         messages: string | string[],
         alertType: number = RAMMessageType.Error) {
         

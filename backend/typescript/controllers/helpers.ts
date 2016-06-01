@@ -92,25 +92,25 @@ export function sendError<T>(res: Response) {
         switch (error.constructor.name) {
             case 'Array':
                 res.status(400);
-                res.json(new ErrorResponse(400, error as string[]));
+                res.json(new ErrorResponse(error as string[]));
                 break;
             case 'String':
                 res.status(500);
-                res.json(new ErrorResponse(500, error as string));
+                res.json(new ErrorResponse(error as string));
                 break;
             case 'MongooseError':
                 res.status(400);
-                res.json(new ErrorResponse(400,
+                res.json(new ErrorResponse(
                     _.values<string>(_.mapValues((error as ValidationError).errors, (v) => v.message))
                 ));
                 break;
             case 'Error':
                 res.status(500);
-                res.json(new ErrorResponse(500, (error as Error).message));
+                res.json(new ErrorResponse((error as Error).message));
                 break;
             default:
                 res.status(500);
-                res.json(new ErrorResponse(500, error.toString()));
+                res.json(new ErrorResponse(error.toString()));
                 break;
         }
     };
@@ -120,7 +120,7 @@ export function sendNotFoundError<T>(res: Response) {
     'use strict';
     return (doc: T): T => {
         if (!doc) {
-            res.json(new ErrorResponse(404, 'Can\'t find the requested resource.'));
+            res.json(new ErrorResponse('Can\'t find the requested resource.'));
             res.status(404);
         }
         return doc;

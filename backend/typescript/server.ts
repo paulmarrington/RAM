@@ -74,7 +74,7 @@ server.use('/api/',
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
-    const err = new cApi.ErrorResponse(404, 'Request Not Found');
+    const err = new cApi.ErrorResponse('Request Not Found');
     res.send(err);
 });
 
