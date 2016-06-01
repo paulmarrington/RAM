@@ -104,11 +104,23 @@ describe('RAM Relationship Type', () => {
         }
     });
 
+    it('list ignoring date range', async (done) => {
+        try {
+            const instances = await RelationshipTypeModel.listIgnoringDateRange();
+            expect(instances).not.toBeNull();
+            expect(instances.length).toBe(3);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
     it('list in date range', async (done) => {
         try {
             const instances = await RelationshipTypeModel.listInDateRange();
             expect(instances).not.toBeNull();
-            expect(instances.length).toBeGreaterThan(0);
+            expect(instances.length).toBe(2);
             instances.forEach((instance) => {
                 expect(instance.startDate.valueOf()).toBeLessThan(new Date().valueOf());
                 if (instance.endDate) {

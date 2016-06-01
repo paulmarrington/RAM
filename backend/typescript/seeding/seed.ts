@@ -4,8 +4,7 @@ import {conf} from '../bootstrap';
 import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
-    RelationshipAttributeNameStringDomain,
-    RelationshipAttributeNameSingleSelectDomain} from '../models/relationshipAttributeName.model';
+    RelationshipAttributeNameDomain} from '../models/relationshipAttributeName.model';
 import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
@@ -33,7 +32,6 @@ class Seeder {
         mongoose.connection.close();
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async createRelationshipAttributeNameModel(values:IRelationshipAttributeName) {
         const code = values.code;
         const existingModel = await RelationshipAttributeNameModel.findByCodeIgnoringDateRange(code);
@@ -47,31 +45,31 @@ class Seeder {
         }
     }
 
-    /* tslint:disable:max-func-body-length */
-    public static async createRelationshipTypeModel(values:IRelationshipType,attributeNames:IRelationshipAttributeName[]) {
+    public static async createRelationshipAttributeNameUsageModels
+    <T extends { attribute:IRelationshipAttributeName, optionalInd:boolean, defaultValue:string}>(attributeValues:T[]) {
+        const attributeNameUsages:IRelationshipAttributeNameUsage[] = [];
+        if (attributeValues) {
+            for (let i = 0; i < attributeValues.length; i = i+1) {
+                const attributeValue = attributeValues[i];
+                const attributeNameUsage = await RelationshipAttributeNameUsageModel.create({
+                    attributeName: attributeValue.attribute,
+                    optionalInd: attributeValue.optionalInd,
+                    defaultValue: attributeValue.defaultValue
+                });
+                attributeNameUsages.push(attributeNameUsage);
+            }
+        }
+        return attributeNameUsages;
+    }
 
+    public static async createRelationshipTypeModel
+    <T extends { attribute:IRelationshipAttributeName, optionalInd:boolean, defaultValue:string}>
+    (values:IRelationshipType, attributeValues:T[]) {
         const code = values.code;
         const existingModel = await RelationshipTypeModel.findByCodeIgnoringDateRange(code);
-
         if (existingModel === null) {
-
             console.log('-', code);
-
-            const attributeNameUsages:IRelationshipAttributeNameUsage[] = [];
-
-            if (attributeNames) {
-                for (let i = 0; i < attributeNames.length; i = i+1) {
-                    const attributeName = attributeNames[i];
-                    const attributeNameUsage = await RelationshipAttributeNameUsageModel.create({
-                        optionalInd: true,
-                        attributeName: attributeName
-                    });
-                    attributeNameUsages.push(attributeNameUsage);
-                }
-            }
-
-            values.attributeNameUsages = attributeNameUsages;
-
+            values.attributeNameUsages = await Seeder.createRelationshipAttributeNameUsageModels(attributeValues);
             const model = await RelationshipTypeModel.create(values);
             return model;
 
@@ -97,7 +95,7 @@ const loadReferenceData = async () => {
         shortDecodeText: 'Employee Number',
         longDecodeText: 'Employee Number',
         startDate: now,
-        domain: RelationshipAttributeNameStringDomain,
+        domain: RelationshipAttributeNameDomain.String.name,
         purposeText: 'Employee Number'
     } as IRelationshipAttributeName);
 
@@ -106,7 +104,7 @@ const loadReferenceData = async () => {
         shortDecodeText: 'Employment Type',
         longDecodeText: 'Employment Type',
         startDate: now,
-        domain: RelationshipAttributeNameSingleSelectDomain,
+        domain: RelationshipAttributeNameDomain.SelectSingle.name,
         purposeText: 'Employee Type',
         permittedValues: ['Permanent', 'Contractor', 'Casual']
     } as IRelationshipAttributeName);
@@ -120,7 +118,10 @@ const loadReferenceData = async () => {
         shortDecodeText: 'Business Representative',
         longDecodeText: 'Business Representative',
         startDate: now
-    } as IRelationshipType, [employeeNumber_attributeName, employmentType_attributeName]);
+    } as IRelationshipType, [
+        {attribute: employeeNumber_attributeName, optionalInd: true, defaultValue: null},
+        {attribute: employmentType_attributeName, optionalInd: false, defaultValue: 'Permanent'}
+    ]);
 
     await Seeder.createRelationshipTypeModel({
         code: 'ONLINE_SERVICE_PROVIDER',

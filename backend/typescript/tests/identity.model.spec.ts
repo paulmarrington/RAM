@@ -18,7 +18,7 @@ describe('RAM Identity', () => {
 
             identity1 = await IdentityModel.create({
                 idValue: 'uuid_1',
-                identityTypeName: IdentityType.LinkId.name,
+                identityType: IdentityType.LinkId.name,
                 defaultInd: false
             });
 
@@ -33,7 +33,7 @@ describe('RAM Identity', () => {
 
     it('find identity by id value', async (done) => {
         try {
-            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityTypeName));
+            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -50,20 +50,20 @@ describe('RAM Identity', () => {
 
             const instance = await IdentityModel.create({
                 idValue: idValue,
-                identityTypeName: type.name,
+                identityType: type.name,
                 defaultInd: false
             });
 
             expect(instance).not.toBeNull();
             expect(instance.id).not.toBeNull();
             expect(instance.idValue).not.toBeNull();
-            expect(instance.identityTypeName).not.toBeNull();
+            expect(instance.identityType).not.toBeNull();
 
             const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
-            expect(retrievedInstance.identityTypeName).toBe(type.name);
-            expect(retrievedInstance.identityType()).toBe(type);
+            expect(retrievedInstance.identityType).toBe(type.name);
+            expect(retrievedInstance.identityTypeEnum()).toBe(type);
 
             done();
 
@@ -77,7 +77,7 @@ describe('RAM Identity', () => {
         try {
             await IdentityModel.create({
                 idValue: 'uuid_1',
-                identityTypeName: '__BOGUS__',
+                identityType: '__BOGUS__',
                 defaultInd: false
             });
             fail('should not have inserted with invalid type');

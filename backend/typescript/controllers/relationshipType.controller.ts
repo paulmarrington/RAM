@@ -1,43 +1,61 @@
-import {sendDocument, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {Router, Request, Response} from 'express';
-import {IRelationshipTypeModel } from '../models/relationshipType.model';
-import {sendResource} from './helpers';
+import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
+import {IHrefValue} from '../../../commons/RamAPI';
 import {IRelationshipType} from '../models/relationshipType.model';
+import {IRelationshipTypeModel } from '../models/relationshipType.model';
 import {IRelationshipType as IRelationshipTypeDTO} from '../../../commons/RamAPI';
 import {IRelationshipAttributeName as IRelationshipAttributeNameDTO} from '../../../commons/RamAPI';
+import {IRelationshipAttributeNameUsage as IRelationshipAttributeNameUsageDTO} from '../../../commons/RamAPI';
 
 export class RelationshipTypeController {
 
     constructor(private relationshipTypeModel: IRelationshipTypeModel) {
     }
 
-    private mapToResponseObject = (relationshipType:IRelationshipType):IRelationshipTypeDTO => {
-        console.log(relationshipType.attributeNameUsages);
-        return {
-            code: relationshipType.code,
-            shortDecodeText: relationshipType.shortDecodeText,
-            longDecodeText: relationshipType.longDecodeText,
-            startDate: relationshipType.startDate,
-            endDate: relationshipType.endDate,
-            voluntaryInd: relationshipType.voluntaryInd,
-            attributeDefs: relationshipType.attributeNameUsages.map((attributeNameUsage) => {
-                return {
-                    code: attributeNameUsage.attributeName.code,
-                    shortDecodeText: attributeNameUsage.attributeName.shortDecodeText,
-                    longDecodeText: attributeNameUsage.attributeName.longDecodeText,
-                    startDate: attributeNameUsage.attributeName.startDate,
-                    endDate: attributeNameUsage.attributeName.endDate,
-                    name: attributeNameUsage.attributeName.shortDecodeText,
-                    domain: attributeNameUsage.attributeName.domain,
-                    mandatory: !attributeNameUsage.optionalInd,
-                    defaultValue: attributeNameUsage.defaultValue,
-                    permittedValues: attributeNameUsage.attributeName.permittedValues
-                } as IRelationshipAttributeNameDTO;
-            })
-        } as IRelationshipTypeDTO;
+    private mapToIHrefValue = (relationshipType:IRelationshipType):IHrefValue<IRelationshipTypeDTO> => {
+        if (relationshipType) {
+            return {
+                href: '/api/v1/relationshipType/' + relationshipType.code,
+                value: this.mapToResponseObject(relationshipType)
+            };
+        }
+        return null;
     };
 
-    private findByCodeInDateRange = async (req: Request, res: Response) => {
+    private mapToResponseObject = (relationshipType:IRelationshipType):IRelationshipTypeDTO => {
+        if (relationshipType) {
+            return {
+                code: relationshipType.code,
+                shortDecodeText: relationshipType.shortDecodeText,
+                longDecodeText: relationshipType.longDecodeText,
+                startTimestamp: relationshipType.startDate,
+                endTimestamp: relationshipType.endDate,
+                voluntaryInd: relationshipType.voluntaryInd,
+                relationshipAttributeNames: relationshipType.attributeNameUsages.map((attributeNameUsage) => {
+                    return {
+                        mandatory: !attributeNameUsage.optionalInd,
+                        defaultValue: attributeNameUsage.defaultValue,
+                        attributeNameDef: {
+                            href: '/api/v1/relationshipAttributeName/' + attributeNameUsage.attributeName.code,
+                            value: {
+                                code: attributeNameUsage.attributeName.code,
+                                shortDecodeText: attributeNameUsage.attributeName.shortDecodeText,
+                                longDecodeText: attributeNameUsage.attributeName.longDecodeText,
+                                startTimestamp: attributeNameUsage.attributeName.startDate,
+                                endTimestamp: attributeNameUsage.attributeName.endDate,
+                                name: attributeNameUsage.attributeName.shortDecodeText,
+                                domain: attributeNameUsage.attributeName.domain,
+                                permittedValues: attributeNameUsage.attributeName.permittedValues
+                            } as IRelationshipAttributeNameDTO
+                        } as IHrefValue<IRelationshipAttributeNameDTO>
+                    } as IRelationshipAttributeNameUsageDTO;
+                })
+            } as IRelationshipTypeDTO;
+        }
+        return null;
+    };
+
+    private findByCodeIgnoringDateRange = async (req: Request, res: Response) => {
         const schema = {
             'code': {
                 notEmpty: true,
@@ -45,24 +63,24 @@ export class RelationshipTypeController {
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipTypeModel.findByCodeInDateRange(req.params.code))
+            .then((req:Request) => this.relationshipTypeModel.findByCodeIgnoringDateRange(req.params.code))
             .then(this.mapToResponseObject)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
-    private listInDateRange = async (req: Request, res: Response) => {
+    private listIgnoringDateRange = async (req: Request, res: Response) => {
         const schema = {};
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipTypeModel.listInDateRange())
-            .then((results) => results.map(this.mapToResponseObject))
-            .then(sendDocument(res), sendError(res))
+            .then((req:Request) => this.relationshipTypeModel.listIgnoringDateRange())
+            .then((results) => results ? results.map(this.mapToIHrefValue) : null)
+            .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
     public assignRoutes = (router: Router) => {
-        router.get('/v1/relationshipType/:code', this.findByCodeInDateRange);
-        router.get('/v1/relationshipTypes', this.listInDateRange);
+        router.get('/v1/relationshipType/:code', this.findByCodeIgnoringDateRange);
+        router.get('/v1/relationshipTypes', this.listIgnoringDateRange);
         return router;
     };
 

@@ -13,7 +13,11 @@ export class IdentityType {
         IdentityType.LinkId
     ];
 
-    public static values():String[] {
+    public static values():IdentityType[] {
+        return IdentityType.AllValues;
+    }
+
+    public static valueStrings():String[] {
         return IdentityType.AllValues.map((value) => value.name);
     }
 
@@ -32,9 +36,9 @@ export class IdentityType {
 
 export interface IIdentity extends IRAMObject {
     idValue: string;
-    identityTypeName: string;
+    identityType: string;
     defaultInd: boolean;
-    identityType(): IdentityType;
+    identityTypeEnum(): IdentityType;
 }
 
 const IdentitySchema = RAMSchema({
@@ -43,11 +47,11 @@ const IdentitySchema = RAMSchema({
         required: [true, 'Id Value is required'],
         trim: true
     },
-    identityTypeName: {
+    identityType: {
         type: String,
         required: [true, 'Type is required'],
         trim: true,
-        enum: IdentityType.values()
+        enum: IdentityType.valueStrings()
     },
     defaultInd: {
         type: Boolean,
@@ -56,8 +60,8 @@ const IdentitySchema = RAMSchema({
     }
 });
 
-IdentitySchema.method('identityType', function () {
-    return IdentityType.valueOf(this.identityTypeName);
+IdentitySchema.method('identityTypeEnum', function () {
+    return IdentityType.valueOf(this.identityType);
 });
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
@@ -68,7 +72,7 @@ IdentitySchema.static('findByIdValueAndType', (idValue:String, type:IdentityType
     return this.IdentityModel
         .findOne({
             idValue: idValue,
-            identityTypeName: type.name
+            identityType: type.name
         })
         .exec();
 });

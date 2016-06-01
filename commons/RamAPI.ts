@@ -18,7 +18,7 @@ export interface Alert {
 
 export class ErrorResponse implements IResponse<void>{
     alert: Alert;
-    constructor(public status: number,
+    constructor(
         messages: string | string[],
         alertType: number = RAMMessageType.Error) {
         
@@ -35,6 +35,11 @@ export interface IKeyValue<T> {
     value: T;
 }
 
+export interface IHrefValue<T> {
+    href: string;
+    value: T;
+}
+
 /***************************************************
  ***************************************************/
 
@@ -42,8 +47,8 @@ export interface ICodeDecode {
     code:             string;
     shortDecodeText:  string;
     longDecodeText:   string;
-    startDate:        Date;
-    endDate?:         Date;
+    startTimestamp:   Date;
+    endTimestamp?:    Date;
 }
 
 export interface IName {
@@ -86,15 +91,19 @@ export interface IRelationship {
 }
 
 export interface IRelationshipType extends ICodeDecode {
-    voluntaryInd:     boolean;
-    attributeDefs:    IRelationshipAttributeName[]
+    voluntaryInd:               boolean;
+    relationshipAttributeNames: IRelationshipAttributeNameUsage[]
+}
+
+export interface IRelationshipAttributeNameUsage {
+    mandatory:         boolean
+    defaultValue?:     string
+    attributeNameDef:  IHrefValue<IRelationshipAttributeName>
 }
 
 export interface IRelationshipAttributeName extends ICodeDecode {
     name:              string
     domain:            string
-    mandatory:         boolean
-    defaultValue?:     string
     permittedValues:   string[]
 }
 

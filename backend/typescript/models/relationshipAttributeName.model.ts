@@ -2,28 +2,52 @@ import * as mongoose from 'mongoose';
 import {ICodeDecode, CodeDecodeSchema} from './base';
 
 // see https://github.com/atogov/RAM/wiki/Relationship-Attribute-Types
-export const RelationshipAttributeNameNullDomain = 'null';
-export const RelationshipAttributeNameBooleanDomain = 'boolean';
-export const RelationshipAttributeNameNumberDomain = 'number';
-export const RelationshipAttributeNameStringDomain = 'string';
-export const RelationshipAttributeNameDateDomain = 'date';
-export const RelationshipAttributeNameSingleSelectDomain = 'select_single';
-export const RelationshipAttributeNameMultiSelectDomain = 'select_multi';
+export class RelationshipAttributeNameDomain {
 
-export const RelationshipAttributeNameDomains = [
-    RelationshipAttributeNameNullDomain,
-    RelationshipAttributeNameBooleanDomain,
-    RelationshipAttributeNameNumberDomain,
-    RelationshipAttributeNameStringDomain,
-    RelationshipAttributeNameDateDomain,
-    RelationshipAttributeNameSingleSelectDomain,
-    RelationshipAttributeNameMultiSelectDomain
-];
+    public static Null = new RelationshipAttributeNameDomain('NULL');
+    public static Boolean = new RelationshipAttributeNameDomain('BOOLEAN');
+    public static Number = new RelationshipAttributeNameDomain('NUMBER');
+    public static String = new RelationshipAttributeNameDomain('STRING');
+    public static Date = new RelationshipAttributeNameDomain('DATE');
+    public static SelectSingle = new RelationshipAttributeNameDomain('SELECT_SINGLE');
+    public static SelectMulti = new RelationshipAttributeNameDomain('SELECT_MULTI');
+
+    public static AllValues = [
+        RelationshipAttributeNameDomain.Null,
+        RelationshipAttributeNameDomain.Boolean,
+        RelationshipAttributeNameDomain.Number,
+        RelationshipAttributeNameDomain.String,
+        RelationshipAttributeNameDomain.Date,
+        RelationshipAttributeNameDomain.SelectSingle,
+        RelationshipAttributeNameDomain.SelectMulti
+    ];
+
+    public static values():RelationshipAttributeNameDomain[] {
+        return RelationshipAttributeNameDomain.AllValues;
+    }
+
+    public static valueOf(name:String):RelationshipAttributeNameDomain {
+        for (let type of RelationshipAttributeNameDomain.AllValues) {
+            if (type.name === name) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    public static valueStrings():String[] {
+        return RelationshipAttributeNameDomain.AllValues.map((value) => value.name);
+    }
+
+    constructor(public name:String) {
+    }
+}
 
 export interface IRelationshipAttributeName extends ICodeDecode {
     domain: string;
     purposeText: string;
     permittedValues: string[];
+    domainEnum(): RelationshipAttributeNameDomain;
 }
 
 const RelationshipAttributeNameSchema = CodeDecodeSchema({
@@ -31,7 +55,7 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
         type: String,
         required: [true, 'Domain is required'],
         trim: true,
-        enum: RelationshipAttributeNameDomains
+        enum: RelationshipAttributeNameDomain.valueStrings()
     },
     purposeText: {
         type: String,
@@ -43,9 +67,15 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
     }]
 });
 
+RelationshipAttributeNameSchema.method('domainEnum', function () {
+    return RelationshipAttributeNameDomain.valueOf(this.domain);
+});
+
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
     findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
     findByCodeInDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
+    listIgnoringDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
+    listInDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
 }
 
 RelationshipAttributeNameSchema.static('findByCodeIgnoringDateRange', (code:String) => {
@@ -63,6 +93,30 @@ RelationshipAttributeNameSchema.static('findByCodeInDateRange', (code:String) =>
             startDate: {$lte: new Date()},
             $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
         })
+        .exec();
+});
+
+RelationshipAttributeNameSchema.static('listIgnoringDateRange', () => {
+    return this.RelationshipAttributeNameModel
+        .find({
+        })
+        .deepPopulate([
+            'attributeNameUsages.attributeName'
+        ])
+        .sort({name: 1})
+        .exec();
+});
+
+RelationshipAttributeNameSchema.static('listInDateRange', () => {
+    return this.RelationshipAttributeNameModel
+        .find({
+            startDate: {$lte: new Date()},
+            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+        })
+        .deepPopulate([
+            'attributeNameUsages.attributeName'
+        ])
+        .sort({name: 1})
         .exec();
 });
 
