@@ -1,5 +1,5 @@
 import {Router, Request, Response} from 'express';
-import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
+import {sendResource, sendList, sendError, sendNotFoundError, checkParams} from './helpers';
 import {IRelationshipTypeModel } from '../models/relationshipType.model';
 
 export class RelationshipTypeController {
@@ -10,11 +10,12 @@ export class RelationshipTypeController {
     private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
         const schema = {
             'code': {
+                in: 'query',
                 notEmpty: true,
                 errorMessage: 'Code is not valid'
             }
         };
-        validateReqSchema(req, schema)
+        check(req, schema)
             .then((req:Request) => this.relationshipTypeModel.findByCodeIgnoringDateRange(req.params.code))
             .then((model) => model.toDTO())
             .then(sendResource(res), sendError(res))
@@ -23,7 +24,7 @@ export class RelationshipTypeController {
 
     private listIgnoringDateRange = async (req:Request, res:Response) => {
         const schema = {};
-        validateReqSchema(req, schema)
+        check(req, schema)
             .then((req:Request) => this.relationshipTypeModel.listIgnoringDateRange())
             .then((results) => results ? results.map((model) => model.toHrefValue()) : null)
             .then(sendList(res), sendError(res))
