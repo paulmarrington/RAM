@@ -2,6 +2,43 @@ import {Response, Request} from 'express';
 import {IResponse, ErrorResponse} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
 
+class RequestPromise extends Promise<Request> {
+    public req:Request;
+
+    public static create(req:Request,
+                         executor:(resolve:(req:Request) => void, reject:(reason?:Object) => void) => void):RequestPromise {
+        const promise = new RequestPromise(executor);
+        promise.req = req;
+        return promise;
+    }
+
+    public validate(schema:Object):Promise<Request> {
+        if (schema) {
+            this.req.check(schema);
+            const errors = this.req.validationErrors(false) as { msg: string }[];
+            if (errors) {
+                const errorMsgs = errors.map((e) => e.msg);
+                return new Promise<Request>((resolve, reject) => {
+                    reject(errorMsgs);
+                });
+            } else {
+                this.then(() => this.req);
+                return this;
+            }
+        } else {
+            this.then(() => this.req);
+            return this;
+        }
+    }
+}
+
+export function given<T>(req:Request):RequestPromise {
+    'use strict';
+    return RequestPromise.create(req, (resolve, reject) => {
+        resolve(req);
+    });
+}
+
 export function sendResource<T>(res:Response) {
     'use strict';
     return (doc:T):T => {
@@ -39,43 +76,6 @@ export function sendDocument<T>(res:Response) {
         }
         return doc;
     };
-}
-
-class RequestPromise extends Promise<Request> {
-    public req:Request;
-
-    public static create(req:Request,
-                         executor:(resolve:(req:Request) => void, reject:(reason?:Object) => void) => void):RequestPromise {
-        const promise = new RequestPromise(executor);
-        promise.req = req;
-        return promise;
-    }
-
-    public validate(schema:Object):Promise<Request> {
-        if (schema) {
-            this.req.check(schema);
-            const errors = this.req.validationErrors(false) as { msg: string }[];
-            if (errors) {
-                const errorMsgs = errors.map((e) => e.msg);
-                return new Promise<Request>((resolve, reject) => {
-                    reject(errorMsgs);
-                });
-            } else {
-                this.then(() => this.req);
-                return this;
-            }
-        } else {
-            this.then(() => this.req);
-            return this;
-        }
-    }
-}
-
-export function given<T>(req:Request):RequestPromise {
-    'use strict';
-    return RequestPromise.create(req, (resolve, reject) => {
-        resolve(req);
-    });
 }
 
 type ValidationError = {
