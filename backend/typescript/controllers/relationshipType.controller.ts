@@ -4,10 +4,10 @@ import {IRelationshipTypeModel } from '../models/relationshipType.model';
 
 export class RelationshipTypeController {
 
-    constructor(private relationshipTypeModel: IRelationshipTypeModel) {
+    constructor(private relationshipTypeModel:IRelationshipTypeModel) {
     }
 
-    private findByCodeIgnoringDateRange = async (req: Request, res: Response) => {
+    private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
         const schema = {
             'code': {
                 notEmpty: true,
@@ -21,7 +21,7 @@ export class RelationshipTypeController {
             .then(sendNotFoundError(res));
     };
 
-    private listIgnoringDateRange = async (req: Request, res: Response) => {
+    private listIgnoringDateRange = async (req:Request, res:Response) => {
         const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipTypeModel.listIgnoringDateRange())
@@ -30,7 +30,7 @@ export class RelationshipTypeController {
             .then(sendNotFoundError(res));
     };
 
-    public assignRoutes = (router: Router) => {
+    public assignRoutes = (router:Router) => {
         router.get('/v1/relationshipType/:code', this.findByCodeIgnoringDateRange);
         router.get('/v1/relationshipTypes', this.listIgnoringDateRange);
         return router;

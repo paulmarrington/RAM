@@ -4,10 +4,10 @@ import {IRelationshipAttributeNameModel} from '../models/relationshipAttributeNa
 
 export class RelationshipAttributeNameController {
 
-    constructor(private relationshipAttributeNameModel: IRelationshipAttributeNameModel) {
+    constructor(private relationshipAttributeNameModel:IRelationshipAttributeNameModel) {
     }
 
-    private findByCodeIgnoringDateRange = async (req: Request, res: Response) => {
+    private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
         const schema = {
             'code': {
                 notEmpty: true,
@@ -30,7 +30,7 @@ export class RelationshipAttributeNameController {
             .then(sendNotFoundError(res));
     };
 
-    public assignRoutes = (router: Router) => {
+    public assignRoutes = (router:Router) => {
         router.get('/v1/relationshipAttributeName/:code', this.findByCodeIgnoringDateRange);
         router.get('/v1/relationshipAttributeNames', this.listIgnoringDateRange);
         return router;
