@@ -1,6 +1,6 @@
 import {Router, Request, Response} from 'express';
-import {given, validate, sendResource, sendList, sendError, sendNotFoundError} from './helpers';
-import {IRelationshipType, IRelationshipTypeModel} from '../models/relationshipType.model';
+import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
+import {IRelationshipTypeModel } from '../models/relationshipType.model';
 
 export class RelationshipTypeController {
 
@@ -8,20 +8,24 @@ export class RelationshipTypeController {
     }
 
     private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
-        given(req)
-            .then(validate((req:Request) => {
-                req.checkParams('code', 'Code is not valid').notEmpty();
-            }))
+        const schema = {
+            'code': {
+                notEmpty: true,
+                errorMessage: 'Code is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipTypeModel.findByCodeIgnoringDateRange(req.params.code))
-            .then((model) => model ? model.toDTO() : null)
+            .then((model) => model.toDTO())
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
     private listIgnoringDateRange = async (req:Request, res:Response) => {
-        given(req)
+        const schema = {};
+        validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipTypeModel.listIgnoringDateRange())
-            .then((results:IRelationshipType[]) => results ? results.map((model) => model.toHrefValue()) : null)
+            .then((results) => results ? results.map((model) => model.toHrefValue()) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
