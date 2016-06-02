@@ -70,6 +70,7 @@ export class RelationshipController {
     });
   }
 
+  /* tslint:disable:no-empty */
   private mergeIdentities(relationshipTable) {
   }
 
