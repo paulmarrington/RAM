@@ -1,5 +1,11 @@
 import * as mongoose from 'mongoose';
 import {IRAMObject, RAMSchema} from './base';
+import {IName, NameModel} from './name.model';
+
+// force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
+
+/* tslint:disable:no-unused-variable */
+const _NameModel = NameModel;
 
 // enums, utilities, helpers ..........................................................................................
 
@@ -40,6 +46,11 @@ const ProfileSchema = RAMSchema({
         required: [true, 'Provider is required'],
         trim: true,
         enum: ProfileProvider.valueStrings()
+    },
+    name: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Name',
+        required: [true, 'Name is required']
     }
 });
 
@@ -47,6 +58,7 @@ const ProfileSchema = RAMSchema({
 
 export interface IProfile extends IRAMObject {
     provider: string;
+    name: IName;
     providerEnum(): ProfileProvider;
 }
 

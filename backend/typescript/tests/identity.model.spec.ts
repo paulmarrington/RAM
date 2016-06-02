@@ -7,6 +7,9 @@ import {
     IProfile,
     ProfileModel,
     ProfileProvider} from '../models/profile.model';
+import {
+    IName,
+    NameModel} from '../models/name.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Identity', () => {
@@ -14,6 +17,7 @@ describe('RAM Identity', () => {
     connectDisconnectMongo();
     dropMongo();
 
+    let name1: IName;
     let profile1: IProfile;
     let identity1: IIdentity;
 
@@ -21,8 +25,15 @@ describe('RAM Identity', () => {
 
         try {
 
+            name1 = await NameModel.create({
+                givenName: 'John',
+                familyName: 'Smith',
+                unstructuredName: 'John Smith'
+            });
+
             profile1 = await ProfileModel.create({
-                provider: ProfileProvider.MyGov.name
+                provider: ProfileProvider.MyGov.name,
+                name: name1
             });
 
             identity1 = await IdentityModel.create({
@@ -82,6 +93,7 @@ describe('RAM Identity', () => {
             expect(instance.scheme).not.toBeNull();
             expect(instance.consumer).not.toBeNull();
             expect(instance.profile).not.toBeNull();
+            expect(instance.profile.name).not.toBeNull();
 
             const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
             expect(retrievedInstance).not.toBeNull();
@@ -93,6 +105,7 @@ describe('RAM Identity', () => {
             expect(retrievedInstance.scheme).toBe(scheme);
             expect(retrievedInstance.consumer).toBe(consumer);
             expect(retrievedInstance.profile.id).toBe(profile1.id);
+            expect(retrievedInstance.profile.name.id).toBe(name1.id);
 
             done();
 

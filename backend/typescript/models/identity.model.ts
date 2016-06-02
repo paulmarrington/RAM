@@ -112,7 +112,7 @@ IdentitySchema.static('findByIdValueAndType', (idValue:String, type:IdentityType
             identityType: type.name
         })
         .deepPopulate([
-            'profile'
+            'profile.name'
         ])
         .exec();
 });
