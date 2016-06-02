@@ -84,7 +84,7 @@ describe('RAM Relationship Attribute Name', () => {
 
     });
 
-    it('find relationship type with inflated attributes', async (done) => {
+    it('finds relationship type with inflated attributes', async (done) => {
         try {
             const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipType1.code);
             expect(instance).not.toBeNull();
@@ -99,7 +99,7 @@ describe('RAM Relationship Attribute Name', () => {
         }
     });
 
-    it('find in date range with no end date by code', async (done) => {
+    it('finds in date range with no end date by code', async (done) => {
         try {
             const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(stringRelationshipAttributeNameNoEndDate.code);
             expect(instance).not.toBeNull();
@@ -110,7 +110,7 @@ describe('RAM Relationship Attribute Name', () => {
         }
     });
 
-    it('find in date range or invalid by code', async (done) => {
+    it('finds in date range or invalid by code', async (done) => {
         try {
             const instance = await RelationshipAttributeNameModel.findByCodeIgnoringDateRange(
                 stringRelationshipAttributeNameNoEndDate.code);
@@ -145,7 +145,7 @@ describe('RAM Relationship Attribute Name', () => {
         }
     });
 
-    it('find with permitted values by code', async (done) => {
+    it('finds with permitted values by code', async (done) => {
         try {
             const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(
                 singleSelectRelationshipAttributeNameNoEndDate.code);
@@ -160,7 +160,7 @@ describe('RAM Relationship Attribute Name', () => {
         }
     });
 
-    it('list ignoring date range', async (done) => {
+    it('lists ignoring date range', async (done) => {
         try {
             const instances = await RelationshipAttributeNameModel.listIgnoringDateRange();
             expect(instances).not.toBeNull();
@@ -172,7 +172,7 @@ describe('RAM Relationship Attribute Name', () => {
         }
     });
 
-    it('list in date range', async (done) => {
+    it('lists in date range', async (done) => {
         try {
             const instances = await RelationshipAttributeNameModel.listInDateRange();
             expect(instances).not.toBeNull();

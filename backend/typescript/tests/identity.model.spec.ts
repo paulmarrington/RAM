@@ -55,7 +55,7 @@ describe('RAM Identity', () => {
 
     });
 
-    it('find identity by id value', async (done) => {
+    it('finds identity by id value', async (done) => {
         try {
             const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
             expect(instance).not.toBeNull();

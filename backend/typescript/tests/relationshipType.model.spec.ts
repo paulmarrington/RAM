@@ -48,7 +48,7 @@ describe('RAM Relationship Type', () => {
 
     });
 
-    it('find in date range with no end date by code', async (done) => {
+    it('finds in date range with no end date by code', async (done) => {
         try {
             const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeNoEndDate.code);
             expect(instance).not.toBeNull();
@@ -59,7 +59,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('find in date range with future end date by code', async (done) => {
+    it('finds in date range with future end date by code', async (done) => {
         try {
             const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeFutureEndDate.code);
             expect(instance).not.toBeNull();
@@ -70,7 +70,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('find in date range or invalid by code', async (done) => {
+    it('finds in date range or invalid by code', async (done) => {
         try {
             const instance = await RelationshipTypeModel.findByCodeIgnoringDateRange(relationshipTypeExpiredEndDate.code);
             expect(instance).not.toBeNull();
@@ -104,7 +104,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('list ignoring date range', async (done) => {
+    it('lists ignoring date range', async (done) => {
         try {
             const instances = await RelationshipTypeModel.listIgnoringDateRange();
             expect(instances).not.toBeNull();
@@ -116,7 +116,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('list in date range', async (done) => {
+    it('lists in date range', async (done) => {
         try {
             const instances = await RelationshipTypeModel.listInDateRange();
             expect(instances).not.toBeNull();
