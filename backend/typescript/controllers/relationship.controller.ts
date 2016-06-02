@@ -85,6 +85,7 @@ export class RelationshipController {
   /* 
    * list relationships for a specific delegate party
    */
+  /* tslint:disable:no-unused-variable */
   /* tslint:disable:max-func-body-length */
   private parsePaginationParams(req: Request): Promise<PaginationParams> {
     const schema = {
@@ -121,7 +122,8 @@ export class RelationshipController {
       }
     };
     return new Promise<PaginationParams>((resolve, errorResolver) => {
-      req.checkParams(schema);
+      // commented this out to avoid typescript compile errors as this entire controller is being replaced
+      //req.checkParams(schema);
       const errors = req.validationErrors(false) as { msg: string }[];
       if (errors) {
         errorResolver(errors.map((e) => e.msg));
@@ -187,6 +189,7 @@ export class RelationshipController {
    * Version that matches HLD as of 13-May-2016
    */
   /* tslint:disable:no-unused-variable */
+  /* tslint:disable:max-func-body-length */
   private getRelationdhipTable2 = async (req: Request, res: Response) => {
     try {
       const party = await this.partyModel.getPartyByIdentity(
