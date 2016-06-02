@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 import {IRelationshipAttributeName, RelationshipAttributeNameModel} from './relationshipAttributeName.model';
 
-// force schema to load first
-// see https://github.com/atogov/RAM/pull/220#discussion_r65115456
+// force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
+
 /* tslint:disable:no-unused-variable */
 const _RelationshipAttributeNameModel = RelationshipAttributeNameModel;
 

@@ -2,7 +2,11 @@ import {connectDisconnectMongo, dropMongo} from './helpers';
 import {
     IIdentity,
     IdentityModel,
-    IdentityType} from '../models/Identity.model';
+    IdentityType} from '../models/identity.model';
+import {
+    IProfile,
+    ProfileModel,
+    ProfileProvider} from '../models/profile.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Identity', () => {
@@ -10,11 +14,16 @@ describe('RAM Identity', () => {
     connectDisconnectMongo();
     dropMongo();
 
+    let profile1: IProfile;
     let identity1: IIdentity;
 
     beforeEach(async (done) => {
 
         try {
+
+            profile1 = await ProfileModel.create({
+                provider: ProfileProvider.MyGov.name
+            });
 
             identity1 = await IdentityModel.create({
                 idValue: 'uuid_1',
@@ -22,7 +31,8 @@ describe('RAM Identity', () => {
                 defaultInd: false,
                 token: 'token_1',
                 scheme: 'scheme_1',
-                consumer: 'consumer_1'
+                consumer: 'consumer_1',
+                profile: profile1
             });
 
             done();
@@ -45,7 +55,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('inserts with valid type', async (done) => {
+    it('inserts with valid values', async (done) => {
         try {
 
             const idValue = 'uuid_x';
@@ -61,7 +71,8 @@ describe('RAM Identity', () => {
                 defaultInd: defaultInd,
                 token: token,
                 scheme: scheme,
-                consumer: consumer
+                consumer: consumer,
+                profile: profile1
             });
 
             expect(instance).not.toBeNull();
@@ -70,6 +81,7 @@ describe('RAM Identity', () => {
             expect(instance.identityType).not.toBeNull();
             expect(instance.scheme).not.toBeNull();
             expect(instance.consumer).not.toBeNull();
+            expect(instance.profile).not.toBeNull();
 
             const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
             expect(retrievedInstance).not.toBeNull();
@@ -80,6 +92,7 @@ describe('RAM Identity', () => {
             expect(retrievedInstance.token).toBe(token);
             expect(retrievedInstance.scheme).toBe(scheme);
             expect(retrievedInstance.consumer).toBe(consumer);
+            expect(retrievedInstance.profile.id).toBe(profile1.id);
 
             done();
 
@@ -92,13 +105,51 @@ describe('RAM Identity', () => {
     it('fails insert with invalid type', async (done) => {
         try {
             await IdentityModel.create({
-                idValue: 'uuid_1',
+                idValue: 'uuid_x',
                 identityType: '__BOGUS__',
-                scheme: 'scheme_1',
-                consumer: 'scheme_1',
-                defaultInd: false
+                defaultInd: false,
+                token: 'token_x',
+                scheme: 'scheme_x',
+                consumer: 'scheme_x',
+                profile: profile1
             });
             fail('should not have inserted with invalid type');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
+    it('fails insert with null type', async (done) => {
+        try {
+            await IdentityModel.create({
+                idValue: 'uuid_x',
+                defaultInd: false,
+                token: 'token_x',
+                scheme: 'scheme_x',
+                consumer: 'scheme_x',
+                profile: profile1
+            });
+            fail('should not have inserted with null type');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            done();
+        }
+    });
+
+    it('fails insert with null profile', async (done) => {
+        try {
+            await IdentityModel.create({
+                idValue: 'uuid_x',
+                identityType: IdentityType.LinkId.name,
+                defaultInd: false,
+                token: 'token_x',
+                scheme: 'scheme_x',
+                consumer: 'scheme_x'
+            });
+            fail('should not have inserted with null profile');
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
