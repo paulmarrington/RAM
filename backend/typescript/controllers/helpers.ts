@@ -94,8 +94,8 @@ export function sendNotFoundError<T>(res: Response) {
     'use strict';
     return (doc: T): T => {
         if (!doc) {
-            res.json(new ErrorResponse('Can\'t find the requested resource.'));
             res.status(404);
+            res.json(new ErrorResponse('Can\'t find the requested resource.'));
         }
         return doc;
     };
