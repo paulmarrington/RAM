@@ -14,6 +14,7 @@ describe('RAM Profile', () => {
     dropMongo();
 
     let name1: IName;
+    let profile1: IProfile;
 
     beforeEach(async (done) => {
 
@@ -23,6 +24,11 @@ describe('RAM Profile', () => {
                 givenName: 'John',
                 familyName: 'Smith',
                 unstructuredName: 'John Smith'
+            });
+
+            profile1 = await ProfileModel.create({
+                provider: ProfileProvider.MyGov.name,
+                name: name1
             });
 
             done();
@@ -96,6 +102,18 @@ describe('RAM Profile', () => {
         } catch (e) {
             expect(e.name).toBe('ValidationError');
             expect(e.errors.name).not.toBeNull();
+            done();
+        }
+    });
+
+    it('converts provider to enum', async (done) => {
+        try {
+            expect(profile1).not.toBeNull();
+            expect(profile1.provider).toBe(ProfileProvider.MyGov.name);
+            expect(profile1.providerEnum()).toBe(ProfileProvider.MyGov);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
             done();
         }
     });

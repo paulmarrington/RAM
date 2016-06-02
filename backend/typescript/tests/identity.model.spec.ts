@@ -173,4 +173,16 @@ describe('RAM Identity', () => {
         }
     });
 
+    it('converts type to enum', async (done) => {
+        try {
+            expect(identity1).not.toBeNull();
+            expect(identity1.identityType).toBe(IdentityType.LinkId.name);
+            expect(identity1.identityTypeEnum()).toBe(IdentityType.LinkId);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
 });

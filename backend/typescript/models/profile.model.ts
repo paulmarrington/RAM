@@ -69,7 +69,7 @@ export interface IProfileModel extends mongoose.Model<IProfile> {
 // instance methods ...................................................................................................
 
 ProfileSchema.method('providerEnum', function () {
-    return ProfileProvider.valueOf(this.profileProvider);
+    return ProfileProvider.valueOf(this.provider);
 });
 
 // static methods .....................................................................................................
