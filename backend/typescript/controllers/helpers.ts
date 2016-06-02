@@ -12,23 +12,20 @@ class RequestPromise extends Promise<Request> {
         return promise;
     }
 
-    public validate(schema:Object):Promise<Request> {
-        if (schema) {
-            this.req.check(schema);
-            const errors = this.req.validationErrors(false) as { msg: string }[];
-            if (errors) {
-                const errorMsgs = errors.map((e) => e.msg);
-                return new Promise<Request>((resolve, reject) => {
-                    reject(errorMsgs);
-                });
-            } else {
-                this.then(() => this.req);
-                return this;
-            }
-        } else {
-            this.then(() => this.req);
-            return this;
-        }
+    public validate(executor:(req:Request) => void):RequestPromise {
+        return this
+            .then(executor)
+            .then(() => {
+                const errors = this.req.validationErrors(false) as { msg: string }[];
+                if (errors) {
+                    const errorMsgs = errors.map((e) => e.msg);
+                    return new Promise<Request>((resolve, reject) => {
+                        reject(errorMsgs);
+                    });
+                } else {
+                    return this.req;
+                }
+            }) as RequestPromise;
     }
 }
 

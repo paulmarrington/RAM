@@ -9,12 +9,8 @@ export class RelationshipTypeController {
 
     private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
         given(req)
-            .validate({
-                'code': {
-                    in: 'params',
-                    notEmpty: true,
-                    errorMessage: 'Code is not valid'
-                }
+            .validate((req:Request) => {
+                req.checkParams('code', 'Code is not valid').notEmpty();
             })
             .then((req:Request) => this.relationshipTypeModel.findByCodeIgnoringDateRange(req.params.code))
             .then((model) => model ? model.toDTO() : null)
