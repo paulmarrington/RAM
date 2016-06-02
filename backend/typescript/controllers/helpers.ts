@@ -2,38 +2,27 @@ import {Response, Request} from 'express';
 import {IResponse, ErrorResponse} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
 
-class RequestPromise extends Promise<Request> {
-    public req:Request;
-
-    public static create(req:Request,
-                         executor:(resolve:(req:Request) => void, reject:(reason?:Object) => void) => void):RequestPromise {
-        const promise = new RequestPromise(executor);
-        promise.req = req;
-        return promise;
-    }
-
-    public validate(executor:(req:Request) => void):RequestPromise {
-        return this
-            .then(executor)
-            .then(() => {
-                const errors = this.req.validationErrors(false) as { msg: string }[];
-                if (errors) {
-                    const errorMsgs = errors.map((e) => e.msg);
-                    return new Promise<Request>((resolve, reject) => {
-                        reject(errorMsgs);
-                    });
-                } else {
-                    return this.req;
-                }
-            }) as RequestPromise;
-    }
-}
-
-export function given<T>(req:Request):RequestPromise {
+export function given<T>(req:Request):Promise<Request> {
     'use strict';
-    return RequestPromise.create(req, (resolve, reject) => {
+    return new Promise<Request>((resolve, reject) => {
         resolve(req);
     });
+}
+
+export function validate(executor:(req:Request) => void) {
+    'use strict';
+    return (req:Request):Request => {
+        executor(req);
+        const errors = req.validationErrors(false) as { msg: string }[];
+        if (errors) {
+            const errorMsgs = errors.map((e) => e.msg);
+            return new Promise<Request>((resolve, reject) => {
+                reject(errorMsgs);
+            });
+        } else {
+            return req;
+        }
+    };
 }
 
 export function sendResource<T>(res:Response) {

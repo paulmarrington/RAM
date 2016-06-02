@@ -1,5 +1,5 @@
 import {Router, Request, Response} from 'express';
-import {given, sendResource, sendList, sendError, sendNotFoundError} from './helpers';
+import {given, validate, sendResource, sendList, sendError, sendNotFoundError} from './helpers';
 import {IRelationshipAttributeName, IRelationshipAttributeNameModel} from '../models/relationshipAttributeName.model';
 
 export class RelationshipAttributeNameController {
@@ -9,9 +9,9 @@ export class RelationshipAttributeNameController {
 
     private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
         given(req)
-            .validate((req:Request) => {
+            .then(validate((req:Request) => {
                 req.checkParams('code', 'Code is not valid').notEmpty();
-            })
+            }))
             .then((req:Request) => this.relationshipAttributeNameModel.findByCodeIgnoringDateRange(req.params.code))
             .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))
