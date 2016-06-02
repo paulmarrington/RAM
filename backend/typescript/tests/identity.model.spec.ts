@@ -130,6 +130,7 @@ describe('RAM Identity', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.type).not.toBeNull();
             done();
         }
     });
@@ -148,6 +149,7 @@ describe('RAM Identity', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.type).not.toBeNull();
             done();
         }
     });
@@ -166,6 +168,7 @@ describe('RAM Identity', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.profile).not.toBeNull();
             done();
         }
     });
