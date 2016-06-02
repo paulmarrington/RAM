@@ -19,7 +19,10 @@ describe('RAM Identity', () => {
             identity1 = await IdentityModel.create({
                 idValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
-                defaultInd: false
+                defaultInd: false,
+                token: 'token_1',
+                scheme: 'scheme_1',
+                consumer: 'consumer_1'
             });
 
             done();
@@ -47,23 +50,36 @@ describe('RAM Identity', () => {
 
             const idValue = 'uuid_x';
             const type = IdentityType.LinkId;
+            const defaultInd = false;
+            const token = 'token_x';
+            const scheme = 'scheme_x';
+            const consumer = 'consumer_x';
 
             const instance = await IdentityModel.create({
                 idValue: idValue,
                 identityType: type.name,
-                defaultInd: false
+                defaultInd: defaultInd,
+                token: token,
+                scheme: scheme,
+                consumer: consumer
             });
 
             expect(instance).not.toBeNull();
             expect(instance.id).not.toBeNull();
             expect(instance.idValue).not.toBeNull();
             expect(instance.identityType).not.toBeNull();
+            expect(instance.scheme).not.toBeNull();
+            expect(instance.consumer).not.toBeNull();
 
             const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
             expect(retrievedInstance.identityType).toBe(type.name);
             expect(retrievedInstance.identityTypeEnum()).toBe(type);
+            expect(retrievedInstance.defaultInd).toBe(defaultInd);
+            expect(retrievedInstance.token).toBe(token);
+            expect(retrievedInstance.scheme).toBe(scheme);
+            expect(retrievedInstance.consumer).toBe(consumer);
 
             done();
 
@@ -78,6 +94,8 @@ describe('RAM Identity', () => {
             await IdentityModel.create({
                 idValue: 'uuid_1',
                 identityType: '__BOGUS__',
+                scheme: 'scheme_1',
+                consumer: 'scheme_1',
                 defaultInd: false
             });
             fail('should not have inserted with invalid type');

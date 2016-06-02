@@ -54,6 +54,18 @@ const IdentitySchema = RAMSchema({
         type: Boolean,
         required: [true, 'Default Indicator is required'],
         default: false
+    },
+    token: {
+        type: String,
+        trim: true
+    },
+    scheme: {
+        type: String,
+        trim: true
+    },
+    consumer: {
+        type: String,
+        trim: true
     }
 });
 
@@ -63,6 +75,8 @@ export interface IIdentity extends IRAMObject {
     idValue: string;
     identityType: string;
     defaultInd: boolean;
+    token: string;
+    scheme: string;
     identityTypeEnum(): IdentityType;
 }
 
