@@ -1,6 +1,6 @@
 import {Router, Request, Response} from 'express';
-import {given, sendResource, sendList, sendError, sendNotFoundError} from './helpers';
-import {IRelationshipAttributeName, IRelationshipAttributeNameModel} from '../models/relationshipAttributeName.model';
+import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
+import {IRelationshipAttributeNameModel} from '../models/relationshipAttributeName.model';
 
 export class RelationshipAttributeNameController {
 
@@ -8,24 +8,24 @@ export class RelationshipAttributeNameController {
     }
 
     private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
-        given(req)
-            .validate({
-                'code': {
-                    in: 'params',
-                    notEmpty: true,
-                    errorMessage: 'Code is not valid'
-                }
-            })
+        const schema = {
+            'code': {
+                notEmpty: true,
+                errorMessage: 'Code is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipAttributeNameModel.findByCodeIgnoringDateRange(req.params.code))
-            .then((model) => model ? model.toDTO() : null)
+            .then((model) => model.toDTO())
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
     private listIgnoringDateRange = async (req:Request, res:Response) => {
-        given(req)
+        const schema = {};
+        validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipAttributeNameModel.listIgnoringDateRange())
-            .then((results:IRelationshipAttributeName[]) => results ? results.map((model) => model.toHrefValue()) : null)
+            .then((results) => results ? results.map((model) => model.toHrefValue()) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
