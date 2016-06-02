@@ -2,9 +2,46 @@ import {Response, Request} from 'express';
 import {IResponse, ErrorResponse} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
 
-export function sendResource<T>(res: Response) {
+class RequestPromise extends Promise<Request> {
+    public req:Request;
+
+    public static create(req:Request,
+                         executor:(resolve:(req:Request) => void, reject:(reason?:Object) => void) => void):RequestPromise {
+        const promise = new RequestPromise(executor);
+        promise.req = req;
+        return promise;
+    }
+
+    public validate(schema:Object):Promise<Request> {
+        if (schema) {
+            this.req.check(schema);
+            const errors = this.req.validationErrors(false) as { msg: string }[];
+            if (errors) {
+                const errorMsgs = errors.map((e) => e.msg);
+                return new Promise<Request>((resolve, reject) => {
+                    reject(errorMsgs);
+                });
+            } else {
+                this.then(() => this.req);
+                return this;
+            }
+        } else {
+            this.then(() => this.req);
+            return this;
+        }
+    }
+}
+
+export function given<T>(req:Request):RequestPromise {
     'use strict';
-    return (doc: T): T => {
+    return RequestPromise.create(req, (resolve, reject) => {
+        resolve(req);
+    });
+}
+
+export function sendResource<T>(res:Response) {
+    'use strict';
+    return (doc:T):T => {
         if (doc) {
             res.status(200);
             res.setHeader('Content-Type', 'application/json');
@@ -14,9 +51,9 @@ export function sendResource<T>(res: Response) {
     };
 }
 
-export function sendList<T>(res: Response) {
+export function sendList<T>(res:Response) {
     'use strict';
-    return (results: T[]): T[] => {
+    return (results:T[]):T[] => {
         if (results) {
             res.status(200);
             res.setHeader('Content-Type', 'application/json');
@@ -27,11 +64,11 @@ export function sendList<T>(res: Response) {
 }
 
 // @deprecated
-export function sendDocument<T>(res: Response) {
+export function sendDocument<T>(res:Response) {
     'use strict';
-    return (doc: T): T => {
+    return (doc:T):T => {
         if (doc) {
-            const response: IResponse<T> = {
+            const response:IResponse<T> = {
                 data: doc
             };
             res.status(200);
@@ -41,28 +78,14 @@ export function sendDocument<T>(res: Response) {
     };
 }
 
-export function validateReqSchema<T>(req: Request, schema: Object): Promise<Request> {
-    'use strict';
-    return new Promise<Request>((resolve, reject) => {
-        req.checkParams(schema);
-        const errors = req.validationErrors(false) as { msg: string }[];
-        if (errors) {
-            const errorMsgs = errors.map((e) => e.msg);
-            reject(errorMsgs);
-        } else {
-            resolve(req);
-        }
-    });
-}
-
 type ValidationError = {
     errors: { [index: string]: ValidationError };
     message: string;
 }
 
-export function sendError<T>(res: Response) {
+export function sendError<T>(res:Response) {
     'use strict';
-    return (error: string | Error | ValidationError | string[]) => {
+    return (error:string | Error | ValidationError | string[]) => {
         switch (error.constructor.name) {
             case 'Array':
                 res.status(400);
@@ -90,12 +113,12 @@ export function sendError<T>(res: Response) {
     };
 }
 
-export function sendNotFoundError<T>(res: Response) {
+export function sendNotFoundError<T>(res:Response) {
     'use strict';
-    return (doc: T): T => {
+    return (doc:T):T => {
         if (!doc) {
-            res.json(new ErrorResponse('Can\'t find the requested resource.'));
             res.status(404);
+            res.json(new ErrorResponse('Can\'t find the requested resource.'));
         }
         return doc;
     };

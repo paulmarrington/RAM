@@ -1,6 +1,6 @@
 import {Router, Request, Response} from 'express';
-import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
-import {IRelationshipTypeModel } from '../models/relationshipType.model';
+import {given, sendResource, sendList, sendError, sendNotFoundError} from './helpers';
+import {IRelationshipType, IRelationshipTypeModel} from '../models/relationshipType.model';
 
 export class RelationshipTypeController {
 
@@ -8,24 +8,24 @@ export class RelationshipTypeController {
     }
 
     private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
-        const schema = {
-            'code': {
-                notEmpty: true,
-                errorMessage: 'Code is not valid'
-            }
-        };
-        validateReqSchema(req, schema)
+        given(req)
+            .validate({
+                'code': {
+                    in: 'params',
+                    notEmpty: true,
+                    errorMessage: 'Code is not valid'
+                }
+            })
             .then((req:Request) => this.relationshipTypeModel.findByCodeIgnoringDateRange(req.params.code))
-            .then((model) => model.toDTO())
+            .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
     private listIgnoringDateRange = async (req:Request, res:Response) => {
-        const schema = {};
-        validateReqSchema(req, schema)
+        given(req)
             .then((req:Request) => this.relationshipTypeModel.listIgnoringDateRange())
-            .then((results) => results ? results.map((model) => model.toHrefValue()) : null)
+            .then((results:IRelationshipType[]) => results ? results.map((model) => model.toHrefValue()) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
