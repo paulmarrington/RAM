@@ -27,7 +27,7 @@ describe('RelationshipType API', () => {
         try {
 
             const response = await relationshipTypeHelper.findByCode(code);
-            const relationshipType = response.body.data;
+            const relationshipType = response.body;
 
             relationshipTypeHelper.validateRelationshipType(relationshipType);
 
@@ -51,7 +51,6 @@ describe('RelationshipType API', () => {
             })
             .catch((err) => {
                 expect(err.status).toBe(404);
-                expect(err.response.body.status).toBe(404);
                 done();
             });
     });
@@ -61,11 +60,11 @@ describe('RelationshipType API', () => {
         relationshipTypeHelper.listAllCurrent()
             .then((response) => {
 
-                const relationshipTypes = response.body.data;
+                const relationshipTypeList = response.body;
 
-                expect(relationshipTypes.length > 0).toBeTruthy();
-                for (let item of relationshipTypes) {
-                    relationshipTypeHelper.validateRelationshipType(item);
+                expect(relationshipTypeList.length > 0).toBeTruthy();
+                for (let item of relationshipTypeList) {
+                    relationshipTypeHelper.validateRelationshipType(item.value);
                 }
                 done();
             })

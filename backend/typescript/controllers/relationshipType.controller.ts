@@ -16,7 +16,7 @@ export class RelationshipTypeController {
         };
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipTypeModel.findByCodeIgnoringDateRange(req.params.code))
-            .then((model) => model.toDTO())
+            .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
