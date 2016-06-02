@@ -134,7 +134,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('inserts with non-empty code', async (done) => {
+    it('inserts with valid values', async (done) => {
         try {
 
             const instance = await RelationshipTypeModel.create({
@@ -171,6 +171,7 @@ describe('RAM Relationship Type', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             done();
         }
     });
@@ -187,6 +188,7 @@ describe('RAM Relationship Type', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             done();
         }
     });
@@ -215,6 +217,7 @@ describe('RAM Relationship Type', () => {
 
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             expect(e.errors.code.message).toContain('unique');
             done();
         }

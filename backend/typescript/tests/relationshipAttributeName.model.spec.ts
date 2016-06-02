@@ -203,6 +203,7 @@ describe('RAM Relationship Attribute Name', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             done();
         }
     });
@@ -220,6 +221,7 @@ describe('RAM Relationship Attribute Name', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             done();
         }
     });
@@ -236,6 +238,7 @@ describe('RAM Relationship Attribute Name', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.domain).not.toBeNull();
             done();
         }
     });
@@ -254,6 +257,7 @@ describe('RAM Relationship Attribute Name', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.domain).not.toBeNull();
             done();
         }
     });
@@ -271,6 +275,7 @@ describe('RAM Relationship Attribute Name', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.purposeText).not.toBeNull();
             done();
         }
     });
@@ -289,6 +294,7 @@ describe('RAM Relationship Attribute Name', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.purposeText).not.toBeNull();
             done();
         }
     });
@@ -321,6 +327,7 @@ describe('RAM Relationship Attribute Name', () => {
 
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             expect(e.errors.code.message).toContain('unique');
             done();
         }
