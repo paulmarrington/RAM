@@ -4,12 +4,12 @@ import {
     IdentityModel,
     IdentityType} from '../models/identity.model';
 import {
+    IName,
+    NameModel} from '../models/name.model';
+import {
     IProfile,
     ProfileModel,
     ProfileProvider} from '../models/profile.model';
-import {
-    IName,
-    NameModel} from '../models/name.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Identity', () => {
@@ -55,7 +55,7 @@ describe('RAM Identity', () => {
 
     });
 
-    it('finds identity by id value', async (done) => {
+    it('finds by id value and type', async (done) => {
         try {
             const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
             expect(instance).not.toBeNull();

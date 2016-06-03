@@ -112,7 +112,8 @@ IdentitySchema.static('findByIdValueAndType', (idValue:String, type:IdentityType
             identityType: type.name
         })
         .deepPopulate([
-            'profile.name'
+            'profile.name',
+            'profile.sharedSecrets.sharedSecretType'
         ])
         .exec();
 });

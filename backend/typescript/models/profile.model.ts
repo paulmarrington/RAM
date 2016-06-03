@@ -1,11 +1,15 @@
 import * as mongoose from 'mongoose';
 import {IRAMObject, RAMSchema} from './base';
 import {IName, NameModel} from './name.model';
+import {ISharedSecret, SharedSecretModel} from './sharedSecret.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
 /* tslint:disable:no-unused-variable */
 const _NameModel = NameModel;
+
+/* tslint:disable:no-unused-variable */
+const _SharedSecretModel = SharedSecretModel;
 
 // enums, utilities, helpers ..........................................................................................
 
@@ -51,7 +55,11 @@ const ProfileSchema = RAMSchema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Name',
         required: [true, 'Name is required']
-    }
+    },
+    sharedSecrets: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SharedSecret'
+    }]
 });
 
 // interfaces .........................................................................................................
@@ -59,6 +67,7 @@ const ProfileSchema = RAMSchema({
 export interface IProfile extends IRAMObject {
     provider: string;
     name: IName;
+    sharedSecrets: [ISharedSecret];
     providerEnum(): ProfileProvider;
 }
 
