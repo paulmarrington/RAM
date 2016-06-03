@@ -18,7 +18,7 @@ import {
     IdentityType} from '../models/identity.model';
 
 /* tslint:disable:max-func-body-length */
-describe('RAM Shared Secret Type', () => {
+describe('RAM Shared Secret', () => {
 
     connectDisconnectMongo();
     dropMongo();
