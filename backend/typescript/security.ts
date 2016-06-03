@@ -22,7 +22,7 @@ export const continueOnlyIfJWTisValid =
                 req.user = signToken(jwtSecretKey, 5)({ partyId: '123', navPathIds: [] });
                 next();
             } else {
-                res.status(401).send(new cApi.ErrorResponse(404, 'Invalid security token.'));
+                res.status(401).send(new cApi.ErrorResponse('Invalid security token.'));
             }
         }
     };

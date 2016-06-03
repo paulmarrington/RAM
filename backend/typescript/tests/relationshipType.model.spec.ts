@@ -48,7 +48,7 @@ describe('RAM Relationship Type', () => {
 
     });
 
-    it('find in date range with no end date by code', async (done) => {
+    it('finds in date range with no end date by code', async (done) => {
         try {
             const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeNoEndDate.code);
             expect(instance).not.toBeNull();
@@ -59,7 +59,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('find in date range with future end date by code', async (done) => {
+    it('finds in date range with future end date by code', async (done) => {
         try {
             const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeFutureEndDate.code);
             expect(instance).not.toBeNull();
@@ -70,7 +70,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('find in date range or invalid by code', async (done) => {
+    it('finds in date range or invalid by code', async (done) => {
         try {
             const instance = await RelationshipTypeModel.findByCodeIgnoringDateRange(relationshipTypeExpiredEndDate.code);
             expect(instance).not.toBeNull();
@@ -104,11 +104,23 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('list in date range', async (done) => {
+    it('lists ignoring date range', async (done) => {
+        try {
+            const instances = await RelationshipTypeModel.listIgnoringDateRange();
+            expect(instances).not.toBeNull();
+            expect(instances.length).toBe(3);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('lists in date range', async (done) => {
         try {
             const instances = await RelationshipTypeModel.listInDateRange();
             expect(instances).not.toBeNull();
-            expect(instances.length).toBeGreaterThan(0);
+            expect(instances.length).toBe(2);
             instances.forEach((instance) => {
                 expect(instance.startDate.valueOf()).toBeLessThan(new Date().valueOf());
                 if (instance.endDate) {
@@ -122,7 +134,7 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('inserts with non-empty code', async (done) => {
+    it('inserts with valid values', async (done) => {
         try {
 
             const instance = await RelationshipTypeModel.create({
@@ -159,6 +171,7 @@ describe('RAM Relationship Type', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             done();
         }
     });
@@ -175,6 +188,7 @@ describe('RAM Relationship Type', () => {
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             done();
         }
     });
@@ -203,6 +217,7 @@ describe('RAM Relationship Type', () => {
 
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             expect(e.errors.code.message).toContain('unique');
             done();
         }

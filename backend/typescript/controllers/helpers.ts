@@ -6,45 +6,23 @@ export function sendResource<T>(res: Response) {
     'use strict';
     return (doc: T): T => {
         if (doc) {
-            res.json(doc);
+            res.status(200);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(doc, null, 4));
         }
         return doc;
     };
 }
 
-export function sendList<R, T extends { value?: T, href: string }>(res: Response) {
+export function sendList<T>(res: Response) {
     'use strict';
-    return (size: number, results: T[]): T[] => {
+    return (results: T[]): T[] => {
         if (results) {
-            res.json(results);
+            res.status(200);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(results, null, 4));
         }
         return results;
-    };
-}
-
-export function sendResultResponse<R, T extends { value?: T, href: string }>(res: Response) {
-    'use strict';
-    return (size: number, results: T[]): T[] => {
-        if (results) {
-            res.json({
-                totalCount: size,
-                results: results
-            });
-        }
-        return results;
-    };
-}
-
-export function sendResourceWithRef<T>(res: Response) {
-    'use strict';
-    return (ref: string, doc: T): T => {
-        if (doc) {
-            res.json({
-                ref: ref,
-                value: doc
-            });
-        }
-        return doc;
     };
 }
 
@@ -54,9 +32,9 @@ export function sendDocument<T>(res: Response) {
     return (doc: T): T => {
         if (doc) {
             const response: IResponse<T> = {
-                data: doc,
-                status: 200
+                data: doc
             };
+            res.status(200);
             res.json(response);
         }
         return doc;
@@ -88,25 +66,25 @@ export function sendError<T>(res: Response) {
         switch (error.constructor.name) {
             case 'Array':
                 res.status(400);
-                res.json(new ErrorResponse(400, error as string[]));
+                res.json(new ErrorResponse(error as string[]));
                 break;
             case 'String':
                 res.status(500);
-                res.json(new ErrorResponse(500, error as string));
+                res.json(new ErrorResponse(error as string));
                 break;
             case 'MongooseError':
                 res.status(400);
-                res.json(new ErrorResponse(400,
+                res.json(new ErrorResponse(
                     _.values<string>(_.mapValues((error as ValidationError).errors, (v) => v.message))
                 ));
                 break;
             case 'Error':
                 res.status(500);
-                res.json(new ErrorResponse(500, (error as Error).message));
+                res.json(new ErrorResponse((error as Error).message));
                 break;
             default:
                 res.status(500);
-                res.json(new ErrorResponse(500, error.toString()));
+                res.json(new ErrorResponse(error.toString()));
                 break;
         }
     };
@@ -115,9 +93,9 @@ export function sendError<T>(res: Response) {
 export function sendNotFoundError<T>(res: Response) {
     'use strict';
     return (doc: T): T => {
-        res.status(404);
         if (!doc) {
-            res.json(new ErrorResponse(404, 'Can\'t find the requested resource.'));
+            res.status(404);
+            res.json(new ErrorResponse('Can\'t find the requested resource.'));
         }
         return doc;
     };

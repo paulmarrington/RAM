@@ -1,10 +1,10 @@
 import {Router, Request, Response} from 'express';
 import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
-import {IRelationshipTypeModel } from '../models/relationshipType.model';
+import {IRelationshipAttributeNameModel} from '../models/relationshipAttributeName.model';
 
-export class RelationshipTypeController {
+export class RelationshipAttributeNameController {
 
-    constructor(private relationshipTypeModel:IRelationshipTypeModel) {
+    constructor(private relationshipAttributeNameModel:IRelationshipAttributeNameModel) {
     }
 
     private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
@@ -15,7 +15,7 @@ export class RelationshipTypeController {
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipTypeModel.findByCodeIgnoringDateRange(req.params.code))
+            .then((req:Request) => this.relationshipAttributeNameModel.findByCodeIgnoringDateRange(req.params.code))
             .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
@@ -24,15 +24,15 @@ export class RelationshipTypeController {
     private listIgnoringDateRange = async (req:Request, res:Response) => {
         const schema = {};
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipTypeModel.listIgnoringDateRange())
+            .then((req:Request) => this.relationshipAttributeNameModel.listIgnoringDateRange())
             .then((results) => results ? results.map((model) => model.toHrefValue()) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/relationshipType/:code', this.findByCodeIgnoringDateRange);
-        router.get('/v1/relationshipTypes', this.listIgnoringDateRange);
+        router.get('/v1/relationshipAttributeName/:code', this.findByCodeIgnoringDateRange);
+        router.get('/v1/relationshipAttributeNames', this.listIgnoringDateRange);
         return router;
     };
 

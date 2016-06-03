@@ -180,7 +180,7 @@ const buildName = (type: string, name: string) => {
       givenName: parts[0],
       familyName: parts[1]
     };
-  };
+  }
 };
 
 const mapIdentitiesToName = (party) =>

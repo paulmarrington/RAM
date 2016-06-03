@@ -10,14 +10,16 @@ import {logStream} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
 import expressValidator = require('express-validator');
 
+import {ResetController} from './controllers/reset.server.controller';
 import {PartyController} from './controllers/party.controller';
 import {RelationshipController} from './controllers/relationship.controller';
 import {RelationshipTypeController} from './controllers/relationshipType.controller';
-import {ResetController} from './controllers/reset.server.controller';
+import {RelationshipAttributeNameController} from './controllers/relationshipAttributeName.controller';
 
 import {PartyModel} from './models/party-old.model';
 import {RelationshipModel} from './models/relationship-old.model';
 import {RelationshipTypeModel} from './models/relationshipType.model';
+import {RelationshipAttributeNameModel} from './models/relationshipAttributeName.model';
 
 // connect to the database ............................................................................................
 
@@ -67,10 +69,12 @@ server.use('/api/',
     new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
 server.use('/api/',
     new RelationshipTypeController(RelationshipTypeModel).assignRoutes(express.Router()));
+server.use('/api/',
+    new RelationshipAttributeNameController(RelationshipAttributeNameModel).assignRoutes(express.Router()));
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
-    const err = new cApi.ErrorResponse(404, 'Request Not Found');
+    const err = new cApi.ErrorResponse('Request Not Found');
     res.send(err);
 });
 
