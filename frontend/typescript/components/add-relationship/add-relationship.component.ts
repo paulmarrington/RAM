@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AccessPeriodComponent} from
+import {AccessPeriodComponent, AccessPeriodComponentData} from
 '../commons/access-period/access-period.component';
 import {AuthorisationPermissionsComponent} from
 '../commons/authorisation-permissions/authorisation-permissions.component';
@@ -22,4 +22,23 @@ import {RepresentativeDetailsComponent} from
     ]
 })
 export class AddRelationshipComponent {
+    public myVar: AddRelationshipComponentData = {
+        accessPeriod: {
+            startDate: new Date(),
+            noEndDate: true,
+            endDate: null
+        }
+    };
+
+    public dumpObject(v: Object) {
+        return JSON.stringify(v);
+    }
+
+    public submit() {
+        console.dir(this.myVar);
+    }
+}
+
+export interface AddRelationshipComponentData {
+    accessPeriod: AccessPeriodComponentData;
 }
