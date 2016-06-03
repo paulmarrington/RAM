@@ -1,13 +1,19 @@
 import * as mongoose from 'mongoose';
 import {IRAMObject, RAMSchema} from './base';
+import {IProfile, ProfileModel} from './profile.model';
+
+// force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
+
+/* tslint:disable:no-unused-variable */
+const _ProfileModel = ProfileModel;
 
 // enums, utilities, helpers ..........................................................................................
 
 export class IdentityType {
 
-    public static ProvidedToken = new IdentityType('agency_provided_token');
-    public static PublicIdentifier = new IdentityType('public_identifier');
-    public static LinkId = new IdentityType('link_id');
+    public static ProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN');
+    public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER');
+    public static LinkId = new IdentityType('LINK_ID');
 
     public static AllValues = [
         IdentityType.ProvidedToken,
@@ -54,6 +60,23 @@ const IdentitySchema = RAMSchema({
         type: Boolean,
         required: [true, 'Default Indicator is required'],
         default: false
+    },
+    token: {
+        type: String,
+        trim: true
+    },
+    scheme: {
+        type: String,
+        trim: true
+    },
+    consumer: {
+        type: String,
+        trim: true
+    },
+    profile: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Profile',
+        required: [true, 'Profile is required']
     }
 });
 
@@ -63,6 +86,10 @@ export interface IIdentity extends IRAMObject {
     idValue: string;
     identityType: string;
     defaultInd: boolean;
+    token: string;
+    scheme: string;
+    consumer: string;
+    profile: IProfile;
     identityTypeEnum(): IdentityType;
 }
 
@@ -84,6 +111,9 @@ IdentitySchema.static('findByIdValueAndType', (idValue:String, type:IdentityType
             idValue: idValue,
             identityType: type.name
         })
+        .deepPopulate([
+            'profile.name'
+        ])
         .exec();
 });
 
