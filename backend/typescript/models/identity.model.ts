@@ -204,8 +204,8 @@ export interface IIdentity extends IRAMObject {
     defaultInd: boolean;
     agencyToken: string;
     invitationCodeStatus: string;
-    invitationCodeExpiryTimestamp: date;
-    invitationCodeClaimedTimestamp: date;
+    invitationCodeExpiryTimestamp: Date;
+    invitationCodeClaimedTimestamp: Date;
     invitationCodeTemporaryEmailAddress: string;
     publicIdentifierScheme: string;
     linkIdScheme: string;
