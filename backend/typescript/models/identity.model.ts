@@ -13,14 +13,14 @@ export class IdentityType {
 
     public static AgencyProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN');
     public static InvitationCode = new IdentityType('INVITATION_CODE');
-    public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER');
     public static LinkId = new IdentityType('LINK_ID');
+    public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER');
 
     public static AllValues = [
         IdentityType.AgencyProvidedToken,
         IdentityType.InvitationCode,
-        IdentityType.PublicIdentifier,
-        IdentityType.LinkId
+        IdentityType.LinkId,
+        IdentityType.PublicIdentifier
     ];
 
     public static values():IdentityType[] {
@@ -46,12 +46,12 @@ export class IdentityType {
 
 export class IdentityInvitationCodeStatus {
 
-    public static Pending = new IdentityInvitationCodeStatus('PENDING');
     public static Claimed = new IdentityInvitationCodeStatus('CLAIMED');
+    public static Pending = new IdentityInvitationCodeStatus('PENDING');
 
     public static AllValues = [
-        IdentityInvitationCodeStatus.Pending,
-        IdentityInvitationCodeStatus.Claimed
+        IdentityInvitationCodeStatus.Claimed,
+        IdentityInvitationCodeStatus.Pending
     ];
 
     public static values():IdentityInvitationCodeStatus[] {
@@ -106,14 +106,14 @@ export class IdentityPublicIdentifierScheme {
 
 export class IdentityLinkIdScheme {
 
+    public static AuthenticatorApp = new IdentityPublicIdentifierScheme('AUTHENTICATOR_APP');
     public static MyGov = new IdentityPublicIdentifierScheme('MY_GOV');
     public static Vanguard = new IdentityPublicIdentifierScheme('VANGUARD');
-    public static AuthenticatorApp = new IdentityPublicIdentifierScheme('AUTHENTICATOR_APP');
 
     public static AllValues = [
+        IdentityLinkIdScheme.AuthenticatorApp,
         IdentityLinkIdScheme.MyGov,
-        IdentityLinkIdScheme.Vanguard,
-        IdentityLinkIdScheme.AuthenticatorApp
+        IdentityLinkIdScheme.Vanguard
     ];
 
     public static values():IdentityLinkIdScheme[] {
