@@ -28,6 +28,7 @@ describe('RAM Shared Secret', () => {
     let sharedSecretTypeExpiredEndDate: ISharedSecretType;
 
     let sharedSecretNoEndDate: ISharedSecret;
+    let sharedSecretValue1 = 'secret_value_1';
     let name1: IName;
     let profile1: IProfile;
     let identity1: IIdentity;
@@ -63,7 +64,7 @@ describe('RAM Shared Secret', () => {
             });
 
             sharedSecretNoEndDate = await SharedSecretModel.create({
-                value: 'secret_value_1',
+                value: sharedSecretValue1,
                 sharedSecretType: sharedSecretTypeNoEndDate
             });
 
@@ -105,8 +106,44 @@ describe('RAM Shared Secret', () => {
             expect(instance.id).toBe(identity1.id);
             expect(instance.profile.id).toBe(profile1.id);
             expect(instance.profile.sharedSecrets.length).toBe(1);
-            expect(instance.profile.sharedSecrets[0].value).toBe(sharedSecretNoEndDate.value);
             expect(instance.profile.sharedSecrets[0].sharedSecretType.code).toBe(sharedSecretNoEndDate.sharedSecretType.code);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('hashes value upon insert', async (done) => {
+        try {
+            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            expect(instance).not.toBeNull();
+            expect(instance.profile.sharedSecrets[0].value).not.toBeNull();
+            expect(instance.profile.sharedSecrets[0].value).toBe(sharedSecretNoEndDate.value);
+            expect(instance.profile.sharedSecrets[0].value).not.toBe(sharedSecretValue1);
+            expect(instance.profile.sharedSecrets[0].matchesValue(sharedSecretValue1)).toBe(true);
+            expect(instance.profile.sharedSecrets[0].matchesValue('__BOGUS__')).toBe(false);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('hashes value upon update', async (done) => {
+        try {
+            let sharedSecretValue2 = 'secret_value_2';
+            let instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            sharedSecretNoEndDate.value = sharedSecretValue2;
+            await sharedSecretNoEndDate.save();
+            instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            expect(instance).not.toBeNull();
+            expect(instance.profile.sharedSecrets[0].value).not.toBeNull();
+            expect(instance.profile.sharedSecrets[0].value).toBe(sharedSecretNoEndDate.value);
+            expect(instance.profile.sharedSecrets[0].value).not.toBe(sharedSecretValue2);
+            expect(instance.profile.sharedSecrets[0].matchesValue(sharedSecretValue1)).toBe(false);
+            expect(instance.profile.sharedSecrets[0].matchesValue(sharedSecretValue2)).toBe(true);
+            expect(instance.profile.sharedSecrets[0].matchesValue('__BOGUS__')).toBe(false);
             done();
         } catch (e) {
             fail('Because ' + e);

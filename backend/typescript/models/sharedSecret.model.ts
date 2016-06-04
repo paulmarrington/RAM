@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
 import {IRAMObject, RAMSchema} from './base';
 import {ISharedSecretType, SharedSecretTypeModel} from './sharedSecretType.model';
 
@@ -15,7 +16,14 @@ const SharedSecretSchema = RAMSchema({
     value: {
         type: String,
         required: [true, 'Value is required'],
-        trim: true
+        trim: true,
+        set: (value) => {
+            if (value) {
+                const salt = bcrypt.genSaltSync(10);
+                return bcrypt.hashSync(value, salt);
+            }
+            return value;
+        }
     },
     sharedSecretType: {
         type: mongoose.Schema.Types.ObjectId,
@@ -29,6 +37,7 @@ const SharedSecretSchema = RAMSchema({
 export interface ISharedSecret extends IRAMObject {
     value: string;
     sharedSecretType: ISharedSecretType;
+    matchesValue(candidateValue): boolean;
 }
 
 /* tslint:disable:no-empty-interfaces */
@@ -36,6 +45,10 @@ export interface ISharedSecretModel extends mongoose.Model<ISharedSecret> {
 }
 
 // instance methods ...................................................................................................
+
+SharedSecretSchema.method('matchesValue', function (candidateValue) {
+    return bcrypt.compareSync(candidateValue, this.value);
+});
 
 // static methods .....................................................................................................
 
