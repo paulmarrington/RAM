@@ -17,7 +17,7 @@ const SharedSecretSchema = RAMSchema({
         type: String,
         required: [true, 'Value is required'],
         trim: true,
-        set: (value) => {
+        set: (value:String) => {
             if (value) {
                 const salt = bcrypt.genSaltSync(10);
                 return bcrypt.hashSync(value, salt);
@@ -37,7 +37,7 @@ const SharedSecretSchema = RAMSchema({
 export interface ISharedSecret extends IRAMObject {
     value: string;
     sharedSecretType: ISharedSecretType;
-    matchesValue(candidateValue): boolean;
+    matchesValue(candidateValue:String): boolean;
 }
 
 /* tslint:disable:no-empty-interfaces */
@@ -46,7 +46,7 @@ export interface ISharedSecretModel extends mongoose.Model<ISharedSecret> {
 
 // instance methods ...................................................................................................
 
-SharedSecretSchema.method('matchesValue', function (candidateValue) {
+SharedSecretSchema.method('matchesValue', function (candidateValue:String) {
     return bcrypt.compareSync(candidateValue, this.value);
 });
 
