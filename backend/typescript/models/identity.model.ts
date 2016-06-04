@@ -11,12 +11,14 @@ const _ProfileModel = ProfileModel;
 
 export class IdentityType {
 
-    public static ProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN');
+    public static AgencyProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN');
+    public static InvitationCode = new IdentityType('INVITATION_CODE');
     public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER');
     public static LinkId = new IdentityType('LINK_ID');
 
     public static AllValues = [
-        IdentityType.ProvidedToken,
+        IdentityType.AgencyProvidedToken,
+        IdentityType.InvitationCode,
         IdentityType.PublicIdentifier,
         IdentityType.LinkId
     ];
@@ -31,6 +33,99 @@ export class IdentityType {
 
     public static valueOf(name:String):IdentityType {
         for (let type of IdentityType.AllValues) {
+            if (type.name === name) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    constructor(public name:String) {
+    }
+}
+
+export class IdentityInvitationCodeStatus {
+
+    public static Pending = new IdentityInvitationCodeStatus('PENDING');
+    public static Claimed = new IdentityInvitationCodeStatus('CLAIMED');
+
+    public static AllValues = [
+        IdentityInvitationCodeStatus.Pending,
+        IdentityInvitationCodeStatus.Claimed
+    ];
+
+    public static values():IdentityInvitationCodeStatus[] {
+        return IdentityInvitationCodeStatus.AllValues;
+    }
+
+    public static valueStrings():String[] {
+        return IdentityInvitationCodeStatus.AllValues.map((value) => value.name);
+    }
+
+    public static valueOf(name:String):IdentityInvitationCodeStatus {
+        for (let type of IdentityInvitationCodeStatus.AllValues) {
+            if (type.name === name) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    constructor(public name:String) {
+    }
+}
+
+export class IdentityPublicIdentifierScheme {
+
+    public static ABN = new IdentityPublicIdentifierScheme('ABN');
+
+    public static AllValues = [
+        IdentityPublicIdentifierScheme.ABN
+    ];
+
+    public static values():IdentityPublicIdentifierScheme[] {
+        return IdentityPublicIdentifierScheme.AllValues;
+    }
+
+    public static valueStrings():String[] {
+        return IdentityPublicIdentifierScheme.AllValues.map((value) => value.name);
+    }
+
+    public static valueOf(name:String):IdentityPublicIdentifierScheme {
+        for (let type of IdentityPublicIdentifierScheme.AllValues) {
+            if (type.name === name) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    constructor(public name:String) {
+    }
+}
+
+export class IdentityLinkIdScheme {
+
+    public static MyGov = new IdentityPublicIdentifierScheme('MY_GOV');
+    public static Vanguard = new IdentityPublicIdentifierScheme('VANGUARD');
+    public static AuthenticatorApp = new IdentityPublicIdentifierScheme('AUTHENTICATOR_APP');
+
+    public static AllValues = [
+        IdentityLinkIdScheme.MyGov,
+        IdentityLinkIdScheme.Vanguard,
+        IdentityLinkIdScheme.AuthenticatorApp
+    ];
+
+    public static values():IdentityLinkIdScheme[] {
+        return IdentityLinkIdScheme.AllValues;
+    }
+
+    public static valueStrings():String[] {
+        return IdentityLinkIdScheme.AllValues.map((value) => value.name);
+    }
+
+    public static valueOf(name:String):IdentityLinkIdScheme {
+        for (let type of IdentityLinkIdScheme.AllValues) {
             if (type.name === name) {
                 return type;
             }
@@ -61,15 +156,36 @@ const IdentitySchema = RAMSchema({
         required: [true, 'Default Indicator is required'],
         default: false
     },
-    token: {
+    agencyToken: {
         type: String,
         trim: true
     },
-    scheme: {
+    invitationCodeStatus: {
+        type: String,
+        trim: true,
+        enum: IdentityInvitationCodeStatus.valueStrings()
+    },
+    invitationCodeExpiryTimestamp: {
+        type: Date
+    },
+    invitationCodeClaimedTimestamp: {
+        type: Date
+    },
+    invitationCodeTemporaryEmailAddress: {
         type: String,
         trim: true
     },
-    consumer: {
+    publicIdentifierScheme: {
+        type: String,
+        trim: true,
+        enum: IdentityPublicIdentifierScheme.valueStrings()
+    },
+    linkIdScheme: {
+        type: String,
+        trim: true,
+        enum: IdentityLinkIdScheme.valueStrings()
+    },
+    linkIdConsumer: {
         type: String,
         trim: true
     },
@@ -86,11 +202,19 @@ export interface IIdentity extends IRAMObject {
     idValue: string;
     identityType: string;
     defaultInd: boolean;
-    token: string;
-    scheme: string;
-    consumer: string;
+    agencyToken: string;
+    invitationCodeStatus: string;
+    invitationCodeExpiryTimestamp: date;
+    invitationCodeClaimedTimestamp: date;
+    invitationCodeTemporaryEmailAddress: string;
+    publicIdentifierScheme: string;
+    linkIdScheme: string;
+    linkIdConsumer: string;
     profile: IProfile;
     identityTypeEnum(): IdentityType;
+    invitationCodeStatusEnum(): IdentityInvitationCodeStatus;
+    publicIdentifierSchemeEnum(): IdentityPublicIdentifierScheme;
+    linkIdSchemeEnum(): IdentityLinkIdScheme;
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
@@ -101,6 +225,18 @@ export interface IIdentityModel extends mongoose.Model<IIdentity> {
 
 IdentitySchema.method('identityTypeEnum', function () {
     return IdentityType.valueOf(this.identityType);
+});
+
+IdentitySchema.method('invitationCodeStatusEnum', function () {
+    return IdentityInvitationCodeStatus.valueOf(this.invitationCodeStatus);
+});
+
+IdentitySchema.method('publicIdentifierSchemeEnum', function () {
+    return IdentityPublicIdentifierScheme.valueOf(this.publicIdentifierScheme);
+});
+
+IdentitySchema.method('linkIdSchemeEnum', function () {
+    return IdentityLinkIdScheme.valueOf(this.linkIdScheme);
 });
 
 // static methods .....................................................................................................

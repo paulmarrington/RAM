@@ -84,9 +84,6 @@ describe('RAM Shared Secret', () => {
                 idValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
-                token: 'token_1',
-                scheme: 'scheme_1',
-                consumer: 'consumer_1',
                 profile: profile1
             });
 
