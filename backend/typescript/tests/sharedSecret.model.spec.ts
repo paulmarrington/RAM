@@ -151,4 +151,24 @@ describe('RAM Shared Secret', () => {
         }
     });
 
+    it('matches value', async (done) => {
+        try {
+            expect(sharedSecretNoEndDate.matchesValue(sharedSecretValue1)).toBe(true);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('does not match null value', async (done) => {
+        try {
+            expect(sharedSecretNoEndDate.matchesValue(null)).toBe(false);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
 });

@@ -47,7 +47,10 @@ export interface ISharedSecretModel extends mongoose.Model<ISharedSecret> {
 // instance methods ...................................................................................................
 
 SharedSecretSchema.method('matchesValue', function (candidateValue:String) {
-    return bcrypt.compareSync(candidateValue, this.value);
+    if (candidateValue && this.value) {
+        return bcrypt.compareSync(candidateValue, this.value);
+    }
+    return false;
 });
 
 // static methods .....................................................................................................
