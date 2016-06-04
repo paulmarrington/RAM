@@ -1,11 +1,21 @@
 import {connectDisconnectMongo, dropMongo} from './helpers';
 import {
+    ISharedSecret,
+    SharedSecretModel} from '../models/sharedSecret.model';
+import {
+    ISharedSecretType,
+    SharedSecretTypeModel} from '../models/sharedSecretType.model';
+import {
+    IName,
+    NameModel} from '../models/name.model';
+import {
     IProfile,
     ProfileModel,
     ProfileProvider} from '../models/profile.model';
 import {
-    IName,
-    NameModel} from '../models/name.model';
+    IIdentity,
+    IdentityModel,
+    IdentityType} from '../models/identity.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Profile', () => {
@@ -13,12 +23,29 @@ describe('RAM Profile', () => {
     connectDisconnectMongo();
     dropMongo();
 
+    let sharedSecretType1: ISharedSecretType;
+    let sharedSecretTypeCode1 = 'SHARED_SECRET_TYPE_1';
+    let sharedSecret1: ISharedSecret;
+    let sharedSecretValue1 = 'secret_value_1';
     let name1: IName;
     let profile1: IProfile;
+    let identity1: IIdentity;
 
     beforeEach(async (done) => {
 
         try {
+
+            sharedSecretType1 = await SharedSecretTypeModel.create({
+                code: sharedSecretTypeCode1,
+                shortDecodeText: 'Shared Secret',
+                longDecodeText: 'Shared Secret',
+                startDate: new Date(),
+                domain: 'domain'
+            });
+            sharedSecret1 = await SharedSecretModel.create({
+                value: sharedSecretValue1,
+                sharedSecretType: sharedSecretType1
+            });
 
             name1 = await NameModel.create({
                 givenName: 'John',
@@ -28,7 +55,18 @@ describe('RAM Profile', () => {
 
             profile1 = await ProfileModel.create({
                 provider: ProfileProvider.MyGov.name,
-                name: name1
+                name: name1,
+                sharedSecrets: [sharedSecret1]
+            });
+
+            identity1 = await IdentityModel.create({
+                idValue: 'uuid_1',
+                identityType: IdentityType.LinkId.name,
+                defaultInd: false,
+                token: 'token_1',
+                scheme: 'scheme_1',
+                consumer: 'consumer_1',
+                profile: profile1
             });
 
             done();
@@ -111,6 +149,26 @@ describe('RAM Profile', () => {
             expect(profile1).not.toBeNull();
             expect(profile1.provider).toBe(ProfileProvider.MyGov.name);
             expect(profile1.providerEnum()).toBe(ProfileProvider.MyGov);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('get shared secret by code', async (done) => {
+        try {
+            expect(profile1.getSharedSecret(sharedSecretTypeCode1).sharedSecretType.code).toBe(sharedSecretTypeCode1);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('fails get shared secret by non-existent code', async (done) => {
+        try {
+            expect(profile1.getSharedSecret('__BOGUS__')).toBeNull();
             done();
         } catch (e) {
             fail('Because ' + e);

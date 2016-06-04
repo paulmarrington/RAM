@@ -69,6 +69,7 @@ export interface IProfile extends IRAMObject {
     name: IName;
     sharedSecrets: [ISharedSecret];
     providerEnum(): ProfileProvider;
+    getSharedSecret(code:String): ISharedSecret;
 }
 
 /* tslint:disable:no-empty-interfaces */
@@ -79,6 +80,17 @@ export interface IProfileModel extends mongoose.Model<IProfile> {
 
 ProfileSchema.method('providerEnum', function () {
     return ProfileProvider.valueOf(this.provider);
+});
+
+ProfileSchema.method('getSharedSecret', function (code:String) {
+    if (code && this.sharedSecrets) {
+        for (let sharedSecret of this.sharedSecrets) {
+            if (sharedSecret.sharedSecretType.code === code) {
+                return sharedSecret;
+            }
+        }
+    }
+    return null;
 });
 
 // static methods .....................................................................................................
