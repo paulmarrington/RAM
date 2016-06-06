@@ -20,10 +20,10 @@ export interface ISharedSecretType extends ICodeDecode {
 }
 
 export interface ISharedSecretTypeModel extends mongoose.Model<ISharedSecretType> {
-    findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<ISharedSecretType>;
-    findByCodeInDateRange: (id:String) => mongoose.Promise<ISharedSecretType>;
+    findByCodeIgnoringDateRange: (code:String) => mongoose.Promise<ISharedSecretType>;
+    findByCodeInDateRange: (code:String, date:Date) => mongoose.Promise<ISharedSecretType>;
     listIgnoringDateRange: () => mongoose.Promise<ISharedSecretType[]>;
-    listInDateRange: () => mongoose.Promise<ISharedSecretType[]>;
+    listInDateRange: (date:Date) => mongoose.Promise<ISharedSecretType[]>;
 }
 
 // instance methods ...................................................................................................
@@ -38,12 +38,12 @@ SharedSecretTypeSchema.static('findByCodeIgnoringDateRange', (code:String) => {
         .exec();
 });
 
-SharedSecretTypeSchema.static('findByCodeInDateRange', (code:String) => {
+SharedSecretTypeSchema.static('findByCodeInDateRange', (code:String, date:Date) => {
     return this.SharedSecretTypeModel
         .findOne({
             code: code,
-            startDate: {$lte: new Date()},
-            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+            startDate: {$lte: date},
+            $or: [{endDate: null}, {endDate: {$gte: date}}]
         })
         .exec();
 });
@@ -56,11 +56,11 @@ SharedSecretTypeSchema.static('listIgnoringDateRange', () => {
         .exec();
 });
 
-SharedSecretTypeSchema.static('listInDateRange', () => {
+SharedSecretTypeSchema.static('listInDateRange', (date:Date) => {
     return this.SharedSecretTypeModel
         .find({
-            startDate: {$lte: new Date()},
-            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+            startDate: {$lte: date},
+            $or: [{endDate: null}, {endDate: {$gte: date}}]
         })
         .sort({name: 1})
         .exec();

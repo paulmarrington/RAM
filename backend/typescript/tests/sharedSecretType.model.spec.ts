@@ -54,7 +54,7 @@ describe('RAM Shared Secret Type', () => {
 
     it('finds in date range with no end date by code', async (done) => {
         try {
-            const instance = await SharedSecretTypeModel.findByCodeInDateRange(sharedSecretTypeNoEndDate.code);
+            const instance = await SharedSecretTypeModel.findByCodeInDateRange(sharedSecretTypeNoEndDate.code, new Date());
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -78,7 +78,7 @@ describe('RAM Shared Secret Type', () => {
     it('fails find in date range by non-existent code', async (done) => {
         try {
             const code = '__BOGUS__';
-            const instance = await SharedSecretTypeModel.findByCodeInDateRange(code);
+            const instance = await SharedSecretTypeModel.findByCodeInDateRange(code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -89,7 +89,7 @@ describe('RAM Shared Secret Type', () => {
 
     it('fails find not in date range by code', async (done) => {
         try {
-            const instance = await SharedSecretTypeModel.findByCodeInDateRange(sharedSecretTypeExpiredEndDate.code);
+            const instance = await SharedSecretTypeModel.findByCodeInDateRange(sharedSecretTypeExpiredEndDate.code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -112,7 +112,7 @@ describe('RAM Shared Secret Type', () => {
 
     it('lists in date range', async (done) => {
         try {
-            const instances = await SharedSecretTypeModel.listInDateRange();
+            const instances = await SharedSecretTypeModel.listInDateRange(new Date());
             expect(instances).not.toBeNull();
             expect(instances.length).toBe(2);
             instances.forEach((instance) => {

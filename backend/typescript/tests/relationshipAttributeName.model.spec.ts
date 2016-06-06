@@ -86,7 +86,7 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('finds relationship type with inflated attributes', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipType1.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipType1.code, new Date());
             expect(instance).not.toBeNull();
             expect(instance.attributeNameUsages.length).toBe(1);
             expect(instance.attributeNameUsages[0].optionalInd).toBe(true);
@@ -101,7 +101,8 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('finds in date range with no end date by code', async (done) => {
         try {
-            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(stringRelationshipAttributeNameNoEndDate.code);
+            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(
+                stringRelationshipAttributeNameNoEndDate.code, new Date());
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -125,7 +126,7 @@ describe('RAM Relationship Attribute Name', () => {
     it('fails find in date range by non-existent code', async (done) => {
         try {
             const code = '__BOGUS__';
-            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(code);
+            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -136,7 +137,8 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('fails find not in date range by code', async (done) => {
         try {
-            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(stringRelationshipAttributeNameExpiredEndDate.code);
+            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(
+                stringRelationshipAttributeNameExpiredEndDate.code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -148,7 +150,7 @@ describe('RAM Relationship Attribute Name', () => {
     it('finds with permitted values by code', async (done) => {
         try {
             const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(
-                singleSelectRelationshipAttributeNameNoEndDate.code);
+                singleSelectRelationshipAttributeNameNoEndDate.code, new Date());
             expect(instance).not.toBeNull();
             expect(instance.permittedValues).not.toBeNull();
             expect(instance.permittedValues.length).toBe(singleSelectRelationshipAttributeNameNoEndDate.permittedValues.length);
@@ -174,7 +176,7 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('lists in date range', async (done) => {
         try {
-            const instances = await RelationshipAttributeNameModel.listInDateRange();
+            const instances = await RelationshipAttributeNameModel.listInDateRange(new Date());
             expect(instances).not.toBeNull();
             expect(instances.length).toBe(3);
             instances.forEach((instance) => {

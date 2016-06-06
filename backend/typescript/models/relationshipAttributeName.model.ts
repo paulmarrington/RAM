@@ -61,10 +61,10 @@ export interface IRelationshipAttributeName extends ICodeDecode {
 }
 
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
-    findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
-    findByCodeInDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
+    findByCodeIgnoringDateRange: (code:String) => mongoose.Promise<IRelationshipAttributeName>;
+    findByCodeInDateRange: (code:String, date:Date) => mongoose.Promise<IRelationshipAttributeName>;
     listIgnoringDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
-    listInDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
+    listInDateRange: (date:Date) => mongoose.Promise<IRelationshipAttributeName[]>;
 }
 
 // instance methods ...................................................................................................
@@ -103,12 +103,12 @@ RelationshipAttributeNameSchema.static('findByCodeIgnoringDateRange', (code:Stri
         .exec();
 });
 
-RelationshipAttributeNameSchema.static('findByCodeInDateRange', (code:String) => {
+RelationshipAttributeNameSchema.static('findByCodeInDateRange', (code:String, date:Date) => {
     return this.RelationshipAttributeNameModel
         .findOne({
             code: code,
-            startDate: {$lte: new Date()},
-            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+            startDate: {$lte: date},
+            $or: [{endDate: null}, {endDate: {$gte: date}}]
         })
         .exec();
 });
@@ -124,11 +124,11 @@ RelationshipAttributeNameSchema.static('listIgnoringDateRange', () => {
         .exec();
 });
 
-RelationshipAttributeNameSchema.static('listInDateRange', () => {
+RelationshipAttributeNameSchema.static('listInDateRange', (date:Date) => {
     return this.RelationshipAttributeNameModel
         .find({
-            startDate: {$lte: new Date()},
-            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+            startDate: {$lte: date},
+            $or: [{endDate: null}, {endDate: {$gte: date}}]
         })
         .deepPopulate([
             'attributeNameUsages.attributeName'

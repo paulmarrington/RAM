@@ -50,7 +50,7 @@ describe('RAM Relationship Type', () => {
 
     it('finds in date range with no end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeNoEndDate.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeNoEndDate.code, new Date());
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -61,7 +61,7 @@ describe('RAM Relationship Type', () => {
 
     it('finds in date range with future end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeFutureEndDate.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeFutureEndDate.code, new Date());
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -84,7 +84,7 @@ describe('RAM Relationship Type', () => {
     it('fails find in date range by non-existent code', async (done) => {
         try {
             const code = '__BOGUS__';
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -95,7 +95,7 @@ describe('RAM Relationship Type', () => {
 
     it('fails find not in date range by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeExpiredEndDate.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeExpiredEndDate.code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -118,7 +118,7 @@ describe('RAM Relationship Type', () => {
 
     it('lists in date range', async (done) => {
         try {
-            const instances = await RelationshipTypeModel.listInDateRange();
+            const instances = await RelationshipTypeModel.listInDateRange(new Date());
             expect(instances).not.toBeNull();
             expect(instances.length).toBe(2);
             instances.forEach((instance) => {
@@ -148,7 +148,7 @@ describe('RAM Relationship Type', () => {
             expect(instance.id).not.toBeNull();
             expect(instance.code).not.toBeNull();
 
-            const retrievedInstance = await RelationshipTypeModel.findByCodeInDateRange(instance.code);
+            const retrievedInstance = await RelationshipTypeModel.findByCodeInDateRange(instance.code, new Date());
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
 
