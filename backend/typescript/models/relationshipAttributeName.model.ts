@@ -1,11 +1,11 @@
 import * as mongoose from 'mongoose';
-import {ICodeDecode, CodeDecodeSchema} from './base';
+import {RAMEnum, ICodeDecode, CodeDecodeSchema} from './base';
 import {HrefValue, RelationshipAttributeName as DTO} from '../../../commons/RamAPI';
 
 // enums, utilities, helpers ..........................................................................................
 
 // see https://github.com/atogov/RAM/wiki/Relationship-Attribute-Types
-export class RelationshipAttributeNameDomain {
+export class RelationshipAttributeNameDomain extends RAMEnum {
 
     public static Null = new RelationshipAttributeNameDomain('NULL');
     public static Boolean = new RelationshipAttributeNameDomain('BOOLEAN');
@@ -15,7 +15,7 @@ export class RelationshipAttributeNameDomain {
     public static SelectSingle = new RelationshipAttributeNameDomain('SELECT_SINGLE');
     public static SelectMulti = new RelationshipAttributeNameDomain('SELECT_MULTI');
 
-    public static AllValues = [
+    protected static AllValues = [
         RelationshipAttributeNameDomain.Null,
         RelationshipAttributeNameDomain.Boolean,
         RelationshipAttributeNameDomain.Number,
@@ -25,24 +25,8 @@ export class RelationshipAttributeNameDomain {
         RelationshipAttributeNameDomain.SelectMulti
     ];
 
-    public static values():RelationshipAttributeNameDomain[] {
-        return RelationshipAttributeNameDomain.AllValues;
-    }
-
-    public static valueOf(name:String):RelationshipAttributeNameDomain {
-        for (let type of RelationshipAttributeNameDomain.AllValues) {
-            if (type.name === name) {
-                return type;
-            }
-        }
-        return null;
-    }
-
-    public static valueStrings():String[] {
-        return RelationshipAttributeNameDomain.AllValues.map((value) => value.name);
-    }
-
-    constructor(public name:String) {
+    constructor(name:String) {
+        super(name);
     }
 }
 

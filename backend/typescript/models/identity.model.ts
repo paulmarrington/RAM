@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import {IRAMObject, RAMSchema} from './base';
+import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IProfile, ProfileModel} from './profile.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
@@ -9,131 +9,67 @@ const _ProfileModel = ProfileModel;
 
 // enums, utilities, helpers ..........................................................................................
 
-export class IdentityType {
+export class IdentityType extends RAMEnum {
 
     public static AgencyProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN');
     public static InvitationCode = new IdentityType('INVITATION_CODE');
     public static LinkId = new IdentityType('LINK_ID');
     public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER');
 
-    public static AllValues = [
+    protected static AllValues = [
         IdentityType.AgencyProvidedToken,
         IdentityType.InvitationCode,
         IdentityType.LinkId,
         IdentityType.PublicIdentifier
     ];
 
-    public static values():IdentityType[] {
-        return IdentityType.AllValues;
-    }
-
-    public static valueStrings():String[] {
-        return IdentityType.AllValues.map((value) => value.name);
-    }
-
-    public static valueOf(name:String):IdentityType {
-        for (let type of IdentityType.AllValues) {
-            if (type.name === name) {
-                return type;
-            }
-        }
-        return null;
-    }
-
-    constructor(public name:String) {
+    constructor(name:String) {
+        super(name);
     }
 }
 
-export class IdentityInvitationCodeStatus {
+export class IdentityInvitationCodeStatus extends RAMEnum {
 
     public static Claimed = new IdentityInvitationCodeStatus('CLAIMED');
     public static Pending = new IdentityInvitationCodeStatus('PENDING');
 
-    public static AllValues = [
+    protected static AllValues = [
         IdentityInvitationCodeStatus.Claimed,
         IdentityInvitationCodeStatus.Pending
     ];
 
-    public static values():IdentityInvitationCodeStatus[] {
-        return IdentityInvitationCodeStatus.AllValues;
-    }
-
-    public static valueStrings():String[] {
-        return IdentityInvitationCodeStatus.AllValues.map((value) => value.name);
-    }
-
-    public static valueOf(name:String):IdentityInvitationCodeStatus {
-        for (let type of IdentityInvitationCodeStatus.AllValues) {
-            if (type.name === name) {
-                return type;
-            }
-        }
-        return null;
-    }
-
-    constructor(public name:String) {
+    constructor(name:String) {
+        super(name);
     }
 }
 
-export class IdentityPublicIdentifierScheme {
+export class IdentityPublicIdentifierScheme extends RAMEnum {
 
     public static ABN = new IdentityPublicIdentifierScheme('ABN');
 
-    public static AllValues = [
+    protected static AllValues = [
         IdentityPublicIdentifierScheme.ABN
     ];
 
-    public static values():IdentityPublicIdentifierScheme[] {
-        return IdentityPublicIdentifierScheme.AllValues;
-    }
-
-    public static valueStrings():String[] {
-        return IdentityPublicIdentifierScheme.AllValues.map((value) => value.name);
-    }
-
-    public static valueOf(name:String):IdentityPublicIdentifierScheme {
-        for (let type of IdentityPublicIdentifierScheme.AllValues) {
-            if (type.name === name) {
-                return type;
-            }
-        }
-        return null;
-    }
-
-    constructor(public name:String) {
+    constructor(name:String) {
+        super(name);
     }
 }
 
-export class IdentityLinkIdScheme {
+export class IdentityLinkIdScheme extends RAMEnum {
 
     public static AuthenticatorApp = new IdentityPublicIdentifierScheme('AUTHENTICATOR_APP');
     public static MyGov = new IdentityPublicIdentifierScheme('MY_GOV');
     public static Vanguard = new IdentityPublicIdentifierScheme('VANGUARD');
 
-    public static AllValues = [
+    protected static AllValues = [
         IdentityLinkIdScheme.AuthenticatorApp,
         IdentityLinkIdScheme.MyGov,
         IdentityLinkIdScheme.Vanguard
     ];
 
-    public static values():IdentityLinkIdScheme[] {
-        return IdentityLinkIdScheme.AllValues;
-    }
-
-    public static valueStrings():String[] {
-        return IdentityLinkIdScheme.AllValues.map((value) => value.name);
-    }
-
-    public static valueOf(name:String):IdentityLinkIdScheme {
-        for (let type of IdentityLinkIdScheme.AllValues) {
-            if (type.name === name) {
-                return type;
-            }
-        }
-        return null;
-    }
-
-    constructor(public name:String) {
+    constructor(name:String) {
+        super(name);
     }
 }
 

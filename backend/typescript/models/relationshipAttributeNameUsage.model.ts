@@ -6,11 +6,9 @@ import {IRelationshipAttributeName, RelationshipAttributeNameModel} from './rela
 /* tslint:disable:no-unused-variable */
 const _RelationshipAttributeNameModel = RelationshipAttributeNameModel;
 
-export interface IRelationshipAttributeNameUsage extends mongoose.Document {
-    optionalInd: boolean;
-    defaultValue: string;
-    attributeName: IRelationshipAttributeName;
-}
+// enums, utilities, helpers ..........................................................................................
+
+// schema .............................................................................................................
 
 const RelationshipAttributeNameUsageSchema = new mongoose.Schema({
     optionalInd: {
@@ -29,9 +27,19 @@ const RelationshipAttributeNameUsageSchema = new mongoose.Schema({
     }
 });
 
+// interfaces .........................................................................................................
+
+export interface IRelationshipAttributeNameUsage extends mongoose.Document {
+    optionalInd: boolean;
+    defaultValue: string;
+    attributeName: IRelationshipAttributeName;
+}
+
 /* tslint:disable:no-empty-interfaces */
 export interface IRelationshipAttributeNameUsageModel extends mongoose.Model<IRelationshipAttributeNameUsage> {
 }
+
+// concrete model .....................................................................................................
 
 export const RelationshipAttributeNameUsageModel = mongoose.model(
     'RelationshipAttributeNameUsage',
