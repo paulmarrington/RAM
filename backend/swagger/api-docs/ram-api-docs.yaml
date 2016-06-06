@@ -1033,6 +1033,13 @@
           description: It is the field type
           type: string
           enum: ['NULL','BOOLEAN','NUMBER','STRING','DATE','SINGLE_SELECT','MULTI_SELECT']
+        classifier:
+          description: It is the classifier
+          type: string
+          enum: ['PERMISSION', 'OTHER']
+        category:
+          description: An optional category or grouping
+          type: string
         permittedValues:
           description: what are the accepted value types
           type: array

@@ -30,6 +30,21 @@ export class RelationshipAttributeNameDomain extends RAMEnum {
     }
 }
 
+export class RelationshipAttributeNameClassifier extends RAMEnum {
+
+    public static Other = new RelationshipAttributeNameClassifier('OTHER');
+    public static Permission = new RelationshipAttributeNameClassifier('PERMISSION');
+
+    protected static AllValues = [
+        RelationshipAttributeNameClassifier.Other,
+        RelationshipAttributeNameClassifier.Permission
+    ];
+
+    constructor(name:String) {
+        super(name);
+    }
+}
+
 // schema .............................................................................................................
 
 const RelationshipAttributeNameSchema = CodeDecodeSchema({
@@ -38,6 +53,16 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
         required: [true, 'Domain is required'],
         trim: true,
         enum: RelationshipAttributeNameDomain.valueStrings()
+    },
+    classifier: {
+        type: String,
+        required: [true, 'Classifier is required'],
+        trim: true,
+        enum: RelationshipAttributeNameClassifier.valueStrings()
+    },
+    category: {
+        type: String,
+        trim: true
     },
     purposeText: {
         type: String,
@@ -53,6 +78,8 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
 
 export interface IRelationshipAttributeName extends ICodeDecode {
     domain: string;
+    classifier: string;
+    category: string;
     purposeText: string;
     permittedValues: string[];
     domainEnum(): RelationshipAttributeNameDomain;
@@ -89,6 +116,8 @@ RelationshipAttributeNameSchema.method('toDTO', function () {
         this.endDate,
         this.shortDecodeText,
         this.domain,
+        this.classifier,
+        this.category,
         this.permittedValues
     );
 });
