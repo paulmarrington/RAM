@@ -1,11 +1,27 @@
-<div class="form-group">
-    <div class="col-md-12">
-        <h4>ABN*</h4>
+<form [ngFormModel]=form>
+    <div class="form-group">
+        <div class="col-md-12">
+            <h4>ABN*</h4>
+        </div>
+        <div class="col-md-4">
+            <input class="form-control" type="text" name="abn"
+            minlength=11 maxlength=14 pattern="^(\d *?){11}$"
+            [disabled]=hasName
+            ngControl="abn" size=14 placeholder="Type ABN here ...">
+        </div>
+        <div class="col-md-4">
+            <input class="form-control" type="text" name="organisation"
+             ngControl="organisation" readonly=true>
+        </div>
+        <div class="col-md-4">
+            <span [hidden]=hasName>
+                <button class="col-md-6 btn btn-primary"
+                [disabled]=!hasABN (click)=getOrganisationName() >
+                    Check ABN</a>
+            </span><span [hidden]=!hasName>
+                <button class="col-md-6 btn btn-default"
+                (click)=clearOrganisationType() >Change ABN</a>
+            </span>
+        </div>
     </div>
-    <div class="col-md-6">
-        <input class="form-control" type="text" name="ABN" value="" placeholder="Type ABN here ...">
-    </div>
-    <div class="col-md-6">
-        <a class=" col-md-4 btn btn-primary">Check ABN</a>
-    </div>
-</div>
+</form>

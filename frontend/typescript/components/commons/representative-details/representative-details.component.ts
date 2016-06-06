@@ -13,4 +13,15 @@ import {OrganisationRepresentativeDetailsComponent} from
     ]
 })
 export class RepresentativeDetailsComponent {
+    // TODO: work-around until Angular-2 understands check-boxes
+    private model:{selectRepresentativeType:String};
+    constructor() {
+        this.model = {selectRepresentativeType: ''};
+    }
+    get isIndividual(): boolean {
+        return this.model.selectRepresentativeType === 'individual';
+    }
+    get isOrganisation(): boolean {
+        return this.model.selectRepresentativeType === 'organisation';
+    }
 }

@@ -1,14 +1,16 @@
-<div class="form-group">
-    <div class="col-md-4">
-        <h4>First name*</h4>
-        <input class="form-control" type="text" name="firstname" value="" placeholder="First name ...">
+<form [ngFormModel]=form>
+    <div class="form-group">
+        <div class="col-md-4">
+            <h4>First name*</h4>
+            <input class="form-control" type="text" name="firstName" ngControl="firstName" placeholder="First name ...">
+        </div>
+        <div class="col-md-4">
+            <h4>Last name*</h4>
+            <input class="form-control" type="text" name="lastName" ngControl="lastName" placeholder="Last name ...">
+        </div>
+        <div class="col-md-4">
+            <h4>Date of birth</h4>
+            <input class="form-control" type="text" name="dob" ngControl="dob" placeholder="Date of birth ...">
+        </div>
     </div>
-    <div class="col-md-4">
-        <h4>Last name*</h4>
-        <input class="form-control" type="text" name="lastname" value="" placeholder="Last name ...">
-    </div>
-    <div class="col-md-4">
-        <h4>Date of birth</h4>
-        <input class="form-control" type="text" name="dob" value="" placeholder="Date of birth ...">
-    </div>
-</div>
+</form>
