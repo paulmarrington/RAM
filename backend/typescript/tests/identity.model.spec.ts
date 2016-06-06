@@ -2,14 +2,17 @@ import {connectDisconnectMongo, dropMongo} from './helpers';
 import {
     IIdentity,
     IdentityModel,
-    IdentityType} from '../models/identity.model';
+    IdentityType,
+    IdentityInvitationCodeStatus,
+    IdentityPublicIdentifierScheme,
+    IdentityLinkIdScheme} from '../models/identity.model';
+import {
+    IName,
+    NameModel} from '../models/name.model';
 import {
     IProfile,
     ProfileModel,
     ProfileProvider} from '../models/profile.model';
-import {
-    IName,
-    NameModel} from '../models/name.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Identity', () => {
@@ -40,9 +43,6 @@ describe('RAM Identity', () => {
                 idValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
-                token: 'token_1',
-                scheme: 'scheme_1',
-                consumer: 'consumer_1',
                 profile: profile1
             });
 
@@ -55,7 +55,7 @@ describe('RAM Identity', () => {
 
     });
 
-    it('finds identity by id value', async (done) => {
+    it('finds by id value and type', async (done) => {
         try {
             const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
             expect(instance).not.toBeNull();
@@ -66,23 +66,17 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('inserts with valid values', async (done) => {
+    it('inserts base with valid values', async (done) => {
         try {
 
             const idValue = 'uuid_x';
             const type = IdentityType.LinkId;
             const defaultInd = false;
-            const token = 'token_x';
-            const scheme = 'scheme_x';
-            const consumer = 'consumer_x';
 
             const instance = await IdentityModel.create({
                 idValue: idValue,
                 identityType: type.name,
                 defaultInd: defaultInd,
-                token: token,
-                scheme: scheme,
-                consumer: consumer,
                 profile: profile1
             });
 
@@ -90,8 +84,6 @@ describe('RAM Identity', () => {
             expect(instance.id).not.toBeNull();
             expect(instance.idValue).not.toBeNull();
             expect(instance.identityType).not.toBeNull();
-            expect(instance.scheme).not.toBeNull();
-            expect(instance.consumer).not.toBeNull();
             expect(instance.profile).not.toBeNull();
             expect(instance.profile.name).not.toBeNull();
 
@@ -101,11 +93,144 @@ describe('RAM Identity', () => {
             expect(retrievedInstance.identityType).toBe(type.name);
             expect(retrievedInstance.identityTypeEnum()).toBe(type);
             expect(retrievedInstance.defaultInd).toBe(defaultInd);
-            expect(retrievedInstance.token).toBe(token);
-            expect(retrievedInstance.scheme).toBe(scheme);
-            expect(retrievedInstance.consumer).toBe(consumer);
             expect(retrievedInstance.profile.id).toBe(profile1.id);
             expect(retrievedInstance.profile.name.id).toBe(name1.id);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('inserts agency provided token with valid values', async (done) => {
+        try {
+
+            const idValue = 'uuid_x';
+            const type = IdentityType.AgencyProvidedToken;
+            const defaultInd = false;
+            const agencyToken = 'agency_token_x';
+
+            const instance = await IdentityModel.create({
+                idValue: idValue,
+                identityType: type.name,
+                defaultInd: defaultInd,
+                agencyToken: agencyToken,
+                profile: profile1
+            });
+
+            const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
+            expect(retrievedInstance).not.toBeNull();
+            expect(retrievedInstance.id).toBe(instance.id);
+            expect(retrievedInstance.identityType).toBe(type.name);
+            expect(retrievedInstance.identityTypeEnum()).toBe(type);
+            expect(retrievedInstance.agencyToken).toBe(agencyToken);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('inserts invitation code with valid values', async (done) => {
+        try {
+
+            const idValue = 'uuid_invitation_code';
+            const type = IdentityType.InvitationCode;
+            const defaultInd = false;
+            const status = IdentityInvitationCodeStatus.Claimed;
+            const expiryTimestamp = new Date(2055, 1, 1);
+            const claimedTimestamp = new Date(2066, 1, 1);
+            const emailAddress = 'bob@example.com';
+
+            const instance = await IdentityModel.create({
+                idValue: idValue,
+                identityType: type.name,
+                defaultInd: defaultInd,
+                invitationCodeStatus: status.name,
+                invitationCodeExpiryTimestamp: expiryTimestamp,
+                invitationCodeClaimedTimestamp: claimedTimestamp,
+                invitationCodeTemporaryEmailAddress: emailAddress,
+                profile: profile1
+            });
+
+            const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
+            expect(retrievedInstance).not.toBeNull();
+            expect(retrievedInstance.id).toBe(instance.id);
+            expect(retrievedInstance.identityType).toBe(type.name);
+            expect(retrievedInstance.identityTypeEnum()).toBe(type);
+            expect(retrievedInstance.invitationCodeStatus).toBe(status.name);
+            expect(retrievedInstance.invitationCodeStatusEnum()).toBe(status);
+            expect(retrievedInstance.invitationCodeExpiryTimestamp.getTime()).toBe(expiryTimestamp.getTime());
+            expect(retrievedInstance.invitationCodeClaimedTimestamp.getTime()).toBe(claimedTimestamp.getTime());
+            expect(retrievedInstance.invitationCodeTemporaryEmailAddress).toBe(emailAddress);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('inserts public identifier with valid values', async (done) => {
+        try {
+
+            const idValue = 'uuid_public_identifier';
+            const type = IdentityType.PublicIdentifier;
+            const defaultInd = false;
+            const scheme = IdentityPublicIdentifierScheme.ABN;
+
+            const instance = await IdentityModel.create({
+                idValue: idValue,
+                identityType: type.name,
+                defaultInd: defaultInd,
+                publicIdentifierScheme: scheme.name,
+                profile: profile1
+            });
+
+            const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
+            expect(retrievedInstance).not.toBeNull();
+            expect(retrievedInstance.id).toBe(instance.id);
+            expect(retrievedInstance.identityType).toBe(type.name);
+            expect(retrievedInstance.identityTypeEnum()).toBe(type);
+            expect(retrievedInstance.publicIdentifierScheme).toBe(scheme.name);
+            expect(retrievedInstance.publicIdentifierSchemeEnum()).toBe(scheme);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('inserts link id with valid values', async (done) => {
+        try {
+
+            const idValue = 'uuid_link_id';
+            const type = IdentityType.LinkId;
+            const scheme = IdentityLinkIdScheme.MyGov;
+            const defaultInd = false;
+
+            const instance = await IdentityModel.create({
+                idValue: idValue,
+                identityType: type.name,
+                defaultInd: defaultInd,
+                linkIdScheme: scheme.name,
+                profile: profile1
+            });
+
+            const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
+            expect(retrievedInstance).not.toBeNull();
+            expect(retrievedInstance.id).toBe(instance.id);
+            expect(retrievedInstance.identityType).toBe(type.name);
+            expect(retrievedInstance.identityTypeEnum()).toBe(type);
+            expect(retrievedInstance.linkIdScheme).toBe(scheme.name);
+            expect(retrievedInstance.linkIdSchemeEnum()).toBe(scheme);
 
             done();
 
@@ -121,9 +246,6 @@ describe('RAM Identity', () => {
                 idValue: 'uuid_x',
                 identityType: '__BOGUS__',
                 defaultInd: false,
-                token: 'token_x',
-                scheme: 'scheme_x',
-                consumer: 'scheme_x',
                 profile: profile1
             });
             fail('should not have inserted with invalid type');
@@ -140,9 +262,6 @@ describe('RAM Identity', () => {
             await IdentityModel.create({
                 idValue: 'uuid_x',
                 defaultInd: false,
-                token: 'token_x',
-                scheme: 'scheme_x',
-                consumer: 'scheme_x',
                 profile: profile1
             });
             fail('should not have inserted with null type');
@@ -159,10 +278,7 @@ describe('RAM Identity', () => {
             await IdentityModel.create({
                 idValue: 'uuid_x',
                 identityType: IdentityType.LinkId.name,
-                defaultInd: false,
-                token: 'token_x',
-                scheme: 'scheme_x',
-                consumer: 'scheme_x'
+                defaultInd: false
             });
             fail('should not have inserted with null profile');
             done();

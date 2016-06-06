@@ -42,10 +42,10 @@ export interface IRelationshipType extends ICodeDecode {
 }
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
-    findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipType>;
-    findByCodeInDateRange: (id:String) => mongoose.Promise<IRelationshipType>;
+    findByCodeIgnoringDateRange: (code:String) => mongoose.Promise<IRelationshipType>;
+    findByCodeInDateRange: (code:String, date:Date) => mongoose.Promise<IRelationshipType>;
     listIgnoringDateRange: () => mongoose.Promise<IRelationshipType[]>;
-    listInDateRange: () => mongoose.Promise<IRelationshipType[]>;
+    listInDateRange: (date:Date) => mongoose.Promise<IRelationshipType[]>;
 }
 
 // static methods .....................................................................................................
@@ -61,12 +61,12 @@ RelationshipTypeSchema.static('findByCodeIgnoringDateRange', (code:String) => {
         .exec();
 });
 
-RelationshipTypeSchema.static('findByCodeInDateRange', (code:String) => {
+RelationshipTypeSchema.static('findByCodeInDateRange', (code:String, date:Date) => {
     return this.RelationshipTypeModel
         .findOne({
             code: code,
-            startDate: {$lte: new Date()},
-            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+            startDate: {$lte: date},
+            $or: [{endDate: null}, {endDate: {$gte: date}}]
         })
         .deepPopulate([
             'attributeNameUsages.attributeName'
@@ -85,11 +85,11 @@ RelationshipTypeSchema.static('listIgnoringDateRange', () => {
         .exec();
 });
 
-RelationshipTypeSchema.static('listInDateRange', () => {
+RelationshipTypeSchema.static('listInDateRange', (date:Date) => {
     return this.RelationshipTypeModel
         .find({
-            startDate: {$lte: new Date()},
-            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+            startDate: {$lte: date},
+            $or: [{endDate: null}, {endDate: {$gte: date}}]
         })
         .deepPopulate([
             'attributeNameUsages.attributeName'

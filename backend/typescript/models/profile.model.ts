@@ -1,40 +1,34 @@
 import * as mongoose from 'mongoose';
-import {IRAMObject, RAMSchema} from './base';
+import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IName, NameModel} from './name.model';
+import {ISharedSecret, SharedSecretModel} from './sharedSecret.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
 /* tslint:disable:no-unused-variable */
 const _NameModel = NameModel;
 
+/* tslint:disable:no-unused-variable */
+const _SharedSecretModel = SharedSecretModel;
+
 // enums, utilities, helpers ..........................................................................................
 
-export class ProfileProvider {
+export class ProfileProvider extends RAMEnum {
 
+    public static AuthenticatorApp = new ProfileProvider('AUTHENTICATOR_APP');
     public static MyGov = new ProfileProvider('MY_GOV');
+    public static SelfAsserted = new ProfileProvider('SELF_ASSERTED');
+    public static Vanguard = new ProfileProvider('VANGUARD');
 
-    public static AllValues = [
-        ProfileProvider.MyGov
+    protected static AllValues = [
+        ProfileProvider.AuthenticatorApp,
+        ProfileProvider.MyGov,
+        ProfileProvider.SelfAsserted,
+        ProfileProvider.Vanguard
     ];
 
-    public static values():ProfileProvider[] {
-        return ProfileProvider.AllValues;
-    }
-
-    public static valueStrings():String[] {
-        return ProfileProvider.AllValues.map((value) => value.name);
-    }
-
-    public static valueOf(name:String):ProfileProvider {
-        for (let type of ProfileProvider.AllValues) {
-            if (type.name === name) {
-                return type;
-            }
-        }
-        return null;
-    }
-
     constructor(public name:String) {
+        super(name);
     }
 }
 
@@ -51,7 +45,11 @@ const ProfileSchema = RAMSchema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Name',
         required: [true, 'Name is required']
-    }
+    },
+    sharedSecrets: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SharedSecret'
+    }]
 });
 
 // interfaces .........................................................................................................
@@ -59,7 +57,9 @@ const ProfileSchema = RAMSchema({
 export interface IProfile extends IRAMObject {
     provider: string;
     name: IName;
+    sharedSecrets: [ISharedSecret];
     providerEnum(): ProfileProvider;
+    getSharedSecret(code:String): ISharedSecret;
 }
 
 /* tslint:disable:no-empty-interfaces */
@@ -70,6 +70,17 @@ export interface IProfileModel extends mongoose.Model<IProfile> {
 
 ProfileSchema.method('providerEnum', function () {
     return ProfileProvider.valueOf(this.provider);
+});
+
+ProfileSchema.method('getSharedSecret', function (code:String) {
+    if (code && this.sharedSecrets) {
+        for (let sharedSecret of this.sharedSecrets) {
+            if (sharedSecret.sharedSecretType.code === code) {
+                return sharedSecret;
+            }
+        }
+    }
+    return null;
 });
 
 // static methods .....................................................................................................

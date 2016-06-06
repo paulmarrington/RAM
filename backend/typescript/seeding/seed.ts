@@ -5,8 +5,18 @@ import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
     RelationshipAttributeNameDomain} from '../models/relationshipAttributeName.model';
-import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
-import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
+
+import {
+    IRelationshipAttributeNameUsage,
+    RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
+
+import {
+    IRelationshipType,
+    RelationshipTypeModel} from '../models/relationshipType.model';
+
+import {
+    ISharedSecretType,
+    SharedSecretTypeModel} from '../models/sharedSecretType.model';
 
 const now = new Date();
 
@@ -79,6 +89,19 @@ class Seeder {
         }
     }
 
+    public static async createSharedSecretTypeModel(values:ISharedSecretType) {
+        const code = values.code;
+        const existingModel = await SharedSecretTypeModel.findByCodeIgnoringDateRange(code);
+        if (existingModel === null) {
+            console.log('-', code);
+            const model = await SharedSecretTypeModel.create(values);
+            return model;
+        } else {
+            console.log('-', code, ' ... skipped');
+            return existingModel;
+        }
+    }
+
 }
 
 // load reference data ................................................................................................
@@ -86,7 +109,7 @@ class Seeder {
 /* tslint:disable:max-func-body-length */
 const loadReferenceData = async () => {
 
-    // relationship attribute names
+    // relationship attribute names ...................................................................................
 
     console.log('\nInserting Relationship Attribute Names:');
 
@@ -109,7 +132,7 @@ const loadReferenceData = async () => {
         permittedValues: ['Permanent', 'Contractor', 'Casual']
     } as IRelationshipAttributeName);
 
-    // relationship types
+    // relationship types .............................................................................................
 
     console.log('\nInserting Relationship Types:');
 
@@ -227,6 +250,18 @@ const loadReferenceData = async () => {
         longDecodeText: 'Employment Agents – employment',
         startDate: now
     } as IRelationshipType, null);
+
+    // shared secret types ............................................................................................
+
+    console.log('\nInserting Shared Secret Types:');
+
+    await Seeder.createSharedSecretTypeModel({
+        code: 'DATE_OF_BIRTH',
+        shortDecodeText: 'Date of Birth',
+        longDecodeText: 'Date of Birth',
+        startDate: now,
+        domain: 'DEFAULT'
+    } as ISharedSecretType);
 
 };
 
