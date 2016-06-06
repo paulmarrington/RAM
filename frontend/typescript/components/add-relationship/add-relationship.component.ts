@@ -22,6 +22,7 @@ import {RepresentativeDetailsComponent} from
     ]
 })
 export class AddRelationshipComponent {
+    public accessPeriodValidationErrors = {};
     public myVar: AddRelationshipComponentData = {
         accessPeriod: {
             startDate: new Date(),

@@ -14,17 +14,19 @@ export class AccessPeriodComponent implements OnInit {
 
     @Output('dataChange') public dataChanges = new EventEmitter<AccessPeriodComponentData>();
 
-    constructor(private fb: FormBuilder) {
+    @Output('validationErrors') public validationErrors = new EventEmitter<boolean>();
+
+    constructor(private _fb: FormBuilder) {
     }
 
     public ngOnInit() {
-        this.form = this.fb.group({
+        this.form = this._fb.group({
             'startDate': [Helper.dateToDDMMYYYY(this.data.startDate),
                 Validators.compose([Validators.required, RAMNgValidators.dateFormatValidator])],
             'endDate': [Helper.dateToDDMMYYYY(this.data.endDate),
                 Validators.compose([RAMNgValidators.dateFormatValidator])],
             'noEndDate': [this.data.noEndDate]
-        }, { validator: Validators.compose([this.isDateBefore('startDate', 'endDate')]) });
+        }, { validator: Validators.compose([this._isDateBefore('startDate', 'endDate')]) });
 
         let endDate = this.form.controls['endDate'] as Control;
         let noEndDate = this.form.controls['noEndDate'];
@@ -36,14 +38,15 @@ export class AccessPeriodComponent implements OnInit {
         });
         this.form.valueChanges.subscribe((v: AccessPeriodComponentData) => {
             this.dataChanges.emit(v);
+            this.validationErrors.emit(this.form.valid);
         });
     }
 
-    private isDateBefore = (startDateCtrlName: string, endDateCtrlName: string) => {
+    private _isDateBefore = (startDateCtrlName: string, endDateCtrlName: string) => {
         return (cg: ControlGroup) => {
             let startDate = Helper.parseDate((cg.controls[startDateCtrlName] as Control).value);
             let endDate = Helper.parseDate((cg.controls[endDateCtrlName] as Control).value);
-            
+
             return (startDate !== null && endDate !== null && startDate.getTime() > endDate.getTime()) ? {
                 isEndDateBeforeStartDate: {
                     valid: false
@@ -62,10 +65,10 @@ export class RAMNgValidators {
             }
         } : null;
     }
-
 }
 
 export class Helper {
+
     public static dateToDDMMYYYY(date: Date) {
         if (date) {
             return date.getDay() + '/' + date.getMonth() + '/' + date.getFullYear();
@@ -86,7 +89,7 @@ export class Helper {
         let month = parseInt(parts[1], 10);
         let year = parseInt(parts[2], 10);
 
-        if (year < 1000 || year > 3000 || month == 0 || month > 12) {
+        if (year < 1000 || year > 3000 || month === 0 || month > 12) {
             return null;
         }
 
