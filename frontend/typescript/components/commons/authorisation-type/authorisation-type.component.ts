@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { ControlGroup, Control }
-from '@angular/common';
+import { ControlGroup, Control, Validators } from '@angular/common';
 
 @Component({
     selector: 'authorisation-type',
     templateUrl: 'authorisation-type.component.html'
 })
 export class AuthorisationTypeComponent {
-    private authTypeControl = new Control('Universal representative');
+    private authTypeControl =
+        new Control('Please Choose...', Validators.required);
 
     public form = new ControlGroup({
         authType: this.authTypeControl
