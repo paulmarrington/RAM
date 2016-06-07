@@ -22,13 +22,6 @@ export class RAMRestService {
         return this.http.get(url).map(this.extractData).publishReplay().refCount();
     }
 
-    // A call external to RAM to get organisation name from ABN
-    public getOrganisationNameFromABN(abn:string) {
-        // This is temporary until we can talk to the server
-        // How about mocking framework?
-        return Promise.resolve('The End of Time Pty Limited');
-    }
-
     private extractData(res: Response) {
         if (res.status < 200 || res.status >= 300) {
             throw new Error('Status code is:' + res.status);
