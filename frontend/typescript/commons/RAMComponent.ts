@@ -22,7 +22,7 @@ export class RAMComponent<ComponentData> implements OnInit {
     // Don't forget constructor(_fb: FormBuilder) { super(_fb); }; in subclass
     constructor(protected _fb: FormBuilder) {}
 
-    // Add your controls in the subclass.
+    // Add your controls in the subclass (FormBuilder format).
     protected controls() { return {}; }
 
     public ngOnInit() {
