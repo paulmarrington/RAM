@@ -198,6 +198,54 @@ const loadReferenceData = async () => {
             permittedValues: permissionPermittedAccessLevels
         } as IRelationshipAttributeName);
 
+        const deptindustry_aba_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTOFINDUSTRY_ABA_PERMISSION',
+            shortDecodeText: 'Department of Industry',
+            longDecodeText: 'Australian Business Account (ABA) - ABLIS',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const abr_abr_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'ABR_ABR_PERMISSION',
+            shortDecodeText: 'Australian Business Register (ABR)',
+            longDecodeText: 'Australian Business Register',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const deptindustry_ats_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTOFINDUSTRY_ATS_PERMISSION',
+            shortDecodeText: 'Department of Industry',
+            longDecodeText: 'Automotive Transformation Scheme (ATS)',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const ntdeptbusiness_avetmiss_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'NTDEPTOFBUSINESS_AVETMISS_PERMISSION',
+            shortDecodeText: 'NT Department of Business',
+            longDecodeText: 'AVETMISS Training Portal',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
         // relationship types .........................................................................................
 
         console.log('\nInserting Relationship Types:\n');
@@ -215,7 +263,11 @@ const loadReferenceData = async () => {
             {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
                 defaultValue: 'Markdown for Subject Universal Representative Declaration'},
             {attribute: asic_abn_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
-            {attribute: wgea_activate_attributeName, optionalInd: false, defaultValue: full_permissionAccess}
+            {attribute: wgea_activate_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: deptindustry_aba_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: abr_abr_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: deptindustry_ats_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: full_permissionAccess}
         ]);
 
         await Seeder.createRelationshipTypeModel({
@@ -231,7 +283,11 @@ const loadReferenceData = async () => {
             {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
                 defaultValue: 'Markdown for Subject Custom Representative Declaration'},
             {attribute: asic_abn_attributeName, optionalInd: false, defaultValue: null},
-            {attribute: wgea_activate_attributeName, optionalInd: false, defaultValue: null}
+            {attribute: wgea_activate_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: deptindustry_aba_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: abr_abr_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: deptindustry_ats_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: null}
         ]);
 
         // shared secret types ............................................................................................
