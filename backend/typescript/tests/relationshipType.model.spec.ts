@@ -139,8 +139,8 @@ describe('RAM Relationship Type', () => {
     it('inserts with valid values', async (done) => {
         try {
 
-            var minCredentialStrength = 5;
-            var minIdentityStrength = 5;
+            const minCredentialStrength = 5;
+            const minIdentityStrength = 6;
 
             const instance = await RelationshipTypeModel.create({
                 code: 'CODE_1',

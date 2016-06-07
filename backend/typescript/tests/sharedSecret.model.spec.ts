@@ -82,7 +82,7 @@ describe('RAM Shared Secret', () => {
             });
 
             identity1 = await IdentityModel.create({
-                idValue: 'uuid_1',
+                rawIdValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
                 linkIdScheme: IdentityLinkIdScheme.MyGov.name,
@@ -100,7 +100,7 @@ describe('RAM Shared Secret', () => {
 
     it('finds identity includes profile and shared secrets', async (done) => {
         try {
-            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            const instance = await IdentityModel.findByIdValueAndType(identity1.rawIdValue, identity1.identityTypeEnum());
             expect(instance).not.toBeNull();
             expect(instance.id).toBe(identity1.id);
             expect(instance.profile.id).toBe(profile1.id);
@@ -115,7 +115,7 @@ describe('RAM Shared Secret', () => {
 
     it('hashes value upon insert', async (done) => {
         try {
-            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            const instance = await IdentityModel.findByIdValueAndType(identity1.rawIdValue, identity1.identityTypeEnum());
             expect(instance).not.toBeNull();
             expect(instance.profile.sharedSecrets[0].value).not.toBeNull();
             expect(instance.profile.sharedSecrets[0].value).toBe(sharedSecretNoEndDate.value);
@@ -132,10 +132,10 @@ describe('RAM Shared Secret', () => {
     it('hashes value upon update', async (done) => {
         try {
             let sharedSecretValue2 = 'secret_value_2';
-            let instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            let instance = await IdentityModel.findByIdValueAndType(identity1.rawIdValue, identity1.identityTypeEnum());
             sharedSecretNoEndDate.value = sharedSecretValue2;
             await sharedSecretNoEndDate.save();
-            instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            instance = await IdentityModel.findByIdValueAndType(identity1.rawIdValue, identity1.identityTypeEnum());
             expect(instance).not.toBeNull();
             expect(instance.profile.sharedSecrets[0].value).not.toBeNull();
             expect(instance.profile.sharedSecrets[0].value).toBe(sharedSecretNoEndDate.value);

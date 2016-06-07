@@ -11,10 +11,25 @@ const _ProfileModel = ProfileModel;
 
 export class IdentityType extends RAMEnum {
 
-    public static AgencyProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN');
-    public static InvitationCode = new IdentityType('INVITATION_CODE');
-    public static LinkId = new IdentityType('LINK_ID');
-    public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER');
+    public static AgencyProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN')
+        .withIdValueBuilder((identity:IIdentity):String => {
+            return identity.identityType + ':' + identity.agencyScheme + ':' + identity.rawIdValue;
+        });
+
+    public static InvitationCode = new IdentityType('INVITATION_CODE')
+        .withIdValueBuilder((identity:IIdentity):String => {
+            return identity.identityType + ':' + identity.rawIdValue;
+        });
+
+    public static LinkId = new IdentityType('LINK_ID')
+        .withIdValueBuilder((identity:IIdentity):String => {
+            return identity.identityType + ':' + identity.linkIdScheme + ':' + identity.rawIdValue;
+        });
+
+    public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER')
+        .withIdValueBuilder((identity:IIdentity):String => {
+            return identity.identityType + ':' + identity.publicIdentifierScheme + ':' + identity.rawIdValue;
+        });
 
     protected static AllValues = [
         IdentityType.AgencyProvidedToken,
@@ -23,8 +38,15 @@ export class IdentityType extends RAMEnum {
         IdentityType.PublicIdentifier
     ];
 
+    public buildIdValue:(identity:IIdentity) => String;
+
     constructor(name:String) {
         super(name);
+    }
+
+    public withIdValueBuilder(builder:(identity:IIdentity) => String):IdentityType {
+        this.buildIdValue = builder;
+        return this;
     }
 }
 
@@ -94,6 +116,11 @@ const IdentitySchema = RAMSchema({
         required: [true, 'Id Value is required'],
         trim: true
     },
+    rawIdValue: {
+        type: String,
+        required: [true, 'Raw Id Value is required'],
+        trim: true
+    },
     identityType: {
         type: String,
         required: [true, 'Type is required'],
@@ -104,6 +131,14 @@ const IdentitySchema = RAMSchema({
         type: Boolean,
         required: [true, 'Default Indicator is required'],
         default: false
+    },
+    agencyScheme: {
+        type: String,
+        trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.AgencyProvidedToken.name;
+        }, 'Agency Scheme is required'],
+        enum: IdentityAgencyScheme.valueStrings()
     },
     agencyToken: {
         type: String,
@@ -137,14 +172,6 @@ const IdentitySchema = RAMSchema({
         type: String,
         trim: true
     },
-    agencyScheme: {
-        type: String,
-        trim: true,
-        required: [function () {
-            return this.identityType === IdentityType.AgencyProvidedToken.name;
-        }, 'Agency Scheme is required'],
-        enum: IdentityAgencyScheme.valueStrings()
-    },
     publicIdentifierScheme: {
         type: String,
         trim: true,
@@ -172,12 +199,20 @@ const IdentitySchema = RAMSchema({
     }
 });
 
+IdentitySchema.pre('validate', function (next:() => void) {
+    const identityType = IdentityType.valueOf(this.identityType) as IdentityType;
+    this.idValue = identityType ? identityType.buildIdValue(this) : null;
+    next();
+});
+
 // interfaces .........................................................................................................
 
 export interface IIdentity extends IRAMObject {
     idValue: string;
+    rawIdValue: string;
     identityType: string;
     defaultInd: boolean;
+    agencyScheme: string;
     agencyToken: string;
     invitationCodeStatus: string;
     invitationCodeExpiryTimestamp: Date;
@@ -188,6 +223,7 @@ export interface IIdentity extends IRAMObject {
     linkIdConsumer: string;
     profile: IProfile;
     identityTypeEnum(): IdentityType;
+    agencySchemeEnum(): IdentityAgencyScheme;
     invitationCodeStatusEnum(): IdentityInvitationCodeStatus;
     publicIdentifierSchemeEnum(): IdentityPublicIdentifierScheme;
     linkIdSchemeEnum(): IdentityLinkIdScheme;
@@ -201,6 +237,10 @@ export interface IIdentityModel extends mongoose.Model<IIdentity> {
 
 IdentitySchema.method('identityTypeEnum', function () {
     return IdentityType.valueOf(this.identityType);
+});
+
+IdentitySchema.method('agencySchemeEnum', function () {
+    return IdentityAgencyScheme.valueOf(this.agencyScheme);
 });
 
 IdentitySchema.method('invitationCodeStatusEnum', function () {
@@ -217,10 +257,10 @@ IdentitySchema.method('linkIdSchemeEnum', function () {
 
 // static methods .....................................................................................................
 
-IdentitySchema.static('findByIdValueAndType', (idValue:String, type:IdentityType) => {
+IdentitySchema.static('findByIdValueAndType', (rawIdValue:String, type:IdentityType) => {
     return this.IdentityModel
         .findOne({
-            idValue: idValue,
+            rawIdValue: rawIdValue,
             identityType: type.name
         })
         .deepPopulate([

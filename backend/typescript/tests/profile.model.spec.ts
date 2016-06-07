@@ -15,7 +15,8 @@ import {
 import {
     IIdentity,
     IdentityModel,
-    IdentityType} from '../models/identity.model';
+    IdentityType,
+    IdentityLinkIdScheme} from '../models/identity.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Profile', () => {
@@ -60,9 +61,10 @@ describe('RAM Profile', () => {
             });
 
             identity1 = await IdentityModel.create({
-                idValue: 'uuid_1',
+                rawIdValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
                 profile: profile1
             });
 
