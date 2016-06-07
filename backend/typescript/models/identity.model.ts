@@ -43,6 +43,19 @@ export class IdentityInvitationCodeStatus extends RAMEnum {
     }
 }
 
+export class IdentityAgencyScheme extends RAMEnum {
+
+    public static Medicare = new IdentityAgencyScheme('MEDICARE');
+
+    protected static AllValues = [
+        IdentityAgencyScheme.Medicare
+    ];
+
+    constructor(name:String) {
+        super(name);
+    }
+}
+
 export class IdentityPublicIdentifierScheme extends RAMEnum {
 
     public static ABN = new IdentityPublicIdentifierScheme('ABN');
@@ -94,31 +107,58 @@ const IdentitySchema = RAMSchema({
     },
     agencyToken: {
         type: String,
-        trim: true
+        trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.AgencyProvidedToken.name;
+        }, 'Agency Token is required']
     },
     invitationCodeStatus: {
         type: String,
         trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.InvitationCode.name;
+        }, 'Invitation Code Status is required'],
         enum: IdentityInvitationCodeStatus.valueStrings()
     },
     invitationCodeExpiryTimestamp: {
-        type: Date
+        type: Date,
+        required: [function () {
+            return this.identityType === IdentityType.InvitationCode.name;
+        }, 'Invitation Code Expiry is required']
     },
     invitationCodeClaimedTimestamp: {
-        type: Date
+        type: Date,
+        required: [function () {
+            return this.identityType === IdentityType.InvitationCode.name &&
+                this.invitationCodeStatus === IdentityInvitationCodeStatus.Claimed.name;
+        }, 'Invitation Code Claimed Timestamp is required']
     },
     invitationCodeTemporaryEmailAddress: {
         type: String,
         trim: true
     },
+    agencyScheme: {
+        type: String,
+        trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.AgencyProvidedToken.name;
+        }, 'Agency Scheme is required'],
+        enum: IdentityAgencyScheme.valueStrings()
+    },
     publicIdentifierScheme: {
         type: String,
         trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.PublicIdentifier.name;
+        }, 'Public Identifier Scheme is required'],
         enum: IdentityPublicIdentifierScheme.valueStrings()
     },
     linkIdScheme: {
         type: String,
         trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.LinkId.name;
+        }, 'Link Id Scheme is required'],
         enum: IdentityLinkIdScheme.valueStrings()
     },
     linkIdConsumer: {

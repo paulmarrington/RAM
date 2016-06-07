@@ -15,7 +15,8 @@ import {
 import {
     IIdentity,
     IdentityModel,
-    IdentityType} from '../models/identity.model';
+    IdentityType,
+    IdentityLinkIdScheme} from '../models/identity.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Shared Secret', () => {
@@ -84,6 +85,7 @@ describe('RAM Shared Secret', () => {
                 idValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
                 profile: profile1
             });
 

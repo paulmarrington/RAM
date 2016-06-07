@@ -4,6 +4,7 @@ import {
     IdentityModel,
     IdentityType,
     IdentityInvitationCodeStatus,
+    IdentityAgencyScheme,
     IdentityPublicIdentifierScheme,
     IdentityLinkIdScheme} from '../models/identity.model';
 import {
@@ -43,6 +44,7 @@ describe('RAM Identity', () => {
                 idValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
                 profile: profile1
             });
 
@@ -77,6 +79,7 @@ describe('RAM Identity', () => {
                 idValue: idValue,
                 identityType: type.name,
                 defaultInd: defaultInd,
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
                 profile: profile1
             });
 
@@ -116,6 +119,7 @@ describe('RAM Identity', () => {
                 idValue: idValue,
                 identityType: type.name,
                 defaultInd: defaultInd,
+                agencyScheme: IdentityAgencyScheme.Medicare.name,
                 agencyToken: agencyToken,
                 profile: profile1
             });
