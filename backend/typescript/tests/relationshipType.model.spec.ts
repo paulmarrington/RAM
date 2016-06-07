@@ -1,6 +1,5 @@
-import {connectDisconnectMongo} from './helpers';
+import {connectDisconnectMongo, dropMongo} from './helpers';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
-import {dropMongo} from "./helpers";
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Relationship Type', () => {
@@ -8,33 +7,34 @@ describe('RAM Relationship Type', () => {
     connectDisconnectMongo();
     dropMongo();
 
-    let existingInstanceNoEndDate: IRelationshipType;
-    let existingInstanceFutureEndDate: IRelationshipType;
-    let existingExpiredInstance: IRelationshipType;
+    let relationshipTypeNoEndDate: IRelationshipType;
+    let relationshipTypeFutureEndDate: IRelationshipType;
+    let relationshipTypeExpiredEndDate: IRelationshipType;
 
     beforeEach(async (done) => {
 
         try {
 
-            existingInstanceNoEndDate = await RelationshipTypeModel.create({
-                code: 'BUSINESS_REPRESENTATIVE',
-                shortDecodeText: 'Business Representative',
-                longDecodeText: 'Business Representative',
-                startDate: new Date()
+            relationshipTypeNoEndDate = await RelationshipTypeModel.create({
+                code: 'RELATIONSHIP_TYPE_1',
+                shortDecodeText: 'Relationship Type 1',
+                longDecodeText: 'Relationship Type 1',
+                startDate: new Date(),
+                attributeNameUsages: []
             });
 
-            existingInstanceFutureEndDate = await RelationshipTypeModel.create({
-                code: 'ONLINE_SERVICE_PROVIDER',
-                shortDecodeText: 'Online Service Provider',
-                longDecodeText: 'Online Service Provider',
+            relationshipTypeFutureEndDate = await RelationshipTypeModel.create({
+                code: 'RELATIONSHIP_TYPE_2',
+                shortDecodeText: 'Relationship Type 2',
+                longDecodeText: 'Relationship Type 2',
                 startDate: new Date(),
                 endDate: new Date(2099, 1, 1)
             });
 
-            existingExpiredInstance = await RelationshipTypeModel.create({
-                code: 'INSOLVENCY_PRACTITIONER',
-                shortDecodeText: 'Insolvency practitioner',
-                longDecodeText: 'Insolvency practitioner',
+            relationshipTypeExpiredEndDate = await RelationshipTypeModel.create({
+                code: 'RELATIONSHIP_TYPE_3',
+                shortDecodeText: 'Relationship Type 3',
+                longDecodeText: 'Relationship Type 3',
                 startDate: new Date(2016, 1, 1),
                 endDate: new Date(2016, 1, 2)
             });
@@ -42,73 +42,99 @@ describe('RAM Relationship Type', () => {
             done();
 
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
+            done();
         }
 
     });
 
-    it('find valid with no end date by code', async (done) => {
+    it('finds in date range with no end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(existingInstanceNoEndDate.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeNoEndDate.code, new Date());
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
+            done();
         }
     });
 
-    it('find valid with future end date by code', async (done) => {
+    it('finds in date range with future end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(existingInstanceFutureEndDate.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeFutureEndDate.code, new Date());
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
+            done();
         }
     });
 
-    it('fails find valid by non-existent code', async (done) => {
+    it('finds in date range or invalid by code', async (done) => {
+        try {
+            const instance = await RelationshipTypeModel.findByCodeIgnoringDateRange(relationshipTypeExpiredEndDate.code);
+            expect(instance).not.toBeNull();
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
 
+    it('fails find in date range by non-existent code', async (done) => {
         try {
             const code = '__BOGUS__';
-            const instance = await RelationshipTypeModel.findValidByCode(code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
+            done();
         }
-
     });
 
-    it('fails find invalid by code', async (done) => {
+    it('fails find not in date range by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findValidByCode(existingExpiredInstance.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeExpiredEndDate.code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
+            done();
         }
     });
 
-    it('list valid', async (done) => {
+    it('lists ignoring date range', async (done) => {
         try {
-            const instances = await RelationshipTypeModel.listValid();
+            const instances = await RelationshipTypeModel.listIgnoringDateRange();
             expect(instances).not.toBeNull();
-            expect(instances.length).toBeGreaterThan(0);
-            for (let i = 0; i < instances.length; i += 1) {
-                var instance = instances[i];
+            expect(instances.length).toBe(3);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('lists in date range', async (done) => {
+        try {
+            const instances = await RelationshipTypeModel.listInDateRange(new Date());
+            expect(instances).not.toBeNull();
+            expect(instances.length).toBe(2);
+            instances.forEach((instance) => {
                 expect(instance.startDate.valueOf()).toBeLessThan(new Date().valueOf());
                 if (instance.endDate) {
                     expect(instance.endDate.valueOf()).toBeGreaterThan(new Date().valueOf());
                 }
-            }
+            });
             done();
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
+            done();
         }
     });
 
-    it('inserts with non-empty code', async (done) => {
+    it('inserts with valid values', async (done) => {
         try {
 
             const instance = await RelationshipTypeModel.create({
@@ -122,34 +148,52 @@ describe('RAM Relationship Type', () => {
             expect(instance.id).not.toBeNull();
             expect(instance.code).not.toBeNull();
 
-            const retrievedInstance = await RelationshipTypeModel.findValidByCode(instance.code);
+            const retrievedInstance = await RelationshipTypeModel.findByCodeInDateRange(instance.code, new Date());
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
 
             done();
 
         } catch (e) {
-            fail(e);
+            fail('Because ' + e);
+            done();
         }
-
     });
 
-    it('fails inserts with empty code', async (done) => {
+    it('fails insert with null code', async (done) => {
         try {
             await RelationshipTypeModel.create({
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date()
             });
-            fail("should not have inserted with empty code");
+            fail('should not have inserted with null code');
+            done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             done();
         }
     });
 
-    it('fails inserts with duplicate code', async (done) => {
+    it('fails insert with empty code', async (done) => {
+        try {
+            await RelationshipTypeModel.create({
+                code: '',
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date()
+            });
+            fail('should not have inserted with empty code');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
+            done();
+        }
+    });
 
+    it('fails insert with duplicate code', async (done) => {
         try {
 
             const code = 'CODE_DUPLICATE';
@@ -168,14 +212,15 @@ describe('RAM Relationship Type', () => {
                 startDate: new Date()
             });
 
-            fail("should not have inserted with duplicate code");
+            fail('should not have inserted with duplicate code');
+            done();
 
         } catch (e) {
             expect(e.name).toBe('ValidationError');
+            expect(e.errors.code).not.toBeNull();
             expect(e.errors.code.message).toContain('unique');
             done();
         }
-
     });
 
 });

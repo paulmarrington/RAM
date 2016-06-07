@@ -1,6 +1,6 @@
 import {Router, Request, Response} from 'express';
 import {sendDocument, sendError} from './helpers';
-import {IPartyModel} from '../models/party.model';
+import {IPartyModel} from '../models/party-old.model';
 
 export class PartyController {
 

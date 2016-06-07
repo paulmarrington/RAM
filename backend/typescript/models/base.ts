@@ -1,6 +1,35 @@
 import * as mongoose from 'mongoose';
 
-const mongooseUniqueValidator = require('mongoose-unique-validator');
+/* tslint:disable:no-var-requires */ const mongooseUniqueValidator = require('mongoose-unique-validator');
+/* tslint:disable:no-var-requires */ const mongooseIdValidator = require('mongoose-id-validator');
+/* tslint:disable:no-var-requires */ const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
+
+/* RAMEnum is a simple class construct that represents a enumerated type so we can work with classes not strings.
+ */
+export class RAMEnum {
+
+    protected static AllValues: RAMEnum[];
+
+    public static values<T extends RAMEnum>():T[] {
+        return this.AllValues as T[];
+    }
+
+    public static valueStrings<T extends RAMEnum>():String[] {
+        return this.AllValues.map((value:T) => value.name);
+    }
+
+    public static valueOf<T extends RAMEnum>(name:String):T {
+        for (let type of this.AllValues) {
+            if ((type as T).name === name) {
+                return type as T;
+            }
+        }
+        return null;
+    }
+
+    constructor(public name:String) {
+    }
+}
 
 /* A RAMObject defines the common attributes that all objects in the RAM
  * model will contain.
@@ -25,6 +54,9 @@ export const RAMSchema = (schema: Object) => {
 
   result.add(schema);
 
+  result.plugin(mongooseIdValidator);
+  result.plugin(mongooseDeepPopulate);
+
   result.method('delete', function () {
     this.deleteInd = true;
     this.save();
@@ -44,7 +76,9 @@ export interface ICodeDecode extends mongoose.Document {
 
 }
 
+/* tslint:disable:max-func-body-length */
 export const CodeDecodeSchema = (schema: Object) => {
+
   const result = new mongoose.Schema({
     shortDecodeText: {
       type: String,
@@ -70,7 +104,12 @@ export const CodeDecodeSchema = (schema: Object) => {
       type: Date
     }
   });
+
   result.add(schema);
+
+  result.plugin(mongooseIdValidator);
+  result.plugin(mongooseDeepPopulate);
   result.plugin(mongooseUniqueValidator);
+
   return result;
 };

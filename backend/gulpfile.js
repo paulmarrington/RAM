@@ -1,5 +1,5 @@
-var gulp = require('gulp')
-var nodemon = require('gulp-nodemon')
+var gulp = require('gulp');
+var nodemon = require('gulp-nodemon');
 var ts = require("gulp-typescript");
 var sourcemaps = require("gulp-sourcemaps");
 var tslint = require("gulp-tslint");
@@ -8,6 +8,8 @@ var seq = require("gulp-sequence");
 var gzip = require('gulp-gzip');
 var tar = require('gulp-tar');
 var jasmine = require('gulp-jasmine');
+var exec = require('child_process').exec;
+var args = require('yargs').argv;
 
 var tsProject = ts.createProject("tsconfig.json", {
     typescript: require("typescript")
@@ -58,6 +60,18 @@ gulp.task('serve', ["ts:watch"], function () {
         });
 });
 
+gulp.task('seed', ["ts:compile"], function () {
+    console.log('Seeding the database ...');
+    exec('node dist/backend/typescript/seeding/seed.js', function (err, stdout, stderr) {
+        if (stdout) {
+            console.log(stdout);
+        }
+        if (err) {
+            console.log(err);
+        }
+    });
+});
+
 gulp.task("copy:resources", function (params) {
     return gulp.src(["package.json", "pm2.json"])
         .pipe(gulp.dest("dist/"));
@@ -72,14 +86,20 @@ gulp.task("publish:tarball",
     });
 
 gulp.task('test', ['ts:compile'], function () {
-    return gulp.src(['dist/{**,./}/*.spec.js']).pipe(
-        jasmine({
-            verbose: true,
-            includeStackTrace: true,
-            config: {
-                stopSpecOnExpectationFailure: false,
-                random: false
-            }
-        })
-    );
+  var pattern = ['dist/{**,./}/*.spec.js'];
+  if (args.test) {
+    pattern = ['dist/{**,./}/' + args.test + '.spec.js'];
+  }
+  console.log('Running tests with pattern ' + args.test);
+  return gulp.src(pattern).pipe(
+    jasmine({
+      verbose: true,
+      includeStackTrace: true,
+      config: {
+        stopSpecOnExpectationFailure: false,
+        random: false
+      }
+    })
+  );
 });
+

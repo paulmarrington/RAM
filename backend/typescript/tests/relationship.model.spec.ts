@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import {connectDisconnectMongo} from './helpers';
-import {RelationshipModel} from '../models/relationship.model';
+import {RelationshipModel} from '../models/relationship-old.model';
 
 describe('RAM Relationship', () => {
 

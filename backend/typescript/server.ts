@@ -4,33 +4,30 @@ import * as loggerMorgan from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as methodOverride from 'method-override';
 import * as cApi from '../../commons/RamAPI';
-import * as api from './ram/ServerAPI';
+import * as mongoose from 'mongoose';
+import {conf} from './bootstrap';
 import {logStream} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
-// Prepare mongoose for daily operations
-import * as mongoose from 'mongoose';
 import expressValidator = require('express-validator');
 
-mongoose.connect('mongodb://localhost/ram', {}, () => {
-    console.log('Connected to db');
-});
-
+import {ResetController} from './controllers/reset.server.controller';
 import {PartyController} from './controllers/party.controller';
 import {RelationshipController} from './controllers/relationship.controller';
 import {RelationshipTypeController} from './controllers/relationshipType.controller';
-import {ResetController} from './controllers/reset.server.controller';
+import {RelationshipAttributeNameController} from './controllers/relationshipAttributeName.controller';
 
-import {PartyModel} from './models/party.model';
-import {RelationshipModel} from './models/relationship.model';
+import {PartyModel} from './models/party-old.model';
+import {RelationshipModel} from './models/relationship-old.model';
 import {RelationshipTypeModel} from './models/relationshipType.model';
+import {RelationshipAttributeNameModel} from './models/relationshipAttributeName.model';
 
-if (process.env.RAM_CONF === void 0 ||
-    process.env.RAM_CONF.trim().length === 0) {
-    console.log('Missing RAM_CONF environment variable');
-    process.exit(1);
-}
+// connect to the database ............................................................................................
 
-/* tslint:disable:no-var-requires */ const conf: api.IRamConf = require(`${process.env.RAM_CONF}`);
+mongoose.connect(conf.mongoURL, {}, () => {
+    console.log('Connected to db: ' + conf.mongoURL);
+});
+
+// configure express ..................................................................................................
 
 const server = express();
 
@@ -62,6 +59,8 @@ server.use(methodOverride());
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 server.use(express.static('swagger'));
 
+// setup route handlers ...............................................................................................
+
 server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
 server.use('/api/v1/party',
@@ -70,10 +69,12 @@ server.use('/api/',
     new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
 server.use('/api/',
     new RelationshipTypeController(RelationshipTypeModel).assignRoutes(express.Router()));
+server.use('/api/',
+    new RelationshipAttributeNameController(RelationshipAttributeNameModel).assignRoutes(express.Router()));
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
-    const err = new cApi.ErrorResponse(404, 'Request Not Found');
+    const err = new cApi.ErrorResponse('Request Not Found');
     res.send(err);
 });
 
@@ -84,6 +85,8 @@ server.use((req: express.Request, res: express.Response) => {
 //         res.send(ramResponse);
 //     }
 // });
+
+// start server .......................................................................................................
 
 server.listen(conf.httpPort);
 console.log(`RAM Server running on port ${conf.httpPort}`);
