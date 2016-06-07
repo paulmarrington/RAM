@@ -169,6 +169,8 @@ const loadReferenceData = async () => {
 
         // relationship attribute names (permission) ..................................................................
 
+        console.log('\nInserting Relationship Attribute Names (permission):\n');
+
         const full_permissionAccess = 'Full access';
         const permissionPermittedAccessLevels = [full_permissionAccess, 'Limited access', 'No access'];
 
