@@ -1,14 +1,23 @@
-<div class="form-group">
-    <div class="col-md-4">
-        <h4>First name*</h4>
-        <input class="form-control" type="text" name="firstname" value="" placeholder="First name ...">
+<form [ngFormModel]=individualRepresentativeDetailsForm>
+    <div class="form-group">
+        <div class="col-md-4">
+            <h4>First name*</h4>
+            <input class="form-control" type="text" name="firstName" [ngFormControl]=
+                    "individualRepresentativeDetailsForm.controls['firstName']"
+                placeholder="First name ...">
+        </div>
+        <div class="col-md-4">
+            <h4>Last name*</h4>
+            <input class="form-control" type="text" name="lastName" [ngFormControl]=
+                    "individualRepresentativeDetailsForm.controls['lastName']"
+                placeholder="Last name ...">
+        </div>
+        <div class="col-md-4">
+            <h4>Date of birth</h4>
+            <input class="form-control" type="date" name="dob"
+            [ngFormControl]=
+                "individualRepresentativeDetailsForm.controls['dob']"
+            placeholder="Date of birth ...">
+        </div>
     </div>
-    <div class="col-md-4">
-        <h4>Last name*</h4>
-        <input class="form-control" type="text" name="lastname" value="" placeholder="Last name ...">
-    </div>
-    <div class="col-md-4">
-        <h4>Date of birth</h4>
-        <input class="form-control" type="text" name="dob" value="" placeholder="Date of birth ...">
-    </div>
-</div>
+</form>
