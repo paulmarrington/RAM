@@ -36,6 +36,7 @@ export class AddRelationshipComponent {
     };
 
     public dumpObject(v: Object) {
+        // creates formatted JSON - display in <pre> tag
         return JSON.stringify(v,null,2);
     }
 

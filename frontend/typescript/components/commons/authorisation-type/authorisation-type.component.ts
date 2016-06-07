@@ -1,20 +1,24 @@
-import { Component } from '@angular/core';
-import { ControlGroup, Control, Validators } from '@angular/common';
+import { Component }                    from '@angular/core';
+import { FORM_DIRECTIVES, FormBuilder } from '@angular/common';
+import { RAMComponent }                 from '../../../commons/RAMComponent';
 
 @Component({
-    selector: 'authorisation-type',
-    templateUrl: 'authorisation-type.component.html'
+    selector:       'authorisation-type',
+    templateUrl:    'authorisation-type.component.html',
+    directives:     [FORM_DIRECTIVES]
 })
-export class AuthorisationTypeComponent {
-    private authTypeControl =
-        new Control('Please Choose...', Validators.required);
 
-    public authorisationTypeform = new ControlGroup({
-        authType: this.authTypeControl
-    });
-    // Triggers if user changes selection for DDL
-    public onChange(authType:string) {
-        // TODO: once forms are connected...
-        alert(authType);
+export class AuthorisationTypeComponent extends RAMComponent<AuthorisationTypeComponentData> {
+
+    constructor(_fb: FormBuilder) { super(_fb); };
+
+    protected controls() {
+        return {
+            'authType': [this.data.authType]
+        };
     }
+}
+
+export interface AuthorisationTypeComponentData {
+    authType: String;
 }
