@@ -246,6 +246,30 @@ const loadReferenceData = async () => {
             permittedValues: permissionPermittedAccessLevels
         } as IRelationshipAttributeName);
 
+        const ntdeptcorpinfoservices_ims_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'NTDEPTOFCORPINFOSERVICES_IMS_PERMISSION',
+            shortDecodeText: 'NT Department of Corporate & Information Services - DCIS',
+            longDecodeText: 'Identity Management System (IMS) - Invoice Portal – Invoice NTG',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const ntdepthumanservicescentrelink_ppl_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'NTDEPTOFHUMANSERVICESCENTRELINK_PPL_PERMISSION',
+            shortDecodeText: 'Department of Human Services - Centrelink',
+            longDecodeText: 'Paid Parental Leave',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
         // relationship types .........................................................................................
 
         console.log('\nInserting Relationship Types:\n');
@@ -267,7 +291,9 @@ const loadReferenceData = async () => {
             {attribute: deptindustry_aba_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
             {attribute: abr_abr_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
             {attribute: deptindustry_ats_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
-            {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: full_permissionAccess}
+            {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: ntdepthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: full_permissionAccess}
         ]);
 
         await Seeder.createRelationshipTypeModel({
@@ -287,7 +313,9 @@ const loadReferenceData = async () => {
             {attribute: deptindustry_aba_attributeName, optionalInd: false, defaultValue: null},
             {attribute: abr_abr_attributeName, optionalInd: false, defaultValue: null},
             {attribute: deptindustry_ats_attributeName, optionalInd: false, defaultValue: null},
-            {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: null}
+            {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: ntdepthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: null}
         ]);
 
         // shared secret types ............................................................................................
