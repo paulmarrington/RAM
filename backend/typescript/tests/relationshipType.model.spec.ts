@@ -28,7 +28,8 @@ describe('RAM Relationship Type', () => {
                 shortDecodeText: 'Relationship Type 2',
                 longDecodeText: 'Relationship Type 2',
                 startDate: new Date(),
-                endDate: new Date(2099, 1, 1)
+                endDate: new Date(2099, 1, 1),
+                attributeNameUsages: []
             });
 
             relationshipTypeExpiredEndDate = await RelationshipTypeModel.create({
@@ -36,7 +37,8 @@ describe('RAM Relationship Type', () => {
                 shortDecodeText: 'Relationship Type 3',
                 longDecodeText: 'Relationship Type 3',
                 startDate: new Date(2016, 1, 1),
-                endDate: new Date(2016, 1, 2)
+                endDate: new Date(2016, 1, 2),
+                attributeNameUsages: []
             });
 
             done();
@@ -137,11 +139,16 @@ describe('RAM Relationship Type', () => {
     it('inserts with valid values', async (done) => {
         try {
 
+            var minCredentialStrength = 5;
+            var minIdentityStrength = 5;
+
             const instance = await RelationshipTypeModel.create({
                 code: 'CODE_1',
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
-                startDate: new Date()
+                startDate: new Date(),
+                minCredentialStrength: minCredentialStrength,
+                minIdentityStrength: minIdentityStrength
             });
 
             expect(instance).not.toBeNull();
@@ -151,6 +158,8 @@ describe('RAM Relationship Type', () => {
             const retrievedInstance = await RelationshipTypeModel.findByCodeInDateRange(instance.code, new Date());
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
+            expect(retrievedInstance.minCredentialStrength).toBe(minCredentialStrength);
+            expect(retrievedInstance.minIdentityStrength).toBe(minIdentityStrength);
 
             done();
 

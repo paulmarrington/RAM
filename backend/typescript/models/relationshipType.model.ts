@@ -21,6 +21,16 @@ const _RelationshipAttributeNameUsageModel = RelationshipAttributeNameUsageModel
 // schema .............................................................................................................
 
 const RelationshipTypeSchema = CodeDecodeSchema({
+    minCredentialStrength: {
+        type: Number,
+        required: [true, 'Min Credential Strength is required'],
+        default: 0
+    },
+    minIdentityStrength: {
+        type: Number,
+        required: [true, 'Min Identity Strength is required'],
+        default: 0
+    },
     voluntaryInd: {
         type: Boolean,
         required: [true, 'Voluntary Ind is required'],
@@ -35,6 +45,8 @@ const RelationshipTypeSchema = CodeDecodeSchema({
 // interfaces .........................................................................................................
 
 export interface IRelationshipType extends ICodeDecode {
+    minCredentialStrength: number;
+    minIdentityStrength: number;
     voluntaryInd: boolean;
     attributeNameUsages: IRelationshipAttributeNameUsage[];
     toHrefValue(): HrefValue<DTO>;
