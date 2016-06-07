@@ -172,8 +172,10 @@ const loadReferenceData = async () => {
         } as IRelationshipType, [
             {attribute: permissionCustomisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
             {attribute: delegateManageAuthorisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
-            {attribute: delegateRelationshipTypeDeclaration_attributeName, optionalInd: false, defaultValue: 'Markdown for Delegate Universal Representative Declaration'},
-            {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false, defaultValue: 'Markdown for Subject Universal Representative Declaration'}
+            {attribute: delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                defaultValue: 'Markdown for Delegate Universal Representative Declaration'},
+            {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                defaultValue: 'Markdown for Subject Universal Representative Declaration'}
         ]);
 
         await Seeder.createRelationshipTypeModel({
@@ -184,8 +186,10 @@ const loadReferenceData = async () => {
         } as IRelationshipType, [
             {attribute: permissionCustomisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'true'},
             {attribute: delegateManageAuthorisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
-            {attribute: delegateRelationshipTypeDeclaration_attributeName, optionalInd: false, defaultValue: 'Markdown for Delegate Custom Representative Declaration'},
-            {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false, defaultValue: 'Markdown for Subject Custom Representative Declaration'}
+            {attribute: delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                defaultValue: 'Markdown for Delegate Custom Representative Declaration'},
+            {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                defaultValue: 'Markdown for Subject Custom Representative Declaration'}
         ]);
 
         // shared secret types ............................................................................................
