@@ -1006,7 +1006,7 @@
           type: string
           description: The default value for this attribute
         permittedValues:
-          description: what are the accepted value types
+          description: what are the accepted values
           type: array
           items:
             type: string     
@@ -1041,7 +1041,7 @@
           description: An optional category or grouping for additional meta data (eg a permission in Administrative Services)
           type: string
         permittedValues:
-          description: what are the accepted value types
+          description: what are the accepted values
           type: array
           items:
             type: string   
