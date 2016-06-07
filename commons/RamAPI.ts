@@ -78,6 +78,8 @@ export class RelationshipAttributeName extends ICodeDecode {
                 endTimestamp:Date,
                 public name:string,
                 public domain:string,
+                public classifier:string,
+                public category:string,
                 public permittedValues:string[]) {
         super(code, shortDecodeText, longDecodeText, startTimestamp, endTimestamp);
     };

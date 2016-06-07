@@ -1033,6 +1033,13 @@
           description: It is the field type
           type: string
           enum: ['NULL','BOOLEAN','NUMBER','STRING','DATE','SINGLE_SELECT','MULTI_SELECT']
+        classifier:
+          description: It is the classifier to indicate what type of attribute this is and how it is meant to be used (eg this is a permission)
+          type: string
+          enum: ['PERMISSION', 'OTHER']
+        category:
+          description: An optional category or grouping for additional meta data (eg a permission in Administrative Services)
+          type: string
         permittedValues:
           description: what are the accepted value types
           type: array
