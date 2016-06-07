@@ -258,10 +258,34 @@ const loadReferenceData = async () => {
             permittedValues: permissionPermittedAccessLevels
         } as IRelationshipAttributeName);
 
-        const ntdepthumanservicescentrelink_ppl_attributeName = await Seeder.createRelationshipAttributeNameModel({
-            code: 'NTDEPTOFHUMANSERVICESCENTRELINK_PPL_PERMISSION',
+        const depthumanservicescentrelink_ppl_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTOFHUMANSERVICESCENTRELINK_PPL_PERMISSION',
             shortDecodeText: 'Department of Human Services - Centrelink',
             longDecodeText: 'Paid Parental Leave',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const deptimmigration_skillselect_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTOFIMMIGRATION_SKILLSELECT_PERMISSION',
+            shortDecodeText: 'Department of Immigration and Border Protection',
+            longDecodeText: 'Skill Select',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const deptemployment_wageconnect_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTEMPLOYMENT_WAGECONNECT_PERMISSION',
+            shortDecodeText: 'Department of Employment',
+            longDecodeText: 'Wage Connect',
             startDate: now,
             domain: RelationshipAttributeNameDomain.SelectSingle.name,
             classifier: RelationshipAttributeNameClassifier.Permission.name,
@@ -293,7 +317,9 @@ const loadReferenceData = async () => {
             {attribute: deptindustry_ats_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
             {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
             {attribute: ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
-            {attribute: ntdepthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: full_permissionAccess}
+            {attribute: depthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: deptimmigration_skillselect_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: deptemployment_wageconnect_attributeName, optionalInd: false, defaultValue: full_permissionAccess}
         ]);
 
         await Seeder.createRelationshipTypeModel({
@@ -315,7 +341,9 @@ const loadReferenceData = async () => {
             {attribute: deptindustry_ats_attributeName, optionalInd: false, defaultValue: null},
             {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: null},
             {attribute: ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: null},
-            {attribute: ntdepthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: null}
+            {attribute: depthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: deptimmigration_skillselect_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: deptemployment_wageconnect_attributeName, optionalInd: false, defaultValue: null}
         ]);
 
         // shared secret types ............................................................................................
