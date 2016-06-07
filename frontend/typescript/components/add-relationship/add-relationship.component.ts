@@ -23,7 +23,7 @@ import {RepresentativeDetailsComponent} from
 })
 export class AddRelationshipComponent {
     public accessPeriodValidationErrors = {};
-    public authTypeValidationErrors = {};
+
     public myVar: AddRelationshipComponentData = {
         accessPeriod: {
             startDate: new Date(),
@@ -31,11 +31,12 @@ export class AddRelationshipComponent {
             endDate: null
         },
         authType: {
-            authType: ''
+            authType: 'choose'
         }
     };
 
     public dumpObject(v: Object) {
+        // creates formatted JSON - display in <pre> tag
         return JSON.stringify(v,null,2);
     }
 
