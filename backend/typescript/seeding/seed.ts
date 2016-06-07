@@ -4,9 +4,20 @@ import {conf} from '../bootstrap';
 import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
-    RelationshipAttributeNameDomain} from '../models/relationshipAttributeName.model';
-import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
-import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
+    RelationshipAttributeNameDomain,
+    RelationshipAttributeNameClassifier} from '../models/relationshipAttributeName.model';
+
+import {
+    IRelationshipAttributeNameUsage,
+    RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
+
+import {
+    IRelationshipType,
+    RelationshipTypeModel} from '../models/relationshipType.model';
+
+import {
+    ISharedSecretType,
+    SharedSecretTypeModel} from '../models/sharedSecretType.model';
 
 const now = new Date();
 
@@ -79,6 +90,19 @@ class Seeder {
         }
     }
 
+    public static async createSharedSecretTypeModel(values:ISharedSecretType) {
+        const code = values.code;
+        const existingModel = await SharedSecretTypeModel.findByCodeIgnoringDateRange(code);
+        if (existingModel === null) {
+            console.log('-', code);
+            const model = await SharedSecretTypeModel.create(values);
+            return model;
+        } else {
+            console.log('-', code, ' ... skipped');
+            return existingModel;
+        }
+    }
+
 }
 
 // load reference data ................................................................................................
@@ -86,147 +110,170 @@ class Seeder {
 /* tslint:disable:max-func-body-length */
 const loadReferenceData = async () => {
 
-    // relationship attribute names
+    try {
 
-    console.log('\nInserting Relationship Attribute Names:');
+        // relationship attribute names ...................................................................................
 
-    const employeeNumber_attributeName = await Seeder.createRelationshipAttributeNameModel({
-        code: 'EMPLOYEE_NUMBER',
-        shortDecodeText: 'Employee Number',
-        longDecodeText: 'Employee Number',
-        startDate: now,
-        domain: RelationshipAttributeNameDomain.String.name,
-        purposeText: 'Employee Number'
-    } as IRelationshipAttributeName);
+        console.log('\nInserting Relationship Attribute Names:');
 
-    const employmentType_attributeName = await Seeder.createRelationshipAttributeNameModel({
-        code: 'EMPLOYMENT_TYPE',
-        shortDecodeText: 'Employment Type',
-        longDecodeText: 'Employment Type',
-        startDate: now,
-        domain: RelationshipAttributeNameDomain.SelectSingle.name,
-        purposeText: 'Employee Type',
-        permittedValues: ['Permanent', 'Contractor', 'Casual']
-    } as IRelationshipAttributeName);
+        const employeeNumber_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'EMPLOYEE_NUMBER',
+            shortDecodeText: 'Employee Number',
+            longDecodeText: 'Employee Number',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.String.name,
+            classifier: RelationshipAttributeNameClassifier.Other.name,
+            category: null,
+            purposeText: 'Employee Number'
+        } as IRelationshipAttributeName);
 
-    // relationship types
+        const employmentType_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'EMPLOYMENT_TYPE',
+            shortDecodeText: 'Employment Type',
+            longDecodeText: 'Employment Type',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Other.name,
+            category: null,
+            purposeText: 'Employee Type',
+            permittedValues: ['Permanent', 'Contractor', 'Casual']
+        } as IRelationshipAttributeName);
 
-    console.log('\nInserting Relationship Types:');
+        // relationship types .............................................................................................
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'BUSINESS_REPRESENTATIVE',
-        shortDecodeText: 'Business Representative',
-        longDecodeText: 'Business Representative',
-        startDate: now
-    } as IRelationshipType, [
-        {attribute: employeeNumber_attributeName, optionalInd: true, defaultValue: null},
-        {attribute: employmentType_attributeName, optionalInd: false, defaultValue: 'Permanent'}
-    ]);
+        console.log('\nInserting Relationship Types:');
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'ONLINE_SERVICE_PROVIDER',
-        shortDecodeText: 'Online Service Provider',
-        longDecodeText: 'Online Service Provider',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'BUSINESS_REPRESENTATIVE',
+            shortDecodeText: 'Business Representative',
+            longDecodeText: 'Business Representative',
+            startDate: now
+        } as IRelationshipType, [
+            {attribute: employeeNumber_attributeName, optionalInd: true, defaultValue: null},
+            {attribute: employmentType_attributeName, optionalInd: false, defaultValue: 'Permanent'}
+        ]);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'INSOLVENCY_PRACTITIONER',
-        shortDecodeText: 'Insolvency Practitioner',
-        longDecodeText: 'Insolvency Practitioner',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'ONLINE_SERVICE_PROVIDER',
+            shortDecodeText: 'Online Service Provider',
+            longDecodeText: 'Online Service Provider',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'TRUSTED_INTERMEDIARY',
-        shortDecodeText: 'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
-        longDecodeText: 'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'INSOLVENCY_PRACTITIONER',
+            shortDecodeText: 'Insolvency Practitioner',
+            longDecodeText: 'Insolvency Practitioner',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'INTERMEDIARY',
-        shortDecodeText: 'Intermediary – Real Estate Agent, Immigration Agent',
-        longDecodeText: 'Intermediary – Real Estate Agent, Immigration Agent',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'TRUSTED_INTERMEDIARY',
+            shortDecodeText: 'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
+            longDecodeText: 'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'IMPORTER_EXPORT_AGENT',
-        shortDecodeText: 'Importer Export Agent',
-        longDecodeText: 'Importer Export Agent',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'INTERMEDIARY',
+            shortDecodeText: 'Intermediary – Real Estate Agent, Immigration Agent',
+            longDecodeText: 'Intermediary – Real Estate Agent, Immigration Agent',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'DOCTOR_PATIENT',
-        shortDecodeText: 'Doctor Patient',
-        longDecodeText: 'Doctor Patient',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'IMPORTER_EXPORT_AGENT',
+            shortDecodeText: 'Importer Export Agent',
+            longDecodeText: 'Importer Export Agent',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'NOMINATED_ENTITY',
-        shortDecodeText: 'Nominated Entity',
-        longDecodeText: 'Nominated Entity',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'DOCTOR_PATIENT',
+            shortDecodeText: 'Doctor Patient',
+            longDecodeText: 'Doctor Patient',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'POWER_OF_ATTORNEY_VOLUNTARY',
-        shortDecodeText: 'Power of Attorney (Voluntary)',
-        longDecodeText: 'Power of Attorney (Voluntary)',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'NOMINATED_ENTITY',
+            shortDecodeText: 'Nominated Entity',
+            longDecodeText: 'Nominated Entity',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'POWER_OF_ATTORNEY_INVOLUNTARY',
-        shortDecodeText: 'Power of Attorney (Involuntary)',
-        longDecodeText: 'Power of Attorney (Involuntary)',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'POWER_OF_ATTORNEY_VOLUNTARY',
+            shortDecodeText: 'Power of Attorney (Voluntary)',
+            longDecodeText: 'Power of Attorney (Voluntary)',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'EXECUTOR_OF_DECEASED_ESTATE',
-        shortDecodeText: 'Executor of Deceased Estate',
-        longDecodeText: 'Executor of Deceased Estate',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'POWER_OF_ATTORNEY_INVOLUNTARY',
+            shortDecodeText: 'Power of Attorney (Involuntary)',
+            longDecodeText: 'Power of Attorney (Involuntary)',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'PHARMACEUTICAL',
-        shortDecodeText: 'Pharmaceutical',
-        longDecodeText: 'Pharmaceutical',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'EXECUTOR_OF_DECEASED_ESTATE',
+            shortDecodeText: 'Executor of Deceased Estate',
+            longDecodeText: 'Executor of Deceased Estate',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'INSTITUTION_TO_STUDENT',
-        shortDecodeText: 'Institution to student – relationship',
-        longDecodeText: 'Institution to student – relationship',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'PHARMACEUTICAL',
+            shortDecodeText: 'Pharmaceutical',
+            longDecodeText: 'Pharmaceutical',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'RTO',
-        shortDecodeText: 'Training organisations (RTO)',
-        longDecodeText: 'Training organisations (RTO)',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'INSTITUTION_TO_STUDENT',
+            shortDecodeText: 'Institution to student – relationship',
+            longDecodeText: 'Institution to student – relationship',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'PARENT_CHILD',
-        shortDecodeText: 'Parent - Child',
-        longDecodeText: 'Parent - Child',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'RTO',
+            shortDecodeText: 'Training organisations (RTO)',
+            longDecodeText: 'Training organisations (RTO)',
+            startDate: now
+        } as IRelationshipType, null);
 
-    await Seeder.createRelationshipTypeModel({
-        code: 'EMPLOYMENT_AGENT_EMPLOYMENT',
-        shortDecodeText: 'Employment Agents – employment',
-        longDecodeText: 'Employment Agents – employment',
-        startDate: now
-    } as IRelationshipType, null);
+        await Seeder.createRelationshipTypeModel({
+            code: 'PARENT_CHILD',
+            shortDecodeText: 'Parent - Child',
+            longDecodeText: 'Parent - Child',
+            startDate: now
+        } as IRelationshipType, null);
+
+        await Seeder.createRelationshipTypeModel({
+            code: 'EMPLOYMENT_AGENT_EMPLOYMENT',
+            shortDecodeText: 'Employment Agents – employment',
+            longDecodeText: 'Employment Agents – employment',
+            startDate: now
+        } as IRelationshipType, null);
+
+        // shared secret types ............................................................................................
+
+        console.log('\nInserting Shared Secret Types:');
+
+        await Seeder.createSharedSecretTypeModel({
+            code: 'DATE_OF_BIRTH',
+            shortDecodeText: 'Date of Birth',
+            longDecodeText: 'Date of Birth',
+            startDate: now,
+            domain: 'DEFAULT'
+        } as ISharedSecretType);
+
+    } catch (e) {
+        console.log('Seeding failed!');
+        console.log(e);
+    }
 
 };
 

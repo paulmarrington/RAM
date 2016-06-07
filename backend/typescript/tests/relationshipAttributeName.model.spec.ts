@@ -2,7 +2,8 @@ import {connectDisconnectMongo, dropMongo} from './helpers';
 import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
-    RelationshipAttributeNameDomain} from '../models/relationshipAttributeName.model';
+    RelationshipAttributeNameDomain,
+    RelationshipAttributeNameClassifier} from '../models/relationshipAttributeName.model';
 import {RelationshipAttributeNameUsageModel} from '../models/relationshipAttributeNameUsage.model';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
@@ -29,6 +30,8 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Attribute Name',
                 startDate: new Date(),
                 domain: RelationshipAttributeNameDomain.String.name,
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
                 purposeText: 'This attribute purpose text'
             });
 
@@ -39,6 +42,8 @@ describe('RAM Relationship Attribute Name', () => {
                 startDate: new Date(),
                 endDate: new Date(2099, 1, 1),
                 domain: RelationshipAttributeNameDomain.String.name,
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
                 purposeText: 'This attribute purpose text'
             });
 
@@ -49,6 +54,8 @@ describe('RAM Relationship Attribute Name', () => {
                 startDate: new Date(2016, 1, 1),
                 endDate: new Date(2016, 1, 2),
                 domain: RelationshipAttributeNameDomain.String.name,
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
                 purposeText: 'This attribute purpose text'
             });
 
@@ -58,6 +65,8 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Attribute Name',
                 startDate: new Date(),
                 domain: RelationshipAttributeNameDomain.SelectSingle.name,
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
                 purposeText: 'This attribute purpose text',
                 permittedValues: ['Choice 1', 'Choice 2', 'Choice 3']
             });
@@ -86,7 +95,7 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('finds relationship type with inflated attributes', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipType1.code);
+            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipType1.code, new Date());
             expect(instance).not.toBeNull();
             expect(instance.attributeNameUsages.length).toBe(1);
             expect(instance.attributeNameUsages[0].optionalInd).toBe(true);
@@ -101,7 +110,8 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('finds in date range with no end date by code', async (done) => {
         try {
-            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(stringRelationshipAttributeNameNoEndDate.code);
+            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(
+                stringRelationshipAttributeNameNoEndDate.code, new Date());
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -125,7 +135,7 @@ describe('RAM Relationship Attribute Name', () => {
     it('fails find in date range by non-existent code', async (done) => {
         try {
             const code = '__BOGUS__';
-            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(code);
+            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -136,7 +146,8 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('fails find not in date range by code', async (done) => {
         try {
-            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(stringRelationshipAttributeNameExpiredEndDate.code);
+            const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(
+                stringRelationshipAttributeNameExpiredEndDate.code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -148,7 +159,7 @@ describe('RAM Relationship Attribute Name', () => {
     it('finds with permitted values by code', async (done) => {
         try {
             const instance = await RelationshipAttributeNameModel.findByCodeInDateRange(
-                singleSelectRelationshipAttributeNameNoEndDate.code);
+                singleSelectRelationshipAttributeNameNoEndDate.code, new Date());
             expect(instance).not.toBeNull();
             expect(instance.permittedValues).not.toBeNull();
             expect(instance.permittedValues.length).toBe(singleSelectRelationshipAttributeNameNoEndDate.permittedValues.length);
@@ -174,7 +185,7 @@ describe('RAM Relationship Attribute Name', () => {
 
     it('lists in date range', async (done) => {
         try {
-            const instances = await RelationshipAttributeNameModel.listInDateRange();
+            const instances = await RelationshipAttributeNameModel.listInDateRange(new Date());
             expect(instances).not.toBeNull();
             expect(instances.length).toBe(3);
             instances.forEach((instance) => {
@@ -196,6 +207,8 @@ describe('RAM Relationship Attribute Name', () => {
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 domain: RelationshipAttributeNameDomain.String.name,
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
                 purposeText: 'This attribute purpose text',
                 startDate: new Date()
             });
@@ -213,9 +226,11 @@ describe('RAM Relationship Attribute Name', () => {
             await RelationshipAttributeNameModel.create({
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
+                startDate: new Date(),
                 domain: RelationshipAttributeNameDomain.String.name,
-                purposeText: 'This attribute purpose text',
-                startDate: new Date()
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
+                purposeText: 'This attribute purpose text'
             });
             fail('should not have inserted with empty code');
             done();
@@ -232,7 +247,9 @@ describe('RAM Relationship Attribute Name', () => {
                 code: 'ATTRIBUTE_NAME_X',
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
-                startDate: new Date()
+                startDate: new Date(),
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category'
             });
             fail('should not have inserted with null domain');
             done();
@@ -251,6 +268,8 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
                 domain: '__BOGUS__',
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
                 purposeText: 'This attribute purpose text'
             });
             fail('should not have inserted with invalid domain');
@@ -262,6 +281,45 @@ describe('RAM Relationship Attribute Name', () => {
         }
     });
 
+    it('fails insert with null classifier', async (done) => {
+        try {
+            await RelationshipAttributeNameModel.create({
+                code: 'ATTRIBUTE_NAME_X',
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date(),
+                domain: RelationshipAttributeNameDomain.String.name,
+                category: 'category'
+            });
+            fail('should not have inserted with null domain');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            expect(e.errors.classifider).not.toBeNull();
+            done();
+        }
+    });
+
+    it('fails insert with invalid classifier', async (done) => {
+        try {
+            await RelationshipAttributeNameModel.create({
+                code: 'ATTRIBUTE_NAME_X',
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date(),
+                domain: RelationshipAttributeNameDomain.String.name,
+                classifier: '__BOGUS__',
+                category: 'category'
+            });
+            fail('should not have inserted with null domain');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            expect(e.errors.classifider).not.toBeNull();
+            done();
+        }
+    });
+
     it('fails insert with null purpose text', async (done) => {
         try {
             await RelationshipAttributeNameModel.create({
@@ -269,7 +327,9 @@ describe('RAM Relationship Attribute Name', () => {
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
-                domain: RelationshipAttributeNameDomain.String.name
+                domain: RelationshipAttributeNameDomain.String.name,
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category'
             });
             fail('should not have inserted with null purpose text');
             done();
@@ -288,6 +348,8 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
                 domain: RelationshipAttributeNameDomain.String.name,
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
                 purposeText: ''
             });
             fail('should not have inserted with empty purpose text');
@@ -310,6 +372,8 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
                 domain: RelationshipAttributeNameDomain.String.name,
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
                 purposeText: 'This attribute purpose text'
             });
 
@@ -319,6 +383,8 @@ describe('RAM Relationship Attribute Name', () => {
                 longDecodeText: 'Some long decode text',
                 startDate: new Date(),
                 domain: RelationshipAttributeNameDomain.String.name,
+                classifier: RelationshipAttributeNameClassifier.Other.name,
+                category: 'category',
                 purposeText: 'This attribute purpose text'
             });
 

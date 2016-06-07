@@ -1,42 +1,46 @@
 import {connectDisconnectMongo, dropMongo} from './helpers';
-import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
+import {
+    ISharedSecretType,
+    SharedSecretTypeModel} from '../models/sharedSecretType.model';
 
 /* tslint:disable:max-func-body-length */
-describe('RAM Relationship Type', () => {
+describe('RAM Shared Secret Type', () => {
 
     connectDisconnectMongo();
     dropMongo();
 
-    let relationshipTypeNoEndDate: IRelationshipType;
-    let relationshipTypeFutureEndDate: IRelationshipType;
-    let relationshipTypeExpiredEndDate: IRelationshipType;
+    let sharedSecretTypeNoEndDate: ISharedSecretType;
+    let sharedSecretTypeFutureEndDate: ISharedSecretType;
+    let sharedSecretTypeExpiredEndDate: ISharedSecretType;
 
     beforeEach(async (done) => {
 
         try {
 
-            relationshipTypeNoEndDate = await RelationshipTypeModel.create({
-                code: 'RELATIONSHIP_TYPE_1',
-                shortDecodeText: 'Relationship Type 1',
-                longDecodeText: 'Relationship Type 1',
+            sharedSecretTypeNoEndDate = await SharedSecretTypeModel.create({
+                code: 'SHARED_SECRET_TYPE_1',
+                shortDecodeText: 'Shared Secret',
+                longDecodeText: 'Shared Secret',
                 startDate: new Date(),
-                attributeNameUsages: []
+                domain: 'domain'
             });
 
-            relationshipTypeFutureEndDate = await RelationshipTypeModel.create({
-                code: 'RELATIONSHIP_TYPE_2',
-                shortDecodeText: 'Relationship Type 2',
-                longDecodeText: 'Relationship Type 2',
+            sharedSecretTypeFutureEndDate = await SharedSecretTypeModel.create({
+                code: 'SHARED_SECRET_TYPE_2',
+                shortDecodeText: 'Shared Secret',
+                longDecodeText: 'Shared Secret',
                 startDate: new Date(),
-                endDate: new Date(2099, 1, 1)
+                endDate: new Date(2099, 1, 1),
+                domain: 'domain'
             });
 
-            relationshipTypeExpiredEndDate = await RelationshipTypeModel.create({
-                code: 'RELATIONSHIP_TYPE_3',
-                shortDecodeText: 'Relationship Type 3',
-                longDecodeText: 'Relationship Type 3',
+            sharedSecretTypeExpiredEndDate = await SharedSecretTypeModel.create({
+                code: 'SHARED_SECRET_TYPE_3',
+                shortDecodeText: 'Shared Secret',
+                longDecodeText: 'Shared Secret',
                 startDate: new Date(2016, 1, 1),
-                endDate: new Date(2016, 1, 2)
+                endDate: new Date(2016, 1, 2),
+                domain: 'domain'
             });
 
             done();
@@ -50,18 +54,7 @@ describe('RAM Relationship Type', () => {
 
     it('finds in date range with no end date by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeNoEndDate.code, new Date());
-            expect(instance).not.toBeNull();
-            done();
-        } catch (e) {
-            fail('Because ' + e);
-            done();
-        }
-    });
-
-    it('finds in date range with future end date by code', async (done) => {
-        try {
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeFutureEndDate.code, new Date());
+            const instance = await SharedSecretTypeModel.findByCodeInDateRange(sharedSecretTypeNoEndDate.code, new Date());
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -72,7 +65,8 @@ describe('RAM Relationship Type', () => {
 
     it('finds in date range or invalid by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCodeIgnoringDateRange(relationshipTypeExpiredEndDate.code);
+            const instance = await SharedSecretTypeModel.findByCodeIgnoringDateRange(
+                sharedSecretTypeNoEndDate.code);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -84,7 +78,7 @@ describe('RAM Relationship Type', () => {
     it('fails find in date range by non-existent code', async (done) => {
         try {
             const code = '__BOGUS__';
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(code, new Date());
+            const instance = await SharedSecretTypeModel.findByCodeInDateRange(code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -95,7 +89,7 @@ describe('RAM Relationship Type', () => {
 
     it('fails find not in date range by code', async (done) => {
         try {
-            const instance = await RelationshipTypeModel.findByCodeInDateRange(relationshipTypeExpiredEndDate.code, new Date());
+            const instance = await SharedSecretTypeModel.findByCodeInDateRange(sharedSecretTypeExpiredEndDate.code, new Date());
             expect(instance).toBeNull();
             done();
         } catch (e) {
@@ -106,7 +100,7 @@ describe('RAM Relationship Type', () => {
 
     it('lists ignoring date range', async (done) => {
         try {
-            const instances = await RelationshipTypeModel.listIgnoringDateRange();
+            const instances = await SharedSecretTypeModel.listIgnoringDateRange();
             expect(instances).not.toBeNull();
             expect(instances.length).toBe(3);
             done();
@@ -118,7 +112,7 @@ describe('RAM Relationship Type', () => {
 
     it('lists in date range', async (done) => {
         try {
-            const instances = await RelationshipTypeModel.listInDateRange(new Date());
+            const instances = await SharedSecretTypeModel.listInDateRange(new Date());
             expect(instances).not.toBeNull();
             expect(instances.length).toBe(2);
             instances.forEach((instance) => {
@@ -134,38 +128,13 @@ describe('RAM Relationship Type', () => {
         }
     });
 
-    it('inserts with valid values', async (done) => {
-        try {
-
-            const instance = await RelationshipTypeModel.create({
-                code: 'CODE_1',
-                shortDecodeText: 'Some short decode text',
-                longDecodeText: 'Some long decode text',
-                startDate: new Date()
-            });
-
-            expect(instance).not.toBeNull();
-            expect(instance.id).not.toBeNull();
-            expect(instance.code).not.toBeNull();
-
-            const retrievedInstance = await RelationshipTypeModel.findByCodeInDateRange(instance.code, new Date());
-            expect(retrievedInstance).not.toBeNull();
-            expect(retrievedInstance.id).toBe(instance.id);
-
-            done();
-
-        } catch (e) {
-            fail('Because ' + e);
-            done();
-        }
-    });
-
     it('fails insert with null code', async (done) => {
         try {
-            await RelationshipTypeModel.create({
+            await SharedSecretTypeModel.create({
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
-                startDate: new Date()
+                startDate: new Date(),
+                domain: 'domain'
             });
             fail('should not have inserted with null code');
             done();
@@ -178,11 +147,11 @@ describe('RAM Relationship Type', () => {
 
     it('fails insert with empty code', async (done) => {
         try {
-            await RelationshipTypeModel.create({
-                code: '',
+            await SharedSecretTypeModel.create({
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
-                startDate: new Date()
+                startDate: new Date(),
+                domain: 'domain'
             });
             fail('should not have inserted with empty code');
             done();
@@ -193,23 +162,42 @@ describe('RAM Relationship Type', () => {
         }
     });
 
+    it('fails insert with null domain', async (done) => {
+        try {
+            await SharedSecretTypeModel.create({
+                code: 'SHARED_SECRET_TYPE_X',
+                shortDecodeText: 'Some short decode text',
+                longDecodeText: 'Some long decode text',
+                startDate: new Date()
+            });
+            fail('should not have inserted with null domain');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            expect(e.errors.domain).not.toBeNull();
+            done();
+        }
+    });
+
     it('fails insert with duplicate code', async (done) => {
         try {
 
             const code = 'CODE_DUPLICATE';
 
-            await RelationshipTypeModel.create({
+            await SharedSecretTypeModel.create({
                 code: code,
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
-                startDate: new Date()
+                startDate: new Date(),
+                domain: 'domain',
             });
 
-            await RelationshipTypeModel.create({
+            await SharedSecretTypeModel.create({
                 code: code,
                 shortDecodeText: 'Some short decode text',
                 longDecodeText: 'Some long decode text',
-                startDate: new Date()
+                startDate: new Date(),
+                domain: 'domain'
             });
 
             fail('should not have inserted with duplicate code');

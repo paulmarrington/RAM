@@ -1,11 +1,11 @@
 import * as mongoose from 'mongoose';
-import {ICodeDecode, CodeDecodeSchema} from './base';
+import {RAMEnum, ICodeDecode, CodeDecodeSchema} from './base';
 import {HrefValue, RelationshipAttributeName as DTO} from '../../../commons/RamAPI';
 
 // enums, utilities, helpers ..........................................................................................
 
 // see https://github.com/atogov/RAM/wiki/Relationship-Attribute-Types
-export class RelationshipAttributeNameDomain {
+export class RelationshipAttributeNameDomain extends RAMEnum {
 
     public static Null = new RelationshipAttributeNameDomain('NULL');
     public static Boolean = new RelationshipAttributeNameDomain('BOOLEAN');
@@ -15,7 +15,7 @@ export class RelationshipAttributeNameDomain {
     public static SelectSingle = new RelationshipAttributeNameDomain('SELECT_SINGLE');
     public static SelectMulti = new RelationshipAttributeNameDomain('SELECT_MULTI');
 
-    public static AllValues = [
+    protected static AllValues = [
         RelationshipAttributeNameDomain.Null,
         RelationshipAttributeNameDomain.Boolean,
         RelationshipAttributeNameDomain.Number,
@@ -25,24 +25,23 @@ export class RelationshipAttributeNameDomain {
         RelationshipAttributeNameDomain.SelectMulti
     ];
 
-    public static values():RelationshipAttributeNameDomain[] {
-        return RelationshipAttributeNameDomain.AllValues;
+    constructor(name:String) {
+        super(name);
     }
+}
 
-    public static valueOf(name:String):RelationshipAttributeNameDomain {
-        for (let type of RelationshipAttributeNameDomain.AllValues) {
-            if (type.name === name) {
-                return type;
-            }
-        }
-        return null;
-    }
+export class RelationshipAttributeNameClassifier extends RAMEnum {
 
-    public static valueStrings():String[] {
-        return RelationshipAttributeNameDomain.AllValues.map((value) => value.name);
-    }
+    public static Other = new RelationshipAttributeNameClassifier('OTHER');
+    public static Permission = new RelationshipAttributeNameClassifier('PERMISSION');
 
-    constructor(public name:String) {
+    protected static AllValues = [
+        RelationshipAttributeNameClassifier.Other,
+        RelationshipAttributeNameClassifier.Permission
+    ];
+
+    constructor(name:String) {
+        super(name);
     }
 }
 
@@ -54,6 +53,16 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
         required: [true, 'Domain is required'],
         trim: true,
         enum: RelationshipAttributeNameDomain.valueStrings()
+    },
+    classifier: {
+        type: String,
+        required: [true, 'Classifier is required'],
+        trim: true,
+        enum: RelationshipAttributeNameClassifier.valueStrings()
+    },
+    category: {
+        type: String,
+        trim: true
     },
     purposeText: {
         type: String,
@@ -69,6 +78,8 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
 
 export interface IRelationshipAttributeName extends ICodeDecode {
     domain: string;
+    classifier: string;
+    category: string;
     purposeText: string;
     permittedValues: string[];
     domainEnum(): RelationshipAttributeNameDomain;
@@ -77,10 +88,10 @@ export interface IRelationshipAttributeName extends ICodeDecode {
 }
 
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
-    findByCodeIgnoringDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
-    findByCodeInDateRange: (id:String) => mongoose.Promise<IRelationshipAttributeName>;
+    findByCodeIgnoringDateRange: (code:String) => mongoose.Promise<IRelationshipAttributeName>;
+    findByCodeInDateRange: (code:String, date:Date) => mongoose.Promise<IRelationshipAttributeName>;
     listIgnoringDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
-    listInDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
+    listInDateRange: (date:Date) => mongoose.Promise<IRelationshipAttributeName[]>;
 }
 
 // instance methods ...................................................................................................
@@ -105,6 +116,8 @@ RelationshipAttributeNameSchema.method('toDTO', function () {
         this.endDate,
         this.shortDecodeText,
         this.domain,
+        this.classifier,
+        this.category,
         this.permittedValues
     );
 });
@@ -119,12 +132,12 @@ RelationshipAttributeNameSchema.static('findByCodeIgnoringDateRange', (code:Stri
         .exec();
 });
 
-RelationshipAttributeNameSchema.static('findByCodeInDateRange', (code:String) => {
+RelationshipAttributeNameSchema.static('findByCodeInDateRange', (code:String, date:Date) => {
     return this.RelationshipAttributeNameModel
         .findOne({
             code: code,
-            startDate: {$lte: new Date()},
-            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+            startDate: {$lte: date},
+            $or: [{endDate: null}, {endDate: {$gte: date}}]
         })
         .exec();
 });
@@ -140,11 +153,11 @@ RelationshipAttributeNameSchema.static('listIgnoringDateRange', () => {
         .exec();
 });
 
-RelationshipAttributeNameSchema.static('listInDateRange', () => {
+RelationshipAttributeNameSchema.static('listInDateRange', (date:Date) => {
     return this.RelationshipAttributeNameModel
         .find({
-            startDate: {$lte: new Date()},
-            $or: [{endDate: null}, {endDate: {$gt: new Date()}}]
+            startDate: {$lte: date},
+            $or: [{endDate: null}, {endDate: {$gte: date}}]
         })
         .deepPopulate([
             'attributeNameUsages.attributeName'
