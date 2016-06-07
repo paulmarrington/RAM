@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import * as colors from 'colors';
 import {conf} from '../bootstrap';
 
 import {
@@ -21,21 +22,25 @@ import {
 
 const now = new Date();
 
+const truncateString = (input:String):String => {
+    return input && input.length > 20 ? (input.substring(0, 20) + '...') : input;
+};
+
 // seeder .............................................................................................................
 
 class Seeder {
 
     public static async connect() {
         await mongoose.connect(conf.mongoURL);
-        console.log('\nConnected to the db: ', conf.mongoURL);
+        console.log(`\nConnected to the db: ${conf.mongoURL}`);
     }
 
     public static async dropDatabase() {
         if (conf.devMode) {
-            console.info('Dropping database in dev mode (starting fresh)');
+            console.log('Dropping database in dev mode (starting fresh)');
             await mongoose.connection.db.dropDatabase();
         } else {
-            console.info('Not dropping database in prod mode (appending)');
+            console.log('Not dropping database in prod mode (appending)');
         }
     }
 
@@ -47,11 +52,11 @@ class Seeder {
         const code = values.code;
         const existingModel = await RelationshipAttributeNameModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
-            console.log('-', code);
+            console.log(colors.green(`- ${code}`));
             const model = await RelationshipAttributeNameModel.create(values);
             return model;
         } else {
-            console.log('-', code, ' ... skipped');
+            console.log(colors.green(`- ${code} ... skipped`));
             return existingModel;
         }
     }
@@ -60,8 +65,10 @@ class Seeder {
     <T extends { attribute:IRelationshipAttributeName, optionalInd:boolean, defaultValue:string}>(attributeValues:T[]) {
         const attributeNameUsages:IRelationshipAttributeNameUsage[] = [];
         if (attributeValues) {
-            for (let i = 0; i < attributeValues.length; i = i+1) {
+            for (let i = 0; i < attributeValues.length; i = i + 1) {
                 const attributeValue = attributeValues[i];
+                const truncatedDefaultValue = truncateString(attributeValue.defaultValue);
+                console.log(colors.green(`  - ${attributeValue.attribute.code} (${truncatedDefaultValue})`));
                 const attributeNameUsage = await RelationshipAttributeNameUsageModel.create({
                     attributeName: attributeValue.attribute,
                     optionalInd: attributeValue.optionalInd,
@@ -79,13 +86,13 @@ class Seeder {
         const code = values.code;
         const existingModel = await RelationshipTypeModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
-            console.log('-', code);
+            console.log(colors.magenta(`- ${code}`));
             values.attributeNameUsages = await Seeder.createRelationshipAttributeNameUsageModels(attributeValues);
             const model = await RelationshipTypeModel.create(values);
+            console.log('');
             return model;
-
         } else {
-            console.log('-', code, ' ... skipped');
+            console.log(colors.magenta(`- ${code} ... skipped`));
             return existingModel;
         }
     }
@@ -94,14 +101,14 @@ class Seeder {
         const code = values.code;
         const existingModel = await SharedSecretTypeModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
-            console.log('-', code);
+            console.log(colors.red(`- ${code}`));
             const model = await SharedSecretTypeModel.create(values);
             return model;
         } else {
-            console.log('-', code, ' ... skipped');
+            console.log(colors.red(`- ${code} ...`));
             return existingModel;
         }
-    }
+    } 
 
 }
 
@@ -112,9 +119,9 @@ const loadReferenceData = async () => {
 
     try {
 
-        // relationship attribute names ...................................................................................
+        // relationship attribute names (other) .......................................................................
 
-        console.log('\nInserting Relationship Attribute Names:');
+        console.log('\nInserting Relationship Attribute Names (other):\n');
 
         const permissionCustomisationAllowedInd_attributeName = await Seeder.createRelationshipAttributeNameModel({
             code: 'PERMISSION_CUSTOMISATION_ALLOWED_IND',
@@ -160,9 +167,40 @@ const loadReferenceData = async () => {
             purposeText: 'Subject specific declaration in Markdown for a relationship type'
         } as IRelationshipAttributeName);
 
-        // relationship types .............................................................................................
+        // relationship attribute names (permission) ..................................................................
 
-        console.log('\nInserting Relationship Types:');
+        const full_permissionAccess = 'Full access';
+        const permissionPermittedAccessLevels = [full_permissionAccess, 'Limited access', 'No access'];
+
+        const administrativeServices_category = 'Administrative Services';
+
+        const asic_abn_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'ASIC_ABN_PERMISSION',
+            shortDecodeText: 'Australian Securities and Investments Commission (ASIC)',
+            longDecodeText: 'ABN / BN Project (limited release)',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const wgea_activate_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'WGEA_ACTIVATE_PERMISSION',
+            shortDecodeText: 'Workplace Gender Equality Agency (WGEA)',
+            longDecodeText: 'Activate',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        // relationship types .........................................................................................
+
+        console.log('\nInserting Relationship Types:\n');
 
         await Seeder.createRelationshipTypeModel({
             code: 'UNIVERSAL_REPRESENTATIVE',
@@ -175,7 +213,9 @@ const loadReferenceData = async () => {
             {attribute: delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
                 defaultValue: 'Markdown for Delegate Universal Representative Declaration'},
             {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
-                defaultValue: 'Markdown for Subject Universal Representative Declaration'}
+                defaultValue: 'Markdown for Subject Universal Representative Declaration'},
+            {attribute: asic_abn_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: wgea_activate_attributeName, optionalInd: false, defaultValue: full_permissionAccess}
         ]);
 
         await Seeder.createRelationshipTypeModel({
@@ -189,12 +229,14 @@ const loadReferenceData = async () => {
             {attribute: delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
                 defaultValue: 'Markdown for Delegate Custom Representative Declaration'},
             {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
-                defaultValue: 'Markdown for Subject Custom Representative Declaration'}
+                defaultValue: 'Markdown for Subject Custom Representative Declaration'},
+            {attribute: asic_abn_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: wgea_activate_attributeName, optionalInd: false, defaultValue: null}
         ]);
 
         // shared secret types ............................................................................................
 
-        console.log('\nInserting Shared Secret Types:');
+        console.log('\nInserting Shared Secret Types:\n');
 
         await Seeder.createSharedSecretTypeModel({
             code: 'DATE_OF_BIRTH',
