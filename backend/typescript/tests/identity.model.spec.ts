@@ -59,7 +59,7 @@ describe('RAM Identity', () => {
 
     it('finds by id value and type', async (done) => {
         try {
-            const instance = await IdentityModel.findByIdValueAndType(identity1.rawIdValue, identity1.identityTypeEnum());
+            const instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
             done();
         } catch (e) {
@@ -90,7 +90,7 @@ describe('RAM Identity', () => {
             expect(instance.profile).not.toBeNull();
             expect(instance.profile.name).not.toBeNull();
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(rawIdValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
             expect(retrievedInstance.identityType).toBe(type.name);
@@ -125,7 +125,7 @@ describe('RAM Identity', () => {
                 profile: profile1
             });
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(rawIdValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
             expect(retrievedInstance.idValue).toBe(`${type.name}:${scheme.name}:${rawIdValue}`);
@@ -164,7 +164,7 @@ describe('RAM Identity', () => {
                 profile: profile1
             });
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(rawIdValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
             expect(retrievedInstance.idValue).toBe(`${type.name}:${rawIdValue}`);
@@ -201,7 +201,7 @@ describe('RAM Identity', () => {
                 profile: profile1
             });
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(rawIdValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
             expect(retrievedInstance.idValue).toBe(`${type.name}:${scheme.name}:${rawIdValue}`);
@@ -235,7 +235,7 @@ describe('RAM Identity', () => {
                 profile: profile1
             });
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(rawIdValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
             expect(retrievedInstance.idValue).toBe(`${type.name}:${scheme.name}:${rawIdValue}`);

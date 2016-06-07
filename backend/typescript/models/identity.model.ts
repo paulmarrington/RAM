@@ -230,7 +230,7 @@ export interface IIdentity extends IRAMObject {
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
-    findByIdValueAndType: (idValue:String, type:IdentityType) => mongoose.Promise<IIdentity>;
+    findByIdValue: (idValue:String) => mongoose.Promise<IIdentity>;
 }
 
 // instance methods ...................................................................................................
@@ -257,11 +257,10 @@ IdentitySchema.method('linkIdSchemeEnum', function () {
 
 // static methods .....................................................................................................
 
-IdentitySchema.static('findByIdValueAndType', (rawIdValue:String, type:IdentityType) => {
+IdentitySchema.static('findByIdValue', (idValue:String) => {
     return this.IdentityModel
         .findOne({
-            rawIdValue: rawIdValue,
-            identityType: type.name
+            idValue: idValue
         })
         .deepPopulate([
             'profile.name',
