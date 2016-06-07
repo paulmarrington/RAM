@@ -5,10 +5,15 @@
         </div>
     </div>
     <representative-details></representative-details>
-    <authorisation-type></authorisation-type>
+    <authorisation-type  [(data)]='myVar.authType'
+    (validationErrors)='accessPeriodValidationErrors=$event'>
+    </authorisation-type>
     <access-period [(data)]='myVar.accessPeriod' (validationErrors)='accessPeriodValidationErrors=$event'></access-period>
     <authorisation-permissions></authorisation-permissions>
     <declaration ></declaration>
-    {{dumpObject(myVar.accessPeriod)}}
+    <pre>
+    {{dumpObject(myVar)}}
+    {{dumpObject(authTypeValidationErrors)}}
     {{dumpObject(accessPeriodValidationErrors)}}
+    </pre>
 </div>
