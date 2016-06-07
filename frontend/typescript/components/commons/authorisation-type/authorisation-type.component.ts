@@ -9,7 +9,7 @@ export class AuthorisationTypeComponent {
     private authTypeControl =
         new Control('Please Choose...', Validators.required);
 
-    public form = new ControlGroup({
+    public authorisationTypeform = new ControlGroup({
         authType: this.authTypeControl
     });
     // Triggers if user changes selection for DDL

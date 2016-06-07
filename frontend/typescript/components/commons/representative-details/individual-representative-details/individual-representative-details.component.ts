@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ControlGroup, Validators, FormBuilder }
+import { ControlGroup, Validators, Control }
 from '@angular/common';
 
 @Component({
@@ -7,14 +7,12 @@ from '@angular/common';
     templateUrl: 'individual-representative-details.component.html'
 })
 export class IndividualRepresentativeDetailsComponent {
-    private form: ControlGroup;
-
-    // TODO: move from FormBuilder as won't ts-lint validate
-    constructor(fb: FormBuilder) {
-        this.form = fb.group({
-            firstName: ['', Validators.required],
-            lastName:  ['', Validators.required],
-            dob:       ['']
-        });
-    }
+    private firstNameControl = new Control('', Validators.required);
+    private lastNameControl  = new Control('', Validators.required);
+    private dobControl       = new Control('');
+    public individualRepresentativeDetailsForm = new ControlGroup({
+        firstName: this.firstNameControl,
+        lastName:  this.lastNameControl,
+        dob:       this.dobControl
+    });
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ControlGroup, Validators, FormBuilder }
+import { ControlGroup, Control, Validators }
 from '@angular/common';
 
 @Component({
@@ -7,10 +7,8 @@ from '@angular/common';
     templateUrl: 'declaration.component.html'
 })
 export class DeclarationComponent {
-    private form: ControlGroup;
-
-    constructor(fb: FormBuilder) {
-        this.form = fb.group({
-        });
-    }
+    private acceptedTCControl = new Control('', Validators.required);
+    public declarationForm = new ControlGroup({
+        acceptedTC: this.acceptedTCControl
+    });
 }

@@ -2,19 +2,19 @@
     <div class="panel-heading">
         <h4><span class="badge square">3</span> Set access period</h4></div>
     <div class="panel-body">
-        <div class="form-group">
+        <form [ngFormModel]=form><div class="form-group">
             <div class="col-md-4">
                 <h4>Start date*</h4>
-                <input class="form-control" type="text" name="startDate" value="" placeholder="Start date ...">
+                <input class="form-control" type="date" name="startDate">
             </div>
             <div class="col-md-4">
                 <h4>End date</h4>
-                <input class="form-control" type="text" name="endDate" placeholder="End date ...">
+                <input class="form-control" type="date" name="endDate">
             </div>
             <div class="col-md-4">
                 <h4>No end date</h4>
                 <input class="big-checkbox" type="checkbox" name="noEndDate" value="false">
             </div>
-        </div>
+        </div></form>
     </div>
 </div>

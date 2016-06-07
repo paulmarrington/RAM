@@ -5,18 +5,20 @@
     <div class="panel-body">
         <h4 class="padding-btn-30">What type of authorisation do you want this representative to have?</h4>
         <h4>Authorisation type*</h4>
-        <div class="form-group"><form [ngFormModel]=form>
-            <div class="col-md-6">
-                <select class="form-control" name="authType"
-                ngControl=authType (change)=onChange($event.target.value)>
-                    <option value="" disabled selected hidden>
-                        Please Choose...</option>
-                    <option>
-                        Universal representative</option>
-                    <option>Representative</option>
-                      </select>
-            </div>
-        </form></div>
+        <div class="form-group">
+            <form [ngFormModel]=authorisationTypeform>
+                <div class="col-md-6">
+                    <select class="form-control" name="authType"
+                    [ngFormControl]="authorisationTypeform.controls['authType']"
+                    (change)=onChange($event.target.value)>
+                        <option value="" disabled selected hidden>
+                            Please Choose...</option>
+                        <option>Universal representative</option>
+                        <option>Representative</option>
+                        </select>
+                </div>
+            </form>
+        </div>
         <h4 class="padding-btn-10">Authorisation descriptions:</h4>
 
         <dl>

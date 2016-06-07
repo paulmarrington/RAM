@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { ControlGroup, Validators, Control }
-from '@angular/common';
+import { ControlGroup, Validators, Control } from '@angular/common';
 import {RAMRestService} from '../../../../services/ram-rest.service';
 
 @Component({
@@ -10,9 +9,8 @@ import {RAMRestService} from '../../../../services/ram-rest.service';
 export class OrganisationRepresentativeDetailsComponent {
     private abnControl = new Control('', Validators.required);
     private organisationControl = new Control('');
-    // can't make private is ts-lint thinks it is unused (used in html)
-    public form = new ControlGroup({
-        abn: this.abnControl,
+    public OrganisationRepresentativeDetailsForm = new ControlGroup({
+        abn:          this.abnControl,
         organisation: this.organisationControl
     });
 

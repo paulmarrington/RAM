@@ -1,4 +1,4 @@
-<form [ngFormModel]=form>
+<form [ngFormModel]=OrganisationRepresentativeDetailsForm>
     <div class="form-group">
         <div class="col-md-12">
             <h4>ABN*</h4>
@@ -7,11 +7,12 @@
             <input class="form-control" type="text" name="abn"
             minlength=11 maxlength=14 pattern="^(\d *?){11}$"
             [disabled]=hasName
-            ngControl="abn" size=14 placeholder="Type ABN here ...">
+            [ngFormControl]="OrganisationRepresentativeDetailsForm.controls['abn']" size=14
+            placeholder="Type ABN here ...">
         </div>
         <div class="col-md-4">
             <input class="form-control" type="text" name="organisation"
-             ngControl="organisation" readonly=true>
+             [ngFormControl]="OrganisationRepresentativeDetailsForm.controls['organisation']" readonly=true>
         </div>
         <div class="col-md-4">
             <span [hidden]=hasName>
