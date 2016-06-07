@@ -6,14 +6,15 @@
         <h4 class="padding-btn-30">What type of authorisation do you want this representative to have?</h4>
         <h4>Authorisation type*</h4>
         <div class="form-group">
-                <div class="col-md-6" [class.has-error]='!form.controls["authType"].valid' >
+            <form [ngFormModel]="form">
+                <div class="col-md-6">
                     <select class="form-control" name="authType"
                     [ngFormControl]="form.controls['authType']">
-                        <option value="" disabled selected hidden>
+                        <option value="choose" disabled hidden>
                             Please Choose...</option>
-                        <option>Universal representative</option>
-                        <option>Representative</option>
-                        </select>
+                        <option value="universal">Universal representative</option>
+                        <option value="standard">Representative</option>
+                    </select>
                 </div>
             </form>
         </div>
