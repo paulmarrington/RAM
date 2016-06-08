@@ -218,17 +218,17 @@ class Seeder {
 
     public static async createRelationshipModel(values:IRelationship) {
         if (values.subjectNickName.givenName || values.subjectNickName.familyName) {
-            console.log(`- Subject       : ${values.subjectNickName.givenName} ${values.subjectNickName.familyName}`.cyan);
+            console.log(`- Subject   : ${values.subjectNickName.givenName} ${values.subjectNickName.familyName}`.cyan);
         } else {
-            console.log(`- Subject       : ${values.subjectNickName.unstructuredName}`.cyan);
+            console.log(`- Subject   : ${values.subjectNickName.unstructuredName}`.cyan);
         }
         if (values.subjectNickName.givenName || values.delegateNickName.familyName) {
-            console.log(`- Delegate      : ${values.delegateNickName.givenName} ${values.delegateNickName.familyName}`.cyan);
+            console.log(`- Delegate  : ${values.delegateNickName.givenName} ${values.delegateNickName.familyName}`.cyan);
         } else {
-            console.log(`- Delegate      : ${values.delegateNickName.unstructuredName}`.cyan);
+            console.log(`- Delegate  : ${values.delegateNickName.unstructuredName}`.cyan);
         }
-        console.log(`- Start At      : ${values.startTimestamp}`.cyan);
-        console.log(`- Status        : ${values.status}`.cyan);
+        console.log(`- Start At  : ${values.startTimestamp}`.cyan);
+        console.log(`- Status    : ${values.status}`.cyan);
         const model = await RelationshipModel.create(values);
         return model;
     }
@@ -504,6 +504,51 @@ class Seeder {
     }
 
     /* tslint:disable:max-func-body-length */
+    public static async loadSample_jensCateringPtyLtd_identity() {
+        try {
+
+            console.log('\nInserting Sample Identity - Jen\'s Catering Pty Ltd:\n'.underline);
+
+            if (!conf.devMode) {
+
+                console.log('Skipped in prod mode'.gray);
+
+            } else {
+
+                Seeder.jenscatering_name = await Seeder.createNameModel({
+                    unstructuredName: 'Jen\'s Catering Pty Ltd'
+                } as IName);
+
+                Seeder.jenscatering_profile = await Seeder.createProfileModel({
+                    provider: ProfileProvider.MyGov.name,
+                    name: Seeder.jenscatering_name,
+                    sharedSecrets: []
+                } as IProfile);
+
+                Seeder.jenscatering_party = await Seeder.createPartyModel({
+                    partyType: PartyType.ABN.name
+                } as IParty);
+
+                console.log('');
+
+                Seeder.jenscatering_identity_1 = await Seeder.createIdentityModel({
+                    rawIdValue: 'jenscatering_identity_1',
+                    identityType: IdentityType.PublicIdentifier.name,
+                    defaultInd: true,
+                    publicIdentifierScheme: IdentityPublicIdentifierScheme.ABN.name,
+                    profile: Seeder.jenscatering_profile,
+                    party: Seeder.jenscatering_party
+                } as IIdentity);
+
+            }
+
+        } catch (e) {
+            console.log('Seeding failed!');
+            console.log(e);
+        }
+    }
+
+    /* tslint:disable:max-func-body-length */
     public static async loadSample_jenniferMaxim_identity() {
         try {
 
@@ -555,55 +600,10 @@ class Seeder {
     }
 
     /* tslint:disable:max-func-body-length */
-    public static async loadSample_jensCateringPtyLtd_identity() {
-        try {
-
-            console.log('\nInserting Sample Identity - Jen\'s Catering Pty Ltd:\n'.underline);
-
-            if (!conf.devMode) {
-
-                console.log('Skipped in prod mode'.gray);
-
-            } else {
-
-                Seeder.jenscatering_name = await Seeder.createNameModel({
-                    unstructuredName: 'Jen\'s Catering Pty Ltd'
-                } as IName);
-
-                Seeder.jenscatering_profile = await Seeder.createProfileModel({
-                    provider: ProfileProvider.MyGov.name,
-                    name: Seeder.jenscatering_name,
-                    sharedSecrets: []
-                } as IProfile);
-
-                Seeder.jenscatering_party = await Seeder.createPartyModel({
-                    partyType: PartyType.ABN.name
-                } as IParty);
-
-                console.log('');
-
-                Seeder.jenscatering_identity_1 = await Seeder.createIdentityModel({
-                    rawIdValue: 'jenscatering_identity_1',
-                    identityType: IdentityType.PublicIdentifier.name,
-                    defaultInd: true,
-                    publicIdentifierScheme: IdentityPublicIdentifierScheme.ABN.name,
-                    profile: Seeder.jenscatering_profile,
-                    party: Seeder.jenscatering_party
-                } as IIdentity);
-
-            }
-
-        } catch (e) {
-            console.log('Seeding failed!');
-            console.log(e);
-        }
-    }
-
-    /* tslint:disable:max-func-body-length */
     public static async loadSample_jenniferMaxim__jensCateringPtyLtd_relationship() {
         try {
 
-            console.log('\nInserting Sample Relationship - Jennifer Maxim / Jen\'s Catering Pty Ltd:\n'.underline);
+            console.log('\nInserting Sample Relationship - Jen\'s Catering Pty Ltd / Jennifer Maxim:\n'.underline);
 
             if (!conf.devMode) {
 
@@ -638,7 +638,7 @@ Seeder.connect()
     .then(Seeder.loadRelationshipPermissionAttributeNames)
     .then(Seeder.loadRelationshipTypes)
     .then(Seeder.loadSharedSecretTypes)
-    .then(Seeder.loadSample_jenniferMaxim_identity)
     .then(Seeder.loadSample_jensCateringPtyLtd_identity)
+    .then(Seeder.loadSample_jenniferMaxim_identity)
     .then(Seeder.loadSample_jenniferMaxim__jensCateringPtyLtd_relationship)
     .then(Seeder.disconnect);
