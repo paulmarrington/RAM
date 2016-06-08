@@ -105,7 +105,6 @@ describe('RAM Name', () => {
             fail('should not have inserted with empty fields');
             done();
         } catch (e) {
-            console.log(e);
             expect(e.name).toBe('ValidationError');
             expect(e.errors.givenName).not.toBeNull();
             expect(e.errors.unstructuredName).not.toBeNull();
