@@ -9,12 +9,6 @@ const NameSchema = RAMSchema({
     givenName: {
         type: String,
         trim: true,
-        validate: {
-            validator: function (v:String) {
-                return !((this.givenName || this.familyName) && this.unstructuredName);
-            },
-            message: 'Given/Family Name and Unstructured Name cannot both be specified'
-        },
         required: [function () {
             return this.familyName || !this.unstructuredName;
         }, 'Given Name or Unstructured Name is required']
@@ -29,6 +23,14 @@ const NameSchema = RAMSchema({
         required: [function () {
             return !this.givenName && !this.familyName;
         }, 'Given Name or Unstructured Name is required']
+    }
+});
+
+NameSchema.pre('validate', function (next:() => void) {
+    if ((this.givenName || this.familyName) && this.unstructuredName) {
+        throw new Error('Given/Family Name and Unstructured Name cannot both be specified');
+    } else {
+        next();
     }
 });
 
