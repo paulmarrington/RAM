@@ -20,6 +20,36 @@ import {
     ISharedSecretType,
     SharedSecretTypeModel} from '../models/sharedSecretType.model';
 
+import {
+    ISharedSecret,
+    SharedSecretModel} from '../models/sharedSecret.model';
+
+import {
+    IName,
+    NameModel} from '../models/name.model';
+
+import {
+    IProfile,
+    ProfileModel,
+    ProfileProvider} from '../models/profile.model';
+
+import {
+    IParty,
+    PartyModel,
+    PartyType} from '../models/party.model';
+
+import {
+    IRelationship,
+    RelationshipModel,
+    RelationshipStatus} from '../models/relationship.model';
+
+import {
+    IIdentity,
+    IdentityModel,
+    IdentityType,
+    IdentityLinkIdScheme,
+    IdentityPublicIdentifierScheme} from '../models/identity.model';
+
 const now = new Date();
 
 const truncateString = (input:String):String => {
@@ -54,6 +84,17 @@ class Seeder {
 
     public static dob_sharedSecretType:ISharedSecretType;
 
+    public static jennifermaxims_name:IName;
+    public static jennifermaxims_dob:ISharedSecret;
+    public static jennifermaxims_profile:IProfile;
+    public static jennifermaxims_party:IParty;
+    public static jennifermaxims_identity_1:IIdentity;
+
+    public static jenscatering_name:IName;
+    public static jenscatering_profile:IProfile;
+    public static jenscatering_party:IParty;
+    public static jenscatering_identity_1:IIdentity;
+
     public static async connect() {
         await mongoose.connect(conf.mongoURL);
         console.log(`\nConnected to the db: ${conf.mongoURL}`);
@@ -76,7 +117,7 @@ class Seeder {
         const code = values.code;
         const existingModel = await RelationshipAttributeNameModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
-            console.log(colors.green(`- ${code}`));
+            console.log(`- ${code}`.green);
             if (values.permittedValues) {
                 for (let permittedValue of values.permittedValues) {
                     console.log(colors.gray(`  - ${permittedValue}`));
@@ -85,7 +126,7 @@ class Seeder {
             const model = await RelationshipAttributeNameModel.create(values);
             return model;
         } else {
-            console.log(colors.green(`- ${code} ... skipped`));
+            console.log(`- ${code} ... skipped`.green);
             return existingModel;
         }
     }
@@ -97,7 +138,7 @@ class Seeder {
             for (let i = 0; i < attributeValues.length; i = i + 1) {
                 const attributeValue = attributeValues[i];
                 const truncatedDefaultValue = truncateString(attributeValue.defaultValue);
-                console.log(colors.green(`  - ${attributeValue.attribute.code} (${truncatedDefaultValue})`));
+                console.log(`  - ${attributeValue.attribute.code} (${truncatedDefaultValue})`.green);
                 const attributeNameUsage = await RelationshipAttributeNameUsageModel.create({
                     attributeName: attributeValue.attribute,
                     optionalInd: attributeValue.optionalInd,
@@ -115,13 +156,13 @@ class Seeder {
         const code = values.code;
         const existingModel = await RelationshipTypeModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
-            console.log(colors.magenta(`- ${code}`));
+            console.log(`- ${code}`.magenta);
             values.attributeNameUsages = await Seeder.createRelationshipAttributeNameUsageModels(attributeValues);
             const model = await RelationshipTypeModel.create(values);
             console.log('');
             return model;
         } else {
-            console.log(colors.magenta(`- ${code} ... skipped`));
+            console.log(`- ${code} ... skipped`.magenta);
             return existingModel;
         }
     }
@@ -130,20 +171,71 @@ class Seeder {
         const code = values.code;
         const existingModel = await SharedSecretTypeModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
-            console.log(colors.red(`- ${code}`));
+            console.log(`- ${code}`.red);
             const model = await SharedSecretTypeModel.create(values);
             return model;
         } else {
-            console.log(colors.red(`- ${code} ...`));
+            console.log(`- ${code} ...`.red);
             return existingModel;
         }
+    }
+
+    public static async createSharedSecretModel(values:ISharedSecret) {
+        console.log(`- Secret    : ${values.sharedSecretType.code} (${values.value})`.cyan);
+        const model = await SharedSecretModel.create(values);
+        return model;
+    }
+
+    public static async createNameModel(values:IName) {
+        if (values.givenName || values.familyName) {
+            console.log(`- Name      : ${values.givenName} ${values.familyName}`.cyan);
+        } else {
+            console.log(`- Name      : ${values.unstructuredName}`.cyan);
+        }
+        const model = await NameModel.create(values);
+        return model;
     } 
+
+    public static async createProfileModel(values:IProfile) {
+        console.log(`- Profile   : ${values.provider}`.cyan);
+        const model = await ProfileModel.create(values);
+        return model;
+    }
+
+    public static async createPartyModel(values:IParty) {
+        console.log(`- Party     : ${values.partyType}`.cyan);
+        const model = await PartyModel.create(values);
+        return model;
+    }
+
+    public static async createIdentityModel(values:IIdentity) {
+        const model = await IdentityModel.create(values);
+        console.log(`- Identity  : ${model.idValue}`.cyan);
+        return model;
+    }
+
+    public static async createRelationshipModel(values:IRelationship) {
+        if (values.subjectNickName.givenName || values.subjectNickName.familyName) {
+            console.log(`- Subject       : ${values.subjectNickName.givenName} ${values.subjectNickName.familyName}`.cyan);
+        } else {
+            console.log(`- Subject       : ${values.subjectNickName.unstructuredName}`.cyan);
+        }
+        if (values.subjectNickName.givenName || values.delegateNickName.familyName) {
+            console.log(`- Delegate      : ${values.delegateNickName.givenName} ${values.delegateNickName.familyName}`.cyan);
+        } else {
+            console.log(`- Delegate      : ${values.delegateNickName.unstructuredName}`.cyan);
+        }
+        console.log(`- Start At      : ${values.startTimestamp}`.cyan);
+        console.log(`- Status        : ${values.status}`.cyan);
+        const model = await RelationshipModel.create(values);
+        return model;
+    }
 
     /* tslint:disable:max-func-body-length */
     public static async loadRelationshipOtherAttributeNames() {
         try {
 
-            console.log('\nInserting Relationship Attribute Names (other):\n');
+            console.log('\nInserting Relationship Attribute Names (other):\n'.underline);
 
             Seeder.permissionCustomisationAllowedInd_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'PERMISSION_CUSTOMISATION_ALLOWED_IND',
@@ -199,7 +291,7 @@ class Seeder {
     public static async loadRelationshipPermissionAttributeNames() {
         try {
 
-            console.log('\nInserting Relationship Attribute Names (permission):\n');
+            console.log('\nInserting Relationship Attribute Names (permission):\n'.underline);
 
             const administrativeServices_category = 'Administrative Services';
 
@@ -333,7 +425,7 @@ class Seeder {
     public static async loadRelationshipTypes() {
         try {
 
-            console.log('\nInserting Relationship Types:\n');
+            console.log('\nInserting Relationship Types:\n'.underline);
 
             Seeder.universal_delegate_relationshipType = await Seeder.createRelationshipTypeModel({
                 code: 'UNIVERSAL_REPRESENTATIVE',
@@ -393,7 +485,7 @@ class Seeder {
     public static async loadSharedSecretTypes() {
         try {
 
-            console.log('\nInserting Shared Secret Types:\n');
+            console.log('\nInserting Shared Secret Types:\n'.underline);
 
             Seeder.dob_sharedSecretType = await Seeder.createSharedSecretTypeModel({
                 code: 'DATE_OF_BIRTH',
@@ -402,6 +494,131 @@ class Seeder {
                 startDate: now,
                 domain: 'DEFAULT'
             } as ISharedSecretType);
+
+        } catch (e) {
+            console.log('Seeding failed!');
+            console.log(e);
+        }
+    }
+
+    /* tslint:disable:max-func-body-length */
+    public static async loadSample_jenniferMaxim_identity() {
+        try {
+
+            console.log('\nInserting Sample Identity - Jennifer Maxim:\n'.underline);
+
+            if (!conf.devMode) {
+
+                console.log('Skipped in prod mode'.gray);
+
+            } else {
+
+                Seeder.jennifermaxims_name = await Seeder.createNameModel({
+                    givenName: 'Jennifer',
+                    familyName: 'Maxims'
+                } as IName);
+
+                Seeder.jennifermaxims_dob = await Seeder.createSharedSecretModel({
+                    value: '31/01/1990',
+                    sharedSecretType: Seeder.dob_sharedSecretType
+                } as ISharedSecret);
+
+                Seeder.jennifermaxims_profile = await Seeder.createProfileModel({
+                    provider: ProfileProvider.MyGov.name,
+                    name: Seeder.jennifermaxims_name,
+                    sharedSecrets: [Seeder.jennifermaxims_dob]
+                } as IProfile);
+
+                Seeder.jennifermaxims_party = await Seeder.createPartyModel({
+                    partyType: PartyType.Individual.name
+                } as IParty);
+
+                console.log('');
+
+                Seeder.jennifermaxims_identity_1 = await Seeder.createIdentityModel({
+                    rawIdValue: 'jennifermaxims_identity_1',
+                    identityType: IdentityType.LinkId.name,
+                    defaultInd: true,
+                    linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                    profile: Seeder.jennifermaxims_profile,
+                    party: Seeder.jennifermaxims_party
+                } as IIdentity);
+
+            }
+
+        } catch (e) {
+            console.log('Seeding failed!');
+            console.log(e);
+        }
+    }
+
+    /* tslint:disable:max-func-body-length */
+    public static async loadSample_jensCateringPtyLtd_identity() {
+        try {
+
+            console.log('\nInserting Sample Identity - Jen\'s Catering Pty Ltd:\n'.underline);
+
+            if (!conf.devMode) {
+
+                console.log('Skipped in prod mode'.gray);
+
+            } else {
+
+                Seeder.jenscatering_name = await Seeder.createNameModel({
+                    unstructuredName: 'Jen\'s Catering Pty Ltd'
+                } as IName);
+
+                Seeder.jenscatering_profile = await Seeder.createProfileModel({
+                    provider: ProfileProvider.MyGov.name,
+                    name: Seeder.jenscatering_name,
+                    sharedSecrets: []
+                } as IProfile);
+
+                Seeder.jenscatering_party = await Seeder.createPartyModel({
+                    partyType: PartyType.ABN.name
+                } as IParty);
+
+                console.log('');
+
+                Seeder.jenscatering_identity_1 = await Seeder.createIdentityModel({
+                    rawIdValue: 'jenscatering_identity_1',
+                    identityType: IdentityType.PublicIdentifier.name,
+                    defaultInd: true,
+                    publicIdentifierScheme: IdentityPublicIdentifierScheme.ABN.name,
+                    profile: Seeder.jenscatering_profile,
+                    party: Seeder.jenscatering_party
+                } as IIdentity);
+
+            }
+
+        } catch (e) {
+            console.log('Seeding failed!');
+            console.log(e);
+        }
+    }
+
+    /* tslint:disable:max-func-body-length */
+    public static async loadSample_jenniferMaxim__jensCateringPtyLtd_relationship() {
+        try {
+
+            console.log('\nInserting Sample Relationship - Jennifer Maxim / Jen\'s Catering Pty Ltd:\n'.underline);
+
+            if (!conf.devMode) {
+
+                console.log('Skipped in prod mode'.gray);
+
+            } else {
+
+                Seeder.j_and_j_relationship = await Seeder.createRelationshipModel({
+                    subject: Seeder.jenscatering_party,
+                    subjectNickName: Seeder.jenscatering_name,
+                    delegate: Seeder.jennifermaxims_party,
+                    delegateNickName: Seeder.jennifermaxims_name,
+                    startTimestamp: new Date(),
+                    status: RelationshipStatus.Active.name
+                } as IRelationship);
+
+            }
 
         } catch (e) {
             console.log('Seeding failed!');
@@ -419,4 +636,7 @@ Seeder.connect()
     .then(Seeder.loadRelationshipPermissionAttributeNames)
     .then(Seeder.loadRelationshipTypes)
     .then(Seeder.loadSharedSecretTypes)
+    .then(Seeder.loadSample_jenniferMaxim_identity)
+    .then(Seeder.loadSample_jensCateringPtyLtd_identity)
+    .then(Seeder.loadSample_jenniferMaxim__jensCateringPtyLtd_relationship)
     .then(Seeder.disconnect);

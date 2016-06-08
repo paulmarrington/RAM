@@ -33,8 +33,7 @@ describe('RAM Relationship', () => {
             });
 
             subjectParty1 = await PartyModel.create({
-                partyType: PartyType.Individual.name,
-                name: subjectNickName1
+                partyType: PartyType.Individual.name
             });
 
             delegateNickName1 = await NameModel.create({
@@ -43,8 +42,7 @@ describe('RAM Relationship', () => {
             });
 
             delegateParty1 = await PartyModel.create({
-                partyType: PartyType.Individual.name,
-                name: delegateNickName1
+                partyType: PartyType.Individual.name
             });
 
             done();
