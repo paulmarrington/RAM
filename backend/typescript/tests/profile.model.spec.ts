@@ -13,9 +13,14 @@ import {
     ProfileModel,
     ProfileProvider} from '../models/profile.model';
 import {
+    IParty,
+    PartyModel,
+    PartyType} from '../models/party.model';
+import {
     IIdentity,
     IdentityModel,
-    IdentityType} from '../models/identity.model';
+    IdentityType,
+    IdentityLinkIdScheme} from '../models/identity.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Profile', () => {
@@ -29,6 +34,7 @@ describe('RAM Profile', () => {
     let sharedSecretValue1 = 'secret_value_1';
     let name1: IName;
     let profile1: IProfile;
+    let party1: IParty;
     let identity1: IIdentity;
 
     beforeEach(async (done) => {
@@ -49,8 +55,7 @@ describe('RAM Profile', () => {
 
             name1 = await NameModel.create({
                 givenName: 'John',
-                familyName: 'Smith',
-                unstructuredName: 'John Smith'
+                familyName: 'Smith'
             });
 
             profile1 = await ProfileModel.create({
@@ -59,11 +64,18 @@ describe('RAM Profile', () => {
                 sharedSecrets: [sharedSecret1]
             });
 
+            party1 = await PartyModel.create({
+                partyType: PartyType.Individual.name,
+                name: name1
+            });
+
             identity1 = await IdentityModel.create({
-                idValue: 'uuid_1',
+                rawIdValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
-                profile: profile1
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                profile: profile1,
+                party: party1
             });
 
             done();
