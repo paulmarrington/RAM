@@ -10,7 +10,7 @@ const NameSchema = RAMSchema({
         type: String,
         trim: true,
         validate: {
-            validator: function (v) {
+            validator: function (v:String) {
                 return !((this.givenName || this.familyName) && this.unstructuredName);
             },
             message: 'Given/Family Name and Unstructured Name cannot both be specified'
