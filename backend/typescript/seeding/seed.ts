@@ -77,6 +77,11 @@ class Seeder {
         const existingModel = await RelationshipAttributeNameModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
             console.log(colors.green(`- ${code}`));
+            if (values.permittedValues) {
+                for (let permittedValue of values.permittedValues) {
+                    console.log(colors.gray(`  - ${permittedValue}`));
+                }
+            }
             const model = await RelationshipAttributeNameModel.create(values);
             return model;
         } else {
