@@ -1,11 +1,15 @@
 import * as mongoose from 'mongoose';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IProfile, ProfileModel} from './profile.model';
+import {IParty, PartyModel} from './party.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
 /* tslint:disable:no-unused-variable */
 const _ProfileModel = ProfileModel;
+
+/* tslint:disable:no-unused-variable */
+const _PartyModel = PartyModel;
 
 // enums, utilities, helpers ..........................................................................................
 
@@ -196,6 +200,11 @@ const IdentitySchema = RAMSchema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Profile',
         required: [true, 'Profile is required']
+    },
+    party: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Party',
+        required: [true, 'Party is required']
     }
 });
 
@@ -222,6 +231,7 @@ export interface IIdentity extends IRAMObject {
     linkIdScheme: string;
     linkIdConsumer: string;
     profile: IProfile;
+    party: IParty;
     identityTypeEnum(): IdentityType;
     agencySchemeEnum(): IdentityAgencyScheme;
     invitationCodeStatusEnum(): IdentityInvitationCodeStatus;

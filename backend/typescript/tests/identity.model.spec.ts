@@ -14,6 +14,10 @@ import {
     IProfile,
     ProfileModel,
     ProfileProvider} from '../models/profile.model';
+import {
+    IParty,
+    PartyModel,
+    PartyType} from '../models/party.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Identity', () => {
@@ -23,6 +27,7 @@ describe('RAM Identity', () => {
 
     let name1: IName;
     let profile1: IProfile;
+    let party1: IParty;
     let identity1: IIdentity;
 
     beforeEach(async (done) => {
@@ -39,12 +44,18 @@ describe('RAM Identity', () => {
                 name: name1
             });
 
+            party1 = await PartyModel.create({
+                partyType: PartyType.Individual.name,
+                name: name1
+            });
+
             identity1 = await IdentityModel.create({
                 rawIdValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
                 linkIdScheme: IdentityLinkIdScheme.MyGov.name,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
             done();
@@ -79,7 +90,8 @@ describe('RAM Identity', () => {
                 identityType: type.name,
                 defaultInd: defaultInd,
                 linkIdScheme: IdentityLinkIdScheme.MyGov.name,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
             expect(instance).not.toBeNull();
@@ -121,7 +133,8 @@ describe('RAM Identity', () => {
                 defaultInd: defaultInd,
                 agencyScheme: scheme.name,
                 agencyToken: agencyToken,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
             const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
@@ -160,7 +173,8 @@ describe('RAM Identity', () => {
                 invitationCodeExpiryTimestamp: expiryTimestamp,
                 invitationCodeClaimedTimestamp: claimedTimestamp,
                 invitationCodeTemporaryEmailAddress: emailAddress,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
             const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
@@ -197,7 +211,8 @@ describe('RAM Identity', () => {
                 identityType: type.name,
                 defaultInd: defaultInd,
                 publicIdentifierScheme: scheme.name,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
             const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
@@ -231,7 +246,8 @@ describe('RAM Identity', () => {
                 identityType: type.name,
                 defaultInd: defaultInd,
                 linkIdScheme: scheme.name,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
             const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
@@ -258,7 +274,8 @@ describe('RAM Identity', () => {
                 rawIdValue: 'uuid_x',
                 identityType: '__BOGUS__',
                 defaultInd: false,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
             fail('should not have inserted with invalid type');
             done();
@@ -274,7 +291,8 @@ describe('RAM Identity', () => {
             await IdentityModel.create({
                 rawIdValue: 'uuid_x',
                 defaultInd: false,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
             fail('should not have inserted with null type');
             done();
@@ -290,13 +308,31 @@ describe('RAM Identity', () => {
             await IdentityModel.create({
                 rawIdValue: 'uuid_x',
                 identityType: IdentityType.LinkId.name,
-                defaultInd: false
+                defaultInd: false,
+                party: party1
             });
             fail('should not have inserted with null profile');
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
             expect(e.errors.profile).not.toBeNull();
+            done();
+        }
+    });
+
+    it('fails insert with null party', async (done) => {
+        try {
+            await IdentityModel.create({
+                rawIdValue: 'uuid_x',
+                identityType: IdentityType.LinkId.name,
+                defaultInd: false,
+                profile: profile1
+            });
+            fail('should not have inserted with null party');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            expect(e.errors.party).not.toBeNull();
             done();
         }
     });
