@@ -13,9 +13,14 @@ import {
     ProfileModel,
     ProfileProvider} from '../models/profile.model';
 import {
+    IParty,
+    PartyModel,
+    PartyType} from '../models/party.model';
+import {
     IIdentity,
     IdentityModel,
-    IdentityType} from '../models/identity.model';
+    IdentityType,
+    IdentityLinkIdScheme} from '../models/identity.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Shared Secret', () => {
@@ -31,6 +36,7 @@ describe('RAM Shared Secret', () => {
     let sharedSecretValue1 = 'secret_value_1';
     let name1: IName;
     let profile1: IProfile;
+    let party1: IParty;
     let identity1: IIdentity;
 
     beforeEach(async (done) => {
@@ -70,8 +76,7 @@ describe('RAM Shared Secret', () => {
 
             name1 = await NameModel.create({
                 givenName: 'John',
-                familyName: 'Smith',
-                unstructuredName: 'John Smith'
+                familyName: 'Smith'
             });
 
             profile1 = await ProfileModel.create({
@@ -80,11 +85,18 @@ describe('RAM Shared Secret', () => {
                 sharedSecrets: [sharedSecretNoEndDate]
             });
 
+            party1 = await PartyModel.create({
+                partyType: PartyType.Individual.name,
+                name: name1
+            });
+
             identity1 = await IdentityModel.create({
-                idValue: 'uuid_1',
+                rawIdValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
-                profile: profile1
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                profile: profile1,
+                party: party1
             });
 
             done();
@@ -98,7 +110,7 @@ describe('RAM Shared Secret', () => {
 
     it('finds identity includes profile and shared secrets', async (done) => {
         try {
-            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            const instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
             expect(instance.id).toBe(identity1.id);
             expect(instance.profile.id).toBe(profile1.id);
@@ -113,7 +125,7 @@ describe('RAM Shared Secret', () => {
 
     it('hashes value upon insert', async (done) => {
         try {
-            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            const instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
             expect(instance.profile.sharedSecrets[0].value).not.toBeNull();
             expect(instance.profile.sharedSecrets[0].value).toBe(sharedSecretNoEndDate.value);
@@ -130,10 +142,10 @@ describe('RAM Shared Secret', () => {
     it('hashes value upon update', async (done) => {
         try {
             let sharedSecretValue2 = 'secret_value_2';
-            let instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            let instance = await IdentityModel.findByIdValue(identity1.idValue);
             sharedSecretNoEndDate.value = sharedSecretValue2;
             await sharedSecretNoEndDate.save();
-            instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
             expect(instance.profile.sharedSecrets[0].value).not.toBeNull();
             expect(instance.profile.sharedSecrets[0].value).toBe(sharedSecretNoEndDate.value);

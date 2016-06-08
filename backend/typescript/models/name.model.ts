@@ -8,7 +8,10 @@ import {IRAMObject, RAMSchema} from './base';
 const NameSchema = RAMSchema({
     givenName: {
         type: String,
-        trim: true
+        trim: true,
+        required: [function () {
+            return this.familyName || !this.unstructuredName;
+        }, 'Given Name or Unstructured Name is required']
     },
     familyName: {
         type: String,
@@ -16,7 +19,18 @@ const NameSchema = RAMSchema({
     },
     unstructuredName: {
         type: String,
-        trim: true
+        trim: true,
+        required: [function () {
+            return !this.givenName && !this.familyName;
+        }, 'Given Name or Unstructured Name is required']
+    }
+});
+
+NameSchema.pre('validate', function (next:() => void) {
+    if ((this.givenName || this.familyName) && this.unstructuredName) {
+        throw new Error('Given/Family Name and Unstructured Name cannot both be specified');
+    } else {
+        next();
     }
 });
 

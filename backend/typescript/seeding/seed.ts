@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import * as colors from 'colors';
 import {conf} from '../bootstrap';
 
 import {
@@ -21,21 +22,25 @@ import {
 
 const now = new Date();
 
+const truncateString = (input:String):String => {
+    return input && input.length > 20 ? (input.substring(0, 20) + '...') : input;
+};
+
 // seeder .............................................................................................................
 
 class Seeder {
 
     public static async connect() {
         await mongoose.connect(conf.mongoURL);
-        console.log('\nConnected to the db: ', conf.mongoURL);
+        console.log(`\nConnected to the db: ${conf.mongoURL}`);
     }
 
     public static async dropDatabase() {
         if (conf.devMode) {
-            console.info('Dropping database in dev mode (starting fresh)');
+            console.log('Dropping database in dev mode (starting fresh)');
             await mongoose.connection.db.dropDatabase();
         } else {
-            console.info('Not dropping database in prod mode (appending)');
+            console.log('Not dropping database in prod mode (appending)');
         }
     }
 
@@ -47,11 +52,11 @@ class Seeder {
         const code = values.code;
         const existingModel = await RelationshipAttributeNameModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
-            console.log('-', code);
+            console.log(colors.green(`- ${code}`));
             const model = await RelationshipAttributeNameModel.create(values);
             return model;
         } else {
-            console.log('-', code, ' ... skipped');
+            console.log(colors.green(`- ${code} ... skipped`));
             return existingModel;
         }
     }
@@ -60,8 +65,10 @@ class Seeder {
     <T extends { attribute:IRelationshipAttributeName, optionalInd:boolean, defaultValue:string}>(attributeValues:T[]) {
         const attributeNameUsages:IRelationshipAttributeNameUsage[] = [];
         if (attributeValues) {
-            for (let i = 0; i < attributeValues.length; i = i+1) {
+            for (let i = 0; i < attributeValues.length; i = i + 1) {
                 const attributeValue = attributeValues[i];
+                const truncatedDefaultValue = truncateString(attributeValue.defaultValue);
+                console.log(colors.green(`  - ${attributeValue.attribute.code} (${truncatedDefaultValue})`));
                 const attributeNameUsage = await RelationshipAttributeNameUsageModel.create({
                     attributeName: attributeValue.attribute,
                     optionalInd: attributeValue.optionalInd,
@@ -79,13 +86,13 @@ class Seeder {
         const code = values.code;
         const existingModel = await RelationshipTypeModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
-            console.log('-', code);
+            console.log(colors.magenta(`- ${code}`));
             values.attributeNameUsages = await Seeder.createRelationshipAttributeNameUsageModels(attributeValues);
             const model = await RelationshipTypeModel.create(values);
+            console.log('');
             return model;
-
         } else {
-            console.log('-', code, ' ... skipped');
+            console.log(colors.magenta(`- ${code} ... skipped`));
             return existingModel;
         }
     }
@@ -94,14 +101,14 @@ class Seeder {
         const code = values.code;
         const existingModel = await SharedSecretTypeModel.findByCodeIgnoringDateRange(code);
         if (existingModel === null) {
-            console.log('-', code);
+            console.log(colors.red(`- ${code}`));
             const model = await SharedSecretTypeModel.create(values);
             return model;
         } else {
-            console.log('-', code, ' ... skipped');
+            console.log(colors.red(`- ${code} ...`));
             return existingModel;
         }
-    }
+    } 
 
 }
 
@@ -112,155 +119,238 @@ const loadReferenceData = async () => {
 
     try {
 
-        // relationship attribute names ...................................................................................
+        // relationship attribute names (other) .......................................................................
 
-        console.log('\nInserting Relationship Attribute Names:');
+        console.log('\nInserting Relationship Attribute Names (other):\n');
 
-        const employeeNumber_attributeName = await Seeder.createRelationshipAttributeNameModel({
-            code: 'EMPLOYEE_NUMBER',
-            shortDecodeText: 'Employee Number',
-            longDecodeText: 'Employee Number',
+        const permissionCustomisationAllowedInd_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'PERMISSION_CUSTOMISATION_ALLOWED_IND',
+            shortDecodeText: 'Permission Customisation Allowed Indicator',
+            longDecodeText: 'Permission Customisation Allowed Indicator',
             startDate: now,
-            domain: RelationshipAttributeNameDomain.String.name,
+            domain: RelationshipAttributeNameDomain.Boolean.name,
             classifier: RelationshipAttributeNameClassifier.Other.name,
             category: null,
-            purposeText: 'Employee Number'
+            purposeText: 'Indicator of whether a relationship type allows the user to customise permission levels'
         } as IRelationshipAttributeName);
 
-        const employmentType_attributeName = await Seeder.createRelationshipAttributeNameModel({
-            code: 'EMPLOYMENT_TYPE',
-            shortDecodeText: 'Employment Type',
-            longDecodeText: 'Employment Type',
+        const delegateManageAuthorisationAllowedInd_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND',
+            shortDecodeText: 'Delegate Manage Authorisations Allowed Indicator',
+            longDecodeText: 'Delegate Manage Authorisations Allowed Indicator',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.Boolean.name,
+            classifier: RelationshipAttributeNameClassifier.Other.name,
+            category: null,
+            purposeText: 'Indicator of whether a relationship allows the delegate to manage authorisations'
+        } as IRelationshipAttributeName);
+
+        const delegateRelationshipTypeDeclaration_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DELEGATE_RELATIONSHIP_TYPE_DECLARATION',
+            shortDecodeText: 'Delegate Relationship Type Declaration',
+            longDecodeText: 'Delegate Relationship Type Declaration',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.Markdown.name,
+            classifier: RelationshipAttributeNameClassifier.Other.name,
+            category: null,
+            purposeText: 'Delegate specific declaration in Markdown for a relationship type'
+        } as IRelationshipAttributeName);
+
+        const subjectRelationshipTypeDeclaration_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'SUBJECT_RELATIONSHIP_TYPE_DECLARATION',
+            shortDecodeText: 'Subject Relationship Type Declaration',
+            longDecodeText: 'Subject Relationship Type Declaration',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.Markdown.name,
+            classifier: RelationshipAttributeNameClassifier.Other.name,
+            category: null,
+            purposeText: 'Subject specific declaration in Markdown for a relationship type'
+        } as IRelationshipAttributeName);
+
+        // relationship attribute names (permission) ..................................................................
+
+        console.log('\nInserting Relationship Attribute Names (permission):\n');
+
+        const full_permissionAccess = 'Full access';
+        const permissionPermittedAccessLevels = [full_permissionAccess, 'Limited access', 'No access'];
+
+        const administrativeServices_category = 'Administrative Services';
+
+        const asic_abn_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'ASIC_ABN_PERMISSION',
+            shortDecodeText: 'Australian Securities and Investments Commission (ASIC)',
+            longDecodeText: 'ABN / BN Project (limited release)',
             startDate: now,
             domain: RelationshipAttributeNameDomain.SelectSingle.name,
-            classifier: RelationshipAttributeNameClassifier.Other.name,
-            category: null,
-            purposeText: 'Employee Type',
-            permittedValues: ['Permanent', 'Contractor', 'Casual']
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
         } as IRelationshipAttributeName);
 
-        // relationship types .............................................................................................
+        const wgea_activate_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'WGEA_ACTIVATE_PERMISSION',
+            shortDecodeText: 'Workplace Gender Equality Agency (WGEA)',
+            longDecodeText: 'Activate',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
 
-        console.log('\nInserting Relationship Types:');
+        const deptindustry_aba_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTOFINDUSTRY_ABA_PERMISSION',
+            shortDecodeText: 'Department of Industry',
+            longDecodeText: 'Australian Business Account (ABA) - ABLIS',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const abr_abr_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'ABR_ABR_PERMISSION',
+            shortDecodeText: 'Australian Business Register (ABR)',
+            longDecodeText: 'Australian Business Register',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const deptindustry_ats_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTOFINDUSTRY_ATS_PERMISSION',
+            shortDecodeText: 'Department of Industry',
+            longDecodeText: 'Automotive Transformation Scheme (ATS)',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const ntdeptbusiness_avetmiss_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'NTDEPTOFBUSINESS_AVETMISS_PERMISSION',
+            shortDecodeText: 'NT Department of Business',
+            longDecodeText: 'AVETMISS Training Portal',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const ntdeptcorpinfoservices_ims_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'NTDEPTOFCORPINFOSERVICES_IMS_PERMISSION',
+            shortDecodeText: 'NT Department of Corporate & Information Services - DCIS',
+            longDecodeText: 'Identity Management System (IMS) - Invoice Portal – Invoice NTG',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const depthumanservicescentrelink_ppl_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTOFHUMANSERVICESCENTRELINK_PPL_PERMISSION',
+            shortDecodeText: 'Department of Human Services - Centrelink',
+            longDecodeText: 'Paid Parental Leave',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const deptimmigration_skillselect_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTOFIMMIGRATION_SKILLSELECT_PERMISSION',
+            shortDecodeText: 'Department of Immigration and Border Protection',
+            longDecodeText: 'Skill Select',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        const deptemployment_wageconnect_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            code: 'DEPTEMPLOYMENT_WAGECONNECT_PERMISSION',
+            shortDecodeText: 'Department of Employment',
+            longDecodeText: 'Wage Connect',
+            startDate: now,
+            domain: RelationshipAttributeNameDomain.SelectSingle.name,
+            classifier: RelationshipAttributeNameClassifier.Permission.name,
+            category: administrativeServices_category,
+            purposeText: 'A permission for a relationship',
+            permittedValues: permissionPermittedAccessLevels
+        } as IRelationshipAttributeName);
+
+        // relationship types .........................................................................................
+
+        console.log('\nInserting Relationship Types:\n');
 
         await Seeder.createRelationshipTypeModel({
-            code: 'BUSINESS_REPRESENTATIVE',
-            shortDecodeText: 'Business Representative',
-            longDecodeText: 'Business Representative',
+            code: 'UNIVERSAL_REPRESENTATIVE',
+            shortDecodeText: 'Universal Representative',
+            longDecodeText: 'Universal Representative',
             startDate: now
         } as IRelationshipType, [
-            {attribute: employeeNumber_attributeName, optionalInd: true, defaultValue: null},
-            {attribute: employmentType_attributeName, optionalInd: false, defaultValue: 'Permanent'}
+            {attribute: permissionCustomisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
+            {attribute: delegateManageAuthorisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
+            {attribute: delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                defaultValue: 'Markdown for Delegate Universal Representative Declaration'},
+            {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                defaultValue: 'Markdown for Subject Universal Representative Declaration'},
+            {attribute: asic_abn_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: wgea_activate_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: deptindustry_aba_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: abr_abr_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: deptindustry_ats_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: depthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: deptimmigration_skillselect_attributeName, optionalInd: false, defaultValue: full_permissionAccess},
+            {attribute: deptemployment_wageconnect_attributeName, optionalInd: false, defaultValue: full_permissionAccess}
         ]);
 
         await Seeder.createRelationshipTypeModel({
-            code: 'ONLINE_SERVICE_PROVIDER',
-            shortDecodeText: 'Online Service Provider',
-            longDecodeText: 'Online Service Provider',
+            code: 'CUSTOM_REPRESENTATIVE',
+            shortDecodeText: 'Custom Representative',
+            longDecodeText: 'Custom Representative',
             startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'INSOLVENCY_PRACTITIONER',
-            shortDecodeText: 'Insolvency Practitioner',
-            longDecodeText: 'Insolvency Practitioner',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'TRUSTED_INTERMEDIARY',
-            shortDecodeText: 'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
-            longDecodeText: 'Trusted Intermediary - tax agent, BAS Agent, Financial Advisor, Lawyer',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'INTERMEDIARY',
-            shortDecodeText: 'Intermediary – Real Estate Agent, Immigration Agent',
-            longDecodeText: 'Intermediary – Real Estate Agent, Immigration Agent',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'IMPORTER_EXPORT_AGENT',
-            shortDecodeText: 'Importer Export Agent',
-            longDecodeText: 'Importer Export Agent',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'DOCTOR_PATIENT',
-            shortDecodeText: 'Doctor Patient',
-            longDecodeText: 'Doctor Patient',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'NOMINATED_ENTITY',
-            shortDecodeText: 'Nominated Entity',
-            longDecodeText: 'Nominated Entity',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'POWER_OF_ATTORNEY_VOLUNTARY',
-            shortDecodeText: 'Power of Attorney (Voluntary)',
-            longDecodeText: 'Power of Attorney (Voluntary)',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'POWER_OF_ATTORNEY_INVOLUNTARY',
-            shortDecodeText: 'Power of Attorney (Involuntary)',
-            longDecodeText: 'Power of Attorney (Involuntary)',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'EXECUTOR_OF_DECEASED_ESTATE',
-            shortDecodeText: 'Executor of Deceased Estate',
-            longDecodeText: 'Executor of Deceased Estate',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'PHARMACEUTICAL',
-            shortDecodeText: 'Pharmaceutical',
-            longDecodeText: 'Pharmaceutical',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'INSTITUTION_TO_STUDENT',
-            shortDecodeText: 'Institution to student – relationship',
-            longDecodeText: 'Institution to student – relationship',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'RTO',
-            shortDecodeText: 'Training organisations (RTO)',
-            longDecodeText: 'Training organisations (RTO)',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'PARENT_CHILD',
-            shortDecodeText: 'Parent - Child',
-            longDecodeText: 'Parent - Child',
-            startDate: now
-        } as IRelationshipType, null);
-
-        await Seeder.createRelationshipTypeModel({
-            code: 'EMPLOYMENT_AGENT_EMPLOYMENT',
-            shortDecodeText: 'Employment Agents – employment',
-            longDecodeText: 'Employment Agents – employment',
-            startDate: now
-        } as IRelationshipType, null);
+        } as IRelationshipType, [
+            {attribute: permissionCustomisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'true'},
+            {attribute: delegateManageAuthorisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
+            {attribute: delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                defaultValue: 'Markdown for Delegate Custom Representative Declaration'},
+            {attribute: subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                defaultValue: 'Markdown for Subject Custom Representative Declaration'},
+            {attribute: asic_abn_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: wgea_activate_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: deptindustry_aba_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: abr_abr_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: deptindustry_ats_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: depthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: deptimmigration_skillselect_attributeName, optionalInd: false, defaultValue: null},
+            {attribute: deptemployment_wageconnect_attributeName, optionalInd: false, defaultValue: null}
+        ]);
 
         // shared secret types ............................................................................................
 
-        console.log('\nInserting Shared Secret Types:');
+        console.log('\nInserting Shared Secret Types:\n');
 
         await Seeder.createSharedSecretTypeModel({
             code: 'DATE_OF_BIRTH',
