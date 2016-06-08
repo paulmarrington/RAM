@@ -1,26 +1,26 @@
-<form [ngFormModel]=OrganisationRepresentativeDetailsForm>
+<form [ngFormModel]=form>
     <div class="form-group">
         <div class="col-md-12">
             <h4>ABN*</h4>
         </div>
-        <div class="col-md-4">
-            <input class="form-control" type="text" name="abn"
-            minlength=11 maxlength=14 pattern="^(\d *?){11}$"
-            [disabled]=hasName
-            [ngFormControl]="OrganisationRepresentativeDetailsForm.controls['abn']" size=14
+        <div class="col-md-3"
+        [class.has-error]="!form.controls['abn'].valid">
+            <input class="form-control" type="text"
+            minlength=11 maxlength=14 [disabled]='hasName()'
+            [ngFormControl]="form.controls['abn']" size=14
             placeholder="Type ABN here ...">
         </div>
-        <div class="col-md-4">
-            <input class="form-control" type="text" name="organisation"
-             [ngFormControl]="OrganisationRepresentativeDetailsForm.controls['organisation']" readonly=true>
+        <div class="col-md-6">
+            <input class="form-control" type="text"
+             [ngFormControl]="form.controls['name']" readonly=true>
         </div>
-        <div class="col-md-4">
-            <span [hidden]=hasName>
-                <button class="col-md-6 btn btn-primary"
-                [disabled]=!hasABN (click)=getOrganisationName() >
+        <div class="col-md-3">
+            <span [hidden]='hasName()'>
+                <button class="col-md-12 btn btn-primary"
+                [disabled]='!hasABN()' (click)=getOrganisationName() >
                     Check ABN</a>
-            </span><span [hidden]=!hasName>
-                <button class="col-md-6 btn btn-default"
+            </span><span [hidden]='!hasName()'>
+                <button class="col-md-12 btn btn-default"
                 (click)=clearOrganisationType() >Change ABN</a>
             </span>
         </div>

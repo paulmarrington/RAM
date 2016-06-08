@@ -7,7 +7,7 @@ import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from
 '../commons/authorisation-type/authorisation-type.component';
 import {DeclarationComponent} from
 '../commons/declaration/declaration.component';
-import {RepresentativeDetailsComponent} from
+import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
 '../commons/representative-details/representative-details.component';
 
 @Component({
@@ -32,6 +32,19 @@ export class AddRelationshipComponent {
         },
         authType: {
             authType: 'choose'
+        },
+        repType: {
+            repTypeIndividual: {checked: false},
+            repTypeOrganisation: {checked: false},
+            individual: {
+                firstName: '',
+                lastName:  '',
+                dob:       null
+            },
+            organisation: {
+                abn:        '',
+                name:       ''
+            }
         }
     };
 
@@ -48,4 +61,5 @@ export class AddRelationshipComponent {
 export interface AddRelationshipComponentData {
     accessPeriod:   AccessPeriodComponentData;
     authType:       AuthorisationTypeComponentData;
+    repType:        RepresentativeDetailsComponentData;
 }

@@ -4,10 +4,13 @@
             <h2 class="col-sm-12 col-md-7 col-lg-8 col-xs-12">Add Relationship</h2>
         </div>
     </div>
-    <representative-details></representative-details>
+    <representative-details [(data)]='myVar.repType'
+    ></representative-details>
     <authorisation-type  [(data)]='myVar.authType'>
     </authorisation-type>
-    <access-period [(data)]='myVar.accessPeriod' (validationErrors)='accessPeriodValidationErrors=$event'></access-period>
+    <access-period [(data)]='myVar.accessPeriod'
+        (validationErrors)='accessPeriodValidationErrors=$event'>
+    </access-period>
     <authorisation-permissions></authorisation-permissions>
     <declaration ></declaration>
     <pre>

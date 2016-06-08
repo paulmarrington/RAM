@@ -4,25 +4,33 @@
     <div class="panel-body">
         <form>
             <div class="form-group">
+            <form [ngFormModel]="form">
                 <div class="radio">
                     <div class="col-lg-2">
                         <label><h4>
-                            <input type="radio" name="repType" [checked]="false" [ngModel]="{checked: model.selectRepresentativeType == 'individual'}" (change)="model.selectRepresentativeType=$event.target.value" value="individual" >Individual</h4></label>
+                            <input type="radio" name='repType'
+                            [checked]="false" value="individual" 
+                            [ngFormControl]="form.controls['repTypeIndividual']"
+                            >Individual</h4></label>
                     </div>
                     <div class="col-lg-2">
                         <label><h4>
-                            <input type="radio" name="repType" [checked]="false" [ngModel]="{checked: model.selectRepresentativeType == 'organisation'}" (change)="model.selectRepresentativeType=$event.target.value" value="organisation">Organisation</h4></label>
+                            <input type="radio" [checked]="false"
+                            value="organisation" name='repType'
+                            [ngFormControl]="form.controls['repTypeOrganisation']"
+                            >Organisation</h4></label>
                     </div>
                 </div>
                 <div class="clearfix"></div>
+            </form>
             </div>
         </form>
-        <div [hidden]=!isIndividual>
-            <individual-representative-details>
+        <div [hidden]='!isIndividual()'>
+            <individual-representative-details [(data)]='data.individual'>
             </individual-representative-details>
         </div>
-       <div [hidden]=!isOrganisation>
-            <organisation-representative-details>
+       <div [hidden]='!isOrganisation()'>
+            <organisation-representative-details  [(data)]='data.organisation'>
             </organisation-representative-details>
             </div>
     </div>

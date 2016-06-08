@@ -1,5 +1,6 @@
 import {OnInit, Input, Output, EventEmitter, Component} from '@angular/core';
-import {ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
+import {ControlGroup, FormBuilder, FORM_DIRECTIVES, Validators, Control}
+from '@angular/common';
 
 @Component({
     selector:       'authorisation-type',
@@ -15,18 +16,24 @@ export class AuthorisationTypeComponent implements OnInit {
 
     @Output('dataChange') public dataChanges = new EventEmitter<AuthorisationTypeComponentData>();
 
-    @Output('validationErrors') public validationErrors = new EventEmitter<boolean>();
-
     constructor(private _fb: FormBuilder) {}
 
     public ngOnInit() {
         this.form = this._fb.group({
-            'authType': [this.data.authType]
-        });
-        this.form.valueChanges.subscribe((v: AuthorisationTypeComponentData) => {
+            'authType': [this.data.authType,
+            Validators.compose([this.authTypeSelected])
+            ]});
+        this.form.valueChanges.subscribe(
+        (v: AuthorisationTypeComponentData) => {
             this.dataChanges.emit(v);
-            this.validationErrors.emit(this.form.valid);
         });
+    }
+
+    private authTypeSelected = (authType: Control) => {
+            const notSet =
+            (authType.value === 'choose');
+            return notSet ? {authorisationTypeNotSet: {valid: false}} : null;
+        };
     }
 }
 

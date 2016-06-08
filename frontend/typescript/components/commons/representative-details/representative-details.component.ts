@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
-import { FORM_DIRECTIVES, FormBuilder } from '@angular/common';
-import { RAMComponent }                 from '../../../commons/RAMComponent';
-import {IndividualRepresentativeDetailsComponent} from
+import {OnInit, Input, Output, EventEmitter, Component} from '@angular/core';
+import {ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
+import {
+    IndividualRepresentativeDetailsComponent,
+    IndividualRepresentativeDetailsComponentData} from
 './individual-representative-details/individual-representative-details.component';
-import {OrganisationRepresentativeDetailsComponent} from
+import {
+    OrganisationRepresentativeDetailsComponent,
+    OrganisationRepresentativeDetailsComponentData} from
 './organisation-representative-details/organisation-representative-details.component';
 
 @Component({
@@ -16,29 +19,41 @@ import {OrganisationRepresentativeDetailsComponent} from
     ]
 })
 
-export class RepresentativeDetailsComponent extends RAMComponent<RepresentativeDetailsComponentData> {
+export class RepresentativeDetailsComponent implements OnInit {
 
-    constructor(_fb: FormBuilder) { super(_fb); };
+    public form: ControlGroup;
 
-    protected controls() {
-        return {
-            'authType': [this.data.representativeType]
-        };
+    @Input('data') public data: RepresentativeDetailsComponentData;
+
+    @Output('dataChange') public dataChanges = new EventEmitter<RepresentativeDetailsComponentData>();
+
+    @Output('validationErrors') public validationErrors = new EventEmitter<boolean>();
+
+    constructor(private _fb: FormBuilder) {}
+
+    public ngOnInit() {
+        this.form = this._fb.group({
+            'repTypeOrganisation': [this.data.repTypeOrganisation],
+            'repTypeIndividual':   [this.data.repTypeIndividual]
+        });
+        this.form.valueChanges.subscribe(
+        (v: RepresentativeDetailsComponentData) => {
+            this.dataChanges.emit(v);
+            this.validationErrors.emit(this.form.valid);
+        });
     }
 
-    // TODO: work-around until Angular-2 understands radio buttons
-    //private model:{selectRepresentativeType:String};
-    // constructor() {
-    //     this.model = {selectRepresentativeType: ''};
-    // }
-    get isIndividual(): boolean {
-        return this.data.representativeType === 'individual';
+    public isIndividual(): boolean {
+        return this.data.repTypeIndividual.checked;
     }
-    get isOrganisation(): boolean {
-        return this.data.representativeType === 'organisation';
+    public isOrganisation(): boolean {
+        return this.data.repTypeOrganisation.checked;
     }
 }
 
 export interface RepresentativeDetailsComponentData {
-    representativeType: String;
+    repTypeOrganisation: {checked: boolean};
+    repTypeIndividual:   {checked: boolean};
+    individual:          IndividualRepresentativeDetailsComponentData;
+    organisation:        OrganisationRepresentativeDetailsComponentData;
 }

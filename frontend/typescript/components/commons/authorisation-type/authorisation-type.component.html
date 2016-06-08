@@ -7,7 +7,8 @@
         <h4>Authorisation type*</h4>
         <div class="form-group">
             <form [ngFormModel]="form">
-                <div class="col-md-6">
+                <div class="col-md-6"
+                [class.has-error]="!form.controls['authType'].valid">
                     <select class="form-control" name="authType"
                     [ngFormControl]="form.controls['authType']">
                         <option value="choose" disabled hidden>
