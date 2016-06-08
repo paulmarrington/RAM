@@ -1,4 +1,3 @@
-import * as mongoose from 'mongoose';
 import {connectDisconnectMongo, dropMongo} from './helpers';
 import {
     IName,
@@ -60,7 +59,7 @@ describe('RAM Relationship', () => {
     it('inserts with valid values', async (done) => {
         try {
 
-            const instance = await RelationshipModel.create({
+            const instance:IRelationship = await RelationshipModel.create({
                 subject: subjectParty1,
                 subjectNickName: subjectNickName1,
                 delegate: delegateParty1,
