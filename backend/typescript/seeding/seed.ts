@@ -95,6 +95,8 @@ class Seeder {
     public static jenscatering_party:IParty;
     public static jenscatering_identity_1:IIdentity;
 
+    public static j_and_j_relationship:IRelationship;
+
     public static async connect() {
         await mongoose.connect(conf.mongoURL);
         console.log(`\nConnected to the db: ${conf.mongoURL}`);
