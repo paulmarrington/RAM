@@ -42,12 +42,12 @@ class Seeder {
     public static deptindustry_ats_attributeName:IRelationshipAttributeName;
     public static ntdeptbusiness_avetmiss_attributeName:IRelationshipAttributeName;
     public static ntdeptcorpinfoservices_ims_attributeName:IRelationshipAttributeName;
-    public static depthumanservicescentrelink_ppl_attributeName:IRelationshipAttributeName;
-    public static deptimmigration_skillselect_attributeName:IRelationshipAttributeName;
-    public static deptemployment_wageconnect_attributeName:IRelationshipAttributeName;
+    public static depthscentrelink_ppl_attributeName:IRelationshipAttributeName;
+    public static deptimm_skillselect_attributeName:IRelationshipAttributeName;
+    public static deptemp_wageconnect_attributeName:IRelationshipAttributeName;
 
-    public static full_permissionAccess = 'Full access';
-    public static permissionPermittedAccessLevels = [Seeder.full_permissionAccess, 'Limited access', 'No access'];
+    public static full_accessLevel = 'Full access';
+    public static accessLevels = [Seeder.full_accessLevel, 'Limited access', 'No access'];
 
     public static universal_delegate_relationshipType:IRelationshipType;
     public static custom_delegate_relationshipType:IRelationshipType;
@@ -212,7 +212,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
             Seeder.wgea_activate_attributeName = await Seeder.createRelationshipAttributeNameModel({
@@ -224,7 +224,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
             Seeder.deptindustry_aba_attributeName = await Seeder.createRelationshipAttributeNameModel({
@@ -236,7 +236,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
             Seeder.abr_abr_attributeName = await Seeder.createRelationshipAttributeNameModel({
@@ -248,7 +248,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
             Seeder.deptindustry_ats_attributeName = await Seeder.createRelationshipAttributeNameModel({
@@ -260,7 +260,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
             Seeder.ntdeptbusiness_avetmiss_attributeName = await Seeder.createRelationshipAttributeNameModel({
@@ -272,7 +272,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
             Seeder.ntdeptcorpinfoservices_ims_attributeName = await Seeder.createRelationshipAttributeNameModel({
@@ -284,10 +284,10 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
-            Seeder.depthumanservicescentrelink_ppl_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            Seeder.depthscentrelink_ppl_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DEPTOFHUMANSERVICESCENTRELINK_PPL_PERMISSION',
                 shortDecodeText: 'Department of Human Services - Centrelink',
                 longDecodeText: 'Paid Parental Leave',
@@ -296,10 +296,10 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
-            Seeder.deptimmigration_skillselect_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            Seeder.deptimm_skillselect_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DEPTOFIMMIGRATION_SKILLSELECT_PERMISSION',
                 shortDecodeText: 'Department of Immigration and Border Protection',
                 longDecodeText: 'Skill Select',
@@ -308,10 +308,10 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
-            Seeder.deptemployment_wageconnect_attributeName = await Seeder.createRelationshipAttributeNameModel({
+            Seeder.deptemp_wageconnect_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DEPTEMPLOYMENT_WAGECONNECT_PERMISSION',
                 shortDecodeText: 'Department of Employment',
                 longDecodeText: 'Wage Connect',
@@ -320,7 +320,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Permission.name,
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
-                permittedValues: Seeder.permissionPermittedAccessLevels
+                permittedValues: Seeder.accessLevels
             } as IRelationshipAttributeName);
 
         } catch (e) {
@@ -347,16 +347,16 @@ class Seeder {
                     defaultValue: 'Markdown for Delegate Universal Representative Declaration'},
                 {attribute: Seeder.subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
                     defaultValue: 'Markdown for Subject Universal Representative Declaration'},
-                {attribute: Seeder.asic_abn_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess},
-                {attribute: Seeder.wgea_activate_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess},
-                {attribute: Seeder.deptindustry_aba_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess},
-                {attribute: Seeder.abr_abr_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess},
-                {attribute: Seeder.deptindustry_ats_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess},
-                {attribute: Seeder.ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess},
-                {attribute: Seeder.ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess},
-                {attribute: Seeder.depthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess},
-                {attribute: Seeder.deptimmigration_skillselect_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess},
-                {attribute: Seeder.deptemployment_wageconnect_attributeName, optionalInd: false, defaultValue: Seeder.full_permissionAccess}
+                {attribute: Seeder.asic_abn_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.wgea_activate_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptindustry_aba_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.abr_abr_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptindustry_ats_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.depthscentrelink_ppl_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptimm_skillselect_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptemp_wageconnect_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel}
             ]);
 
             Seeder.custom_delegate_relationshipType = await Seeder.createRelationshipTypeModel({
@@ -378,9 +378,9 @@ class Seeder {
                 {attribute: Seeder.deptindustry_ats_attributeName, optionalInd: false, defaultValue: null},
                 {attribute: Seeder.ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: null},
                 {attribute: Seeder.ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: null},
-                {attribute: Seeder.depthumanservicescentrelink_ppl_attributeName, optionalInd: false, defaultValue: null},
-                {attribute: Seeder.deptimmigration_skillselect_attributeName, optionalInd: false, defaultValue: null},
-                {attribute: Seeder.deptemployment_wageconnect_attributeName, optionalInd: false, defaultValue: null}
+                {attribute: Seeder.depthscentrelink_ppl_attributeName, optionalInd: false, defaultValue: null},
+                {attribute: Seeder.deptimm_skillselect_attributeName, optionalInd: false, defaultValue: null},
+                {attribute: Seeder.deptemp_wageconnect_attributeName, optionalInd: false, defaultValue: null}
             ]);
 
         } catch (e) {
