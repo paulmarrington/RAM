@@ -71,8 +71,7 @@ describe('RAM Shared Secret', () => {
 
             name1 = await NameModel.create({
                 givenName: 'John',
-                familyName: 'Smith',
-                unstructuredName: 'John Smith'
+                familyName: 'Smith'
             });
 
             profile1 = await ProfileModel.create({
