@@ -88,8 +88,8 @@ export interface IRelationship extends IRAMObject {
     delegate: IParty;
     delegateNickName: IName;
     startTimestamp: Date;
-    endTimestamp: Date;
-    endEventTimestamp: Date;
+    endTimestamp?: Date;
+    endEventTimestamp?: Date;
     status: string;
     statusEnum(): RelationshipStatus;
 }
