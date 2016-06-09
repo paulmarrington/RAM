@@ -10,7 +10,7 @@
     </authorisation-type>
     <access-period [(data)]='myVar.accessPeriod' (validationErrors)='accessPeriodErrors=$event'>
     </access-period>
-    <authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions>
+    <!--authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions-->
     <declaration (validationErrors)='declarationErrors=$event'></declaration>
     <pre>
         {{dumpObject(myVar)}} Access Period Errors: {{dumpObject(accessPeriodErrors)}}
