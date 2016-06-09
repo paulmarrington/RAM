@@ -9,7 +9,7 @@
                         <div class="col-lg-2">
                             <label><h4>
                             <input type="radio" name="repType"
-                            [checked]="isOrganisation!==null && isOrganisation === false" (change)="isOrganisation=false" >Individual</h4></label>
+                            [checked]="!isOrganisation" (change)="isOrganisation=false" >Individual</h4></label>
                         </div>
                         <div class="col-lg-2">
                             <label><h4>
@@ -22,7 +22,7 @@
                     <div class="clearfix"></div>
             </div>
         </form>
-        <individual-representative-details *ngIf='isOrganisation!==null && isOrganisation === false' [(data)]='data.individual' 
+        <individual-representative-details *ngIf='!isOrganisation' [(data)]='data.individual' 
         (validationErrors)="setChildValidationStatus(true,$event)">
         </individual-representative-details>
         <organisation-representative-details *ngIf='isOrganisation'
