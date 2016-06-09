@@ -1,7 +1,6 @@
 import {OnInit, Input, Output, EventEmitter, Component} from '@angular/core';
 import {ControlGroup, FormBuilder, FORM_DIRECTIVES, Validators}
 from '@angular/common';
-import {Utils} from '../../../../../../commons/ram-utils';
 import {RAMNgValidators} from '../../../../commons/ram-ng-validators';
 
 @Component({
