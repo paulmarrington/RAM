@@ -16,7 +16,7 @@ class Security {
     }
 
     public prepareRequestForProduction(req:Request, res:Response, next:() => void) {
-        for (let key in req.headers) {
+        for (let key of Object.keys(req.headers)) {
             const keyUpper = key.toUpperCase();
             if (keyUpper.startsWith(Headers.Prefix)) {
                 const value = req.headers[key];
