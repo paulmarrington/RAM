@@ -16,7 +16,6 @@ class Security {
     }
 
     public prepareRequestForProduction(req:Request, res:Response, next:() => void) {
-        /* tslint:disable:no-for-in */
         for (let key in req.headers) {
             const keyUpper = key.toUpperCase();
             if (keyUpper.startsWith(Headers.Prefix)) {
@@ -28,7 +27,7 @@ class Security {
         next();
     }
 
-    public prepareRequestForDevelopment(req:Request, res:Response, next:() => void) {
+    private prepareRequestForDevelopment(req:Request, res:Response, next:() => void) {
         const idValue = res.locals[Headers.IdentityIdValue];
         if (!idValue) {
             next();
