@@ -26,7 +26,7 @@ export class AddRelationshipComponent {
 
     public myVar: AddRelationshipComponentData = {
         accessPeriod: {
-            startDate: new Date(),
+            startDate: null,
             noEndDate: true,
             endDate: null
         },

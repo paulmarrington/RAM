@@ -5,13 +5,13 @@
         <form [ngFormModel]='form' >
             <div class="form-group col-md-4" [class.has-error]="!form.controls['startDate'].valid">
                 <h4>Start date*</h4>
-                <input [ngFormControl]='form.controls["startDate"]' class="form-control" type="text" name="startDate" value="" placeholder="Start date ...">
+                <input [ngFormControl]='form.controls["startDate"]' class="form-control" type="date" name="startDate" value="" placeholder="Start date ...">
             </div>
             <div class="form-group col-md-4" 
             [class.has-error]="!form.controls['endDate'].valid || form.hasError('isEndDateBeforeStartDate')">
                 <h4>End date</h4>
                 <input [ngFormControl]='form.controls["endDate"]' 
-                [disabled]='form.controls["noEndDate"].value' class="form-control" type="text"
+                [disabled]='form.controls["noEndDate"].value' class="form-control" type="date"
                     name="endDate" placeholder="End date ...">
             </div>
             <div class="form-group col-md-4">
