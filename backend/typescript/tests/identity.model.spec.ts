@@ -71,6 +71,7 @@ describe('RAM Identity', () => {
         try {
             const instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
+            expect(instance.party.partyType).not.toBeNull();
             done();
         } catch (e) {
             fail('Because ' + e);
