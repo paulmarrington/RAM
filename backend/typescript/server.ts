@@ -60,10 +60,14 @@ server.use(express.static('swagger'));
 // setup security .....................................................................................................
 
 if (conf.devMode) {
-    server.use('/api/', new AuthenticatorSimulatorController().assignRoutes(express.Router()));
     server.use(forgeRockSimulator.prepareRequest());
 }
+
 server.use(security.prepareRequest());
+
+if (conf.devMode) {
+    server.use('/api/', new AuthenticatorSimulatorController().assignRoutes(express.Router()));
+}
 
 // setup route handlers (dev) .........................................................................................
 

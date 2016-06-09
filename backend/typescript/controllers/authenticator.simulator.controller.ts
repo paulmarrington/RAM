@@ -19,8 +19,14 @@ export class AuthenticatorSimulatorController {
         }
     };
 
+    private showMe = async (req:Request, res:Response) => {
+        res.status(200);
+        res.send(res.locals);
+    };
+
     public assignRoutes = (router:Router) => {
-        router.post('/v1/simulators/authenticate', this.authenticate);
+        router.post('/v1/simulators/authenticators/authenticate', this.authenticate);
+        router.get('/v1/simulators/authenticators/me', this.showMe);
         return router;
     };
 
