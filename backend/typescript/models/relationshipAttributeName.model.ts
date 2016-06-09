@@ -81,7 +81,7 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
 export interface IRelationshipAttributeName extends ICodeDecode {
     domain: string;
     classifier: string;
-    category: string;
+    category?: string;
     purposeText: string;
     permittedValues: string[];
     domainEnum(): RelationshipAttributeNameDomain;
