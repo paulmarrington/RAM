@@ -25,8 +25,8 @@ export class AuthenticatorSimulatorController {
     };
 
     public assignRoutes = (router:Router) => {
-        router.post('/v1/simulators/authenticators/authenticate', this.authenticate);
-        router.get('/v1/simulators/authenticators/locals', this.showLocals);
+        router.post('/v1/simulators/authenticator/authenticate', this.authenticate);
+        router.get('/v1/simulators/authenticator/locals', this.showLocals);
         return router;
     };
 
