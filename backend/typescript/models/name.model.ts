@@ -37,9 +37,9 @@ NameSchema.pre('validate', function (next:() => void) {
 // interfaces .........................................................................................................
 
 export interface IName extends IRAMObject {
-    givenName: string;
-    familyName: string;
-    unstructuredName: string;
+    givenName?: string;
+    familyName?: string;
+    unstructuredName?: string;
 }
 
 /* tslint:disable:no-empty-interfaces */
