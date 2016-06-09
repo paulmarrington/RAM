@@ -5,7 +5,6 @@
         "noFallthroughCasesInSwitch": false,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outFile": "dist/js/app.js",
         "module": "system",
         "moduleResolution": "node",
         "sourceMap": true,

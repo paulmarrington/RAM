@@ -1032,7 +1032,7 @@
         domain:
           description: It is the field type
           type: string
-          enum: ['NULL','BOOLEAN','NUMBER','STRING','DATE','SINGLE_SELECT','MULTI_SELECT']
+          enum: ['NULL','BOOLEAN','NUMBER','STRING','DATE','MARKDOWN','SINGLE_SELECT','MULTI_SELECT']
         classifier:
           description: It is the classifier to indicate what type of attribute this is and how it is meant to be used (eg this is a permission)
           type: string

@@ -1,20 +1,39 @@
 import * as mongoose from 'mongoose';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IProfile, ProfileModel} from './profile.model';
+import {IParty, PartyModel} from './party.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
 /* tslint:disable:no-unused-variable */
 const _ProfileModel = ProfileModel;
 
+/* tslint:disable:no-unused-variable */
+const _PartyModel = PartyModel;
+
 // enums, utilities, helpers ..........................................................................................
 
 export class IdentityType extends RAMEnum {
 
-    public static AgencyProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN');
-    public static InvitationCode = new IdentityType('INVITATION_CODE');
-    public static LinkId = new IdentityType('LINK_ID');
-    public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER');
+    public static AgencyProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN')
+        .withIdValueBuilder((identity:IIdentity):String => {
+            return identity.identityType + ':' + identity.agencyScheme + ':' + identity.rawIdValue;
+        });
+
+    public static InvitationCode = new IdentityType('INVITATION_CODE')
+        .withIdValueBuilder((identity:IIdentity):String => {
+            return identity.identityType + ':' + identity.rawIdValue;
+        });
+
+    public static LinkId = new IdentityType('LINK_ID')
+        .withIdValueBuilder((identity:IIdentity):String => {
+            return identity.identityType + ':' + identity.linkIdScheme + ':' + identity.rawIdValue;
+        });
+
+    public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER')
+        .withIdValueBuilder((identity:IIdentity):String => {
+            return identity.identityType + ':' + identity.publicIdentifierScheme + ':' + identity.rawIdValue;
+        });
 
     protected static AllValues = [
         IdentityType.AgencyProvidedToken,
@@ -23,8 +42,15 @@ export class IdentityType extends RAMEnum {
         IdentityType.PublicIdentifier
     ];
 
+    public buildIdValue:(identity:IIdentity) => String;
+
     constructor(name:String) {
         super(name);
+    }
+
+    public withIdValueBuilder(builder:(identity:IIdentity) => String):IdentityType {
+        this.buildIdValue = builder;
+        return this;
     }
 }
 
@@ -36,6 +62,19 @@ export class IdentityInvitationCodeStatus extends RAMEnum {
     protected static AllValues = [
         IdentityInvitationCodeStatus.Claimed,
         IdentityInvitationCodeStatus.Pending
+    ];
+
+    constructor(name:String) {
+        super(name);
+    }
+}
+
+export class IdentityAgencyScheme extends RAMEnum {
+
+    public static Medicare = new IdentityAgencyScheme('MEDICARE');
+
+    protected static AllValues = [
+        IdentityAgencyScheme.Medicare
     ];
 
     constructor(name:String) {
@@ -81,6 +120,11 @@ const IdentitySchema = RAMSchema({
         required: [true, 'Id Value is required'],
         trim: true
     },
+    rawIdValue: {
+        type: String,
+        required: [true, 'Raw Id Value is required'],
+        trim: true
+    },
     identityType: {
         type: String,
         required: [true, 'Type is required'],
@@ -92,20 +136,41 @@ const IdentitySchema = RAMSchema({
         required: [true, 'Default Indicator is required'],
         default: false
     },
+    agencyScheme: {
+        type: String,
+        trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.AgencyProvidedToken.name;
+        }, 'Agency Scheme is required'],
+        enum: IdentityAgencyScheme.valueStrings()
+    },
     agencyToken: {
         type: String,
-        trim: true
+        trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.AgencyProvidedToken.name;
+        }, 'Agency Token is required']
     },
     invitationCodeStatus: {
         type: String,
         trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.InvitationCode.name;
+        }, 'Invitation Code Status is required'],
         enum: IdentityInvitationCodeStatus.valueStrings()
     },
     invitationCodeExpiryTimestamp: {
-        type: Date
+        type: Date,
+        required: [function () {
+            return this.identityType === IdentityType.InvitationCode.name;
+        }, 'Invitation Code Expiry is required']
     },
     invitationCodeClaimedTimestamp: {
-        type: Date
+        type: Date,
+        required: [function () {
+            return this.identityType === IdentityType.InvitationCode.name &&
+                this.invitationCodeStatus === IdentityInvitationCodeStatus.Claimed.name;
+        }, 'Invitation Code Claimed Timestamp is required']
     },
     invitationCodeTemporaryEmailAddress: {
         type: String,
@@ -114,11 +179,17 @@ const IdentitySchema = RAMSchema({
     publicIdentifierScheme: {
         type: String,
         trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.PublicIdentifier.name;
+        }, 'Public Identifier Scheme is required'],
         enum: IdentityPublicIdentifierScheme.valueStrings()
     },
     linkIdScheme: {
         type: String,
         trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.LinkId.name;
+        }, 'Link Id Scheme is required'],
         enum: IdentityLinkIdScheme.valueStrings()
     },
     linkIdConsumer: {
@@ -129,15 +200,28 @@ const IdentitySchema = RAMSchema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Profile',
         required: [true, 'Profile is required']
+    },
+    party: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Party',
+        required: [true, 'Party is required']
     }
+});
+
+IdentitySchema.pre('validate', function (next:() => void) {
+    const identityType = IdentityType.valueOf(this.identityType) as IdentityType;
+    this.idValue = identityType ? identityType.buildIdValue(this) : null;
+    next();
 });
 
 // interfaces .........................................................................................................
 
 export interface IIdentity extends IRAMObject {
     idValue: string;
+    rawIdValue: string;
     identityType: string;
     defaultInd: boolean;
+    agencyScheme: string;
     agencyToken: string;
     invitationCodeStatus: string;
     invitationCodeExpiryTimestamp: Date;
@@ -147,20 +231,26 @@ export interface IIdentity extends IRAMObject {
     linkIdScheme: string;
     linkIdConsumer: string;
     profile: IProfile;
+    party: IParty;
     identityTypeEnum(): IdentityType;
+    agencySchemeEnum(): IdentityAgencyScheme;
     invitationCodeStatusEnum(): IdentityInvitationCodeStatus;
     publicIdentifierSchemeEnum(): IdentityPublicIdentifierScheme;
     linkIdSchemeEnum(): IdentityLinkIdScheme;
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
-    findByIdValueAndType: (idValue:String, type:IdentityType) => mongoose.Promise<IIdentity>;
+    findByIdValue: (idValue:String) => mongoose.Promise<IIdentity>;
 }
 
 // instance methods ...................................................................................................
 
 IdentitySchema.method('identityTypeEnum', function () {
     return IdentityType.valueOf(this.identityType);
+});
+
+IdentitySchema.method('agencySchemeEnum', function () {
+    return IdentityAgencyScheme.valueOf(this.agencyScheme);
 });
 
 IdentitySchema.method('invitationCodeStatusEnum', function () {
@@ -177,15 +267,15 @@ IdentitySchema.method('linkIdSchemeEnum', function () {
 
 // static methods .....................................................................................................
 
-IdentitySchema.static('findByIdValueAndType', (idValue:String, type:IdentityType) => {
+IdentitySchema.static('findByIdValue', (idValue:String) => {
     return this.IdentityModel
         .findOne({
-            idValue: idValue,
-            identityType: type.name
+            idValue: idValue
         })
         .deepPopulate([
             'profile.name',
-            'profile.sharedSecrets.sharedSecretType'
+            'profile.sharedSecrets.sharedSecretType',
+            'party'
         ])
         .exec();
 });

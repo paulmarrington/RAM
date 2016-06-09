@@ -7,7 +7,7 @@ import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from
 '../commons/authorisation-type/authorisation-type.component';
 import {DeclarationComponent} from
 '../commons/declaration/declaration.component';
-import {RepresentativeDetailsComponent} from
+import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
 '../commons/representative-details/representative-details.component';
 
 @Component({
@@ -32,12 +32,22 @@ export class AddRelationshipComponent {
         },
         authType: {
             authType: 'choose'
+        },
+        representativeDetails: {
+            individual: {
+                givenName: '',
+                familyName: null,
+                dob: null
+            },
+            organisation: {
+                abn: ''
+            }
         }
     };
 
     public dumpObject(v: Object) {
         // creates formatted JSON - display in <pre> tag
-        return JSON.stringify(v,null,2);
+        return JSON.stringify(v, null, 2);
     }
 
     public submit() {
@@ -46,6 +56,7 @@ export class AddRelationshipComponent {
 }
 
 export interface AddRelationshipComponentData {
-    accessPeriod:   AccessPeriodComponentData;
-    authType:       AuthorisationTypeComponentData;
+    accessPeriod: AccessPeriodComponentData;
+    authType: AuthorisationTypeComponentData;
+    representativeDetails: RepresentativeDetailsComponentData;
 }

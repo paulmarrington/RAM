@@ -12,6 +12,7 @@ export class RelationshipAttributeNameDomain extends RAMEnum {
     public static Number = new RelationshipAttributeNameDomain('NUMBER');
     public static String = new RelationshipAttributeNameDomain('STRING');
     public static Date = new RelationshipAttributeNameDomain('DATE');
+    public static Markdown = new RelationshipAttributeNameDomain('MARKDOWN');
     public static SelectSingle = new RelationshipAttributeNameDomain('SELECT_SINGLE');
     public static SelectMulti = new RelationshipAttributeNameDomain('SELECT_MULTI');
 
@@ -21,6 +22,7 @@ export class RelationshipAttributeNameDomain extends RAMEnum {
         RelationshipAttributeNameDomain.Number,
         RelationshipAttributeNameDomain.String,
         RelationshipAttributeNameDomain.Date,
+        RelationshipAttributeNameDomain.Markdown,
         RelationshipAttributeNameDomain.SelectSingle,
         RelationshipAttributeNameDomain.SelectMulti
     ];
@@ -79,7 +81,7 @@ const RelationshipAttributeNameSchema = CodeDecodeSchema({
 export interface IRelationshipAttributeName extends ICodeDecode {
     domain: string;
     classifier: string;
-    category: string;
+    category?: string;
     purposeText: string;
     permittedValues: string[];
     domainEnum(): RelationshipAttributeNameDomain;

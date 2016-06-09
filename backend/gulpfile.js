@@ -62,7 +62,7 @@ gulp.task('serve', ["ts:watch"], function () {
 
 gulp.task('seed', ["ts:compile"], function () {
     console.log('Seeding the database ...');
-    exec('node dist/backend/typescript/seeding/seed.js', function (err, stdout, stderr) {
+    exec('node dist/backend/typescript/seeding/seed.js --color', function (err, stdout, stderr) {
         if (stdout) {
             console.log(stdout);
         }

@@ -4,6 +4,7 @@ import {
     IdentityModel,
     IdentityType,
     IdentityInvitationCodeStatus,
+    IdentityAgencyScheme,
     IdentityPublicIdentifierScheme,
     IdentityLinkIdScheme} from '../models/identity.model';
 import {
@@ -13,6 +14,10 @@ import {
     IProfile,
     ProfileModel,
     ProfileProvider} from '../models/profile.model';
+import {
+    IParty,
+    PartyModel,
+    PartyType} from '../models/party.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Identity', () => {
@@ -22,6 +27,7 @@ describe('RAM Identity', () => {
 
     let name1: IName;
     let profile1: IProfile;
+    let party1: IParty;
     let identity1: IIdentity;
 
     beforeEach(async (done) => {
@@ -30,8 +36,7 @@ describe('RAM Identity', () => {
 
             name1 = await NameModel.create({
                 givenName: 'John',
-                familyName: 'Smith',
-                unstructuredName: 'John Smith'
+                familyName: 'Smith'
             });
 
             profile1 = await ProfileModel.create({
@@ -39,11 +44,18 @@ describe('RAM Identity', () => {
                 name: name1
             });
 
+            party1 = await PartyModel.create({
+                partyType: PartyType.Individual.name,
+                name: name1
+            });
+
             identity1 = await IdentityModel.create({
-                idValue: 'uuid_1',
+                rawIdValue: 'uuid_1',
                 identityType: IdentityType.LinkId.name,
                 defaultInd: false,
-                profile: profile1
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                profile: profile1,
+                party: party1
             });
 
             done();
@@ -57,8 +69,9 @@ describe('RAM Identity', () => {
 
     it('finds by id value and type', async (done) => {
         try {
-            const instance = await IdentityModel.findByIdValueAndType(identity1.idValue, IdentityType.valueOf(identity1.identityType));
+            const instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
+            expect(instance.party.partyType).not.toBeNull();
             done();
         } catch (e) {
             fail('Because ' + e);
@@ -69,15 +82,17 @@ describe('RAM Identity', () => {
     it('inserts base with valid values', async (done) => {
         try {
 
-            const idValue = 'uuid_x';
+            const rawIdValue = 'uuid_x';
             const type = IdentityType.LinkId;
             const defaultInd = false;
 
             const instance = await IdentityModel.create({
-                idValue: idValue,
+                rawIdValue: rawIdValue,
                 identityType: type.name,
                 defaultInd: defaultInd,
-                profile: profile1
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                profile: profile1,
+                party: party1
             });
 
             expect(instance).not.toBeNull();
@@ -87,7 +102,7 @@ describe('RAM Identity', () => {
             expect(instance.profile).not.toBeNull();
             expect(instance.profile.name).not.toBeNull();
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
             expect(retrievedInstance.identityType).toBe(type.name);
@@ -107,22 +122,27 @@ describe('RAM Identity', () => {
     it('inserts agency provided token with valid values', async (done) => {
         try {
 
-            const idValue = 'uuid_x';
+            const rawIdValue = 'uuid_x';
             const type = IdentityType.AgencyProvidedToken;
             const defaultInd = false;
+            const scheme = IdentityAgencyScheme.Medicare;
             const agencyToken = 'agency_token_x';
 
             const instance = await IdentityModel.create({
-                idValue: idValue,
+                rawIdValue: rawIdValue,
                 identityType: type.name,
                 defaultInd: defaultInd,
+                agencyScheme: scheme.name,
                 agencyToken: agencyToken,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
+            expect(retrievedInstance.idValue).toBe(`${type.name}:${scheme.name}:${rawIdValue}`);
+            expect(retrievedInstance.rawIdValue).toBe(rawIdValue);
             expect(retrievedInstance.identityType).toBe(type.name);
             expect(retrievedInstance.identityTypeEnum()).toBe(type);
             expect(retrievedInstance.agencyToken).toBe(agencyToken);
@@ -138,7 +158,7 @@ describe('RAM Identity', () => {
     it('inserts invitation code with valid values', async (done) => {
         try {
 
-            const idValue = 'uuid_invitation_code';
+            const rawIdValue = 'uuid_invitation_code';
             const type = IdentityType.InvitationCode;
             const defaultInd = false;
             const status = IdentityInvitationCodeStatus.Claimed;
@@ -147,19 +167,22 @@ describe('RAM Identity', () => {
             const emailAddress = 'bob@example.com';
 
             const instance = await IdentityModel.create({
-                idValue: idValue,
+                rawIdValue: rawIdValue,
                 identityType: type.name,
                 defaultInd: defaultInd,
                 invitationCodeStatus: status.name,
                 invitationCodeExpiryTimestamp: expiryTimestamp,
                 invitationCodeClaimedTimestamp: claimedTimestamp,
                 invitationCodeTemporaryEmailAddress: emailAddress,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
+            expect(retrievedInstance.idValue).toBe(`${type.name}:${rawIdValue}`);
+            expect(retrievedInstance.rawIdValue).toBe(rawIdValue);
             expect(retrievedInstance.identityType).toBe(type.name);
             expect(retrievedInstance.identityTypeEnum()).toBe(type);
             expect(retrievedInstance.invitationCodeStatus).toBe(status.name);
@@ -179,22 +202,25 @@ describe('RAM Identity', () => {
     it('inserts public identifier with valid values', async (done) => {
         try {
 
-            const idValue = 'uuid_public_identifier';
+            const rawIdValue = 'uuid_public_identifier';
             const type = IdentityType.PublicIdentifier;
             const defaultInd = false;
             const scheme = IdentityPublicIdentifierScheme.ABN;
 
             const instance = await IdentityModel.create({
-                idValue: idValue,
+                rawIdValue: rawIdValue,
                 identityType: type.name,
                 defaultInd: defaultInd,
                 publicIdentifierScheme: scheme.name,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
+            expect(retrievedInstance.idValue).toBe(`${type.name}:${scheme.name}:${rawIdValue}`);
+            expect(retrievedInstance.rawIdValue).toBe(rawIdValue);
             expect(retrievedInstance.identityType).toBe(type.name);
             expect(retrievedInstance.identityTypeEnum()).toBe(type);
             expect(retrievedInstance.publicIdentifierScheme).toBe(scheme.name);
@@ -211,22 +237,25 @@ describe('RAM Identity', () => {
     it('inserts link id with valid values', async (done) => {
         try {
 
-            const idValue = 'uuid_link_id';
+            const rawIdValue = 'uuid_link_id';
             const type = IdentityType.LinkId;
             const scheme = IdentityLinkIdScheme.MyGov;
             const defaultInd = false;
 
             const instance = await IdentityModel.create({
-                idValue: idValue,
+                rawIdValue: rawIdValue,
                 identityType: type.name,
                 defaultInd: defaultInd,
                 linkIdScheme: scheme.name,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
 
-            const retrievedInstance = await IdentityModel.findByIdValueAndType(idValue, type);
+            const retrievedInstance = await IdentityModel.findByIdValue(instance.idValue);
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).toBe(instance.id);
+            expect(retrievedInstance.idValue).toBe(`${type.name}:${scheme.name}:${rawIdValue}`);
+            expect(retrievedInstance.rawIdValue).toBe(rawIdValue);
             expect(retrievedInstance.identityType).toBe(type.name);
             expect(retrievedInstance.identityTypeEnum()).toBe(type);
             expect(retrievedInstance.linkIdScheme).toBe(scheme.name);
@@ -243,10 +272,11 @@ describe('RAM Identity', () => {
     it('fails insert with invalid type', async (done) => {
         try {
             await IdentityModel.create({
-                idValue: 'uuid_x',
+                rawIdValue: 'uuid_x',
                 identityType: '__BOGUS__',
                 defaultInd: false,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
             fail('should not have inserted with invalid type');
             done();
@@ -260,9 +290,10 @@ describe('RAM Identity', () => {
     it('fails insert with null type', async (done) => {
         try {
             await IdentityModel.create({
-                idValue: 'uuid_x',
+                rawIdValue: 'uuid_x',
                 defaultInd: false,
-                profile: profile1
+                profile: profile1,
+                party: party1
             });
             fail('should not have inserted with null type');
             done();
@@ -276,15 +307,33 @@ describe('RAM Identity', () => {
     it('fails insert with null profile', async (done) => {
         try {
             await IdentityModel.create({
-                idValue: 'uuid_x',
+                rawIdValue: 'uuid_x',
                 identityType: IdentityType.LinkId.name,
-                defaultInd: false
+                defaultInd: false,
+                party: party1
             });
             fail('should not have inserted with null profile');
             done();
         } catch (e) {
             expect(e.name).toBe('ValidationError');
             expect(e.errors.profile).not.toBeNull();
+            done();
+        }
+    });
+
+    it('fails insert with null party', async (done) => {
+        try {
+            await IdentityModel.create({
+                rawIdValue: 'uuid_x',
+                identityType: IdentityType.LinkId.name,
+                defaultInd: false,
+                profile: profile1
+            });
+            fail('should not have inserted with null party');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            expect(e.errors.party).not.toBeNull();
             done();
         }
     });

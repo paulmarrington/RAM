@@ -31,7 +31,7 @@ const RelationshipAttributeNameUsageSchema = new mongoose.Schema({
 
 export interface IRelationshipAttributeNameUsage extends mongoose.Document {
     optionalInd: boolean;
-    defaultValue: string;
+    defaultValue?: string;
     attributeName: IRelationshipAttributeName;
 }
 

@@ -1,14 +1,22 @@
-<div class="form-group">
-    <div class="col-md-4">
-        <h4>First name*</h4>
-        <input class="form-control" type="text" name="firstname" value="" placeholder="First name ...">
+<form [ngFormModel]=form>
+    <div class="form-group">
+        <div class="col-md-4"
+        [class.has-error]="!form.controls['givenName'].valid">
+            <h4>Given name*</h4>
+            <input class="form-control" type="text" name="givenName" [ngFormControl]="form.controls['givenName']"
+                placeholder="Given name ...">
+        </div>
+        <div class="col-md-4"
+        [class.has-error]="!form.controls['familyName'].valid">
+            <h4>Family name*</h4>
+            <input class="form-control" type="text" name="familyName" [ngFormControl]="form.controls['familyName']"
+                placeholder="Family name ...">
+        </div>
+        <div class="col-md-4">
+            <h4>Date of birth</h4>
+            <input class="form-control" type="date" name="dob"
+            [ngFormControl]="form.controls['dob']"
+            placeholder="Date of birth ...">
+        </div>
     </div>
-    <div class="col-md-4">
-        <h4>Last name*</h4>
-        <input class="form-control" type="text" name="lastname" value="" placeholder="Last name ...">
-    </div>
-    <div class="col-md-4">
-        <h4>Date of birth</h4>
-        <input class="form-control" type="text" name="dob" value="" placeholder="Date of birth ...">
-    </div>
-</div>
+</form>
