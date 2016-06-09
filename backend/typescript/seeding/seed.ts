@@ -58,6 +58,8 @@ const truncateString = (input:String):String => {
 
 // seeder .............................................................................................................
 
+/* tslint:disable:no-any */
+/* tslint:disable:max-func-body-length */
 class Seeder {
 
     public static permissionCustomisationAllowedInd_attributeName:IRelationshipAttributeName;
@@ -233,7 +235,6 @@ class Seeder {
         return model;
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async loadRelationshipOtherAttributeNames() {
         try {
 
@@ -248,7 +249,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Other.name,
                 category: null,
                 purposeText: 'Indicator of whether a relationship type allows the user to customise permission levels'
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.delegateManageAuthorisationAllowedInd_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND',
@@ -259,7 +260,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Other.name,
                 category: null,
                 purposeText: 'Indicator of whether a relationship allows the delegate to manage authorisations'
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.delegateRelationshipTypeDeclaration_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DELEGATE_RELATIONSHIP_TYPE_DECLARATION',
@@ -270,7 +271,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Other.name,
                 category: null,
                 purposeText: 'Delegate specific declaration in Markdown for a relationship type'
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.subjectRelationshipTypeDeclaration_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'SUBJECT_RELATIONSHIP_TYPE_DECLARATION',
@@ -281,7 +282,7 @@ class Seeder {
                 classifier: RelationshipAttributeNameClassifier.Other.name,
                 category: null,
                 purposeText: 'Subject specific declaration in Markdown for a relationship type'
-            } as IRelationshipAttributeName);
+            } as any);
 
         } catch (e) {
             console.log('Seeding failed!');
@@ -289,7 +290,6 @@ class Seeder {
         }
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async loadRelationshipPermissionAttributeNames() {
         try {
 
@@ -307,7 +307,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.wgea_activate_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'WGEA_ACTIVATE_PERMISSION',
@@ -319,7 +319,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.deptindustry_aba_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DEPTOFINDUSTRY_ABA_PERMISSION',
@@ -331,7 +331,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.abr_abr_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'ABR_ABR_PERMISSION',
@@ -343,7 +343,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.deptindustry_ats_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DEPTOFINDUSTRY_ATS_PERMISSION',
@@ -355,7 +355,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.ntdeptbusiness_avetmiss_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'NTDEPTOFBUSINESS_AVETMISS_PERMISSION',
@@ -367,7 +367,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.ntdeptcorpinfoservices_ims_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'NTDEPTOFCORPINFOSERVICES_IMS_PERMISSION',
@@ -379,7 +379,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.depthscentrelink_ppl_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DEPTOFHUMANSERVICESCENTRELINK_PPL_PERMISSION',
@@ -391,7 +391,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.deptimm_skillselect_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DEPTOFIMMIGRATION_SKILLSELECT_PERMISSION',
@@ -403,7 +403,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
             Seeder.deptemp_wageconnect_attributeName = await Seeder.createRelationshipAttributeNameModel({
                 code: 'DEPTEMPLOYMENT_WAGECONNECT_PERMISSION',
@@ -415,7 +415,7 @@ class Seeder {
                 category: administrativeServices_category,
                 purposeText: 'A permission for a relationship',
                 permittedValues: Seeder.accessLevels
-            } as IRelationshipAttributeName);
+            } as any);
 
         } catch (e) {
             console.log('Seeding failed!');
@@ -423,7 +423,6 @@ class Seeder {
         }
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async loadRelationshipTypes() {
         try {
 
@@ -434,7 +433,7 @@ class Seeder {
                 shortDecodeText: 'Universal Representative',
                 longDecodeText: 'Universal Representative',
                 startDate: now
-            } as IRelationshipType, [
+            } as any, [
                 {attribute: Seeder.permissionCustomisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
                 {attribute: Seeder.delegateManageAuthorisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
                 {attribute: Seeder.delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
@@ -458,7 +457,7 @@ class Seeder {
                 shortDecodeText: 'Custom Representative',
                 longDecodeText: 'Custom Representative',
                 startDate: now
-            } as IRelationshipType, [
+            } as any, [
                 {attribute: Seeder.permissionCustomisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'true'},
                 {attribute: Seeder.delegateManageAuthorisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
                 {attribute: Seeder.delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
@@ -483,7 +482,6 @@ class Seeder {
         }
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async loadSharedSecretTypes() {
         try {
 
@@ -495,7 +493,7 @@ class Seeder {
                 longDecodeText: 'Date of Birth',
                 startDate: now,
                 domain: 'DEFAULT'
-            } as ISharedSecretType);
+            } as any);
 
         } catch (e) {
             console.log('Seeding failed!');
@@ -503,7 +501,6 @@ class Seeder {
         }
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async loadSample_jensCateringPtyLtd_identity() {
         try {
 
@@ -517,17 +514,17 @@ class Seeder {
 
                 Seeder.jenscatering_name = await Seeder.createNameModel({
                     unstructuredName: 'Jen\'s Catering Pty Ltd'
-                } as IName);
+                } as any);
 
                 Seeder.jenscatering_profile = await Seeder.createProfileModel({
                     provider: ProfileProvider.MyGov.name,
                     name: Seeder.jenscatering_name,
                     sharedSecrets: []
-                } as IProfile);
+                } as any);
 
                 Seeder.jenscatering_party = await Seeder.createPartyModel({
                     partyType: PartyType.ABN.name
-                } as IParty);
+                } as any);
 
                 console.log('');
 
@@ -538,7 +535,7 @@ class Seeder {
                     publicIdentifierScheme: IdentityPublicIdentifierScheme.ABN.name,
                     profile: Seeder.jenscatering_profile,
                     party: Seeder.jenscatering_party
-                } as IIdentity);
+                } as any);
 
             }
 
@@ -548,7 +545,6 @@ class Seeder {
         }
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async loadSample_jenniferMaxim_identity() {
         try {
 
@@ -563,22 +559,22 @@ class Seeder {
                 Seeder.jennifermaxims_name = await Seeder.createNameModel({
                     givenName: 'Jennifer',
                     familyName: 'Maxims'
-                } as IName);
+                } as any);
 
                 Seeder.jennifermaxims_dob = await Seeder.createSharedSecretModel({
                     value: '31/01/1990',
                     sharedSecretType: Seeder.dob_sharedSecretType
-                } as ISharedSecret);
+                } as any);
 
                 Seeder.jennifermaxims_profile = await Seeder.createProfileModel({
                     provider: ProfileProvider.MyGov.name,
                     name: Seeder.jennifermaxims_name,
                     sharedSecrets: [Seeder.jennifermaxims_dob]
-                } as IProfile);
+                } as any);
 
                 Seeder.jennifermaxims_party = await Seeder.createPartyModel({
                     partyType: PartyType.Individual.name
-                } as IParty);
+                } as any);
 
                 console.log('');
 
@@ -589,7 +585,7 @@ class Seeder {
                     linkIdScheme: IdentityLinkIdScheme.MyGov.name,
                     profile: Seeder.jennifermaxims_profile,
                     party: Seeder.jennifermaxims_party
-                } as IIdentity);
+                } as any);
 
             }
 
@@ -599,7 +595,6 @@ class Seeder {
         }
     }
 
-    /* tslint:disable:max-func-body-length */
     public static async loadSample_jenniferMaxim__jensCateringPtyLtd_relationship() {
         try {
 
@@ -618,7 +613,7 @@ class Seeder {
                     delegateNickName: Seeder.jennifermaxims_name,
                     startTimestamp: new Date(),
                     status: RelationshipStatus.Active.name
-                } as IRelationship);
+                } as any);
 
             }
 
