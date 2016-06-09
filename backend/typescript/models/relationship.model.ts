@@ -62,14 +62,18 @@ const RelationshipSchema = RAMSchema({
         required: [true, 'Start Timestamp is required']
     },
     endTimestamp: {
-        type: Date
+        type: Date,
+        set: function (value:String) {
+            if (value) {
+                this.endEventTimestamp = new Date();
+            }
+            return value;
+        }
     },
     endEventTimestamp: {
         type: Date,
         required: [function () {
-            return this.status === RelationshipStatus.Invalid ||
-                this.status === RelationshipStatus.Deleted ||
-                this.status === RelationshipStatus.Cancelled;
+            return this.endTimestamp;
         }, 'End Event Timestamp is required']
     },
     status: {

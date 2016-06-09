@@ -54,7 +54,7 @@ describe('RAM Relationship', () => {
 
     });
 
-    it('inserts with valid values', async (done) => {
+    it('inserts with no end timestamp', async (done) => {
         try {
 
             const instance:IRelationship = await RelationshipModel.create({
@@ -71,6 +71,35 @@ describe('RAM Relationship', () => {
             expect(instance.subject).not.toBeNull();
             expect(instance.status).not.toBeNull();
             expect(instance.statusEnum()).toBe(RelationshipStatus.Active);
+            expect(instance.endEventTimestamp).toBeFalsy();
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('inserts with end timestamp', async (done) => {
+        try {
+
+            const instance:IRelationship = await RelationshipModel.create({
+                subject: subjectParty1,
+                subjectNickName: subjectNickName1,
+                delegate: delegateParty1,
+                delegateNickName: delegateNickName1,
+                startTimestamp: new Date(),
+                endTimestamp: new Date(),
+                status: RelationshipStatus.Active.name
+            });
+
+            expect(instance).not.toBeNull();
+            expect(instance.id).not.toBeNull();
+            expect(instance.subject).not.toBeNull();
+            expect(instance.status).not.toBeNull();
+            expect(instance.statusEnum()).toBe(RelationshipStatus.Active);
+            expect(instance.endEventTimestamp).not.toBeFalsy();
 
             done();
 
