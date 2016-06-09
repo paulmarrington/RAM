@@ -1,11 +1,27 @@
-<div class="form-group">
-    <div class="col-md-12">
-        <h4>ABN*</h4>
+<form [ngFormModel]="form">
+    <div class="form-group">
+        <div class="col-md-12">
+            <h4>ABN*</h4>
+        </div>
+        <div class="col-md-3"
+        [class.has-error]="!form.controls['abn'].valid">
+            <input class="form-control" type="number"
+            minlength=11 maxlength=14 [disabled]='isCompanyNameSet()'
+            [ngFormControl]="form.controls['abn']" size=14
+            placeholder="Type ABN here ...">
+        </div>
+        <div class="col-md-6">
+            <h4>{{organisationName}}</h4>
+        </div>
+        <div class="col-md-3">
+            <span *ngIf='!isCompanyNameSet()'>
+                <button class="col-md-12 btn btn-primary"
+                [disabled]="!form.controls['abn'].valid" (click)='validateOrganisationName(form.controls["abn"].value)' >
+                    Check ABN</a>
+            </span><span *ngIf='isCompanyNameSet()'>
+                <button class="col-md-12 btn btn-default"
+                (click)="clearOrganisationABN()" >Change ABN</a>
+            </span>
+        </div>
     </div>
-    <div class="col-md-6">
-        <input class="form-control" type="text" name="ABN" value="" placeholder="Type ABN here ...">
-    </div>
-    <div class="col-md-6">
-        <a class=" col-md-4 btn btn-primary">Check ABN</a>
-    </div>
-</div>
+</form>
