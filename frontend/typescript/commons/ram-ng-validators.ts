@@ -10,4 +10,12 @@ export class RAMNgValidators {
             }
         } : null;
     }
+    public static validateABNFormat = (abn: Control) => {
+        if (/^(\d *?){11}$/.test(abn.value)) {
+            return null;
+        } else {
+            return { hasValidABN: { valid: false } };
+        }
+    }
+
 }

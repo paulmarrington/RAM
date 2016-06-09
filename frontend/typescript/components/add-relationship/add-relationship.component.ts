@@ -33,24 +33,21 @@ export class AddRelationshipComponent {
         authType: {
             authType: 'choose'
         },
-        repType: {
-            repTypeIndividual: {checked: false},
-            repTypeOrganisation: {checked: false},
+        representativeDetails: {
             individual: {
-                firstName: '',
-                lastName:  '',
-                dob:       null
+                givenName: '',
+                familyName: null,
+                dob: null
             },
             organisation: {
-                abn:        '',
-                name:       ''
+                abn: ''
             }
         }
     };
 
     public dumpObject(v: Object) {
         // creates formatted JSON - display in <pre> tag
-        return JSON.stringify(v,null,2);
+        return JSON.stringify(v, null, 2);
     }
 
     public submit() {
@@ -59,7 +56,7 @@ export class AddRelationshipComponent {
 }
 
 export interface AddRelationshipComponentData {
-    accessPeriod:   AccessPeriodComponentData;
-    authType:       AuthorisationTypeComponentData;
-    repType:        RepresentativeDetailsComponentData;
+    accessPeriod: AccessPeriodComponentData;
+    authType: AuthorisationTypeComponentData;
+    representativeDetails: RepresentativeDetailsComponentData;
 }

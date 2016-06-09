@@ -1,5 +1,4 @@
-import {OnInit, Input, Output, EventEmitter, Component} from '@angular/core';
-import {ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
+import {Input, Output, EventEmitter, Component} from '@angular/core';
 import {
     IndividualRepresentativeDetailsComponent,
     IndividualRepresentativeDetailsComponentData} from
@@ -14,14 +13,11 @@ import {
     templateUrl: 'representative-details.component.html',
     directives: [
         IndividualRepresentativeDetailsComponent,
-        OrganisationRepresentativeDetailsComponent,
-        FORM_DIRECTIVES
+        OrganisationRepresentativeDetailsComponent
     ]
 })
 
-export class RepresentativeDetailsComponent implements OnInit {
-
-    public form: ControlGroup;
+export class RepresentativeDetailsComponent {
 
     @Input('data') public data: RepresentativeDetailsComponentData;
 
@@ -29,31 +25,18 @@ export class RepresentativeDetailsComponent implements OnInit {
 
     @Output('validationErrors') public validationErrors = new EventEmitter<boolean>();
 
-    constructor(private _fb: FormBuilder) {}
+    public isOrganisation: boolean = null;
 
-    public ngOnInit() {
-        this.form = this._fb.group({
-            'repTypeOrganisation': [this.data.repTypeOrganisation],
-            'repTypeIndividual':   [this.data.repTypeIndividual]
-        });
-        this.form.valueChanges.subscribe(
-        (v: RepresentativeDetailsComponentData) => {
-            this.dataChanges.emit(v);
-            this.validationErrors.emit(this.form.valid);
-        });
-    }
-
-    public isIndividual(): boolean {
-        return this.data.repTypeIndividual.checked;
-    }
-    public isOrganisation(): boolean {
-        return this.data.repTypeOrganisation.checked;
+    public setChildValidationStatus = (isOrganisation: boolean, isValid: boolean) => {
+        if (isOrganisation && this.isOrganisation) {
+            this.validationErrors.emit(isValid);
+        } else if (!isOrganisation && !this.isOrganisation) {
+            this.validationErrors.emit(isValid);
+        }
     }
 }
 
 export interface RepresentativeDetailsComponentData {
-    repTypeOrganisation: {checked: boolean};
-    repTypeIndividual:   {checked: boolean};
-    individual:          IndividualRepresentativeDetailsComponentData;
-    organisation:        OrganisationRepresentativeDetailsComponentData;
+    individual?: IndividualRepresentativeDetailsComponentData;
+    organisation?: OrganisationRepresentativeDetailsComponentData;
 }
