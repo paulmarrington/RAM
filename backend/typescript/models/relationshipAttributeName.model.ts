@@ -85,7 +85,7 @@ export interface IRelationshipAttributeName extends ICodeDecode {
     purposeText: string;
     permittedValues: string[];
     domainEnum(): RelationshipAttributeNameDomain;
-    toHrefValue(): HrefValue<DTO>;
+    toHrefValue(includeValue:boolean): HrefValue<DTO>;
     toDTO(): DTO;
 }
 
@@ -102,10 +102,10 @@ RelationshipAttributeNameSchema.method('domainEnum', function () {
     return RelationshipAttributeNameDomain.valueOf(this.domain);
 });
 
-RelationshipAttributeNameSchema.method('toHrefValue', function () {
+RelationshipAttributeNameSchema.method('toHrefValue', function (includeValue:boolean) {
     return new HrefValue(
         '/api/v1/relationshipAttributeName/' + this.code,
-        this.toDTO()
+        includeValue ? this.toDTO() : null
     );
 });
 

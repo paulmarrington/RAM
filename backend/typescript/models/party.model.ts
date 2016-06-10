@@ -39,7 +39,7 @@ const PartySchema = RAMSchema({
 export interface IParty extends IRAMObject {
     partyType: string;
     partyTypeEnum(): PartyType;
-    toHrefValue(): HrefValue<DTO>;
+    toHrefValue(includeValue:boolean): HrefValue<DTO>;
     toDTO(): DTO;
 }
 
@@ -54,16 +54,23 @@ PartySchema.method('partyTypeEnum', function () {
     return PartyType.valueOf(this.partyType);
 });
 
-PartySchema.method('toHrefValue', function () {
+PartySchema.method('toHrefValue', function (includeValue:boolean) {
     return new HrefValue(
-        '/api/v1/party/identities/' + 'TODO',
-        this.toDTO()
+        '/api/v1/party/identity/' + 'TODO',
+        includeValue ? this.toDTO() : null
     );
 });
 
-PartySchema.method('toDTO', function () {
+PartySchema.method('toDTO', async function () {
+    const identities = await IdentityModel.listByPartyId(this.id);
+    console.log('Identities count = ', identities.length);
     return new DTO(
-        this.partyType
+        this.partyType,
+        identities.map((identity:IIdentity) => {
+            return new HrefValue(
+                '/api/v1/identity/' + identity.idValue
+            );
+        })
     );
 });
 

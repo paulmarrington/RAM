@@ -49,7 +49,7 @@ export interface IRelationshipType extends ICodeDecode {
     minIdentityStrength: number;
     voluntaryInd: boolean;
     attributeNameUsages: IRelationshipAttributeNameUsage[];
-    toHrefValue(): HrefValue<DTO>;
+    toHrefValue(includeValue:boolean): HrefValue<DTO>;
     toDTO(): DTO;
 }
 
@@ -112,10 +112,10 @@ RelationshipTypeSchema.static('listInDateRange', (date:Date) => {
 
 // instance methods ...................................................................................................
 
-RelationshipTypeSchema.method('toHrefValue', function () {
+RelationshipTypeSchema.method('toHrefValue', function (includeValue:boolean) {
     return new HrefValue(
         '/api/v1/relationshipType/' + this.code,
-        this.toDTO()
+        includeValue ? this.toDTO() : null
     );
 });
 
@@ -131,7 +131,7 @@ RelationshipTypeSchema.method('toDTO', function () {
             return new RelationshipAttributeNameUsageDTO(
                 attributeNameUsage.optionalInd,
                 attributeNameUsage.defaultValue,
-                attributeNameUsage.attributeName.toHrefValue()
+                attributeNameUsage.attributeName.toHrefValue(true)
             );
         })
     );
