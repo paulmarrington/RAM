@@ -1,5 +1,5 @@
 import {Router, Request, Response} from 'express';
-import {sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
+import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {IIdentityModel } from '../models/identity.model';
 
 export class IdentityController {
@@ -22,7 +22,6 @@ export class IdentityController {
     };
 
     private search = async (req:Request, res:Response) => {
-
         const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.identityModel.search(req.params.page, 10))
