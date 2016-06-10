@@ -290,7 +290,7 @@ IdentitySchema.static('findByIdValue', (idValue:String) => {
 IdentitySchema.static('listByPartyId', (partyId:String) => {
     return this.IdentityModel
         .find({
-            'party': new mongoose.Types.ObjectId(partyId)
+            'party': partyId
         })
         .deepPopulate([
             'profile.name',

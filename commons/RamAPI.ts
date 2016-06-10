@@ -137,7 +137,8 @@ export class Identity {
 }
 
 export class Party {
-    constructor(public partyType:string) {
+    constructor(public partyType:string,
+                public identities:HrefValue<Identity>[]) {
     }
 }
 

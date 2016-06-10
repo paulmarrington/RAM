@@ -25,7 +25,7 @@ export class RelationshipAttributeNameController {
         const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipAttributeNameModel.listIgnoringDateRange())
-            .then((results) => results ? results.map((model) => model.toHrefValue()) : null)
+            .then((results) => results ? results.map((model) => model.toHrefValue(true)) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
