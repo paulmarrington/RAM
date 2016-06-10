@@ -10,11 +10,13 @@ export class AuthenticatorSimulatorController {
             const maxAge = 24 * 60 * 60 * 1000;
             res.status(200);
             res.cookie(Headers.AuthToken, authTokenEncoded, {maxAge: maxAge, path: '/'});
+            res.cookie(Headers.AuthTokenDecoded, authToken, {maxAge: maxAge, path: '/'});
             res.send({token: authTokenEncoded});
         } else {
             res.status(401);
             res.set('WWW-Authenticate', '/api/v1/simulators/authenticate');
             res.clearCookie(Headers.AuthToken);
+            res.clearCookie(Headers.AuthTokenDecoded);
             res.send({token: null});
         }
     };
