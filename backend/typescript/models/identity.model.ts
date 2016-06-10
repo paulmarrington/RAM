@@ -241,12 +241,13 @@ export interface IIdentity extends IRAMObject {
     invitationCodeStatusEnum(): IdentityInvitationCodeStatus;
     publicIdentifierSchemeEnum(): IdentityPublicIdentifierScheme;
     linkIdSchemeEnum(): IdentityLinkIdScheme;
-    toHrefValue():HrefValue<DTO>;
+    toHrefValue(includeValue:boolean):HrefValue<DTO>;
     toDTO():DTO;
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findByIdValue: (idValue:String) => mongoose.Promise<IIdentity>;
+    findDefaultByPartyId: (partyId:String) => mongoose.Promise<IIdentity>;
     listByPartyId: (partyId:String) => mongoose.Promise<IIdentity[]>;
 }
 
@@ -287,6 +288,21 @@ IdentitySchema.static('findByIdValue', (idValue:String) => {
         .exec();
 });
 
+IdentitySchema.static('findDefaultByPartyId', (partyId:String) => {
+    return this.IdentityModel
+        .findOne({
+            'party': partyId,
+            defaultInd: true
+        })
+        .deepPopulate([
+            'profile.name',
+            'profile.sharedSecrets.sharedSecretType',
+            'party'
+        ])
+        .sort({createdAt: 1})
+        .exec();
+});
+
 IdentitySchema.static('listByPartyId', (partyId:String) => {
     return this.IdentityModel
         .find({
@@ -317,10 +333,10 @@ IdentitySchema.static('search', (page:number, pageSize:number) => {
 });
 
 
-IdentitySchema.method('toHrefValue', function () {
+IdentitySchema.method('toHrefValue', function (includeValue:boolean) {
     return new HrefValue(
         '/api/v1/identity/' + this.idValue,
-        this.toDTO()
+        includeValue ? this.toDTO() : undefined
     );
 });
 

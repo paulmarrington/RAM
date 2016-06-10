@@ -115,7 +115,7 @@ RelationshipTypeSchema.static('listInDateRange', (date:Date) => {
 RelationshipTypeSchema.method('toHrefValue', function (includeValue:boolean) {
     return new HrefValue(
         '/api/v1/relationshipType/' + this.code,
-        includeValue ? this.toDTO() : null
+        includeValue ? this.toDTO() : undefined
     );
 });
 

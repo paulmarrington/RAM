@@ -54,11 +54,16 @@ PartySchema.method('partyTypeEnum', function () {
     return PartyType.valueOf(this.partyType);
 });
 
-PartySchema.method('toHrefValue', function (includeValue:boolean) {
-    return new HrefValue(
-        '/api/v1/party/identity/' + 'TODO',
-        includeValue ? this.toDTO() : null
-    );
+PartySchema.method('toHrefValue', async function (includeValue:boolean) {
+    const defaultIdentity = IdentityModel.findDefaultByPartyId(this.id);
+    if (defaultValue) {
+        return new HrefValue(
+            '/api/v1/party/identity/' + defaultIdentity.idValue,
+            includeValue ? this.toDTO() : undefined
+        );
+    } else {
+        throw new Error('Default Identity not found');
+    }
 });
 
 PartySchema.method('toDTO', async function () {
@@ -67,9 +72,7 @@ PartySchema.method('toDTO', async function () {
     return new DTO(
         this.partyType,
         identities.map((identity:IIdentity) => {
-            return new HrefValue(
-                '/api/v1/identity/' + identity.idValue
-            );
+            return identity.toHrefValue(false);
         })
     );
 });
