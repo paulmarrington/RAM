@@ -71,6 +71,7 @@ describe('RAM Identity', () => {
         try {
             const instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
+            expect(instance.party.id).toBe(party1.id);
             expect(instance.party.partyType).not.toBeNull();
             done();
         } catch (e) {
@@ -83,6 +84,21 @@ describe('RAM Identity', () => {
         try {
             const instance = await IdentityModel.findByIdValue('__BOGUS__');
             expect(instance).toBeNull();
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('lists for party', async (done) => {
+        try {
+            const instances = await IdentityModel.listByPartyId(party1.id);
+            expect(instances).not.toBeNull();
+            expect(instances.length).toBe(1);
+            for (let instance of instances) {
+                expect(instance.party.id).toBe(party1.id);
+            }
             done();
         } catch (e) {
             fail('Because ' + e);

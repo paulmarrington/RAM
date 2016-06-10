@@ -241,6 +241,7 @@ export interface IIdentity extends IRAMObject {
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findByIdValue: (idValue:String) => mongoose.Promise<IIdentity>;
+    listByPartyId: (partyId:String) => mongoose.Promise<IIdentity[]>;
 }
 
 // instance methods ...................................................................................................
@@ -277,6 +278,20 @@ IdentitySchema.static('findByIdValue', (idValue:String) => {
             'profile.sharedSecrets.sharedSecretType',
             'party'
         ])
+        .exec();
+});
+
+IdentitySchema.static('listByPartyId', (partyId:String) => {
+    return this.IdentityModel
+        .find({
+            'party': new mongoose.Types.ObjectId(partyId)
+        })
+        .deepPopulate([
+            'profile.name',
+            'profile.sharedSecrets.sharedSecretType',
+            'party'
+        ])
+        .sort({idValue: 1})
         .exec();
 });
 
