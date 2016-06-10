@@ -15,12 +15,14 @@ const _SharedSecretModel = SharedSecretModel;
 
 export class ProfileProvider extends RAMEnum {
 
+    public static ABR = new ProfileProvider('ABR');
     public static AuthenticatorApp = new ProfileProvider('AUTHENTICATOR_APP');
     public static MyGov = new ProfileProvider('MY_GOV');
     public static SelfAsserted = new ProfileProvider('SELF_ASSERTED');
     public static Vanguard = new ProfileProvider('VANGUARD');
 
     protected static AllValues = [
+        ProfileProvider.ABR,
         ProfileProvider.AuthenticatorApp,
         ProfileProvider.MyGov,
         ProfileProvider.SelfAsserted,

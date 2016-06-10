@@ -517,7 +517,7 @@ class Seeder {
                 } as any);
 
                 Seeder.jenscatering_profile = await Seeder.createProfileModel({
-                    provider: ProfileProvider.MyGov.name,
+                    provider: ProfileProvider.ABR.name,
                     name: Seeder.jenscatering_name,
                     sharedSecrets: []
                 } as any);
