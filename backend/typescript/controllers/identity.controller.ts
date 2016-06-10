@@ -14,7 +14,7 @@ export class IdentityController {
         const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.identityModel.search(req.params.page, 10))
-            .then((results) => results ? results.map((model) => model.toHrefValue()) : null)
+            .then((results) => results ? results.map((model) => model.toHrefValue(true)) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };
