@@ -112,14 +112,14 @@ RelationshipTypeSchema.static('listInDateRange', (date:Date) => {
 
 // instance methods ...................................................................................................
 
-RelationshipTypeSchema.method('toHrefValue', function (includeValue:boolean) {
+RelationshipTypeSchema.method('toHrefValue', async function (includeValue:boolean) {
     return new HrefValue(
         '/api/v1/relationshipType/' + this.code,
-        includeValue ? this.toDTO() : undefined
+        includeValue ? await this.toDTO() : undefined
     );
 });
 
-RelationshipTypeSchema.method('toDTO', function () {
+RelationshipTypeSchema.method('toDTO', async function () {
     return new DTO(
         this.code,
         this.shortDecodeText,
@@ -127,13 +127,13 @@ RelationshipTypeSchema.method('toDTO', function () {
         this.startDate,
         this.endDate,
         this.voluntaryInd,
-        this.attributeNameUsages.map((attributeNameUsage:IRelationshipAttributeNameUsage) => {
+        await Promise.all(this.attributeNameUsages.map(async (attributeNameUsage:IRelationshipAttributeNameUsage) => {
             return new RelationshipAttributeNameUsageDTO(
                 attributeNameUsage.optionalInd,
                 attributeNameUsage.defaultValue,
-                attributeNameUsage.attributeName.toHrefValue(true)
+                await attributeNameUsage.attributeName.toHrefValue(true)
             );
-        })
+        }))
     );
 });
 

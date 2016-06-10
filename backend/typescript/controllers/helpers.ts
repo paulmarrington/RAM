@@ -16,11 +16,12 @@ export function sendResource<T>(res: Response) {
 
 export function sendList<T>(res: Response) {
     'use strict';
-    return (results: T[]): T[] => {
-        if (results) {
+    return async (results: T[]): T[] => {
+        const resolvedResults = await Promise.all(results);
+        if (resolvedResults) {
             res.status(200);
             res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(results, null, 4));
+            res.send(JSON.stringify(resolvedResults, null, 4));
         }
         return results;
     };

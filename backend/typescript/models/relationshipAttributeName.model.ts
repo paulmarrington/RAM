@@ -102,14 +102,14 @@ RelationshipAttributeNameSchema.method('domainEnum', function () {
     return RelationshipAttributeNameDomain.valueOf(this.domain);
 });
 
-RelationshipAttributeNameSchema.method('toHrefValue', function (includeValue:boolean) {
+RelationshipAttributeNameSchema.method('toHrefValue', async function (includeValue:boolean) {
     return new HrefValue(
         '/api/v1/relationshipAttributeName/' + this.code,
-        includeValue ? this.toDTO() : undefined
+        includeValue ? await this.toDTO() : undefined
     );
 });
 
-RelationshipAttributeNameSchema.method('toDTO', function () {
+RelationshipAttributeNameSchema.method('toDTO', async function () {
     return new DTO(
         this.code,
         this.shortDecodeText,
