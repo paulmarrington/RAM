@@ -21,11 +21,11 @@ These are the files currently available:
 
 Some steps on how to add/import:
 
-![Postman Add 1](docs/images/postman-add-1.png?raw=true)
+![Postman Add 1](../../blob/develop/docs/images/postman-add-1.png?raw=true)
 
-![Postman Add 2](docs/images/postman-add-2.png?raw=true)
+![Postman Add 2](../../blob/develop/docs/images/postman-add-2.png?raw=true)
 
-![Postman Add 2](docs/images/postman-add-3.png?raw=true)
+![Postman Add 3](../../blob/develop/docs/images/postman-add-3.png?raw=true)
 
-![Postman Add 2](docs/images/postman-add-4.png?raw=true)
+![Postman Add 4](../../blob/develop/docs/images/postman-add-4.png?raw=true)
 
