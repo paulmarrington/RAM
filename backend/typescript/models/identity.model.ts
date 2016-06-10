@@ -296,7 +296,7 @@ IdentitySchema.method('toDTO', async function () {
         this.publicIdentifierScheme,
         this.linkIdScheme,
         this.linkIdConsumer,
-        this.profile.toDTO(),
+        await this.profile.toDTO(),
         await this.party.toHrefValue()
     );
 });
