@@ -249,7 +249,7 @@ export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findByIdValue: (idValue:String) => mongoose.Promise<IIdentity>;
     findDefaultByPartyId: (partyId:String) => mongoose.Promise<IIdentity>;
     listByPartyId: (partyId:String) => mongoose.Promise<IIdentity[]>;
-    search: () => mongoose.Promise<IIdentity[]>;
+    search: (page:number, pageSize:number) => mongoose.Promise<IIdentity[]>;
 }
 
 // instance methods ...................................................................................................
