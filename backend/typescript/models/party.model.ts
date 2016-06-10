@@ -68,7 +68,6 @@ PartySchema.method('toHrefValue', async function (includeValue:boolean) {
 
 PartySchema.method('toDTO', async function () {
     const identities = await IdentityModel.listByPartyId(this.id);
-    console.log('Identities count = ', identities.length);
     return new DTO(
         this.partyType,
         identities.map((identity:IIdentity) => {

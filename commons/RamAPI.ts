@@ -132,7 +132,7 @@ export class Identity {
                 public linkIdScheme:string,
                 public linkIdConsumer:string,
                 public profile:Profile,
-                public party:Party) {
+                public party:HrefValue<Party>) {
     }
 }
 

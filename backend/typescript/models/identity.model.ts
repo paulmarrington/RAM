@@ -274,6 +274,34 @@ IdentitySchema.method('linkIdSchemeEnum', function () {
     return IdentityLinkIdScheme.valueOf(this.linkIdScheme);
 });
 
+IdentitySchema.method('toHrefValue', async function (includeValue:boolean) {
+    const identityDto = await this.toDTO();
+    console.log('id = '+identityDto);
+    return new HrefValue(
+        '/api/v1/identity/' + this.idValue,
+        includeValue ? identityDto : undefined
+    );
+});
+
+IdentitySchema.method('toDTO', async function () {
+    return new DTO(
+        this.idValue,
+        this.rawIdValue,
+        this.identityType,
+        this.defaultInd,
+        this.agencyScheme,
+        this.agencyToken,
+        this.invitationCodeStatus,
+        this.invitationCodeExpiryTimestamp,
+        this.invitationCodeClaimedTimestamp,
+        this.invitationCodeTemporaryEmailAddress,
+        this.publicIdentifierScheme,
+        this.linkIdScheme,
+        this.linkIdConsumer,
+        this.profile.toDTO(),
+        await this.party.toHrefValue()
+    );
+});
 // static methods .....................................................................................................
 
 IdentitySchema.static('findByIdValue', (idValue:String) => {
@@ -323,40 +351,12 @@ IdentitySchema.static('search', (page:number, pageSize:number) => {
         .find({})
         .deepPopulate([
                     'profile.name',
-                    'profile.sharedSecrets.sharedSecretType',
                     'party'
                 ])
         .limit(pageSize)
         .skip((page - 1) * pageSize)
         .sort({name: 1})
         .exec();
-});
-
-IdentitySchema.method('toHrefValue', function (includeValue:boolean) {
-    return new HrefValue(
-        '/api/v1/identity/' + this.idValue,
-        includeValue ? this.toDTO() : undefined
-    );
-});
-
-IdentitySchema.method('toDTO', function () {
-    return new DTO(
-        this.idValue,
-        this.rawIdValue,
-        this.identityType,
-        this.defaultInd,
-        this.agencyScheme,
-        this.agencyToken,
-        this.invitationCodeStatus,
-        this.invitationCodeExpiryTimestamp,
-        this.invitationCodeClaimedTimestamp,
-        this.invitationCodeTemporaryEmailAddress,
-        this.publicIdentifierScheme,
-        this.linkIdScheme,
-        this.linkIdConsumer,
-        this.profile,
-        this.party.toHrefValue()
-    );
 });
 
 // concrete model .....................................................................................................
