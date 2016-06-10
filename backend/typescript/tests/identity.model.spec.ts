@@ -67,11 +67,22 @@ describe('RAM Identity', () => {
 
     });
 
-    it('finds by id value and type', async (done) => {
+    it('finds by id value', async (done) => {
         try {
             const instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
             expect(instance.party.partyType).not.toBeNull();
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('fails find by invalid id value', async (done) => {
+        try {
+            const instance = await IdentityModel.findByIdValue('__BOGUS__');
+            expect(instance).toBeNull();
             done();
         } catch (e) {
             fail('Because ' + e);
