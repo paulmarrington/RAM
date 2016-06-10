@@ -350,9 +350,9 @@ IdentitySchema.static('search', (page:number, pageSize:number) => {
     return this.IdentityModel
         .find({})
         .deepPopulate([
-                    'profile.name',
-                    'party'
-                ])
+            'profile.name',
+            'party'
+        ])
         .limit(pageSize)
         .skip((page - 1) * pageSize)
         .sort({name: 1})
