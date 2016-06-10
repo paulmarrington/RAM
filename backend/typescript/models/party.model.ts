@@ -70,9 +70,9 @@ PartySchema.method('toDTO', async function () {
     const identities = await IdentityModel.listByPartyId(this.id);
     return new DTO(
         this.partyType,
-        identities.map((identity:IIdentity) => {
-            return identity.toHrefValue(false);
-        })
+        await Promise.all(identities.map(async (identity:IIdentity) => {
+            return await identity.toHrefValue(false);
+        }))
     );
 });
 

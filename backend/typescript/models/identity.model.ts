@@ -275,11 +275,9 @@ IdentitySchema.method('linkIdSchemeEnum', function () {
 });
 
 IdentitySchema.method('toHrefValue', async function (includeValue:boolean) {
-    const identityDto = await this.toDTO();
-    console.log('id = '+identityDto);
     return new HrefValue(
         '/api/v1/identity/' + this.idValue,
-        includeValue ? identityDto : undefined
+        includeValue ? await this.toDTO() : undefined
     );
 });
 
@@ -351,6 +349,7 @@ IdentitySchema.static('search', (page:number, pageSize:number) => {
         .find({})
         .deepPopulate([
             'profile.name',
+            'profile.sharedSecrets.sharedSecretType',
             'party'
         ])
         .limit(pageSize)
