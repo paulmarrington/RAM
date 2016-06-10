@@ -55,7 +55,7 @@ PartySchema.method('partyTypeEnum', function () {
 });
 
 PartySchema.method('toHrefValue', async function (includeValue:boolean) {
-    const defaultIdentity = IdentityModel.findDefaultByPartyId(this.id);
+    const defaultIdentity = await IdentityModel.findDefaultByPartyId(this.id);
     if (defaultIdentity) {
         return new HrefValue(
             '/api/v1/party/identity/' + defaultIdentity.idValue,
