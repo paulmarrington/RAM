@@ -16,12 +16,12 @@ import {security} from './controllers/security.middleware';
 
 import {AuthenticatorSimulatorController} from './controllers/authenticator.simulator.controller';
 import {ResetController} from './controllers/reset.server.controller';
-//import {PartyController} from './controllers/party.controller';
+import {PartyController} from './controllers/party.controller';
 //import {RelationshipController} from './controllers/relationship.controller';
 import {RelationshipTypeController} from './controllers/relationshipType.controller';
 import {RelationshipAttributeNameController} from './controllers/relationshipAttributeName.controller';
 
-//import {PartyModel} from './models/party-old.model';
+import {PartyModel} from './models/party.model';
 //import {RelationshipModel} from './models/relationship-old.model';
 import {RelationshipTypeModel} from './models/relationshipType.model';
 import {RelationshipAttributeNameModel} from './models/relationshipAttributeName.model';
@@ -75,8 +75,8 @@ if (conf.devMode) {
 
 server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
-//server.use('/api/v1/party',
-//    new PartyController(PartyModel).assignRoutes(express.Router()));
+server.use('/api/',
+    new PartyController(PartyModel).assignRoutes(express.Router()));
 //server.use('/api/',
 //    new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
 server.use('/api/',
