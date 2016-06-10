@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "4d04222b-d548-3cae-e188-5801ab5b5ce1",
+		"_postman_id": "303552cf-64fd-01dd-9a51-67ff94fb2851",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -26,8 +26,7 @@
 						"body": {
 							"mode": "urlencoded",
 							"urlencoded": []
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -46,8 +45,7 @@
 						"body": {
 							"mode": "urlencoded",
 							"urlencoded": []
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -73,8 +71,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
@@ -88,6 +85,32 @@
 					"name": "List",
 					"request": {
 						"url": "{{host}}/api/v1/identities",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"url": "{{host}}/api/v1/identity/LINK_ID:MY_GOV:jennifermaxims_identity_1",
 						"method": "GET",
 						"header": [
 							{
@@ -139,8 +162,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
@@ -172,8 +194,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -199,8 +220,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -226,8 +246,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -253,8 +272,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
