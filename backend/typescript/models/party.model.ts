@@ -3,7 +3,8 @@ import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IIdentity, IdentityModel} from './identity.model';
 import {
     HrefValue,
-    Party as DTO
+    Party as DTO,
+    Identity as IdentityDTO
 } from '../../../commons/RamAPI';
 
 // enums, utilities, helpers ..........................................................................................
@@ -70,9 +71,10 @@ PartySchema.method('toDTO', async function () {
     const identities = await IdentityModel.listByPartyId(this.id);
     return new DTO(
         this.partyType,
-        await Promise.all(identities.map(async (identity:IIdentity) => {
-            return await identity.toHrefValue(false);
-        }))
+        await Promise.all<HrefValue<IdentityDTO>>(identities.map(
+            async (identity:IIdentity) => {
+                return await identity.toHrefValue(false);
+            }))
     );
 });
 

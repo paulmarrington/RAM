@@ -127,13 +127,14 @@ RelationshipTypeSchema.method('toDTO', async function () {
         this.startDate,
         this.endDate,
         this.voluntaryInd,
-        await Promise.all(this.attributeNameUsages.map(async (attributeNameUsage:IRelationshipAttributeNameUsage) => {
-            return new RelationshipAttributeNameUsageDTO(
-                attributeNameUsage.optionalInd,
-                attributeNameUsage.defaultValue,
-                await attributeNameUsage.attributeName.toHrefValue(true)
-            );
-        }))
+        await Promise.all<RelationshipAttributeNameUsageDTO>(this.attributeNameUsages.map(
+            async (attributeNameUsage:IRelationshipAttributeNameUsage) => {
+                return new RelationshipAttributeNameUsageDTO(
+                    attributeNameUsage.optionalInd,
+                    attributeNameUsage.defaultValue,
+                    await attributeNameUsage.attributeName.toHrefValue(true)
+                );
+            }))
     );
 });
 

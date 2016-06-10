@@ -101,7 +101,8 @@ ProfileSchema.method('toHrefValue', async function (includeValue:boolean) {
 ProfileSchema.method('toDTO', async function () {
     return new DTO(
         this.provider,
-        this.name.toDTO()
+        this.name.toDTO(),
+        undefined
     );
 });
 
