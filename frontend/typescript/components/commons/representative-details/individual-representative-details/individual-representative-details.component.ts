@@ -1,7 +1,6 @@
 import {OnInit, Input, Output, EventEmitter, Component} from '@angular/core';
 import {ControlGroup, FormBuilder, FORM_DIRECTIVES, Validators}
 from '@angular/common';
-import {Utils} from '../../../../../../commons/ram-utils';
 import {RAMNgValidators} from '../../../../commons/ram-ng-validators';
 
 @Component({
@@ -17,6 +16,8 @@ export class IndividualRepresentativeDetailsComponent implements OnInit {
 
     @Output('dataChange') public dataChanges = new EventEmitter<IndividualRepresentativeDetailsComponentData>();
 
+    @Output('isValid') public isValid = new EventEmitter<boolean>();
+
     constructor(private _fb: FormBuilder) { }
 
     public ngOnInit() {
@@ -25,10 +26,10 @@ export class IndividualRepresentativeDetailsComponent implements OnInit {
             'familyName': [this.data.familyName],
             'dob': [this.data.dob, Validators.compose([RAMNgValidators.dateFormatValidator])]
         });
-        this.form.valueChanges.subscribe(
-            (v: IndividualRepresentativeDetailsComponentData) => {
-                this.dataChanges.emit(v);
-            });
+        this.form.valueChanges.subscribe((v: IndividualRepresentativeDetailsComponentData) => {
+            this.dataChanges.emit(v);
+            this.isValid.emit(this.form.valid);
+        });
     }
 }
 

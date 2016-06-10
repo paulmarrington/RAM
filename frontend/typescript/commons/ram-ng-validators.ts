@@ -18,4 +18,12 @@ export class RAMNgValidators {
         }
     }
 
+    public static mustBeTrue = (abn: Control) => {
+        if (abn.value) {
+            return null;
+        } else {
+            return { mustBeTrue: { valid: false } };
+        }
+    }
+
 }

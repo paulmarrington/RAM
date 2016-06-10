@@ -1,12 +1,8 @@
 import {Component} from '@angular/core';
-import {AccessPeriodComponent, AccessPeriodComponentData} from
-'../commons/access-period/access-period.component';
-import {AuthorisationPermissionsComponent} from
-'../commons/authorisation-permissions/authorisation-permissions.component';
-import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from
-'../commons/authorisation-type/authorisation-type.component';
-import {DeclarationComponent} from
-'../commons/declaration/declaration.component';
+import {AccessPeriodComponent, AccessPeriodComponentData} from '../commons/access-period/access-period.component';
+import {AuthorisationPermissionsComponent} from '../commons/authorisation-permissions/authorisation-permissions.component';
+import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from '../commons/authorisation-type/authorisation-type.component';
+import {DeclarationComponent, DeclarationComponentData} from '../commons/declaration/declaration.component';
 import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
 '../commons/representative-details/representative-details.component';
 
@@ -42,6 +38,9 @@ export class AddRelationshipComponent {
             organisation: {
                 abn: ''
             }
+        },
+        decalaration: {
+            accepted: false
         }
     };
 
@@ -59,4 +58,5 @@ export interface AddRelationshipComponentData {
     accessPeriod: AccessPeriodComponentData;
     authType: AuthorisationTypeComponentData;
     representativeDetails: RepresentativeDetailsComponentData;
+    decalaration: DeclarationComponentData;
 }

@@ -23,15 +23,15 @@ export class RepresentativeDetailsComponent {
 
     @Output('dataChange') public dataChanges = new EventEmitter<RepresentativeDetailsComponentData>();
 
-    @Output('validationErrors') public validationErrors = new EventEmitter<boolean>();
+    @Output('isValid') public isValid = new EventEmitter<boolean>();
 
     public isOrganisation: boolean = null;
 
     public setChildValidationStatus = (isOrganisation: boolean, isValid: boolean) => {
         if (isOrganisation && this.isOrganisation) {
-            this.validationErrors.emit(isValid);
+            this.isValid.emit(isValid);
         } else if (!isOrganisation && !this.isOrganisation) {
-            this.validationErrors.emit(isValid);
+            this.isValid.emit(isValid);
         }
     }
 }

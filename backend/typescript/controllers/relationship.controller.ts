@@ -233,12 +233,8 @@ export class RelationshipController {
   };
 
   public assignRoutes = (router: Router) => {
-    router.get(
-    '/v1/relationship/list/:delegateOrSubject'
-    +'/:id/page/:pageNo/size/:pageSize', this.getList);
-    router.get(
-    '/v1/relationship/table/:delegateOrSubject'+
-    '/:value/:type/page/:pageNo/size/:pageSize', this.getRelationdhipTable);
+    router.get('/v1/relationship/list/:delegateOrSubject/:id/page/:pageNo/size/:pageSize', this.getList);
+    router.get('/v1/relationship/table/:delegateOrSubject/:value/:type/page/:pageNo/size/:pageSize', this.getRelationdhipTable);
     router.post('/v1/relationship', this.addRelationship);
     router.get('/v1/relationship/:id', this.getById);
     return router;
