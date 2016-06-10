@@ -249,6 +249,7 @@ export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findByIdValue: (idValue:String) => mongoose.Promise<IIdentity>;
     findDefaultByPartyId: (partyId:String) => mongoose.Promise<IIdentity>;
     listByPartyId: (partyId:String) => mongoose.Promise<IIdentity[]>;
+    search: () => mongoose.Promise<IIdentity[]>;
 }
 
 // instance methods ...................................................................................................
@@ -331,7 +332,6 @@ IdentitySchema.static('search', (page:number, pageSize:number) => {
         .sort({name: 1})
         .exec();
 });
-
 
 IdentitySchema.method('toHrefValue', function (includeValue:boolean) {
     return new HrefValue(

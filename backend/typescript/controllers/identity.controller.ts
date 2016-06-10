@@ -1,5 +1,5 @@
 import {Router, Request, Response} from 'express';
-import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
+import {sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {IIdentityModel } from '../models/identity.model';
 
 export class IdentityController {

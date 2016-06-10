@@ -80,7 +80,7 @@ if (conf.devMode) {
 
 server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
-server.use('/api/', 
+server.use('/api/',
     new IdentityController(IdentityModel).assignRoutes(express.Router()));
 server.use('/api/',
     new PartyController(PartyModel).assignRoutes(express.Router()));
