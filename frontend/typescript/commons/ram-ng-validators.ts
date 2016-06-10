@@ -18,4 +18,12 @@ export class RAMNgValidators {
         }
     }
 
+    public static mustBeTrue = (ctrl: Control) => {
+        if (ctrl.value) {
+            return null;
+        } else {
+            return { mustBeTrue: { valid: false } };
+        }
+    }
+
 }

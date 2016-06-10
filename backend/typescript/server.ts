@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as path from 'path';
 import * as loggerMorgan from 'morgan';
 import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 import * as methodOverride from 'method-override';
 import * as cApi from '../../commons/RamAPI';
 import * as mongoose from 'mongoose';
@@ -10,14 +11,18 @@ import {logStream} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
 import expressValidator = require('express-validator');
 
+import {forgeRockSimulator} from './controllers/forgeRock.simulator.middleware';
+import {security} from './controllers/security.middleware';
+
+import {AuthenticatorSimulatorController} from './controllers/authenticator.simulator.controller';
 import {ResetController} from './controllers/reset.server.controller';
-import {PartyController} from './controllers/party.controller';
-import {RelationshipController} from './controllers/relationship.controller';
+//import {PartyController} from './controllers/party.controller';
+//import {RelationshipController} from './controllers/relationship.controller';
 import {RelationshipTypeController} from './controllers/relationshipType.controller';
 import {RelationshipAttributeNameController} from './controllers/relationshipAttributeName.controller';
 
-import {PartyModel} from './models/party-old.model';
-import {RelationshipModel} from './models/relationship-old.model';
+//import {PartyModel} from './models/party-old.model';
+//import {RelationshipModel} from './models/relationship-old.model';
 import {RelationshipTypeModel} from './models/relationshipType.model';
 import {RelationshipAttributeNameModel} from './models/relationshipAttributeName.model';
 
@@ -42,31 +47,38 @@ switch (conf.devMode) {
         break;
 }
 
+server.use(cookieParser());
 server.use(bodyParser.json());
-server.use(expressValidator({
-    customValidators: {
-        exampleValidator: (value: string) => {
-            return value === 'yes';
-        }
-    }
-}));
-
 server.use(bodyParser.urlencoded({ extended: true }));
+server.use(expressValidator());
 server.use(methodOverride());
-
-// server.use(continueOnlyIfJWTisValid(conf.jwtSecretKey,true));
-
 server.use(express.static(path.join(__dirname, conf.frontendDir)));
 server.use(express.static('swagger'));
 
-// setup route handlers ...............................................................................................
+// server.use(continueOnlyIfJWTisValid(conf.jwtSecretKey,true));
+
+// setup security .....................................................................................................
+
+if (conf.devMode) {
+    server.use(forgeRockSimulator.prepareRequest());
+}
+
+server.use(security.prepareRequest());
+
+if (conf.devMode) {
+    server.use('/api/', new AuthenticatorSimulatorController().assignRoutes(express.Router()));
+}
+
+// setup route handlers (dev) .........................................................................................
+
+// setup route handlers (production) ..................................................................................
 
 server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
-server.use('/api/v1/party',
-    new PartyController(PartyModel).assignRoutes(express.Router()));
-server.use('/api/',
-    new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
+//server.use('/api/v1/party',
+//    new PartyController(PartyModel).assignRoutes(express.Router()));
+//server.use('/api/',
+//    new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
 server.use('/api/',
     new RelationshipTypeController(RelationshipTypeModel).assignRoutes(express.Router()));
 server.use('/api/',

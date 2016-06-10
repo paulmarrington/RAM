@@ -16,7 +16,7 @@ export class AuthorisationTypeComponent implements OnInit {
 
     @Output('dataChange') public dataChanges = new EventEmitter<AuthorisationTypeComponentData>();
 
-    @Output('validationErrors') public validationErrors = new EventEmitter<boolean>();
+    @Output('isValid') public isValid = new EventEmitter<boolean>();
 
     constructor(private _fb: FormBuilder) { }
 
@@ -26,10 +26,10 @@ export class AuthorisationTypeComponent implements OnInit {
                 Validators.compose([this.isAuthTypeSelected])
             ]
         });
-        this.form.valueChanges.subscribe(
-            (v: AuthorisationTypeComponentData) => {
-                this.dataChanges.emit(v);
-            });
+        this.form.valueChanges.subscribe((v: AuthorisationTypeComponentData) => {
+            this.dataChanges.emit(v);
+            this.isValid.emit(this.form.valid);
+        });
     }
 
     private isAuthTypeSelected = (authType: Control) => {
