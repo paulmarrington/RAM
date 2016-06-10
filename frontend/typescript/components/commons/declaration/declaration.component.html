@@ -3,28 +3,33 @@
         <h4><span class="badge square">5</span> Declaration</h4>
     </div>
     <div class="panel-body">
-        <h4 class="padding-btn-10">By clicking authorise button below you agree:</h4>
-        <ul>
-            <li>
-                <p>Terms and conditions / declaration item 1.</p>
-            </li>
-            <li>
-                <p>Terms and conditions / declaration item 2.</p>
-            </li>
-            <li>
-                <p>Terms and conditions / declaration item 3.</p>
-            </li>
-            <li>
-                <p>Terms and conditions / declaration item 4.</p>
-            </li>
-            <li>
-                <p>Terms and conditions / declaration item 5.</p>
-            </li>
-        </ul>
-        <div class="col-md-12">
-            <label><h4><input type="checkbox" id="acceptedTC" value="false"> I accept</h4></label>
-        </div>
-        <a class="col-xs-6 col-sm-3 btn btn-default">&#8592; Back</a>
-        <a class=" col-xs-6 col-sm-3 col-sm-offset-6 btn btn-primary">Authorise →</a>
+        <form [ngFormModel]='form'>
+            <h4 class="padding-btn-10">By clicking authorise button below you agree:</h4>
+            <ul>
+                <li>
+                    <p>Terms and conditions / declaration item 1.</p>
+                </li>
+                <li>
+                    <p>Terms and conditions / declaration item 2.</p>
+                </li>
+                <li>
+                    <p>Terms and conditions / declaration item 3.</p>
+                </li>
+                <li>
+                    <p>Terms and conditions / declaration item 4.</p>
+                </li>
+                <li>
+                    <p>Terms and conditions / declaration item 5.</p>
+                </li>
+            </ul>
+            
+            <div class="form-group col-md-12" >
+                <label > <h4><input  type="checkbox" [ngFormControl]='form.controls["accepted"]'> I accept</h4></label>
+            </div>
+            <button class="col-xs-6 col-sm-3 btn btn-default">&#8592; Back</button>
+            <button class=" col-xs-6 col-sm-3 col-sm-offset-6 btn btn-primary"
+                [disabled]='!(form.controls["accepted"].valid && isAuthorizedBtnEnabled)'
+            >Authorise →</button>
+        </form>
     </div>
 </div>

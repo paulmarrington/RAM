@@ -16,7 +16,7 @@ export class AccessPeriodComponent implements OnInit {
 
     @Output('dataChange') public dataChanges = new EventEmitter<AccessPeriodComponentData>();
 
-    @Output('validationErrors') public validationErrors = new EventEmitter<boolean>();
+    @Output('isValid') public isValid = new EventEmitter<boolean>();
 
     constructor(private _fb: FormBuilder) {
     }
@@ -32,6 +32,7 @@ export class AccessPeriodComponent implements OnInit {
 
         let endDate = this.form.controls['endDate'] as Control;
         let noEndDate = this.form.controls['noEndDate'];
+
         noEndDate.valueChanges.subscribe((v: Boolean) => {
             if (v === true) {
                 // reset endDate if noEndDate checkbox is selected
@@ -40,7 +41,7 @@ export class AccessPeriodComponent implements OnInit {
         });
         this.form.valueChanges.subscribe((v: AccessPeriodComponentData) => {
             this.dataChanges.emit(v);
-            this.validationErrors.emit(this.form.valid);
+            this.isValid.emit(this.form.valid);
         });
     }
 

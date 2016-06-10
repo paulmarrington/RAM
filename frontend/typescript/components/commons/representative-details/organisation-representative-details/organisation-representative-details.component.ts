@@ -21,7 +21,7 @@ export class OrganisationRepresentativeDetailsComponent implements OnInit {
 
     @Output('dataChange') public dataChanges = new EventEmitter<OrganisationRepresentativeDetailsComponentData>();
 
-    @Output('validationErrors') public validationErrors = new EventEmitter<boolean>();
+    @Output('isValid') public isValid = new EventEmitter<boolean>();
 
     constructor(private _fb: FormBuilder, private rest: RAMRestService) { }
 
@@ -42,9 +42,9 @@ export class OrganisationRepresentativeDetailsComponent implements OnInit {
         this.rest.getOrganisationNameFromABN(abn)
             .then((name: string) => {
                 this.organisationName = name;
-                this.validationErrors.emit(false);
+                this.isValid.emit(true);
             }).catch((err: string) => {
-                this.validationErrors.emit(true);
+                this.isValid.emit(false);
                 this.organisationName = this.ABNNotValidMsg;
             });
     }
