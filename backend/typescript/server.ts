@@ -14,13 +14,18 @@ import expressValidator = require('express-validator');
 import {forgeRockSimulator} from './controllers/forgeRock.simulator.middleware';
 import {security} from './controllers/security.middleware';
 
+// DEVELOPMENT RESOURCES
 import {AuthenticatorSimulatorController} from './controllers/authenticator.simulator.controller';
+import {IdentityController} from './controllers/identity.controller';
 import {ResetController} from './controllers/reset.server.controller';
+
+// PRODUCTION RESOURCES
 import {PartyController} from './controllers/party.controller';
 //import {RelationshipController} from './controllers/relationship.controller';
 import {RelationshipTypeController} from './controllers/relationshipType.controller';
 import {RelationshipAttributeNameController} from './controllers/relationshipAttributeName.controller';
 
+import {IdentityModel} from './models/identity.model';
 import {PartyModel} from './models/party.model';
 //import {RelationshipModel} from './models/relationship-old.model';
 import {RelationshipTypeModel} from './models/relationshipType.model';
@@ -75,6 +80,8 @@ if (conf.devMode) {
 
 server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
+server.use('/api/', 
+    new IdentityController(IdentityModel).assignRoutes(express.Router()));
 server.use('/api/',
     new PartyController(PartyModel).assignRoutes(express.Router()));
 //server.use('/api/',

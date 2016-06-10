@@ -2,6 +2,10 @@ import * as mongoose from 'mongoose';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IProfile, ProfileModel} from './profile.model';
 import {IParty, PartyModel} from './party.model';
+import {
+    HrefValue,
+    Identity as DTO
+} from '../../../commons/RamAPI';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
@@ -237,6 +241,8 @@ export interface IIdentity extends IRAMObject {
     invitationCodeStatusEnum(): IdentityInvitationCodeStatus;
     publicIdentifierSchemeEnum(): IdentityPublicIdentifierScheme;
     linkIdSchemeEnum(): IdentityLinkIdScheme;
+    toHrefValue():HrefValue<DTO>;
+    toDTO():DTO;
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
@@ -293,6 +299,49 @@ IdentitySchema.static('listByPartyId', (partyId:String) => {
         ])
         .sort({idValue: 1})
         .exec();
+});
+
+
+IdentitySchema.static('search', (page:number, pageSize:number) => {
+    return this.IdentityModel
+        .find({})
+        .deepPopulate([
+                    'profile.name',
+                    'profile.sharedSecrets.sharedSecretType',
+                    'party'
+                ])
+        .limit(pageSize)
+        .skip((page - 1) * pageSize)
+        .sort({name: 1})
+        .exec();
+});
+
+
+IdentitySchema.method('toHrefValue', function () {
+    return new HrefValue(
+        '/api/v1/identity/' + this.idValue,
+        this.toDTO()
+    );
+});
+
+IdentitySchema.method('toDTO', function () {
+    return new DTO(
+        this.idValue,
+        this.rawIdValue,
+        this.identityType,
+        this.defaultInd,
+        this.agencyScheme,
+        this.agencyToken,
+        this.invitationCodeStatus,
+        this.invitationCodeExpiryTimestamp,
+        this.invitationCodeClaimedTimestamp,
+        this.invitationCodeTemporaryEmailAddress,
+        this.publicIdentifierScheme,
+        this.linkIdScheme,
+        this.linkIdConsumer,
+        this.profile,
+        this.party.toHrefValue()
+    );
 });
 
 // concrete model .....................................................................................................

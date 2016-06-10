@@ -377,4 +377,15 @@ describe('RAM Identity', () => {
         }
     });
 
+    it('search should be populated', async(done) => {
+        try {
+            const searchResult = await IdentityModel.search({});
+            expect(searchResult[0].idValue).toBe(identity1.idValue);
+            expect(searchResult[0].party.partyType).toBe(party1.partyType);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
 });
