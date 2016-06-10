@@ -1,9 +1,7 @@
 import {Router, Request, Response} from 'express';
 import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {IIdentityModel } from '../models/identity.model';
-/**
- * Development only controller to allow access to all identities in the system.
- */
+
 export class IdentityController {
 
     constructor(private identityModel:IIdentityModel) {
