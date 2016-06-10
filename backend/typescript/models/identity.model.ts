@@ -318,7 +318,6 @@ IdentitySchema.static('listByPartyId', (partyId:String) => {
         .exec();
 });
 
-
 IdentitySchema.static('search', (page:number, pageSize:number) => {
     return this.IdentityModel
         .find({})
