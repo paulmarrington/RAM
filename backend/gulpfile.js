@@ -50,7 +50,8 @@ gulp.task('serve', ["ts:watch"], function () {
     nodemon({
         script: 'dist/backend/typescript/server.js',
         "verbose": true,
-        "delay": 5,
+        "delay": 1000,
+        "ignore": ["**/*.js.map", "**/*.spec.js", "**/*.log"],
         "execMap": {
             "js": "node --harmony"
         }
