@@ -22,7 +22,7 @@ export class PartyController {
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/parties/identities/:idValue', this.findByIdentityIdValue);
+        router.get('/v1/party/identity/:idValue', this.findByIdentityIdValue);
         return router;
     };
 

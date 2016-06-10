@@ -87,7 +87,7 @@
 				{
 					"name": "Get (Jennifer Maxims)",
 					"request": {
-						"url": "{{host}}/api/v1/parties/identities/LINK_ID:MY_GOV:jennifermaxims_identity_1",
+						"url": "{{host}}/api/v1/party/identity/LINK_ID:MY_GOV:jennifermaxims_identity_1",
 						"method": "GET",
 						"header": [
 							{
