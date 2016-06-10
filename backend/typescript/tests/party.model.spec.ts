@@ -3,9 +3,6 @@ import {
     IIdentity,
     IdentityModel,
     IdentityType,
-    IdentityInvitationCodeStatus,
-    IdentityAgencyScheme,
-    IdentityPublicIdentifierScheme,
     IdentityLinkIdScheme} from '../models/identity.model';
 import {
     IName,
