@@ -16,8 +16,8 @@ Here is a screenshot of Postman:
 
 These are the files currently available:
 
-* [Development Environment](docs/RAM_local.postman_environment.json)
-* [Collection](docs/RAM.postman_collection.json)
+* [Development Environment](RAM_local.postman_environment.json)
+* [Collection](RAM.postman_collection.json)
 
 Some steps on how to add/import:
 
