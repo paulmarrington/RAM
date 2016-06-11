@@ -1,5 +1,5 @@
 import {Response, Request} from 'express';
-import {IResponse, ErrorResponse} from '../../../commons/RamAPI';
+import {IResponse, ErrorResponse, SearchResult} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
 
 export function sendResource<T>(res: Response) {
@@ -16,12 +16,25 @@ export function sendResource<T>(res: Response) {
 
 export function sendList<T>(res: Response) {
     'use strict';
-    return async (results: T[]): T[] => {
+    return async (results: T[]): Promise<T[]> => {
         const resolvedResults = await Promise.all(results);
         if (resolvedResults) {
             res.status(200);
             res.setHeader('Content-Type', 'application/json');
             res.send(JSON.stringify(resolvedResults, null, 4));
+        }
+        return results;
+    };
+}
+
+export function sendSearchResult<T>(res: Response) {
+    'use strict';
+    return async (results: SearchResult<T>): Promise<SearchResult<T>> => {
+        const resolvedResults = await Promise.all(results.result);
+        if (resolvedResults) {
+            res.status(200);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(results, null, 4);
         }
         return results;
     };
@@ -64,6 +77,7 @@ type ValidationError = {
 export function sendError<T>(res: Response) {
     'use strict';
     return (error: string | Error | ValidationError | string[]) => {
+        console.log(error);
         switch (error.constructor.name) {
             case 'Array':
                 res.status(400);

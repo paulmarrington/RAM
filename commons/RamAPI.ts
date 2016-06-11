@@ -41,6 +41,16 @@ export class HrefValue<T> {
     }
 }
 
+export class SearchResult<T> {
+    constructor(public totalCount:number, public result:T[]) {
+    }
+    
+    public map (func:Function):SearchResult<T>{
+        this.result = this.result.map((m) => m.toHrefValue());
+        return this;
+    }
+}
+
 // business domain ....................................................................................................
 
 export class ICodeDecode {

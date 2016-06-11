@@ -4,7 +4,7 @@ import {IProfile, ProfileModel} from './profile.model';
 import {IParty, PartyModel} from './party.model';
 import {
     HrefValue,
-    Identity as DTO
+    Identity as DTO, SearchResult
 } from '../../../commons/RamAPI';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
@@ -221,35 +221,35 @@ IdentitySchema.pre('validate', function (next:() => void) {
 // interfaces .........................................................................................................
 
 export interface IIdentity extends IRAMObject {
-    idValue: string;
-    rawIdValue: string;
-    identityType: string;
-    defaultInd: boolean;
-    agencyScheme: string;
-    agencyToken: string;
-    invitationCodeStatus: string;
-    invitationCodeExpiryTimestamp: Date;
-    invitationCodeClaimedTimestamp: Date;
-    invitationCodeTemporaryEmailAddress: string;
-    publicIdentifierScheme: string;
-    linkIdScheme: string;
-    linkIdConsumer: string;
-    profile: IProfile;
-    party: IParty;
-    identityTypeEnum(): IdentityType;
-    agencySchemeEnum(): IdentityAgencyScheme;
-    invitationCodeStatusEnum(): IdentityInvitationCodeStatus;
-    publicIdentifierSchemeEnum(): IdentityPublicIdentifierScheme;
-    linkIdSchemeEnum(): IdentityLinkIdScheme;
+    idValue:string;
+    rawIdValue:string;
+    identityType:string;
+    defaultInd:boolean;
+    agencyScheme:string;
+    agencyToken:string;
+    invitationCodeStatus:string;
+    invitationCodeExpiryTimestamp:Date;
+    invitationCodeClaimedTimestamp:Date;
+    invitationCodeTemporaryEmailAddress:string;
+    publicIdentifierScheme:string;
+    linkIdScheme:string;
+    linkIdConsumer:string;
+    profile:IProfile;
+    party:IParty;
+    identityTypeEnum():IdentityType;
+    agencySchemeEnum():IdentityAgencyScheme;
+    invitationCodeStatusEnum():IdentityInvitationCodeStatus;
+    publicIdentifierSchemeEnum():IdentityPublicIdentifierScheme;
+    linkIdSchemeEnum():IdentityLinkIdScheme;
     toHrefValue(includeValue:boolean):HrefValue<DTO>;
     toDTO():DTO;
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
-    findByIdValue: (idValue:String) => mongoose.Promise<IIdentity>;
-    findDefaultByPartyId: (partyId:String) => mongoose.Promise<IIdentity>;
-    listByPartyId: (partyId:String) => mongoose.Promise<IIdentity[]>;
-    search: (page:number, pageSize:number) => mongoose.Promise<IIdentity[]>;
+    findByIdValue:(idValue:String) => mongoose.Promise<IIdentity>;
+    findDefaultByPartyId:(partyId:String) => mongoose.Promise<IIdentity>;
+    listByPartyId:(partyId:String) => mongoose.Promise<IIdentity[]>;
+    search:(page:number, pageSize:number) => SearchResult<IIdentity>;
 }
 
 // instance methods ...................................................................................................
@@ -344,19 +344,31 @@ IdentitySchema.static('listByPartyId', (partyId:String) => {
         .exec();
 });
 
-IdentitySchema.static('search', (page:number, pageSize:number) => {
+IdentitySchema.static('search', (page:number, pageSize:number):SearchResult<IIdentityModel> => {
+    const query = {};
+    // count
     return this.IdentityModel
-        .find({})
-        .deepPopulate([
-            'profile.name',
-            'profile.sharedSecrets.sharedSecretType',
-            'party'
-        ])
-        .limit(pageSize)
-        .skip((page - 1) * pageSize)
-        .sort({name: 1})
-        .exec();
+        .count(query)
+        .exec()
+        .then((count:number) => {
+            // results
+            return this.IdentityModel
+                .find(query)
+                .deepPopulate([
+                    'profile.name',
+                    'party'
+                ])
+                .limit(pageSize)
+                .skip((page - 1) * pageSize)
+                .sort({name: 1})
+                .exec()
+                .then((result:IIdentityModel[]) => {
+                    // search results
+                    return new SearchResult<IIdentityModel>(count, result);
+                });
+        });
 });
+
 
 // concrete model .....................................................................................................
 

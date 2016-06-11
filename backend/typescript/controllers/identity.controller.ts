@@ -1,5 +1,5 @@
 import {Router, Request, Response} from 'express';
-import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
+import {sendResource, sendError, sendNotFoundError, validateReqSchema, sendSearchResult} from './helpers';
 import {IIdentityModel } from '../models/identity.model';
 
 export class IdentityController {
@@ -25,8 +25,8 @@ export class IdentityController {
         const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.identityModel.search(req.params.page, 10))
-            .then((results) => results ? results.map((model) => model.toHrefValue(true)) : null)
-            .then(sendList(res), sendError(res))
+            .then((results) => (results.map((model) => model.toHrefValue(true))))
+            .then(sendSearchResult(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
