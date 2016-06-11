@@ -258,7 +258,7 @@ export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findByIdValue:(idValue:String) => mongoose.Promise<IIdentity>;
     findDefaultByPartyId:(partyId:String) => mongoose.Promise<IIdentity>;
     listByPartyId:(partyId:String) => mongoose.Promise<IIdentity[]>;
-    search:(page:number, pageSize:number) => SearchResult<IIdentity>;
+    search:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
 }
 
 // instance methods ...................................................................................................
@@ -354,7 +354,7 @@ IdentitySchema.static('listByPartyId', (partyId:String) => {
         .exec();
 });
 
-IdentitySchema.static('search', (page:number, pageSize:number):SearchResult<IIdentityModel> => {
+IdentitySchema.static('search', (page:number, pageSize:number) => {
     return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
         try {
             const query = {};
@@ -367,11 +367,11 @@ IdentitySchema.static('search', (page:number, pageSize:number):SearchResult<IIde
                     'profile.name',
                     'party'
                 ])
-                .limit(pageSize)
                 .skip((page - 1) * pageSize)
+                .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IIdentityModel>(count, list));
+            resolve(new SearchResult<IIdentity>(count, list));
         } catch (e) {
             reject(e);
         }
