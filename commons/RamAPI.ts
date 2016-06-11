@@ -42,11 +42,11 @@ export class HrefValue<T> {
 }
 
 export class SearchResult<T> {
-    constructor(public totalCount:number, public result:T[]) {
+    constructor(public totalCount:number, public list:T[]) {
     }
 
-    public map(func:Function):SearchResult<T> {
-        this.result = this.result.map(func);
+    public map (func:Function):SearchResult<T>{
+        this.list = this.list.map(func);
         return this;
     }
 }

@@ -1,10 +1,13 @@
 import * as mongoose from 'mongoose';
+import {conf} from '../bootstrap';
+import * as Hashids from 'hashids';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IProfile, ProfileModel} from './profile.model';
 import {IParty, PartyModel} from './party.model';
 import {
     HrefValue,
-    Identity as DTO, SearchResult
+    Identity as DTO,
+    SearchResult
 } from '../../../commons/RamAPI';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
@@ -16,6 +19,8 @@ const _ProfileModel = ProfileModel;
 const _PartyModel = PartyModel;
 
 // enums, utilities, helpers ..........................................................................................
+
+const saltedHashids = new Hashids(conf.hashIdsSalt, 6, 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789');
 
 export class IdentityType extends RAMEnum {
 
@@ -214,6 +219,10 @@ const IdentitySchema = RAMSchema({
 
 IdentitySchema.pre('validate', function (next:() => void) {
     const identityType = IdentityType.valueOf(this.identityType) as IdentityType;
+    if (identityType === IdentityType.InvitationCode && !this.rawIdValue) {
+        const time = process.hrtime();
+        this.rawIdValue = saltedHashids.encode(((+time[0]) * 1e9) + (+time[1]));
+    }
     this.idValue = identityType ? identityType.buildIdValue(this) : null;
     next();
 });
@@ -300,6 +309,7 @@ IdentitySchema.method('toDTO', async function () {
         await this.party.toHrefValue()
     );
 });
+
 // static methods .....................................................................................................
 
 IdentitySchema.static('findByIdValue', (idValue:String) => {
@@ -345,14 +355,13 @@ IdentitySchema.static('listByPartyId', (partyId:String) => {
 });
 
 IdentitySchema.static('search', (page:number, pageSize:number):SearchResult<IIdentityModel> => {
-    const query = {};
-    // count
-    return this.IdentityModel
-        .count(query)
-        .exec()
-        .then((count:number) => {
-            // results
-            return this.IdentityModel
+    return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
+        try {
+            const query = {};
+            const count = await this.IdentityModel
+                .count(query)
+                .exec();
+            const list = await this.IdentityModel
                 .find(query)
                 .deepPopulate([
                     'profile.name',
@@ -361,14 +370,13 @@ IdentitySchema.static('search', (page:number, pageSize:number):SearchResult<IIde
                 .limit(pageSize)
                 .skip((page - 1) * pageSize)
                 .sort({name: 1})
-                .exec()
-                .then((result:IIdentityModel[]) => {
-                    // search results
-                    return new SearchResult<IIdentityModel>(count, result);
-                });
-        });
+                .exec();
+            resolve(new SearchResult<IIdentityModel>(count, list));
+        } catch (e) {
+            reject(e);
+        }
+    });
 });
-
 
 // concrete model .....................................................................................................
 

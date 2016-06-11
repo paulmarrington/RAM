@@ -226,6 +226,29 @@ describe('RAM Identity', () => {
         }
     });
 
+    it('inserts invitation code with generated raw id value', async (done) => {
+        try {
+
+            for (let i = 0; i < 10; i=i+1) {
+                const instance = await IdentityModel.create({
+                    identityType: IdentityType.InvitationCode.name,
+                    defaultInd: false,
+                    invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
+                    invitationCodeExpiryTimestamp: new Date(),
+                    profile: profile1,
+                    party: party1
+                });
+                expect(instance.rawIdValue).not.toBeNull();
+            }
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
     it('inserts public identifier with valid values', async (done) => {
         try {
 
@@ -380,12 +403,13 @@ describe('RAM Identity', () => {
     it('search should be populated', async(done) => {
         try {
             const searchResult = await IdentityModel.search(1, 10);
-            expect(searchResult[0].idValue).toBe(identity1.idValue);
-            expect(searchResult[0].party.partyType).toBe(party1.partyType);
+            expect(searchResult.list[0].idValue).toBe(identity1.idValue);
+            expect(searchResult.list[0].party.partyType).toBe(party1.partyType);
             done();
         } catch (e) {
             fail('Because ' + e);
             done();
         }
     });
+
 });
