@@ -45,9 +45,8 @@ export class SearchResult<T> {
     constructor(public totalCount:number, public list:T[]) {
     }
 
-    public map (func:Function):SearchResult<T>{
-        this.list = this.list.map(func);
-        return this;
+    public map<U>(callback:(value:T, index:number, array:T[]) => U):SearchResult<U> {
+        return new SearchResult(this.totalCount, this.list.map(callback));
     }
 }
 

@@ -31,10 +31,10 @@ export function sendSearchResult<T>(res: Response) {
     'use strict';
     return async (results: SearchResult<T>): Promise<SearchResult<T>> => {
         if (results) {
-            results.list = await Promise.all(results.list);
+            const resolvedResults = await Promise.all(results.list);
             res.status(200);
             res.setHeader('Content-Type', 'application/json');
-            res.send(results, null, 4);
+            res.send(JSON.stringify(resolvedResults, null, 4));
         }
         return results;
     };
