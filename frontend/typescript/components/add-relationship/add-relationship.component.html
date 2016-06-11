@@ -4,15 +4,17 @@
             <h2 class="col-sm-12 col-md-7 col-lg-8 col-xs-12">Add Relationship</h2>
         </div>
     </div>
-    <representative-details [(data)]='myVar.representativeDetails' (validationErrors)='representativeDetailsErrors=$event'>
+    
+    <representative-details [(data)]='myVar.representativeDetails' (isValid)='representativeIsValid=$event'>
     </representative-details>
-    <authorisation-type [(data)]='myVar.authType' (validationErrors)='authTypeErrors=$event'>
+    <authorisation-type [(data)]='myVar.authType' (isValid)='authTypeIsValid=$event'>
     </authorisation-type>
-    <access-period [(data)]='myVar.accessPeriod' (validationErrors)='accessPeriodErrors=$event'>
+    <access-period [(data)]='myVar.accessPeriod' (isValid)='accessPeriodIsValid=$event'>
     </access-period>
     <!--authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions-->
-    <declaration (validationErrors)='declarationErrors=$event'></declaration>
-    <pre>
-        {{dumpObject(myVar)}} Access Period Errors: {{dumpObject(accessPeriodErrors)}}
-    </pre>
+    <declaration [(data)]='myVar.decalaration' (isValid)='declarationIsValid=$event'
+    [isAuthorizedBtnEnabled]='accessPeriodIsValid && authTypeIsValid && representativeIsValid'></declaration>
+    <!--{{dumpObject(myVar)}}-->
+
+
 </div>
