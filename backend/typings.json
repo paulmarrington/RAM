@@ -9,6 +9,7 @@
     "express-unless": "registry:dt/express-unless#0.0.0+20160317120654",
     "express-validator": "registry:dt/express-validator#2.9.0+20160412125233",
     "faker": "registry:dt/faker#0.0.0+20160406111603",
+    "hashids": "registry:dt/hashids#1.0.0+20160317120654",
     "jasmine": "registry:dt/jasmine#2.2.0+20160505161446",
     "jsonwebtoken": "registry:dt/jsonwebtoken#0.0.0+20160316155526",
     "lodash": "registry:dt/lodash#3.10.0+20160330154726",
