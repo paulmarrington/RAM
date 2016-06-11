@@ -220,8 +220,8 @@ const IdentitySchema = RAMSchema({
 IdentitySchema.pre('validate', function (next:() => void) {
     const identityType = IdentityType.valueOf(this.identityType) as IdentityType;
     if (identityType === IdentityType.InvitationCode && !this.rawIdValue) {
-        const time = process.hrtime();
-        this.rawIdValue = saltedHashids.encode(((+time[0]) * 1e9) + (+time[1]));
+        let time = new Date().getTime() - 1465636632000;
+        this.rawIdValue = saltedHashids.encode(time);
     }
     this.idValue = identityType ? identityType.buildIdValue(this) : null;
     next();

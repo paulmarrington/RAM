@@ -239,6 +239,7 @@ describe('RAM Identity', () => {
                     party: party1
                 });
                 expect(instance.rawIdValue).not.toBeNull();
+                console.log(instance.rawIdValue);
             }
 
             done();
