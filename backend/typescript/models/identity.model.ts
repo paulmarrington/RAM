@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import * as mongooseAutoIncrement from 'mongoose-auto-increment';
 import {conf} from '../bootstrap';
 import * as Hashids from 'hashids';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
@@ -217,14 +218,21 @@ const IdentitySchema = RAMSchema({
     }
 });
 
+mongooseAutoIncrement.initialize(mongoose.connection);
+IdentitySchema.plugin(mongooseAutoIncrement.plugin, {model: 'Identity', field: 'seq'});
+
 IdentitySchema.pre('validate', function (next:() => void) {
     const identityType = IdentityType.valueOf(this.identityType) as IdentityType;
     if (identityType === IdentityType.InvitationCode && !this.rawIdValue) {
-        let time = new Date().getTime() - 1465636632000;
-        this.rawIdValue = saltedHashids.encode(time);
+        this.nextCount((err:Error, count:number) => {
+            this.rawIdValue = saltedHashids.encode(count);
+            this.idValue = identityType ? identityType.buildIdValue(this) : null;
+            next();
+        });
+    } else {
+        this.idValue = identityType ? identityType.buildIdValue(this) : null;
+        next();
     }
-    this.idValue = identityType ? identityType.buildIdValue(this) : null;
-    next();
 });
 
 // interfaces .........................................................................................................
