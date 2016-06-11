@@ -31,6 +31,7 @@ export function sendSearchResult<T>(res: Response) {
     'use strict';
     return async (results: SearchResult<T>): Promise<SearchResult<T>> => {
         const resolvedResults = await Promise.all(results.result);
+        results.result = resolvedResults;
         if (resolvedResults) {
             res.status(200);
             res.setHeader('Content-Type', 'application/json');
