@@ -88,9 +88,9 @@ case "$1" in
     cd backend
     if [ -z "$3" ]
       then
-        RAM_CONF=$DIR/backend/conf/conf.js gulp test
+        RAM_CONF=$DIR/backend/conf/conf-test.js gulp test
       else
-        RAM_CONF=$DIR/backend/conf/conf.js gulp test "$2" "$3"
+        RAM_CONF=$DIR/backend/conf/conf-test.js gulp test "$2" "$3"
     fi
     echo ""
     ;;

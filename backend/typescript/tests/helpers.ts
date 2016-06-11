@@ -1,12 +1,12 @@
 import * as mongoose from 'mongoose';
+import {conf} from '../bootstrap';
 
-const mongoDbUrl = 'mongodb://localhost/ram-test';
-console.log('\nUsing mongo: ', mongoDbUrl, '\n');
+console.log('\nUsing mongo: ', conf.mongoURL, '\n');
 
 export const connectDisconnectMongo = () => {
 
     beforeEach((done) => {
-        mongoose.connect(mongoDbUrl, {}, done);
+        mongoose.connect(conf.mongoURL, {}, done);
     });
 
     afterEach((done) => {
