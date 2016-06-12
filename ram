@@ -39,7 +39,7 @@ case "$1" in
     echo ""
     echo "Downloading frontend dependencies ..."
     cd frontend
-    npm install && bower install && typings install
+    npm install && bower install && typings install && ./node_modules/.bin/jspm install
     echo ""
     ;;
 
@@ -170,7 +170,7 @@ case "$1" in
     echo ""
     echo "Opening browser to mock login page ..."
     echo ""
-    open "http://localhost:3000/dev/"
+    open "http://localhost:3001/dev/"
     echo ""
     ;;
 
