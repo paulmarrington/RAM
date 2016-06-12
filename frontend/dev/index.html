@@ -1,7 +1,7 @@
 <!-- THIS IS A DEVELOPMENT ONLY PAGE PROVIDING A CONVENIENT WAY TO LOG IN AS TEST USERS -->
 <html>
 <head>
-
+  <link rel="stylesheet" href="http://s.mlcdn.co/animate.css">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -58,21 +58,21 @@
 <body>
 <div class="container">
 
-  <h2>RAM Mock Login</h2>
-  <p>Please select a user from the list below to simulate loggin in as that user:</p>
+  <h2 class="animated bounce">RAM Mock Login</h2>
+  <p>Please select a user from the list below to simulate logging in as that user:</p>
 
   <div class="row">
     <div class="col-md-6">
       <div id="user-list">
         <ul class="list-group">
-          <li class="list-group-item" data-id="LINK_ID:MY_GOV:jennifermaxims_identity_1">Jennifer Maxims</li>
           <li class="list-group-item" data-id="">Log Out</li>
         </ul>
       </div>
 
     </div>
+
     <div class="col-md-6">
-      <div id="user-detail">
+      <div id="user-detail" class="animated">
         <span class="glyphicon glyphicon-user disabled" aria-hidden="true"></span>
         <h2 id="not-logged-in">Not Logged In</h2>
         <table class="table dont-break-out">
@@ -89,41 +89,62 @@
     var consoleAppender = new log4javascript.BrowserConsoleAppender();
     log.addAppender(consoleAppender);
 
-    // TODO load list from backend
-//    $('#user-list li').data('id', 'LINK_ID:MY_GOV:jennifermaxims_identity_1');
+    // Build list of known identities
+    $.get('/api/v1/identities', function (data) {
+      for(var i=0;i<data.length;i++) {
+        // eg. <li class="list-group-item" data-id="LINK_ID:MY_GOV:jennifermaxims_identity_1">Jennifer Maxims</li>
+        $('#user-list ul').append($('<li></li>').addClass('list-group-item').data('id', data[i].value.idValue).text(buildName(data[i].value.profile.name)));
+      }
 
-    updateUser();
+      updateUser();
 
-    // Select user
-    $('#user-list li').click(function () {
-      var identity = $(this).data('id');
-      log.debug('Logging in with identity ', identity);
-      $.post('/api/v1/simulators/authenticator/authenticate', {credentials: identity}, function (data) {
-//        $("#result").text(JSON.stringify(data));
-      }).always(function() {
-        updateUser();
-      })
+      // Select user
+      $('#user-list li').click(function () {
+        var identity = $(this).data('id');
+        log.debug('Logging in with identity ', identity);
+        $.post('/api/v1/simulators/authenticator/authenticate', {credentials: identity}, function (data) {
+        }).always(function() {
+          updateUser();
+        });
+      });
+
+      // Construct name
+      function buildName(name) {
+        if(name.unstructuredName) {
+          return name.unstructuredName;
+        }
+        else {
+          return name.givenName+' '+name.familyName;
+        }
+      }
     });
 
     function updateUser() {
+      var effect = 'rubberBand';
+      var $userDetail = $('#user-detail');
+      var $userList = $('#user-list');
+      var $notLoggedIn = $('#not-logged-in');
+
+      $userDetail.removeClass(effect);
+
       $.get('/api/v1/simulators/authenticator/locals', function (data) {
 
         // clean up state
-        $('#user-detail table tr').remove();
-        $('#user-detail .glyphicon').addClass('disabled');
-        $('#user-list li').removeClass('active');
+        $userDetail.find('table tr').remove();
+        $userDetail.find('.glyphicon').addClass('disabled');
+        $userList.find('li').removeClass('active');
 
         if (Object.keys(data).length > 0) {
           // display login details
-          $('#not-logged-in').hide();
-          $('#user-detail .glyphicon').removeClass('disabled');
+          $notLoggedIn.hide();
+          $userDetail.find('.glyphicon').removeClass('disabled');
 
           for (var key in data) {
-            $('#user-detail table').append('<tr><td>' + key + '</td><td>' + data[key] + '</td></tr>');
+            $userDetail.find('table').append('<tr><td>' + key + '</td><td>' + data[key] + '</td></tr>');
           }
 
           // highlight logged in user
-          $( '#user-list li' ).each(function( index ) {
+          $userList.find('li').each(function( index ) {
             if($(this).data('id') == data['X-RAM-Identity-IdValue']) {
               $(this).addClass('active');
             }
@@ -131,9 +152,11 @@
         }
         else {
           // not logged in
-          $('#not-logged-in').show();
+          $notLoggedIn.show();
         }
 
+        log.debug('updated');
+        $userDetail.addClass(effect);
       });
     }
   });

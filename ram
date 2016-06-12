@@ -166,6 +166,14 @@ case "$1" in
     echo ""
     ;;
 
+  'login')
+    echo ""
+    echo "Opening browser to mock login page ..."
+    echo ""
+    open "http://localhost:3000/dev/"
+    echo ""
+    ;;
+
   'merge:upstream')
     echo ""
     echo "Merging from upstream ..."
