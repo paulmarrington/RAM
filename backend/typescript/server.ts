@@ -21,13 +21,13 @@ import {ResetController} from './controllers/reset.server.controller';
 
 // PRODUCTION RESOURCES
 import {PartyController} from './controllers/party.controller';
-//import {RelationshipController} from './controllers/relationship.controller';
+import {RelationshipController} from './controllers/relationship.controller';
 import {RelationshipTypeController} from './controllers/relationshipType.controller';
 import {RelationshipAttributeNameController} from './controllers/relationshipAttributeName.controller';
 
 import {IdentityModel} from './models/identity.model';
 import {PartyModel} from './models/party.model';
-//import {RelationshipModel} from './models/relationship-old.model';
+import {RelationshipModel} from './models/relationship.model';
 import {RelationshipTypeModel} from './models/relationshipType.model';
 import {RelationshipAttributeNameModel} from './models/relationshipAttributeName.model';
 
@@ -90,6 +90,8 @@ server.use('/api/',
     new RelationshipTypeController(RelationshipTypeModel).assignRoutes(express.Router()));
 server.use('/api/',
     new RelationshipAttributeNameController(RelationshipAttributeNameModel).assignRoutes(express.Router()));
+server.use('/api/',
+    new RelationshipController(RelationshipModel).assignRoutes(express.Router()));
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {

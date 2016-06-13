@@ -2,6 +2,11 @@ import * as mongoose from 'mongoose';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
+import {
+    HrefValue,
+    Relationship as DTO,
+    SearchResult
+} from '../../../commons/RamAPI';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
@@ -108,8 +113,52 @@ RelationshipSchema.method('statusEnum', function () {
     return RelationshipStatus.valueOf(this.status);
 });
 
+RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
+    return new HrefValue(
+        '/api/v1/relationship/' + this.idValue,
+        includeValue ? await this.toDTO() : undefined
+    );
+});
+
+RelationshipSchema.method('toDTO', async function () {
+    return new DTO(
+        await this.subject.toHrefValue(true),
+        this.subjectNickName,
+        await this.delegate.toHrefValue(true),
+        await this.delegateNickName.toHrefValue(true),
+        this.startTimestamp,
+        this.endTimestamp,
+        this.endEventTimestamp,
+        this.status
+    );
+});
 // static methods .....................................................................................................
 
+RelationshipSchema.static('search', (page:number, pageSize:number) => {
+    return new Promise<SearchResult<IRelationship>>(async (resolve, reject) => {
+        try {
+            const query = {};
+            const count = await this.RelationshipModel
+                .count(query)
+                .exec();
+            const list = await this.RelationshipModel
+                .find(query)
+                .deepPopulate([
+                    'subject',
+                    'subjectNickname',
+                    'delegate',
+                    'delegateNickName'
+                ])
+                .skip((page - 1) * pageSize)
+                .limit(pageSize)
+                .sort({name: 1})
+                .exec();
+            resolve(new SearchResult<IRelationship>(count, list));
+        } catch (e) {
+            reject(e);
+        }
+    });
+});
 // concrete model .....................................................................................................
 
 export const RelationshipModel = mongoose.model(
