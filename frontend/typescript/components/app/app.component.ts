@@ -10,21 +10,32 @@ import {AddRelationshipComponent} from '../add-relationship/add-relationship.com
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {provide} from '@angular/core';
 import 'ng2-bootstrap';
+import {ErrorComponent} from '../error/error.component';
+import {ErrorService} from '../error/error.service';
+import {IdentityComponent} from '../identity/identity.component';
+import {IdentityService} from '../identity/identity.service';
+import {RamComponent} from '../ram/ram.component';
+import {AuthorisationComponent} from '../authorisations/authorisation.component';
 
 @Component({
     selector: 'ram-app',
     templateUrl: 'app.component.html',
-    directives: [ROUTER_DIRECTIVES],
+    directives: [ROUTER_DIRECTIVES, IdentityComponent, ErrorComponent],
     providers: [
         HTTP_PROVIDERS,
         ROUTER_PROVIDERS,
         provide(LocationStrategy, { useClass: HashLocationStrategy }),
         RAMRestService,
         RAMNavService,
-        RAMConstantsService
+        RAMConstantsService,
+        IdentityService,
+        ErrorService
     ]
 })
 @RouteConfig([
+    {path: '/', name: 'Ram', component: RamComponent, useAsDefault: true},
+    {path: '/authorisation  ', name: 'Authorisation', component: AuthorisationComponent},
+
     {
         path: '/relationships/:identityValue/:identityResolver',
         name: 'Relationships',
