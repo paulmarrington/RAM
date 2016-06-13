@@ -7,6 +7,12 @@ export class IdentityController {
     constructor(private identityModel:IIdentityModel) {
     }
 
+    // TODO consider moving this to party controller and returning the party object
+    private me = async (req:Request, res:Response) => {
+        req.params.idValue = res.locals['X-RAM-Identity-IdValue'];
+        this.findByIdentityIdValue(req, res);
+    };
+
     private findByIdentityIdValue = async (req:Request, res:Response) => {
         const schema = {
             'idValue': {
@@ -31,6 +37,7 @@ export class IdentityController {
     };
 
     public assignRoutes = (router:Router) => {
+        router.get('/v1/identity/me', this.me);
         router.get('/v1/identity/:idValue', this.findByIdentityIdValue);
         router.get('/v1/identities', this.search);
         return router;
