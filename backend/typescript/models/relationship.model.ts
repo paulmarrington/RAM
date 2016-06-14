@@ -101,10 +101,13 @@ export interface IRelationship extends IRAMObject {
     endEventTimestamp?: Date;
     status: string;
     statusEnum(): RelationshipStatus;
+    toHrefValue(includeValue:boolean):HrefValue<DTO>;
+    toDTO():DTO;
 }
 
 /* tslint:disable:no-empty-interfaces */
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
+    search:(page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
 }
 
 // instance methods ...................................................................................................
