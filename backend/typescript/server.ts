@@ -34,7 +34,7 @@ import {RelationshipAttributeNameModel} from './models/relationshipAttributeName
 // connect to the database ............................................................................................
 
 mongoose.connect(conf.mongoURL, {}, () => {
-    logger.info('Connected to db: ' + conf.mongoURL);
+    logger.info(`Connected to db: ${conf.mongoURL}\n`);
 });
 
 // configure express ..................................................................................................

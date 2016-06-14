@@ -57,7 +57,8 @@ gulp.task('serve', ["ts:watch"], function () {
         }
     })
         .on('restart', function () {
-            console.log('RAM Backend Server: restarted [OK]')
+            console.log('              [gulp] RAM Backend Server: restarted [OK]');
+            console.log('              [gulp] ..................................');
         });
 });
 
