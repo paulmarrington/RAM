@@ -30,8 +30,8 @@ const formatNow = () => {
     let seconds = date.getSeconds();
     const strTime = lpad(hours, 2, ' ') + ':' + lpad(minutes, 2, '0') + ':' + lpad(seconds, 2, '0');
     return '[' +
-        lpad(date.getMonth() + 1, 2, '0') +  '/' +
         lpad(date.getDate(), 2, '0') + '/' +
+        lpad(date.getMonth() + 1, 2, '0') +  '/' +
         date.getFullYear().toString().substr(2, 2) +
         '  ' +
         strTime +
