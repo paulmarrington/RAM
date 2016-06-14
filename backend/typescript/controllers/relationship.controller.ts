@@ -1,6 +1,6 @@
 import {Router, Request, Response} from 'express';
-import {sendResource, sendError, sendNotFoundError, validateReqSchema, sendSearchResult} from './helpers';
-import {IIdentityModel } from '../models/relationship.model';
+import {sendError, sendNotFoundError, validateReqSchema, sendSearchResult} from './helpers';
+import {IRelationshipModel} from '../models/relationship.model';
 
 export class RelationshipController {
 
