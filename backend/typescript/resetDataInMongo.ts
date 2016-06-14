@@ -13,6 +13,7 @@ export const doResetDataInMongo = (done?:() => void) => {
                 try {
                     const name = collectionName.name;
                     if (name.indexOf('.') === -1) {
+                        // excluded system collections (like system.indexes)
                         if (name.toLowerCase() !== identityCounterCollectionName) {
                             mongoose.connection.db.dropCollection(name, (err:Error) => {
                                 if (err) {
