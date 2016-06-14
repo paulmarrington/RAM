@@ -1,4 +1,5 @@
 import {logger} from '../logger';
+import * as colors from 'colors';
 import {Request, Response} from 'express';
 import {Headers} from './headers';
 import {conf} from '../bootstrap';
@@ -40,7 +41,7 @@ class Security {
 
     private resolveForDevelopment(res:Response, next:() => void) {
         return (identity?:IIdentity) => {
-            logger.info('Identity context:', (identity ? identity.idValue : '[not found]'));
+            logger.info('Identity context:', (identity ? colors.magenta(identity.idValue) : colors.red('[not found]')));
             if (identity) {
                 res.locals[Headers.Identity] = identity;
                 res.locals[Headers.IdentityIdValue] = identity.idValue;
