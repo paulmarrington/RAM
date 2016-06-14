@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as colors from 'colors';
 import {conf} from '../bootstrap';
+import {_resetDataInMongo} from '../resetDataInMongo';
 
 import {
     IRelationshipAttributeName,
@@ -92,6 +93,12 @@ class Seeder {
     public static jennifermaxims_party:IParty;
     public static jennifermaxims_identity_1:IIdentity;
 
+    public static bobsmith_name:IName;
+    public static bobsmith_dob:ISharedSecret;
+    public static bobsmith_profile:IProfile;
+    public static bobsmith_party:IParty;
+    public static bobsmith_identity_1:IIdentity;
+
     public static jenscatering_name:IName;
     public static jenscatering_profile:IProfile;
     public static jenscatering_party:IParty;
@@ -99,15 +106,15 @@ class Seeder {
 
     public static j_and_j_relationship:IRelationship;
 
-    public static async connect() {
+    public static async connectMongo() {
         await mongoose.connect(conf.mongoURL);
         console.log(`\nConnected to the db: ${conf.mongoURL}`);
     }
 
-    public static async dropDatabase() {
+    public static async resetDataInMongo() {
         if (conf.devMode) {
             console.log('Dropping database in dev mode (starting fresh)');
-            await mongoose.connection.db.dropDatabase();
+            await _resetDataInMongo();
         } else {
             console.log('Not dropping database in prod mode (appending)');
         }
@@ -595,6 +602,56 @@ class Seeder {
         }
     }
 
+    public static async loadSample_bobsmith_identity() {
+        try {
+
+            console.log('\nInserting Sample Identity - Bob Smith:\n'.underline);
+
+            if (!conf.devMode) {
+
+                console.log('Skipped in prod mode'.gray);
+
+            } else {
+
+                Seeder.bobsmith_name = await Seeder.createNameModel({
+                    givenName: 'Jennifer',
+                    familyName: 'Maxims'
+                } as any);
+
+                Seeder.bobsmith_dob = await Seeder.createSharedSecretModel({
+                    value: '01/01/2000',
+                    sharedSecretType: Seeder.dob_sharedSecretType
+                } as any);
+
+                Seeder.bobsmith_profile = await Seeder.createProfileModel({
+                    provider: ProfileProvider.MyGov.name,
+                    name: Seeder.bobsmith_name,
+                    sharedSecrets: [Seeder.bobsmith_dob]
+                } as any);
+
+                Seeder.bobsmith_party = await Seeder.createPartyModel({
+                    partyType: PartyType.Individual.name
+                } as any);
+
+                console.log('');
+
+                Seeder.bobsmith_identity_1 = await Seeder.createIdentityModel({
+                    rawIdValue: 'bobsmith_identity_1',
+                    identityType: IdentityType.LinkId.name,
+                    defaultInd: true,
+                    linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                    profile: Seeder.bobsmith_profile,
+                    party: Seeder.bobsmith_party
+                } as any);
+
+            }
+
+        } catch (e) {
+            console.log('Seeding failed!');
+            console.log(e);
+        }
+    }
+
     public static async loadSample_jenniferMaxim__jensCateringPtyLtd_relationship() {
         try {
 
@@ -627,13 +684,14 @@ class Seeder {
 
 // rock and roll ......................................................................................................
 
-Seeder.connect()
-    .then(Seeder.dropDatabase)
+Seeder.connectMongo()
+    .then(Seeder.resetDataInMongo)
     .then(Seeder.loadRelationshipOtherAttributeNames)
     .then(Seeder.loadRelationshipPermissionAttributeNames)
     .then(Seeder.loadRelationshipTypes)
     .then(Seeder.loadSharedSecretTypes)
     .then(Seeder.loadSample_jensCateringPtyLtd_identity)
     .then(Seeder.loadSample_jenniferMaxim_identity)
+    .then(Seeder.loadSample_bobsmith_identity)
     .then(Seeder.loadSample_jenniferMaxim__jensCateringPtyLtd_relationship)
     .then(Seeder.disconnect);
