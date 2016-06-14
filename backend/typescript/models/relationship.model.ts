@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import {RAMEnum, IRAMObject, RAMSchema} from './base';
+import {RAMEnum, IRAMObject, RAMSchema, Query} from './base';
 import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
 import {IRelationshipType} from './relationshipType.model';
@@ -169,15 +169,10 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
     return new Promise<SearchResult<IRelationship>>(async (resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
-            const query = {
-            };
-
-            if(subjectIdentityIdValue) {
-                query['subject'] =  await PartyModel.findByIdentityIdValue(subjectIdentityIdValue);
-            }
-            if(delegateIdentityIdValue) {
-                query['delegate'] = await PartyModel.findByIdentityIdValue(delegateIdentityIdValue);
-            }
+            const query = new Query()
+                .add('subject', await PartyModel.findByIdentityIdValue(subjectIdentityIdValue), subjectIdentityIdValue)
+                .add('delegate', await PartyModel.findByIdentityIdValue(delegateIdentityIdValue), delegateIdentityIdValue)
+                .build();
 
             const count = await this.RelationshipModel.count(query).exec();
             const list = await this.RelationshipModel
