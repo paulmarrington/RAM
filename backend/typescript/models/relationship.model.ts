@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
+import {IRelationshipType} from './relationshipType.model';
 import {
     HrefValue,
     Relationship as DTO,
@@ -42,6 +43,11 @@ export class RelationshipStatus extends RAMEnum {
 // schema .............................................................................................................
 
 const RelationshipSchema = RAMSchema({
+    relationshipType: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'RelationshipType',
+        required: [true, 'Relationship Type is required']
+    },
     subject: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Party',
@@ -92,6 +98,7 @@ const RelationshipSchema = RAMSchema({
 // interfaces .........................................................................................................
 
 export interface IRelationship extends IRAMObject {
+    relationshipType:IRelationshipType;
     subject: IParty;
     subjectNickName: IName;
     delegate: IParty;
@@ -127,6 +134,7 @@ RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
 
 RelationshipSchema.method('toDTO', async function () {
     return new DTO(
+        await this.relationshipType.toHrefValue(false),
         await this.subject.toHrefValue(true),
         await this.subjectNickName.toDTO(),
         await this.delegate.toHrefValue(true),
@@ -147,6 +155,7 @@ RelationshipSchema.static('findByIdentifier', (id:String) => {
             _id: id
         })
         .deepPopulate([
+            'relationshipType',
             'subject',
             'subjectNickName',
             'delegate',
@@ -165,6 +174,7 @@ RelationshipSchema.static('search', (page:number, pageSize:number) => {
             const list = await this.RelationshipModel
                 .find(query)
                 .deepPopulate([
+                    'relationshipType',
                     'subject',
                     'subjectNickName',
                     'delegate',
