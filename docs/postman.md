@@ -29,3 +29,6 @@ Some steps on how to add/import:
 
 ![Postman Add 4](images/postman-add-4.png?raw=true)
 
+You may also import from link:
+
+[Postman Collection Shared Link](https://www.getpostman.com/collections/19f0cff0595357c1fab9)
