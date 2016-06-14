@@ -92,21 +92,22 @@ const RelationshipSchema = RAMSchema({
 // interfaces .........................................................................................................
 
 export interface IRelationship extends IRAMObject {
-    subject: IParty;
-    subjectNickName: IName;
-    delegate: IParty;
-    delegateNickName: IName;
-    startTimestamp: Date;
-    endTimestamp?: Date;
-    endEventTimestamp?: Date;
-    status: string;
-    statusEnum(): RelationshipStatus;
+    subject:IParty;
+    subjectNickName:IName;
+    delegate:IParty;
+    delegateNickName:IName;
+    startTimestamp:Date;
+    endTimestamp?:Date;
+    endEventTimestamp?:Date;
+    status:string;
+    statusEnum():RelationshipStatus;
     toHrefValue(includeValue:boolean):HrefValue<DTO>;
     toDTO():DTO;
 }
 
 /* tslint:disable:no-empty-interfaces */
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
+    findByIdentifier:(id:String) => mongoose.Promise<IRelationship>;
     search:(page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
 }
 
@@ -117,9 +118,10 @@ RelationshipSchema.method('statusEnum', function () {
 });
 
 RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
+    const relationshipId:string = this._id.toString();
     return new HrefValue(
         // TODO use correct reference
-        '/api/v1/'+'relationship/' + this.idValue,
+        `/api/v1/relationship/${relationshipId}`,
         includeValue ? await this.toDTO() : undefined
     );
 });
@@ -139,8 +141,23 @@ RelationshipSchema.method('toDTO', async function () {
 
 // static methods .....................................................................................................
 
+RelationshipSchema.static('findByIdentifier', (id:String) => {
+    // TODO migrate from _id to another id
+    return this.RelationshipModel
+        .findOne({
+            _id: id
+        })
+        .deepPopulate([
+            'subject',
+            'subjectNickName',
+            'delegate',
+            'delegateNickName'
+        ])
+        .exec();
+});
+
 RelationshipSchema.static('search', (page:number, pageSize:number) => {
-    return new Promise<SearchResult<IRelationship>>(async (resolve, reject) => {
+    return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
         try {
             const query = {};
             const count = await this.RelationshipModel
