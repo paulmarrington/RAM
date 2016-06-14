@@ -6,6 +6,7 @@ import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RelationshipsComponent} from '../relationships/relationships.component';
 import {AddRelationshipComponent} from '../add-relationship/add-relationship.component';
+import {AddRelationshipCodeComponent} from '../add-relationship-code/add-relationship-code.component';
 
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {provide} from '@angular/core';
@@ -44,6 +45,10 @@ import {AuthorisationComponent} from '../authorisations/authorisation.component'
         path: '/relationships/add',
         name: 'AddRelationship',
         component: AddRelationshipComponent
+    },{
+        path: '/relationships/add-code',
+        name: 'AddRelationshipCodeComponent',
+        component: AddRelationshipCodeComponent
     }
 ])
 export class AppComponent {
