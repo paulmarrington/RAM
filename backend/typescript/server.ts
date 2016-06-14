@@ -7,7 +7,7 @@ import * as methodOverride from 'method-override';
 import * as cApi from '../../commons/RamAPI';
 import * as mongoose from 'mongoose';
 import {conf} from './bootstrap';
-import {logStream} from './logger';
+import {logStream, logger} from './logger';
 // import {continueOnlyIfJWTisValid} from './security'
 import expressValidator = require('express-validator');
 
@@ -34,7 +34,7 @@ import {RelationshipAttributeNameModel} from './models/relationshipAttributeName
 // connect to the database ............................................................................................
 
 mongoose.connect(conf.mongoURL, {}, () => {
-    console.log('Connected to db: ' + conf.mongoURL);
+    logger.info('Connected to db: ' + conf.mongoURL);
 });
 
 // configure express ..................................................................................................
@@ -110,4 +110,4 @@ server.use((req: express.Request, res: express.Response) => {
 // start server .......................................................................................................
 
 server.listen(conf.httpPort);
-console.log(`RAM Server running on port ${conf.httpPort}`);
+logger.info(`RAM Server running on port ${conf.httpPort}`);

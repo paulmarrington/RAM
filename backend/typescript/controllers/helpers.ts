@@ -1,3 +1,4 @@
+import {logger} from '../logger';
 import {Response, Request} from 'express';
 import {IResponse, ErrorResponse, SearchResult} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
@@ -77,7 +78,7 @@ type ValidationError = {
 export function sendError<T>(res: Response) {
     'use strict';
     return (error: string | Error | ValidationError | string[]) => {
-        console.log(error);
+        logger.error(error);
         switch (error.constructor.name) {
             case 'Array':
                 res.status(400);
