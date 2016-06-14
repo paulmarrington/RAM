@@ -22,7 +22,7 @@ class Security {
             if (keyUpper.startsWith(Headers.Prefix)) {
                 const value = req.headers[key];
                 res.locals[keyUpper] = value;
-                console.log(`${keyUpper}=${value}`);
+                logger.debug(`${keyUpper}=${value}`);
             }
         }
         next();
@@ -58,7 +58,7 @@ class Security {
 
     private rejectForDevelopment(res:Response, next:() => void) {
         return ():void => {
-            logger.info('Unable to look up identity!');
+            logger.error('Unable to look up identity!');
             res.status(401);
             res.send({});
         };

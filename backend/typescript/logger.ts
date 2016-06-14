@@ -15,14 +15,6 @@ const lpad = (value:Object, size:number, char:string) => {
     return s;
 };
 
-const rpad = (value:Object, size:number, char:string) => {
-    let s = value + '';
-    while (s.length < size) {
-        s = s + char;
-    }
-    return s;
-};
-
 const formatNow = () => {
     const date = new Date();
     let hours = date.getHours();
@@ -39,8 +31,8 @@ const formatNow = () => {
 };
 
 export const logger = new (winston.Logger)({
-    level: 'debug',
     exitOnError: false,
+    level: 'debug',
     transports: [
         new (winston.transports.Console)({
             handleExceptions: true,
@@ -49,7 +41,7 @@ export const logger = new (winston.Logger)({
             timestamp: formatNow,
             formatter: function (options:{timestamp:() => string, level:string, message:string}) {
                 return options.timestamp() + ' ' +
-                    rpad(options.level, 7, ' ') + ' ' +
+                    lpad('[' + options.level + ']', 7, ' ') + ' ' +
                     (undefined !== options.message ? options.message : '');
             }
         }),
@@ -65,7 +57,7 @@ export const logger = new (winston.Logger)({
             timestamp: formatNow,
             formatter: function (options:{timestamp:() => string, level:string, message:string}) {
                 return options.timestamp() + ' ' +
-                    rpad(options.level, 7, ' ') + ' ' +
+                    lpad('[' + options.level + ']', 7, ' ') + ' ' +
                     (undefined !== options.message ? options.message : '');
             }
         })
