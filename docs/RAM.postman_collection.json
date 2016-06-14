@@ -249,6 +249,33 @@
 			"description": "",
 			"item": [
 				{
+					"name": "Get (Jen's Catering Pty Ltd)",
+					"request": {
+						"url": "{{host}}/api/v1/party/identity/PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
 					"name": "Get (Jennifer Maxims)",
 					"request": {
 						"url": "{{host}}/api/v1/party/identity/LINK_ID:MY_GOV:jennifermaxims_identity_1",
@@ -271,6 +298,33 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get (Bob Smith)",
+					"request": {
+						"url": "{{host}}/api/v1/party/identity/LINK_ID:MY_GOV:bobsmith_identity_1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
 					},
 					"response": []
 				}
