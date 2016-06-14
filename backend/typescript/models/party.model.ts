@@ -60,7 +60,7 @@ PartySchema.method('toHrefValue', async function (includeValue:boolean) {
     if (defaultIdentity) {
         return new HrefValue(
             '/api/v1/party/identity/' + defaultIdentity.idValue,
-            includeValue ? this.toDTO() : undefined
+            includeValue ? await this.toDTO() : undefined
         );
     } else {
         throw new Error('Default Identity not found');
