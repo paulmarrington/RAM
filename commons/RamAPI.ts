@@ -206,7 +206,8 @@ export class Party {
 }
 
 export class Relationship {
-    constructor(public subject:Party,
+    constructor(public relationshipType:RelationshipType,
+                public subject:Party,
                 public subjectNickName:Name,
                 public delegate:Party,
                 public delegateNickName:Name,
