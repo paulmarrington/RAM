@@ -16,7 +16,6 @@ import {ErrorService} from '../error/error.service';
 import {IdentityComponent} from '../identity/identity.component';
 import {IdentityService} from '../identity/identity.service';
 import {RamComponent} from '../ram/ram.component';
-import {AuthorisationComponent} from '../authorisations/authorisation.component';
 
 @Component({
     selector: 'ram-app',
@@ -35,7 +34,6 @@ import {AuthorisationComponent} from '../authorisations/authorisation.component'
 })
 @RouteConfig([
     {path: '/', name: 'Ram', component: RamComponent, useAsDefault: true},
-    {path: '/authorisation  ', name: 'Authorisation', component: AuthorisationComponent},
 
     {
         path: '/relationships/:identityValue/:identityResolver',
