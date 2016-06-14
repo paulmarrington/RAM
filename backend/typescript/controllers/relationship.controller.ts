@@ -5,10 +5,30 @@ import {IRelationshipModel} from '../models/relationship.model';
 // todo add data security
 export class RelationshipController {
 
+    private static SEARCH_SCHEMA = {
+        'page': {
+            in: 'query',
+            notEmpty: true,
+            errorMessage: 'Page is not valid'
+        },
+        'pageSize': {
+            in: 'query',
+            optional: true,
+            isNumeric: {
+                errorMessage: 'Page Size is not valid'
+            }
+        },
+        'identity_id': {
+            in: 'path',
+            notEmpty: true,
+            errorMessage: 'Identity Id is not valid'
+        }
+    };
+
     constructor(private relationshipModel:IRelationshipModel) {
     }
 
-    private findByIdentifier = async (req:Request, res:Response) => {
+    private findByIdentifier = async(req:Request, res:Response) => {
         const schema = {
             'id': {
                 in: 'params',
@@ -23,25 +43,28 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private search = async (req:Request, res:Response) => {
-        const schema = {
-            'page': {
-                in: 'query',
-                notEmpty: true,
-                errorMessage: 'Page is not valid'
-            }
-        };
-        validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.search(req.params.page, 10))
+    private subject = async(req:Request, res:Response) => {
+
+        validateReqSchema(req, RelationshipController.SEARCH_SCHEMA)
+            .then((req:Request) => this.relationshipModel.search(req.params.identity_id, null, req.query.page, req.query.pageSize))
+            .then((results) => (results.map((model) => model.toHrefValue(true))))
+            .then(sendSearchResult(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
+    private delegate = async(req:Request, res:Response) => {
+
+        validateReqSchema(req, RelationshipController.SEARCH_SCHEMA)
+            .then((req:Request) => this.relationshipModel.search(null, req.params.identity_id, req.query.page, req.query.pageSize))
             .then((results) => (results.map((model) => model.toHrefValue(true))))
             .then(sendSearchResult(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
     public assignRoutes = (router:Router) => {
-        // todo use correct paths
         router.get('/v1/relationship/:id', this.findByIdentifier);
-        router.get('/v1/relationships', this.search);
+        router.get('/v1/relationships/subject/identity/:identity_id', this.subject);
+        router.get('/v1/relationships/delegate/identity/:identity_id', this.delegate);
         return router;
     };
 }

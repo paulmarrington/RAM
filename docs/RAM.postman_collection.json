@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "303552cf-64fd-01dd-9a51-67ff94fb2851",
+		"_postman_id": "2b88f3a1-e284-5e40-2797-35d64ae71d84",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -129,8 +129,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -156,8 +155,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -183,8 +181,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -210,8 +207,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -237,8 +233,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -264,8 +259,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -291,8 +285,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
@@ -324,8 +317,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -351,8 +343,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -378,8 +369,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -431,6 +421,79 @@
 									"enabled": true
 								}
 							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Relationship",
+			"description": "",
+			"item": [
+				{
+					"name": "List by subject",
+					"request": {
+						"url": "{{host}}/api/v1/relationships/subject/identity/PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1?page=1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "List by delegate",
+					"request": {
+						"url": "{{host}}/api/v1/relationships/delegate/identity/LINK_ID:MY_GOV:jennifermaxims_identity_1?page=1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/575fe8a6cb1427cc82a924cf",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
 						},
 						"description": ""
 					},
@@ -464,8 +527,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -478,8 +540,7 @@
 						"body": {
 							"mode": "formdata",
 							"formdata": []
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -492,8 +553,7 @@
 						"body": {
 							"mode": "formdata",
 							"formdata": []
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}

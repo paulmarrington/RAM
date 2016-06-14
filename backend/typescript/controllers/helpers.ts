@@ -29,7 +29,7 @@ export function sendList<T extends HrefValue<U>, U>(res: Response) {
 export function sendSearchResult<T extends HrefValue<U>, U>(res: Response) {
     'use strict';
     return async (results: SearchResult<Promise<T>>): Promise<SearchResult<T>> => {
-        const resolvedResults = new SearchResult(results.totalCount, await Promise.all<T>(results.list));
+        const resolvedResults = new SearchResult(results.totalCount, results.pageSize, await Promise.all<T>(results.list));
         res.status(200);
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(resolvedResults, null, 4));

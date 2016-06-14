@@ -46,11 +46,11 @@ export class HrefValue<T> {
 }
 
 export class SearchResult<T> {
-    constructor(public totalCount:number, public list:T[]) {
+    constructor(public totalCount:number, public pageSize:number, public list:T[]) {
     }
 
     public map<U>(callback:(value:T, index:number, array:T[]) => U):SearchResult<U> {
-        return new SearchResult(this.totalCount, this.list.map(callback));
+        return new SearchResult(this.totalCount, this.pageSize, this.list.map(callback));
     }
 }
 

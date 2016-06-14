@@ -19,6 +19,8 @@ const _ProfileModel = ProfileModel;
 /* tslint:disable:no-unused-variable */
 const _PartyModel = PartyModel;
 
+const MAX_PAGE_SIZE = 10;
+
 // enums, utilities, helpers ..........................................................................................
 
 const saltedHashids = new Hashids(conf.hashIdsSalt, 6, 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789');
@@ -379,8 +381,9 @@ IdentitySchema.static('listByPartyId', (partyId:String) => {
         .exec();
 });
 
-IdentitySchema.static('search', (page:number, pageSize:number) => {
+IdentitySchema.static('search', (page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
+        const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
             const query = {};
             const count = await this.IdentityModel
@@ -396,7 +399,7 @@ IdentitySchema.static('search', (page:number, pageSize:number) => {
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IIdentity>(count, list));
+            resolve(new SearchResult<IIdentity>(count, pageSize, list));
         } catch (e) {
             reject(e);
         }

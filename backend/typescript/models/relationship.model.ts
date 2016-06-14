@@ -17,6 +17,8 @@ const _PartyModel = PartyModel;
 /* tslint:disable:no-unused-variable */
 const _NameModel = NameModel;
 
+const MAX_PAGE_SIZE = 10;
+
 // enums, utilities, helpers ..........................................................................................
 
 export class RelationshipStatus extends RAMEnum {
@@ -114,7 +116,7 @@ export interface IRelationship extends IRAMObject {
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
     findByIdentifier:(id:String) => mongoose.Promise<IRelationship>;
-    search:(page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
+    search:(subjectId:string, delegateId:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
 }
 
 // instance methods ...................................................................................................
@@ -126,7 +128,6 @@ RelationshipSchema.method('statusEnum', function () {
 RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
     const relationshipId:string = this._id.toString();
     return new HrefValue(
-        // TODO use correct reference
         `/api/v1/relationship/${relationshipId}`,
         includeValue ? await this.toDTO() : undefined
     );
@@ -164,13 +165,21 @@ RelationshipSchema.static('findByIdentifier', (id:String) => {
         .exec();
 });
 
-RelationshipSchema.static('search', (page:number, pageSize:number) => {
+RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IRelationship>>(async (resolve, reject) => {
+        const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
-            const query = {};
-            const count = await this.RelationshipModel
-                .count(query)
-                .exec();
+            const query = {
+            };
+
+            if(subjectIdentityIdValue) {
+                query['subject'] =  await PartyModel.findByIdentityIdValue(subjectIdentityIdValue);
+            }
+            if(delegateIdentityIdValue) {
+                query['delegate'] = await PartyModel.findByIdentityIdValue(delegateIdentityIdValue);
+            }
+
+            const count = await this.RelationshipModel.count(query).exec();
             const list = await this.RelationshipModel
                 .find(query)
                 .deepPopulate([
@@ -184,7 +193,7 @@ RelationshipSchema.static('search', (page:number, pageSize:number) => {
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IRelationship>(count, list));
+            resolve(new SearchResult<IRelationship>(count, pageSize, list));
         } catch (e) {
             reject(e);
         }
