@@ -25,6 +25,11 @@ export class RelationshipController {
 
     private search = async (req:Request, res:Response) => {
         const schema = {
+            'page': {
+                in: 'query',
+                notEmpty: true,
+                errorMessage: 'Page is not valid'
+            }
         };
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.search(req.params.page, 10))
