@@ -1,6 +1,7 @@
 import {Router, Request, Response} from 'express';
 import {sendResource, sendError, sendNotFoundError, validateReqSchema, sendSearchResult} from './helpers';
 import {Headers} from './headers';
+import {conf} from './bootstrap';
 import {IIdentityModel} from '../models/identity.model';
 
 export class IdentityController {
@@ -65,7 +66,9 @@ export class IdentityController {
         router.get('/v1/identity/me', this.findMe);
         router.get('/v1/identity/:idValue', this.findByIdentityIdValue);
         router.get('/v1/identity/invitationCode/:invitationCode', this.findPendingByInvitationCodeInDateRange);
-        router.get('/v1/identities', this.search);
+        if (conf.devMode) {
+            router.get('/v1/identities', this.search);
+        }
         return router;
     };
 
