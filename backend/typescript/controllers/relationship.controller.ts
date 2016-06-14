@@ -9,8 +9,6 @@ export class RelationshipController {
 
     private search = async (req:Request, res:Response) => {
         const schema = {
-            
-            
         };
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.search(req.params.page, 10))
