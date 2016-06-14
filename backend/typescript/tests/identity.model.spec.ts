@@ -80,6 +80,31 @@ describe('RAM Identity', () => {
         }
     });
 
+    it('finds pending by invitation code', async (done) => {
+        try {
+
+            const instance = await IdentityModel.create({
+                identityType: IdentityType.InvitationCode.name,
+                defaultInd: false,
+                invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
+                invitationCodeExpiryTimestamp: new Date(2055, 1, 1),
+                invitationCodeTemporaryEmailAddress: 'bob@example.com',
+                profile: profile1,
+                party: party1
+            });
+
+            const retrievedInstance = await IdentityModel.findPendingByInvitationCodeInDateRange(instance.rawIdValue, new Date());
+            expect(retrievedInstance).not.toBeNull();
+            expect(retrievedInstance.id).toBe(instance.id);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
     it('fails find by invalid id value', async (done) => {
         try {
             const instance = await IdentityModel.findByIdValue('__BOGUS__');

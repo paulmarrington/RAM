@@ -264,6 +264,7 @@ export interface IIdentity extends IRAMObject {
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findByIdValue:(idValue:String) => mongoose.Promise<IIdentity>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => mongoose.Promise<IIdentity>;
     findDefaultByPartyId:(partyId:String) => mongoose.Promise<IIdentity>;
     listByPartyId:(partyId:String) => mongoose.Promise<IIdentity[]>;
     search:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
@@ -324,6 +325,22 @@ IdentitySchema.static('findByIdValue', (idValue:String) => {
     return this.IdentityModel
         .findOne({
             idValue: idValue
+        })
+        .deepPopulate([
+            'profile.name',
+            'profile.sharedSecrets.sharedSecretType',
+            'party'
+        ])
+        .exec();
+});
+
+IdentitySchema.static('findPendingByInvitationCodeInDateRange', (invitationCode:String, date:Date) => {
+    return this.IdentityModel
+        .findOne({
+            rawIdValue: invitationCode,
+            identityType: IdentityType.InvitationCode.name,
+            invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
+            invitationCodeExpiryTimestamp: {$gte: date}
         })
         .deepPopulate([
             'profile.name',
