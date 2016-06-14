@@ -300,7 +300,6 @@ IdentitySchema.method('toHrefValue', async function (includeValue:boolean) {
 });
 
 IdentitySchema.method('toDTO', async function () {
-    console.log('Identity.toDTO() ...');
     return new DTO(
         this.idValue,
         this.rawIdValue,
