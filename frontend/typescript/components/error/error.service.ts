@@ -1,3 +1,4 @@
+// TODO this component need to be deleted or migrated to project standards
 import {EventEmitter} from '@angular/core';
 import {Error} from './error';
 import {ErrorResponse} from '../../../../commons/RamAPI';
