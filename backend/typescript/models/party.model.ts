@@ -82,7 +82,7 @@ PartySchema.method('toDTO', async function () {
 
 PartySchema.static('findByIdentityIdValue', async (idValue:String) => {
     const identity = await IdentityModel.findByIdValue(idValue);
-    return identity.party;
+    return identity ? identity.party : null;
 });
 
 // concrete model .....................................................................................................

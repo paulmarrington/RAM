@@ -108,6 +108,33 @@
 					"response": []
 				},
 				{
+					"name": "Get (Bad)",
+					"request": {
+						"url": "{{host}}/api/v1/identity/bad",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
 					"name": "Get (me)",
 					"request": {
 						"url": "{{host}}/api/v1/identity/me",
@@ -248,6 +275,33 @@
 			"name": "Party",
 			"description": "",
 			"item": [
+				{
+					"name": "Get (Bad)",
+					"request": {
+						"url": "{{host}}/api/v1/party/identity/bad",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
 				{
 					"name": "Get (Jen's Catering Pty Ltd)",
 					"request": {
