@@ -84,7 +84,7 @@
 				{
 					"name": "List",
 					"request": {
-						"url": "{{host}}/api/v1/identities",
+						"url": "{{host}}/api/v1/identities?page=1",
 						"method": "GET",
 						"header": [
 							{
@@ -135,9 +135,63 @@
 					"response": []
 				},
 				{
+					"name": "Get (Jen's Catering Pty Ltd)",
+					"request": {
+						"url": "{{host}}/api/v1/identity/PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
 					"name": "Get (Jennifer Maxims)",
 					"request": {
 						"url": "{{host}}/api/v1/identity/LINK_ID:MY_GOV:jennifermaxims_identity_1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get (Bob Smith)",
+					"request": {
+						"url": "{{host}}/api/v1/identity/LINK_ID:MY_GOV:bobsmith_identity_1",
 						"method": "GET",
 						"header": [
 							{
