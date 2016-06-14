@@ -92,17 +92,17 @@ const RelationshipSchema = RAMSchema({
 // interfaces .........................................................................................................
 
 export interface IRelationship extends IRAMObject {
-    subject:IParty;
-    subjectNickName:IName;
-    delegate:IParty;
-    delegateNickName:IName;
-    startTimestamp:Date;
-    endTimestamp?:Date;
-    endEventTimestamp?:Date;
-    status:string;
-    statusEnum():RelationshipStatus;
-    toHrefValue(includeValue:boolean):HrefValue<DTO>;
-    toDTO():DTO;
+    subject: IParty;
+    subjectNickName: IName;
+    delegate: IParty;
+    delegateNickName: IName;
+    startTimestamp: Date;
+    endTimestamp?: Date;
+    endEventTimestamp?: Date;
+    status: string;
+    statusEnum(): RelationshipStatus;
+    toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
+    toDTO():Promise<DTO>;
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
@@ -156,7 +156,7 @@ RelationshipSchema.static('findByIdentifier', (id:String) => {
 });
 
 RelationshipSchema.static('search', (page:number, pageSize:number) => {
-    return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
+    return new Promise<SearchResult<IRelationship>>(async (resolve, reject) => {
         try {
             const query = {};
             const count = await this.RelationshipModel

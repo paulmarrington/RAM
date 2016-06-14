@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as colors from 'colors';
 import {conf} from '../bootstrap';
-import {_resetDataInMongo} from '../resetDataInMongo';
+import {doResetDataInMongo} from '../resetDataInMongo';
 
 import {
     IRelationshipAttributeName,
@@ -122,7 +122,7 @@ class Seeder {
     public static async resetDataInMongo() {
         if (conf.devMode) {
             console.log('Dropping database in dev mode (starting fresh)');
-            await _resetDataInMongo();
+            await doResetDataInMongo();
         } else {
             console.log('Not dropping database in prod mode (appending)');
         }

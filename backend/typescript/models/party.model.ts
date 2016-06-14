@@ -40,8 +40,8 @@ const PartySchema = RAMSchema({
 export interface IParty extends IRAMObject {
     partyType: string;
     partyTypeEnum(): PartyType;
-    toHrefValue(includeValue:boolean): HrefValue<DTO>;
-    toDTO(): DTO;
+    toHrefValue(includeValue:boolean): Promise<HrefValue<DTO>>;
+    toDTO(): Promise<DTO>;
 }
 
 /* tslint:disable:no-empty-interfaces */

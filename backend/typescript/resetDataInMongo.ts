@@ -1,8 +1,11 @@
 import * as mongoose from 'mongoose';
 import * as mongooseAutoIncrement from 'mongoose-auto-increment';
 
+const identityCounterCollectionName = 'identitycounters';
+const identityCounterModelName = 'IdentityCounter';
+
 /* tslint:disable:max-func-body-length */
-export const _resetDataInMongo = (done?:() => void) => {
+export const doResetDataInMongo = (done?:() => void) => {
     mongooseAutoIncrement.initialize(mongoose.connection);
     mongoose.connection.db.listCollections().toArray((err:Error, collectionNames:[{name:string}]) => {
         const promises = collectionNames.map(function (collectionName) {
@@ -10,7 +13,7 @@ export const _resetDataInMongo = (done?:() => void) => {
                 try {
                     const name = collectionName.name;
                     if (name.indexOf('.') === -1) {
-                        if (name.toLowerCase() !== 'identitycounters') {
+                        if (name.toLowerCase() !== identityCounterCollectionName) {
                             mongoose.connection.db.dropCollection(name, (err:Error) => {
                                 if (err) {
                                     reject(err);
@@ -19,7 +22,7 @@ export const _resetDataInMongo = (done?:() => void) => {
                                 }
                             });
                         } else {
-                            mongoose.model('IdentityCounter').update(
+                            mongoose.model(identityCounterModelName).update(
                                 {count: 1},
                                 (err:Error, raw:Object) => {
                                     if (err) {

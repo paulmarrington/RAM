@@ -44,8 +44,8 @@ export interface IName extends IRAMObject {
     givenName?: string;
     familyName?: string;
     unstructuredName?: string;
-    toHrefValue():HrefValue<DTO>;
-    toDTO():DTO;
+    toHrefValue():Promise<HrefValue<DTO>>;
+    toDTO():Promise<DTO>;
 }
 
 /* tslint:disable:no-empty-interfaces */

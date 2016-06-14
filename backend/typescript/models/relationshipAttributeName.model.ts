@@ -85,8 +85,8 @@ export interface IRelationshipAttributeName extends ICodeDecode {
     purposeText: string;
     permittedValues: string[];
     domainEnum(): RelationshipAttributeNameDomain;
-    toHrefValue(includeValue:boolean): HrefValue<DTO>;
-    toDTO(): DTO;
+    toHrefValue(includeValue:boolean): Promise<HrefValue<DTO>>;
+    toDTO(): Promise<DTO>;
 }
 
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {

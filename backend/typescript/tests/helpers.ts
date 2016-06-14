@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import {conf} from '../bootstrap';
-import {_resetDataInMongo} from '../resetDataInMongo';
+import {doResetDataInMongo} from '../resetDataInMongo';
 
 console.log('\nUsing mongo: ', conf.mongoURL, '\n');
 
@@ -19,6 +19,6 @@ export const connectDisconnectMongo = () => {
 /* tslint:disable:max-func-body-length */
 export const resetDataInMongo = () => {
     beforeEach((done) => {
-        _resetDataInMongo(done);
+        doResetDataInMongo(done);
     });
 };
