@@ -1,3 +1,5 @@
+// TODO this component need to be deleted or migrated to project standards
+
 import {Component, OnInit} from '@angular/core';
 import {Error} from './error';
 import {ErrorService} from './error.service';

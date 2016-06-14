@@ -1,3 +1,5 @@
+// TODO this component need to be deleted or migrated to project standards
+
 import {Component} from '@angular/core';
 
 import 'ng2-bootstrap';
@@ -10,6 +12,10 @@ import {ErrorService} from '../error/error.service';
     templateUrl: 'identity.component.html'
 })
 
+/**
+ * Simple placeholder for displaying the current user.
+ * Demo code only.
+ */
 export class IdentityComponent {
     public me: Identity;
 
