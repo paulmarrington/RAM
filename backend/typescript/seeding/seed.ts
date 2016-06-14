@@ -49,7 +49,8 @@ import {
     IdentityModel,
     IdentityType,
     IdentityLinkIdScheme,
-    IdentityPublicIdentifierScheme} from '../models/identity.model';
+    IdentityPublicIdentifierScheme,
+    IdentityInvitationCodeStatus} from '../models/identity.model';
 
 const now = new Date();
 
@@ -87,6 +88,11 @@ class Seeder {
 
     public static dob_sharedSecretType:ISharedSecretType;
 
+    public static jenscatering_name:IName;
+    public static jenscatering_profile:IProfile;
+    public static jenscatering_party:IParty;
+    public static jenscatering_identity_1:IIdentity;
+
     public static jennifermaxims_name:IName;
     public static jennifermaxims_dob:ISharedSecret;
     public static jennifermaxims_profile:IProfile;
@@ -99,12 +105,14 @@ class Seeder {
     public static bobsmith_party:IParty;
     public static bobsmith_identity_1:IIdentity;
 
-    public static jenscatering_name:IName;
-    public static jenscatering_profile:IProfile;
-    public static jenscatering_party:IParty;
-    public static jenscatering_identity_1:IIdentity;
+    public static fredjohnson_name:IName;
+    public static fredjohnson_dob:ISharedSecret;
+    public static fredjohnson_profile:IProfile;
+    public static fredjohnson_party:IParty;
+    public static fredjohnson_identity_1:IIdentity;
 
     public static j_and_j_relationship:IRelationship;
+    public static j_and_f_relationship:IRelationship;
 
     public static async connectMongo() {
         await mongoose.connect(conf.mongoURL);
@@ -614,8 +622,8 @@ class Seeder {
             } else {
 
                 Seeder.bobsmith_name = await Seeder.createNameModel({
-                    givenName: 'Jennifer',
-                    familyName: 'Maxims'
+                    givenName: 'Bob',
+                    familyName: 'Smith'
                 } as any);
 
                 Seeder.bobsmith_dob = await Seeder.createSharedSecretModel({
@@ -680,6 +688,65 @@ class Seeder {
         }
     }
 
+    public static async loadSample_jensCateringPtyLtd_fredjohnson_invitationCode() {
+        try {
+
+            console.log('\nInserting Sample Invitation Code - Jen\'s Catering Pty Ltd to Fred Johnson:\n'.underline);
+
+            if (!conf.devMode) {
+
+                console.log('Skipped in prod mode'.gray);
+
+            } else {
+
+                Seeder.fredjohnson_name = await Seeder.createNameModel({
+                    givenName: 'Fred',
+                    familyName: 'Johnson'
+                } as any);
+
+                Seeder.fredjohnson_dob = await Seeder.createSharedSecretModel({
+                    value: '01/01/2000',
+                    sharedSecretType: Seeder.dob_sharedSecretType
+                } as any);
+
+                Seeder.fredjohnson_profile = await Seeder.createProfileModel({
+                    provider: ProfileProvider.MyGov.name,
+                    name: Seeder.bobsmith_name,
+                    sharedSecrets: [Seeder.bobsmith_dob]
+                } as any);
+
+                Seeder.fredjohnson_party = await Seeder.createPartyModel({
+                    partyType: PartyType.Individual.name
+                } as any);
+
+                console.log('');
+
+                Seeder.bobsmith_identity_1 = await Seeder.createIdentityModel({
+                    identityType: IdentityType.InvitationCode.name,
+                    defaultInd: true,
+                    invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
+                    invitationCodeExpiryTimestamp: new Date(2055, 1, 1),
+                    profile: Seeder.fredjohnson_profile,
+                    party: Seeder.fredjohnson_party
+                } as any);
+
+                Seeder.j_and_f_relationship = await Seeder.createRelationshipModel({
+                    subject: Seeder.jenscatering_party,
+                    subjectNickName: Seeder.jenscatering_name,
+                    delegate: Seeder.fredjohnson_party,
+                    delegateNickName: Seeder.fredjohnson_name,
+                    startTimestamp: new Date(),
+                    status: RelationshipStatus.Pending.name
+                } as any);
+
+            }
+
+        } catch (e) {
+            console.log('Seeding failed!');
+            console.log(e);
+        }
+    }
+
 }
 
 // rock and roll ......................................................................................................
@@ -694,4 +761,5 @@ Seeder.connectMongo()
     .then(Seeder.loadSample_jenniferMaxim_identity)
     .then(Seeder.loadSample_bobsmith_identity)
     .then(Seeder.loadSample_jenniferMaxim__jensCateringPtyLtd_relationship)
+    .then(Seeder.loadSample_jensCateringPtyLtd_fredjohnson_invitationCode)
     .then(Seeder.disconnect);

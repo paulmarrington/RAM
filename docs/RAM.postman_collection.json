@@ -133,6 +133,33 @@
 						"description": ""
 					},
 					"response": []
+				},
+				{
+					"name": "Get Invitation Code (jEVYNX)",
+					"request": {
+						"url": "{{host}}/api/v1/identity/invitationCode/jEVYNX",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},

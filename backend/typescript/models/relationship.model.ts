@@ -105,7 +105,6 @@ export interface IRelationship extends IRAMObject {
     toDTO():DTO;
 }
 
-/* tslint:disable:no-empty-interfaces */
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
     findByIdentifier:(id:String) => mongoose.Promise<IRelationship>;
     search:(page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;

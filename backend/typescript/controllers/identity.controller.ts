@@ -27,6 +27,20 @@ export class IdentityController {
             .then(sendNotFoundError(res));
     };
 
+    private findPendingByInvitationCodeInDateRange = async (req:Request, res:Response) => {
+        const schema = {
+            'invitationCode': {
+                notEmpty: true,
+                errorMessage: 'Invitation Code is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.identityModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
     private search = async (req:Request, res:Response) => {
         const schema = {};
         validateReqSchema(req, schema)
@@ -39,6 +53,7 @@ export class IdentityController {
     public assignRoutes = (router:Router) => {
         router.get('/v1/identity/me', this.me);
         router.get('/v1/identity/:idValue', this.findByIdentityIdValue);
+        router.get('/v1/identity/invitationCode/:invitationCode', this.findPendingByInvitationCodeInDateRange);
         router.get('/v1/identities', this.search);
         return router;
     };
