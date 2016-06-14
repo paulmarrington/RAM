@@ -1,5 +1,6 @@
+import {logger} from '../logger';
 import {Response, Request} from 'express';
-import {IResponse, ErrorResponse, SearchResult} from '../../../commons/RamAPI';
+import {IResponse, ErrorResponse, SearchResult, HrefValue} from '../../../commons/RamAPI';
 import * as _ from 'lodash';
 
 export function sendResource<T>(res: Response) {
@@ -14,29 +15,25 @@ export function sendResource<T>(res: Response) {
     };
 }
 
-export function sendList<T>(res: Response) {
+export function sendList<T extends HrefValue<U>, U>(res: Response) {
     'use strict';
-    return async (results: T[]): Promise<T[]> => {
-        const resolvedResults = await Promise.all(results);
-        if (resolvedResults) {
-            res.status(200);
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(resolvedResults, null, 4));
-        }
-        return results;
+    return async (results: Promise<T>[]): Promise<T[]> => {
+        const resolvedResults = await Promise.all<T>(results);
+        res.status(200);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(resolvedResults, null, 4));
+        return resolvedResults;
     };
 }
 
-export function sendSearchResult<T>(res: Response) {
+export function sendSearchResult<T extends HrefValue<U>, U>(res: Response) {
     'use strict';
-    return async (results: SearchResult<T>): Promise<SearchResult<T>> => {
-        if (results) {
-            const resolvedResults = await Promise.all(results.list);
-            res.status(200);
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(resolvedResults, null, 4));
-        }
-        return results;
+    return async (results: SearchResult<Promise<T>>): Promise<SearchResult<T>> => {
+        const resolvedResults = new SearchResult(results.totalCount, await Promise.all<T>(results.list));
+        res.status(200);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(resolvedResults, null, 4));
+        return resolvedResults;
     };
 }
 
@@ -58,7 +55,7 @@ export function sendDocument<T>(res: Response) {
 export function validateReqSchema<T>(req: Request, schema: Object): Promise<Request> {
     'use strict';
     return new Promise<Request>((resolve, reject) => {
-        req.checkParams(schema);
+        req.check(schema);
         const errors = req.validationErrors(false) as { msg: string }[];
         if (errors) {
             const errorMsgs = errors.map((e) => e.msg);
@@ -77,7 +74,7 @@ type ValidationError = {
 export function sendError<T>(res: Response) {
     'use strict';
     return (error: string | Error | ValidationError | string[]) => {
-        console.log(error);
+        logger.error(error.toString());
         switch (error.constructor.name) {
             case 'Array':
                 res.status(400);

@@ -1,3 +1,4 @@
+import {logger} from '../logger';
 import {Request, Response} from 'express';
 import {Headers} from './headers';
 import {conf} from '../bootstrap';
@@ -39,8 +40,9 @@ class Security {
 
     private resolveForDevelopment(res:Response, next:() => void) {
         return (identity?:IIdentity) => {
-            console.log('Identity context:', (identity ? identity.idValue : '[not found]'));
+            logger.info('Identity context:', (identity ? identity.idValue : '[not found]'));
             if (identity) {
+                res.locals[Headers.Identity] = identity;
                 res.locals[Headers.IdentityIdValue] = identity.idValue;
                 res.locals[Headers.GivenName] = identity.profile.name.givenName;
                 res.locals[Headers.FamilyName] = identity.profile.name.familyName;
@@ -56,7 +58,7 @@ class Security {
 
     private rejectForDevelopment(res:Response, next:() => void) {
         return ():void => {
-            console.log('Unable to look up identity!');
+            logger.info('Unable to look up identity!');
             res.status(401);
             res.send({});
         };

@@ -10,6 +10,7 @@ export class RelationshipTypeController {
     private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
         const schema = {
             'code': {
+                in: 'params',
                 notEmpty: true,
                 errorMessage: 'Code is not valid'
             }

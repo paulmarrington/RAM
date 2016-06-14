@@ -94,7 +94,7 @@
     log.addAppender(consoleAppender);
 
     // Build list of known identities
-    $.get('/api/v1/identities', function (data) {
+    $.get('/api/v1/identities?page=1', function (data) {
       for(var i=0;i<data.length;i++) {
         // eg. <li class="list-group-item" data-id="LINK_ID:MY_GOV:jennifermaxims_identity_1">Jennifer Maxims</li>
         $('#user-list ul').append($('<li></li>').addClass('list-group-item').data('id', data[i].value.idValue).text(buildName(data[i].value.profile.name)));
