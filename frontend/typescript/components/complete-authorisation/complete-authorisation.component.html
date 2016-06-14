@@ -1,0 +1,58 @@
+<div>
+<div class="col-lg-9 col-md-9 col-sm-8">
+    <div class="page-header">
+        <div class="row">
+            <h2 class="col-sm-12 col-md-7 col-lg-8 col-xs-12">Complete the Authorisation</h2>
+        </div>
+    </div>
+
+<h4>Option 1:</h4>
+
+    <b>{{data.givenName}} {{data.familyName}}</b> must accept this authorisation before
+    it is active. Instructions are included in a document for you to open a
+    <a href="" target="PFV">
+    print friendly version</a> (50kb) and provide to {{data.givenName}}.
+
+<h4>Option 2:</h4>
+
+Enter an email address to send the instructions to
+<b>{{data.givenName}} {{data.familyName}}</b>:
+
+<div class="form">
+    <div>
+        <div class="col-md-8">
+            <input class="form-control" type="email" [ngModel]="email">
+        </div><div class="col-md-4">
+            <button class="btn btn-primary"
+            [disabled]=""
+            (click)="sendEmail()" >Send</button>
+        </div>
+    </div>
+
+    <h4>Option 3:</h4>
+
+    Provide <b>{{data.givenName}} {{data.familyName}}’s</b> Authenticator
+    App's Unique Device Name (UDN):
+
+        <div class="col-md-8">
+            <input class="form-control" type="text" [ngModel]="udn" size="20">
+        </div><div class="col-md-4">
+            <button class="btn btn-primary"
+            [disabled]=""
+            (click)="submitUDN()" >Submit</button>
+        </div>
+    </div>
+</div>
+<hr>
+
+<p>The authorisation code <b>{{data.authorisationCode}}</b> is include
+in the instructions and will expire in 7 days.
+</p>
+<p>You will be notified when <b>{{data.givenName}} {{data.familyName}}</b>
+has completed the authorisation.
+</p>
+<p>To access these instructions again refer to the
+<b>Authorisations page</b> and select <b>Edit</b> for this user.
+</p>
+</div>
+</div>

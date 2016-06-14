@@ -6,6 +6,7 @@ import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RelationshipsComponent} from '../relationships/relationships.component';
 import {AddRelationshipComponent} from '../add-relationship/add-relationship.component';
+import {CompleteAuthorisationComponent} from '../complete-authorisation/complete-authorisation.component';
 
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {provide} from '@angular/core';
@@ -33,6 +34,10 @@ import 'ng2-bootstrap';
         path: '/relationships/add',
         name: 'AddRelationship',
         component: AddRelationshipComponent
+    },{
+        path: '/relationships/complete',
+        name: 'AddRelationship',
+        component: CompleteAuthorisationComponent
     }
 ])
 export class AppComponent {
