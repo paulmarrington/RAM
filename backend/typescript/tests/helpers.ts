@@ -11,7 +11,6 @@ export const connectDisconnectMongo = () => {
     });
 
     afterEach((done) => {
-        // mongoose.disconnect().then(done); // TODO: disconnect(fn) doesn't work !
         mongoose.connection.close(done);
     });
 
