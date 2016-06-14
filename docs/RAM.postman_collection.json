@@ -439,6 +439,67 @@
 			]
 		},
 		{
+			"name": "Relationship Attribute Names",
+			"description": "",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"url": "{{host}}/api/v1/relationshipAttributeNames",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get (Bad)",
+					"request": {
+						"url": "{{host}}/api/v1/relationshipAttributeName/bad",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get (Delegate Declaration)",
+					"request": {
+						"url": "{{host}}/api/v1/relationshipAttributeName/DELEGATE_RELATIONSHIP_TYPE_DECLARATION",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Relationship Type",
 			"description": "",
 			"item": [
