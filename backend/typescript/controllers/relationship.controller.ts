@@ -21,7 +21,7 @@ export class RelationshipController {
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
-    
+
     private search = async (req:Request, res:Response) => {
         const schema = {
         };
