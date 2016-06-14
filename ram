@@ -73,7 +73,7 @@ case "$1" in
     echo ""
     echo "Starting backend"
     cd backend
-    RAM_CONF=$DIR/backend/conf/conf.js gulp serve
+    RAM_CONF=$DIR/backend/conf/conf-localhost.js gulp serve
     echo ""
     ;;
 
@@ -118,7 +118,7 @@ case "$1" in
     echo "Seeding database"
     echo ""
     cd backend
-    RAM_CONF=$DIR/backend/conf/conf.js gulp seed
+    RAM_CONF=$DIR/backend/conf/conf-localhost.js gulp seed
     echo ""
     ;;
 
