@@ -26,7 +26,7 @@ export const resetDataInMongo = () => {
                     try {
                         const name = collectionName.name;
                         if (name.indexOf('.') === -1) {
-                            if (name !== 'identitycounters') {
+                            if (name.toLowerCase() !== 'identitycounters') {
                                 mongoose.connection.db.dropCollection(name, (err:Error) => {
                                     if (err) {
                                         reject(err);
@@ -35,10 +35,9 @@ export const resetDataInMongo = () => {
                                     }
                                 });
                             } else {
-                                //resolve(name);
-                                mongoose.model('identitycounters').update(
+                                mongoose.model('IdentityCounter').update(
                                     {count: 1},
-                                    (err, raw) => {
+                                    (err:Error, raw:Object) => {
                                         if (err) {
                                             reject(err);
                                         } else {

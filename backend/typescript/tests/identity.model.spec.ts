@@ -229,6 +229,19 @@ describe('RAM Identity', () => {
     it('inserts invitation code with generated raw id value', async (done) => {
         try {
 
+            const expectedIdValues = [
+                '9dRZvR',
+                'kYVnxr',
+                'jEVYNX',
+                '1LVxvr',
+                'wGV7nR',
+                'wEXWJV',
+                'y7RpLR',
+                'ewRgKR',
+                'EJrqPX',
+                'gqXKzV'
+            ];
+
             for (let i = 0; i < 10; i=i+1) {
                 const instance = await IdentityModel.create({
                     identityType: IdentityType.InvitationCode.name,
@@ -239,6 +252,7 @@ describe('RAM Identity', () => {
                     party: party1
                 });
                 expect(instance.rawIdValue).not.toBeNull();
+                expect(instance.rawIdValue).toBe(expectedIdValues[i]);
             }
 
             done();
