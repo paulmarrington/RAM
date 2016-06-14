@@ -53,11 +53,20 @@ export class IdentityController {
             'page': {
                 in: 'query',
                 notEmpty: true,
-                errorMessage: 'Page is not valid'
-            }
+                isNumeric: {
+                    errorMessage: 'Page is not valid'
+                }
+            },
+            'pageSize': {
+                in: 'query',
+                optional: true,
+                isNumeric: {
+                    errorMessage: 'Page Size is not valid'
+                }
+            },
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.identityModel.search(req.params.page, 10))
+            .then((req:Request) => this.identityModel.search(req.query.page, req.query.pageSize))
             .then((results) => (results.map((model) => model.toHrefValue(true))))
             .then(sendSearchResult(res), sendError(res))
             .then(sendNotFoundError(res));

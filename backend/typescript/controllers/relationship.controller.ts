@@ -9,7 +9,9 @@ export class RelationshipController {
         'page': {
             in: 'query',
             notEmpty: true,
-            errorMessage: 'Page is not valid'
+            isNumeric: {
+                errorMessage: 'Page is not valid'
+            }
         },
         'pageSize': {
             in: 'query',
