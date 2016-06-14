@@ -7,16 +7,16 @@ import * as api from './ram/ServerAPI';
 /* tslint:disable:no-var-requires */
 const conf:api.IRamConf = require(`${process.env.RAM_CONF}`);
 
-const lpad = (num:number, size:number, char:string) => {
-    let s = num + '';
+const lpad = (value:Object, size:number, char:string) => {
+    let s = value + '';
     while (s.length < size) {
         s = char + s;
     }
     return s;
 };
 
-const rpad = (num:number, size:number, char:string) => {
-    let s = num + '';
+const rpad = (value:Object, size:number, char:string) => {
+    let s = value + '';
     while (s.length < size) {
         s = s + char;
     }
@@ -28,12 +28,10 @@ const formatNow = () => {
     let hours = date.getHours();
     let minutes = date.getMinutes();
     let seconds = date.getSeconds();
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
-    const strTime = lpad(hours, 2, ' ') + ':' + lpad(minutes, 2, 0) + ':' + lpad(seconds, 2, 0);
+    const strTime = lpad(hours, 2, ' ') + ':' + lpad(minutes, 2, '0') + ':' + lpad(seconds, 2, '0');
     return '[' +
-        lpad(date.getMonth() + 1, 2, 0) +  '/' +
-        lpad(date.getDate(), 2, 0) + '/' +
+        lpad(date.getMonth() + 1, 2, '0') +  '/' +
+        lpad(date.getDate(), 2, '0') + '/' +
         date.getFullYear().toString().substr(2, 2) +
         '  ' +
         strTime +
@@ -49,7 +47,7 @@ export const logger = new (winston.Logger)({
             humanReadableUnhandledException: true,
             colorize: true,
             timestamp: formatNow,
-            formatter: function (options:{timestamp:string, level:string}) {
+            formatter: function (options:{timestamp:() => string, level:string, message:string}) {
                 return options.timestamp() + ' ' +
                     rpad(options.level, 7, ' ') + ' ' +
                     (undefined !== options.message ? options.message : '');
@@ -65,7 +63,7 @@ export const logger = new (winston.Logger)({
             maxFiles: 5,
             colorize: false,
             timestamp: formatNow,
-            formatter: function (options:{timestamp:string, level:string}) {
+            formatter: function (options:{timestamp:() => string, level:string, message:string}) {
                 return options.timestamp() + ' ' +
                     rpad(options.level, 7, ' ') + ' ' +
                     (undefined !== options.message ? options.message : '');
