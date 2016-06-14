@@ -118,7 +118,8 @@ RelationshipSchema.method('statusEnum', function () {
 
 RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
     return new HrefValue(
-        '/api/v1/relationship/' + this.idValue,
+        // TODO use correct reference
+        '/api/v1/'+'relationship/' + this.idValue,
         includeValue ? await this.toDTO() : undefined
     );
 });
@@ -126,15 +127,16 @@ RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
 RelationshipSchema.method('toDTO', async function () {
     return new DTO(
         await this.subject.toHrefValue(true),
-        this.subjectNickName,
+        await this.subjectNickName.toDTO(),
         await this.delegate.toHrefValue(true),
-        await this.delegateNickName.toHrefValue(true),
+        await this.delegateNickName.toDTO(),
         this.startTimestamp,
         this.endTimestamp,
         this.endEventTimestamp,
         this.status
     );
 });
+
 // static methods .....................................................................................................
 
 RelationshipSchema.static('search', (page:number, pageSize:number) => {
@@ -148,7 +150,7 @@ RelationshipSchema.static('search', (page:number, pageSize:number) => {
                 .find(query)
                 .deepPopulate([
                     'subject',
-                    'subjectNickname',
+                    'subjectNickName',
                     'delegate',
                     'delegateNickName'
                 ])
