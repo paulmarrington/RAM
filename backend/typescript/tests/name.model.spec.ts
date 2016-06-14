@@ -1,11 +1,11 @@
-import {connectDisconnectMongo, dropMongo} from './helpers';
+import {connectDisconnectMongo, resetDataInMongo} from './helpers';
 import {NameModel} from '../models/name.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Name', () => {
 
     connectDisconnectMongo();
-    dropMongo();
+    resetDataInMongo();
 
     beforeEach(async (done) => {
         done();

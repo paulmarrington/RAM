@@ -1,4 +1,4 @@
-import {connectDisconnectMongo, dropMongo} from './helpers';
+import {connectDisconnectMongo, resetDataInMongo} from './helpers';
 import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
@@ -11,7 +11,7 @@ import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipTy
 describe('RAM Relationship Attribute Name', () => {
 
     connectDisconnectMongo();
-    dropMongo();
+    resetDataInMongo();
 
     let stringRelationshipAttributeNameNoEndDate: IRelationshipAttributeName;
     let stringRelationshipAttributeNameFutureEndDate: IRelationshipAttributeName;
