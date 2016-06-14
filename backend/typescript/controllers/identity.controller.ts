@@ -20,6 +20,7 @@ export class IdentityController {
     private findByIdentityIdValue = async (req:Request, res:Response) => {
         const schema = {
             'idValue': {
+                in: 'params',
                 notEmpty: true,
                 errorMessage: 'Id Value is not valid'
             }
@@ -46,7 +47,13 @@ export class IdentityController {
     };
 
     private search = async (req:Request, res:Response) => {
-        const schema = {};
+        const schema = {
+            'page': {
+                in: 'query',
+                notEmpty: true,
+                errorMessage: 'Page is not valid'
+            }
+        };
         validateReqSchema(req, schema)
             .then((req:Request) => this.identityModel.search(req.params.page, 10))
             .then((results) => (results.map((model) => model.toHrefValue(true))))

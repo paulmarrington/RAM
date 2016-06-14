@@ -11,6 +11,7 @@ export class RelationshipController {
     private findByIdentifier = async (req:Request, res:Response) => {
         const schema = {
             'id': {
+                in: 'params',
                 notEmpty: true,
                 errorMessage: 'Id is not valid'
             }

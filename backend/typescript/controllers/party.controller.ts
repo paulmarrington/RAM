@@ -10,6 +10,7 @@ export class PartyController {
     private findByIdentityIdValue = (req:Request, res:Response) => {
         const schema = {
             'idValue': {
+                in: 'params',
                 notEmpty: true,
                 errorMessage: 'Id Value is not valid'
             }

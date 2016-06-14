@@ -55,7 +55,7 @@ export function sendDocument<T>(res: Response) {
 export function validateReqSchema<T>(req: Request, schema: Object): Promise<Request> {
     'use strict';
     return new Promise<Request>((resolve, reject) => {
-        req.checkParams(schema);
+        req.check(schema);
         const errors = req.validationErrors(false) as { msg: string }[];
         if (errors) {
             const errorMsgs = errors.map((e) => e.msg);
