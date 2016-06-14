@@ -17,7 +17,7 @@ export const connectDisconnectMongo = () => {
 };
 
 /* tslint:disable:max-func-body-length */
-export const dropMongo = () => {
+export const resetDataInMongo = () => {
     beforeEach((done) => {
         mongooseAutoIncrement.initialize(mongoose.connection);
         mongoose.connection.db.listCollections().toArray((err:Error, collectionNames:[{name:string}]) => {
@@ -35,17 +35,17 @@ export const dropMongo = () => {
                                     }
                                 });
                             } else {
-                                resolve(name);
-                                //mongoose.model('identitycounters').update(
-                                //    {count: 1},
-                                //    (err, raw) => {
-                                //        if (err) {
-                                //            reject(err);
-                                //        } else {
-                                //            resolve(name);
-                                //        }
-                                //    }
-                                //);
+                                //resolve(name);
+                                mongoose.model('identitycounters').update(
+                                    {count: 1},
+                                    (err, raw) => {
+                                        if (err) {
+                                            reject(err);
+                                        } else {
+                                            resolve(name);
+                                        }
+                                    }
+                                );
                             }
                         } else {
                             resolve(name);

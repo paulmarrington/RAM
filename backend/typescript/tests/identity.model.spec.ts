@@ -1,4 +1,4 @@
-import {connectDisconnectMongo, dropMongo} from './helpers';
+import {connectDisconnectMongo, resetDataInMongo} from './helpers';
 import {
     IIdentity,
     IdentityModel,
@@ -23,7 +23,7 @@ import {
 describe('RAM Identity', () => {
 
     connectDisconnectMongo();
-    dropMongo();
+    resetDataInMongo();
 
     let name1: IName;
     let profile1: IProfile;

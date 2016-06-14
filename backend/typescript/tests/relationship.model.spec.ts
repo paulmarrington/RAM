@@ -1,4 +1,4 @@
-import {connectDisconnectMongo, dropMongo} from './helpers';
+import {connectDisconnectMongo, resetDataInMongo} from './helpers';
 import {
     IName,
     NameModel} from '../models/name.model';
@@ -15,7 +15,7 @@ import {
 describe('RAM Relationship', () => {
 
     connectDisconnectMongo();
-    dropMongo();
+    resetDataInMongo();
 
     let subjectNickName1: IName;
     let subjectParty1: IParty;
