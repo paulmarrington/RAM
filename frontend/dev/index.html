@@ -95,9 +95,10 @@
 
     // Build list of known identities
     $.get('/api/v1/identities?page=1', function (data) {
-      for(var i=0;i<data.length;i++) {
+      for(var i=0;i<data.list.length;i++) {
         // eg. <li class="list-group-item" data-id="LINK_ID:MY_GOV:jennifermaxims_identity_1">Jennifer Maxims</li>
-        $('#user-list ul').append($('<li></li>').addClass('list-group-item').data('id', data[i].value.idValue).text(buildName(data[i].value.profile.name)));
+        var item = data.list[i];
+        $('#user-list ul').append($('<li></li>').addClass('list-group-item').data('id', item.value.idValue).text(buildName(item.value.profile.name)));
       }
 
       updateUser();
