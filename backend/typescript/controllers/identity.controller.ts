@@ -1,7 +1,7 @@
 import {Router, Request, Response} from 'express';
 import {sendResource, sendError, sendNotFoundError, validateReqSchema, sendSearchResult} from './helpers';
 import {Headers} from './headers';
-import {conf} from './bootstrap';
+import {conf} from '../bootstrap';
 import {IIdentityModel} from '../models/identity.model';
 
 export class IdentityController {
