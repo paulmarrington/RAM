@@ -8,7 +8,10 @@ export class RelationshipController {
     }
 
     private search = async (req:Request, res:Response) => {
-        const schema = {};
+        const schema = {
+            
+            
+        };
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.search(req.params.page, 10))
             .then((results) => (results.map((model) => model.toHrefValue(true))))
