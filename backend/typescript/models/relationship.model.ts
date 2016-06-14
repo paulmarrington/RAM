@@ -101,8 +101,8 @@ export interface IRelationship extends IRAMObject {
     endEventTimestamp?: Date;
     status: string;
     statusEnum(): RelationshipStatus;
-    toHrefValue(includeValue:boolean):HrefValue<DTO>;
-    toDTO():DTO;
+    toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
+    toDTO():Promise<DTO>;
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {

@@ -258,8 +258,8 @@ export interface IIdentity extends IRAMObject {
     invitationCodeStatusEnum():IdentityInvitationCodeStatus;
     publicIdentifierSchemeEnum():IdentityPublicIdentifierScheme;
     linkIdSchemeEnum():IdentityLinkIdScheme;
-    toHrefValue(includeValue:boolean):HrefValue<DTO>;
-    toDTO():DTO;
+    toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
+    toDTO():Promise<DTO>;
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {

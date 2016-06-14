@@ -66,8 +66,8 @@ export interface IProfile extends IRAMObject {
     sharedSecrets: [ISharedSecret];
     providerEnum(): ProfileProvider;
     getSharedSecret(code:String): ISharedSecret;
-    toHrefValue():HrefValue<DTO>;
-    toDTO():DTO;
+    toHrefValue():Promise<HrefValue<DTO>>;
+    toDTO():Promise<DTO>;
 }
 
 /* tslint:disable:no-empty-interfaces */

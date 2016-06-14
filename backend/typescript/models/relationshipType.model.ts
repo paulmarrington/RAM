@@ -49,8 +49,8 @@ export interface IRelationshipType extends ICodeDecode {
     minIdentityStrength: number;
     voluntaryInd: boolean;
     attributeNameUsages: IRelationshipAttributeNameUsage[];
-    toHrefValue(includeValue:boolean): HrefValue<DTO>;
-    toDTO(): DTO;
+    toHrefValue(includeValue:boolean): Promise<HrefValue<DTO>>;
+    toDTO(): Promise<DTO>;
 }
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
