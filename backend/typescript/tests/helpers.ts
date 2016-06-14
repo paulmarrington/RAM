@@ -21,14 +21,14 @@ export const connectDisconnectMongo = () => {
 export const dropMongo = () => {
     beforeEach((done) => {
         mongooseAutoIncrement.initialize(mongoose.connection);
-        mongoose.connection.db.listCollections().toArray((err:Error, collectionNames) => {
+        mongoose.connection.db.listCollections().toArray((err:Error, collectionNames:[{name:string}]) => {
             const promises = collectionNames.map(function (collectionName) {
                 return new Promise<string>(function (resolve, reject) {
                     try {
                         const name = collectionName.name;
                         if (name.indexOf('.') === -1) {
                             if (name !== 'identitycounters') {
-                                mongoose.connection.db.dropCollection(name, (err) => {
+                                mongoose.connection.db.dropCollection(name, (err:Error) => {
                                     if (err) {
                                         reject(err);
                                     } else {
@@ -61,8 +61,8 @@ export const dropMongo = () => {
                 .then(() => {
                     done();
                 })
-                .catch((err) => {
-                    console.log('\nUnable to drop mongo:', e);
+                .catch((err:Error) => {
+                    console.log('\nUnable to drop mongo:', err);
                     done();
                 });
         });
