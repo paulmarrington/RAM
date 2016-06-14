@@ -10,9 +10,10 @@ export class IdentityController {
     }
 
     private findMe = async (req:Request, res:Response) => {
+        const identity = res.locals[Headers.Identity];
         const schema = {};
         validateReqSchema(req, schema)
-            .then((req:Request) => res.locals[Headers.Identity])
+            .then((req:Request) => identity ? identity : null)
             .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
