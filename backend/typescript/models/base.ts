@@ -8,22 +8,28 @@ import * as mongoose from 'mongoose';
  * A convenience class to build a query object, only adding criteria when specified.
  */
 export class Query {
-    private data = {};
+
+    private data:IQueryData = {};
 
     /**
-     * Adds the given filter (name:value) only if 'add' is truthy.
+     * Adds the given filter (name:value) only if 'condition' is truthy.
      */
-    public add(name:string, value:Object, add:Object):Query {
-        if(add) {
+    public add(name:string, value:Object, condition:Object):Query {
+        if (condition) {
             this.data[name] = value;
         }
         return this;
     }
-    
+
     public build():Object {
         return this.data;
     }
 }
+
+interface IQueryData {
+    [name:string]: Object;
+}
+
 /* RAMEnum is a simple class construct that represents a enumerated type so we can work with classes not strings.
  */
 export class RAMEnum {
