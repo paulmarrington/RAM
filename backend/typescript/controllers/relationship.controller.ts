@@ -5,68 +5,85 @@ import {IRelationshipModel} from '../models/relationship.model';
 // todo add data security
 export class RelationshipController {
 
-    private static SEARCH_SCHEMA = {
-        'page': {
-            in: 'query',
-            notEmpty: true,
-            isNumeric: {
-                errorMessage: 'Page is not valid'
-            }
-        },
-        'pageSize': {
-            in: 'query',
-            optional: true,
-            isNumeric: {
-                errorMessage: 'Page Size is not valid'
-            }
-        },
-        'identity_id': {
-            in: 'path',
-            notEmpty: true,
-            errorMessage: 'Identity Id is not valid'
-        }
-    };
-
     constructor(private relationshipModel:IRelationshipModel) {
     }
 
     private findByIdentifier = async(req:Request, res:Response) => {
         const schema = {
-            'id': {
+            'identifier': {
                 in: 'params',
                 notEmpty: true,
-                errorMessage: 'Id is not valid'
+                errorMessage: 'Identifier is not valid'
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findByIdentifier(req.params.id))
+            .then((req:Request) => this.relationshipModel.findByIdentifier(req.params.identifier))
             .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
-    private subject = async(req:Request, res:Response) => {
-
-        validateReqSchema(req, RelationshipController.SEARCH_SCHEMA)
-            .then((req:Request) => this.relationshipModel.search(req.params.identity_id, null, req.query.page, req.query.pageSize))
-            .then((results) => (results.map((model) => model.toHrefValue(true))))
-            .then(sendSearchResult(res), sendError(res))
+    private findPendingByInvitationCodeInDateRange = async (req:Request, res:Response) => {
+        const schema = {
+            'invitationCode': {
+                notEmpty: true,
+                errorMessage: 'Invitation Code is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
-    private delegate = async(req:Request, res:Response) => {
-
-        validateReqSchema(req, RelationshipController.SEARCH_SCHEMA)
-            .then((req:Request) => this.relationshipModel.search(null, req.params.identity_id, req.query.page, req.query.pageSize))
+    private listBySubjectOrDelegate = async(req:Request, res:Response) => {
+        const schema = {
+            'subject_or_delegate': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Subject Or Delegate is not valid',
+                matches: {
+                    options: ['^(subject|delegate)$'],
+                    errorMessage: 'Subject Or Delegate is not valid'
+                }
+            },
+            'identity_id': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Identity Id is not valid'
+            },
+            'page': {
+                in: 'query',
+                notEmpty: true,
+                isNumeric: {
+                    errorMessage: 'Page is not valid'
+                }
+            },
+            'pageSize': {
+                in: 'query',
+                optional: true,
+                isNumeric: {
+                    errorMessage: 'Page Size is not valid'
+                }
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.search(
+                req.params.subject_or_delegate === 'subject' ? req.params.identity_id : null,
+                req.params.subject_or_delegate === 'delegate' ? req.params.identity_id : null,
+                req.query.page,
+                req.query.pageSize)
+            )
             .then((results) => (results.map((model) => model.toHrefValue(true))))
             .then(sendSearchResult(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/relationship/:id', this.findByIdentifier);
-        router.get('/v1/relationships/subject/identity/:identity_id', this.subject);
-        router.get('/v1/relationships/delegate/identity/:identity_id', this.delegate);
+        router.get('/v1/relationship/:identifier', this.findByIdentifier);
+        router.get('/v1/relationship/invitationCode/:invitationCode', this.findPendingByInvitationCodeInDateRange);
+        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.listBySubjectOrDelegate);
         return router;
     };
 }
