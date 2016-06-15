@@ -12,7 +12,7 @@ const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
  */
 export class Query {
 
-    private data:IQueryData = {};
+    private data:IQueryPromise = {};
 
     /**
      * Adds the given filter (name:value) only if 'condition' is truthy.
@@ -25,7 +25,6 @@ export class Query {
     }
 
     public async build():Promise<Object> {
-
         try {
             const promises = Object.keys(this.data).map(val => this.data[val]);
             const values:Object[] = await Promise.all(promises);
@@ -45,8 +44,12 @@ export class Query {
     }
 }
 
-interface IQueryData {
+interface IQueryPromise {
     [name:string]:Promise<Object>;
+}
+
+interface IQueryData {
+    [name:string]:Object;
 }
 
 /* RAMEnum is a simple class construct that represents a enumerated type so we can work with classes not strings.
