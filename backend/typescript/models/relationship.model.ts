@@ -116,7 +116,7 @@ export interface IRelationship extends IRAMObject {
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
     findByIdentifier:(id:String) => mongoose.Promise<IRelationship>;
-    search:(subjectId:string, delegateId:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
+    search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
 }
 
 // instance methods ...................................................................................................
@@ -173,7 +173,6 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
                 .add('subject', await PartyModel.findByIdentityIdValue(subjectIdentityIdValue), subjectIdentityIdValue)
                 .add('delegate', await PartyModel.findByIdentityIdValue(delegateIdentityIdValue), delegateIdentityIdValue)
                 .build();
-
             const count = await this.RelationshipModel.count(query).exec();
             const list = await this.RelationshipModel
                 .find(query)

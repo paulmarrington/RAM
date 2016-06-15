@@ -55,11 +55,10 @@ export class RelationshipController {
             }
         };
         try {
-            console.log('req.params.subject_or_delegate=', req.params.subject_or_delegate);
             validateReqSchema(req, schema)
                 .then((req:Request) => this.relationshipModel.search(
                     req.params.subject_or_delegate === 'subject' ? req.params.identity_id : null,
-                    req.params.subject_or_delegate === 'delegate' ? null : req.params.identity_id,
+                    req.params.subject_or_delegate === 'delegate' ? req.params.identity_id : null,
                     req.query.page,
                     req.query.pageSize)
                 )
