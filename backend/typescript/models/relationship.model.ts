@@ -233,6 +233,7 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
         }
     });
 });
+
 // concrete model .....................................................................................................
 
 export const RelationshipModel = mongoose.model(
