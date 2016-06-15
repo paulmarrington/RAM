@@ -4,7 +4,6 @@ import * as loggerMorgan from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as methodOverride from 'method-override';
-import * as cApi from '../../commons/RamAPI';
 import * as mongoose from 'mongoose';
 import {conf} from './bootstrap';
 import {logStream, logger} from './logger';
