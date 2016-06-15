@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "2b88f3a1-e284-5e40-2797-35d64ae71d84",
+		"_postman_id": "8c66ab13-91f2-9615-9811-3877e6857eea",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -453,8 +453,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -480,8 +479,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -489,6 +487,33 @@
 					"name": "Get",
 					"request": {
 						"url": "{{host}}/api/v1/relationship/575fe8a6cb1427cc82a924cf",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Invitation Code (bad)",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/bad",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Invitation Code (jEVYNX)",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX",
 						"method": "GET",
 						"header": [],
 						"body": {

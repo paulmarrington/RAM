@@ -3,6 +3,7 @@ import {RAMEnum, IRAMObject, RAMSchema, Query} from './base';
 import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
 import {IRelationshipType} from './relationshipType.model';
+import {IdentityModel} from './identity.model';
 import {
     HrefValue,
     Relationship as DTO,
@@ -116,6 +117,7 @@ export interface IRelationship extends IRAMObject {
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
     findByIdentifier:(id:String) => mongoose.Promise<IRelationship>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => mongoose.Promise<IRelationship>;
     search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
 }
 
@@ -163,6 +165,26 @@ RelationshipSchema.static('findByIdentifier', (id:String) => {
             'delegateNickName'
         ])
         .exec();
+});
+
+RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invitationCode:String, date:Date) => {
+    const identity = await IdentityModel.findPendingByInvitationCodeInDateRange(invitationCode, date);
+    if (identity) {
+        const delegate = identity.party;
+        return this.RelationshipModel
+            .findOne({
+                delegate: delegate
+            })
+            .deepPopulate([
+                'relationshipType',
+                'subject',
+                'subjectNickName',
+                'delegate',
+                'delegateNickName'
+            ])
+            .exec();
+    }
+    return null;
 });
 
 RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, reqPageSize:number) => {

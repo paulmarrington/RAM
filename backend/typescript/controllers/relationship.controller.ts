@@ -10,20 +10,34 @@ export class RelationshipController {
 
     private findByIdentifier = async(req:Request, res:Response) => {
         const schema = {
-            'id': {
+            'identifier': {
                 in: 'params',
                 notEmpty: true,
-                errorMessage: 'Id is not valid'
+                errorMessage: 'Identifier is not valid'
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findByIdentifier(req.params.id))
+            .then((req:Request) => this.relationshipModel.findByIdentifier(req.params.identifier))
             .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
-    private subject = async(req:Request, res:Response) => {
+    private findPendingByInvitationCodeInDateRange = async (req:Request, res:Response) => {
+        const schema = {
+            'invitationCode': {
+                notEmpty: true,
+                errorMessage: 'Invitation Code is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
+    private listBySubjectOrDelegate = async(req:Request, res:Response) => {
         const schema = {
             'subject_or_delegate': {
                 in: 'params',
@@ -54,25 +68,22 @@ export class RelationshipController {
                 }
             }
         };
-        try {
-            validateReqSchema(req, schema)
-                .then((req:Request) => this.relationshipModel.search(
-                    req.params.subject_or_delegate === 'subject' ? req.params.identity_id : null,
-                    req.params.subject_or_delegate === 'delegate' ? req.params.identity_id : null,
-                    req.query.page,
-                    req.query.pageSize)
-                )
-                .then((results) => (results.map((model) => model.toHrefValue(true))))
-                .then(sendSearchResult(res), sendError(res))
-                .then(sendNotFoundError(res));
-        } catch (e) {
-            console.log(e);
-        }
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.search(
+                req.params.subject_or_delegate === 'subject' ? req.params.identity_id : null,
+                req.params.subject_or_delegate === 'delegate' ? req.params.identity_id : null,
+                req.query.page,
+                req.query.pageSize)
+            )
+            .then((results) => (results.map((model) => model.toHrefValue(true))))
+            .then(sendSearchResult(res), sendError(res))
+            .then(sendNotFoundError(res));
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/relationship/:id', this.findByIdentifier);
-        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.subject);
+        router.get('/v1/relationship/:identifier', this.findByIdentifier);
+        router.get('/v1/relationship/invitationCode/:invitationCode', this.findPendingByInvitationCodeInDateRange);
+        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.listBySubjectOrDelegate);
         return router;
     };
 }
