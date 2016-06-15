@@ -90,10 +90,10 @@ export interface IRelationshipAttributeName extends ICodeDecode {
 }
 
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
-    findByCodeIgnoringDateRange: (code:String) => mongoose.Promise<IRelationshipAttributeName>;
-    findByCodeInDateRange: (code:String, date:Date) => mongoose.Promise<IRelationshipAttributeName>;
-    listIgnoringDateRange: () => mongoose.Promise<IRelationshipAttributeName[]>;
-    listInDateRange: (date:Date) => mongoose.Promise<IRelationshipAttributeName[]>;
+    findByCodeIgnoringDateRange: (code:String) => Promise<IRelationshipAttributeName>;
+    findByCodeInDateRange: (code:String, date:Date) => Promise<IRelationshipAttributeName>;
+    listIgnoringDateRange: () => Promise<IRelationshipAttributeName[]>;
+    listInDateRange: (date:Date) => Promise<IRelationshipAttributeName[]>;
 }
 
 // instance methods ...................................................................................................

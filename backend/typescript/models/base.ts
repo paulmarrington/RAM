@@ -17,7 +17,7 @@ export class Query {
     /**
      * Adds the given filter (name:value) only if 'condition' is truthy.
      */
-    public when(condition:Object, name:string, callback:<T extends Object>() => Promise<T>) {
+    public when(condition:Object, name:string, callback:() => Promise<Object>) {
         if (condition) {
             this.data[name] = callback();
         }
@@ -27,7 +27,7 @@ export class Query {
     public async build():Promise<Object> {
         try {
             const promises = Object.keys(this.data).map(val => this.data[val]);
-            const values:Object[] = await Promise.all(promises);
+            const values:Object[] = await Promise.all<Object>(promises);
 
             let i = 0;
             let result:IQueryData = {};

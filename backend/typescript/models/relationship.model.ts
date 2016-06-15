@@ -125,8 +125,8 @@ export interface IRelationship extends IRAMObject {
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
-    findByIdentifier:(id:String) => mongoose.Promise<IRelationship>;
-    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => mongoose.Promise<IRelationship>;
+    findByIdentifier:(id:String) => Promise<IRelationship>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => Promise<IRelationship>;
     search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IRelationship>>;
 }
