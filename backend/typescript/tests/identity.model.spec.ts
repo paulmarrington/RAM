@@ -36,14 +36,14 @@ describe('RAM Identity', () => {
     let party1:IParty;
     let identity1:IIdentity;
 
-    beforeEach(async(done) => {
+    beforeEach(async (done) => {
         Seeder.verbose(false);
 
         Promise.resolve(null)
             .then()
             .then(Seeder.resetDataInMongo)
             .then(Seeder.loadReference)
-            .then(async() => {
+            .then(async () => {
 
                 try {
 
@@ -84,7 +84,7 @@ describe('RAM Identity', () => {
             });
     });
 
-    it('finds by id value', async(done) => {
+    it('finds by id value', async (done) => {
         try {
             const instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
@@ -97,7 +97,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('finds pending by invitation code', async(done) => {
+    it('finds pending by invitation code', async (done) => {
         try {
 
             const instance = await IdentityModel.create({
@@ -122,7 +122,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('fails find by invalid id value', async(done) => {
+    it('fails find by invalid id value', async (done) => {
         try {
             const instance = await IdentityModel.findByIdValue('__BOGUS__');
             expect(instance).toBeNull();
@@ -133,7 +133,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('lists for party', async(done) => {
+    it('lists for party', async (done) => {
         try {
             const instances = await IdentityModel.listByPartyId(party1.id);
             expect(instances).not.toBeNull();
@@ -148,7 +148,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('inserts base with valid values', async(done) => {
+    it('inserts base with valid values', async (done) => {
         try {
 
             const rawIdValue = 'uuid_x';
@@ -188,7 +188,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('inserts agency provided token with valid values', async(done) => {
+    it('inserts agency provided token with valid values', async (done) => {
         try {
 
             const rawIdValue = 'uuid_x';
@@ -224,7 +224,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('inserts invitation code with valid values', async(done) => {
+    it('inserts invitation code with valid values', async (done) => {
         try {
 
             const rawIdValue = 'uuid_invitation_code';
@@ -268,7 +268,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('inserts invitation code with generated raw id value', async(done) => {
+    it('inserts invitation code with generated raw id value', async (done) => {
         try {
 
             const expectedIdValues = [
@@ -305,7 +305,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('inserts public identifier with valid values', async(done) => {
+    it('inserts public identifier with valid values', async (done) => {
         try {
 
             const rawIdValue = 'uuid_public_identifier';
@@ -340,7 +340,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('inserts link id with valid values', async(done) => {
+    it('inserts link id with valid values', async (done) => {
         try {
 
             const rawIdValue = 'uuid_link_id';
@@ -375,7 +375,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('fails insert with invalid type', async(done) => {
+    it('fails insert with invalid type', async (done) => {
         try {
             await IdentityModel.create({
                 rawIdValue: 'uuid_x',
@@ -393,7 +393,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('fails insert with null type', async(done) => {
+    it('fails insert with null type', async (done) => {
         try {
             await IdentityModel.create({
                 rawIdValue: 'uuid_x',
@@ -410,7 +410,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('fails insert with null profile', async(done) => {
+    it('fails insert with null profile', async (done) => {
         try {
             await IdentityModel.create({
                 rawIdValue: 'uuid_x',
@@ -427,7 +427,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('fails insert with null party', async(done) => {
+    it('fails insert with null party', async (done) => {
         try {
             await IdentityModel.create({
                 rawIdValue: 'uuid_x',
@@ -444,7 +444,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('converts type to enum', async(done) => {
+    it('converts type to enum', async (done) => {
         try {
             expect(identity1).not.toBeNull();
             expect(identity1.identityType).toBe(IdentityType.LinkId.name);
@@ -456,7 +456,7 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('search should be populated', async(done) => {
+    it('search should be populated', async (done) => {
         try {
             const searchResult = await IdentityModel.search(1, 10);
             expect(searchResult.list[0].idValue).toBe(identity1.idValue);
@@ -468,8 +468,9 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('creates a temporary identity', async(done) => {
+    it('creates a temporary identity', async (done) => {
         try {
+
             // DTOs
             const identityDTO = new IdentityDTO(PartyType.Individual.name, 'DATE_OF_BIRTH', '2015-07-31', 'John', 'Doe', undefined);
 
@@ -488,6 +489,7 @@ describe('RAM Identity', () => {
 
             // console.log(JSON.stringify(tempIdentity));
             done();
+
         } catch (e) {
             fail('Because ' + e);
             done();

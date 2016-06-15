@@ -9,7 +9,6 @@ import {
     IdentityDTO,
     SearchResult
 } from '../../../commons/RamAPI';
-
 import {NameModel} from './name.model';
 import {SharedSecretModel} from './sharedSecret.model';
 import {IProfile, ProfileModel, ProfileProvider} from './profile.model';
