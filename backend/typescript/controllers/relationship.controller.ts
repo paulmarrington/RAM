@@ -54,20 +54,16 @@ export class RelationshipController {
                 }
             }
         };
-        try {
-            validateReqSchema(req, schema)
-                .then((req:Request) => this.relationshipModel.search(
-                    req.params.subject_or_delegate === 'subject' ? req.params.identity_id : null,
-                    req.params.subject_or_delegate === 'delegate' ? req.params.identity_id : null,
-                    req.query.page,
-                    req.query.pageSize)
-                )
-                .then((results) => (results.map((model) => model.toHrefValue(true))))
-                .then(sendSearchResult(res), sendError(res))
-                .then(sendNotFoundError(res));
-        } catch (e) {
-            console.log(e);
-        }
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.search(
+                req.params.subject_or_delegate === 'subject' ? req.params.identity_id : null,
+                req.params.subject_or_delegate === 'delegate' ? req.params.identity_id : null,
+                req.query.page,
+                req.query.pageSize)
+            )
+            .then((results) => (results.map((model) => model.toHrefValue(true))))
+            .then(sendSearchResult(res), sendError(res))
+            .then(sendNotFoundError(res));
     };
 
     public assignRoutes = (router:Router) => {
