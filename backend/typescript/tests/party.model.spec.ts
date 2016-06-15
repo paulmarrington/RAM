@@ -17,7 +17,7 @@ import {
     PartyType} from '../models/party.model';
 
 /* tslint:disable:max-func-body-length */
-describe('RAM Identity', () => {
+describe('RAM Party', () => {
 
     connectDisconnectMongo();
     resetDataInMongo();

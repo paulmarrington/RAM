@@ -46,7 +46,7 @@ export interface IParty extends IRAMObject {
 
 /* tslint:disable:no-empty-interfaces */
 export interface IPartyModel extends mongoose.Model<IParty> {
-    findByIdentityIdValue: (idValue:String) => mongoose.Promise<IParty>;
+    findByIdentityIdValue: (idValue:String) => Promise<IParty>;
 }
 
 // instance methods ...................................................................................................

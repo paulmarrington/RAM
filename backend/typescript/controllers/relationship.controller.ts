@@ -8,7 +8,7 @@ export class RelationshipController {
     constructor(private relationshipModel:IRelationshipModel) {
     }
 
-    private findByIdentifier = async(req:Request, res:Response) => {
+    private findByIdentifier = async (req:Request, res:Response) => {
         const schema = {
             'identifier': {
                 in: 'params',
@@ -37,7 +37,8 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private listBySubjectOrDelegate = async(req:Request, res:Response) => {
+    /* tslint:disable:max-func-body-length */
+    private listBySubjectOrDelegate = async (req:Request, res:Response) => {
         const schema = {
             'subject_or_delegate': {
                 in: 'params',
