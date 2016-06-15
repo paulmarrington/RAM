@@ -94,8 +94,8 @@ From a browser run http://ramvm01.expoctest.com/dev. Enter a branch/tag/hash and
 
 * Fork and clone https://github.com/atogov/RAM if you haven't already. This need only be done once per developer.
 * Open Git Shell
-* Run _./ram-unix.sh backend server&_
-* Run _./ram-unix.sh frontend server&_
+* Run _./ram.sh backend server&_
+* Run _./ram.sh frontend server&_
 * Wait patentially. Eventually a browser page will open
 * For each task:
   * Refresh your clone from RAM or another fork if that is the base you need.
@@ -104,17 +104,17 @@ From a browser run http://ramvm01.expoctest.com/dev. Enter a branch/tag/hash and
     * Run Jasmine for a service called _nnnnn_. If the optional describe text is provided, only the _describe()_ that matches the text will run. Otherwise all tests in the file execute.
     * If it fails, add code to one of the service actions
 
-## The ```ram-unix``` script
+## The ```ram``` script
 
-At the root of the project, there is a ```ram-unix``` script which provides a self documenting list of useful commands from setting up the environment to running the frontend/backend and executing tests. You can see the list of commands simply by executing:
+At the root of the project, there is a ```ram``` script which provides a self documenting list of useful commands from setting up the environment to running the frontend/backend and executing tests. You can see the list of commands simply by executing:
 
-* ```./ram-unix```
+* ```./ram```
 
 Here is a list of support commands:
 
 ```Usage:
 
-    ram-unix <command>
+    ram <command>
 
 Commands:
 
@@ -143,7 +143,7 @@ Commands:
 
 For the ```test```, you can limit the test by a pattern. For example:
 
-```./ram-unix test:backend --test relationshipType.model```
+```./ram test:backend --test relationshipType.model```
 
 ## Jasmine from the Client
 You may prefer to test your service from a browser. You can then select individual tests as needed. The browser will need to include
