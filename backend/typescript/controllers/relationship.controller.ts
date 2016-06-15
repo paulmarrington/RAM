@@ -23,6 +23,20 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
+    private findPendingByInvitationCodeInDateRange = async (req:Request, res:Response) => {
+        const schema = {
+            'invitationCode': {
+                notEmpty: true,
+                errorMessage: 'Invitation Code is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
     private listBySubjectOrDelegate = async(req:Request, res:Response) => {
         const schema = {
             'subject_or_delegate': {
@@ -68,6 +82,7 @@ export class RelationshipController {
 
     public assignRoutes = (router:Router) => {
         router.get('/v1/relationship/:identifier', this.findByIdentifier);
+        router.get('/v1/relationship/invitationCode/:invitationCode', this.findPendingByInvitationCodeInDateRange);
         router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.listBySubjectOrDelegate);
         return router;
     };
