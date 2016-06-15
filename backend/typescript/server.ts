@@ -110,4 +110,4 @@ server.use((req: express.Request, res: express.Response) => {
 // start server .......................................................................................................
 
 server.listen(conf.httpPort);
-logger.info(`RAM Server running on port ${conf.httpPort}`);
+logger.info(`RAM Server running in ${conf.devMode?'dev':'prod'} mode on port ${conf.httpPort}`);
