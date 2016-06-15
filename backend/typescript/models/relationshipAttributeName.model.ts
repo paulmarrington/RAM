@@ -85,8 +85,8 @@ export interface IRelationshipAttributeName extends ICodeDecode {
     purposeText: string;
     permittedValues: string[];
     domainEnum(): RelationshipAttributeNameDomain;
-    toHrefValue(): HrefValue<DTO>;
-    toDTO(): DTO;
+    toHrefValue(includeValue:boolean): Promise<HrefValue<DTO>>;
+    toDTO(): Promise<DTO>;
 }
 
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
@@ -102,14 +102,14 @@ RelationshipAttributeNameSchema.method('domainEnum', function () {
     return RelationshipAttributeNameDomain.valueOf(this.domain);
 });
 
-RelationshipAttributeNameSchema.method('toHrefValue', function () {
+RelationshipAttributeNameSchema.method('toHrefValue', async function (includeValue:boolean) {
     return new HrefValue(
         '/api/v1/relationshipAttributeName/' + this.code,
-        this.toDTO()
+        includeValue ? await this.toDTO() : undefined
     );
 });
 
-RelationshipAttributeNameSchema.method('toDTO', function () {
+RelationshipAttributeNameSchema.method('toDTO', async function () {
     return new DTO(
         this.code,
         this.shortDecodeText,

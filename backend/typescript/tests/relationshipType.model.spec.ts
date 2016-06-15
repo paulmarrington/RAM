@@ -1,11 +1,11 @@
-import {connectDisconnectMongo, dropMongo} from './helpers';
+import {connectDisconnectMongo, resetDataInMongo} from './helpers';
 import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Relationship Type', () => {
 
     connectDisconnectMongo();
-    dropMongo();
+    resetDataInMongo();
 
     let relationshipTypeNoEndDate: IRelationshipType;
     let relationshipTypeFutureEndDate: IRelationshipType;

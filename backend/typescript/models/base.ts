@@ -4,6 +4,32 @@ import * as mongoose from 'mongoose';
 /* tslint:disable:no-var-requires */ const mongooseIdValidator = require('mongoose-id-validator');
 /* tslint:disable:no-var-requires */ const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
 
+/**
+ * A convenience class to build a query object, only adding criteria when specified.
+ */
+export class Query {
+
+    private data:IQueryData = {};
+
+    /**
+     * Adds the given filter (name:value) only if 'condition' is truthy.
+     */
+    public add(name:string, value:Object, condition:Object):Query {
+        if (condition) {
+            this.data[name] = value;
+        }
+        return this;
+    }
+
+    public build():Object {
+        return this.data;
+    }
+}
+
+interface IQueryData {
+    [name:string]: Object;
+}
+
 /* RAMEnum is a simple class construct that represents a enumerated type so we can work with classes not strings.
  */
 export class RAMEnum {

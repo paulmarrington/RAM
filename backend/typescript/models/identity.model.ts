@@ -1,7 +1,15 @@
 import * as mongoose from 'mongoose';
+import * as mongooseAutoIncrement from 'mongoose-auto-increment';
+import {conf} from '../bootstrap';
+import * as Hashids from 'hashids';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IProfile, ProfileModel} from './profile.model';
 import {IParty, PartyModel} from './party.model';
+import {
+    HrefValue,
+    Identity as DTO,
+    SearchResult
+} from '../../../commons/RamAPI';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
@@ -11,7 +19,11 @@ const _ProfileModel = ProfileModel;
 /* tslint:disable:no-unused-variable */
 const _PartyModel = PartyModel;
 
+const MAX_PAGE_SIZE = 10;
+
 // enums, utilities, helpers ..........................................................................................
+
+const saltedHashids = new Hashids(conf.hashIdsSalt, 6, 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789');
 
 export class IdentityType extends RAMEnum {
 
@@ -208,39 +220,56 @@ const IdentitySchema = RAMSchema({
     }
 });
 
+mongooseAutoIncrement.initialize(mongoose.connection);
+IdentitySchema.plugin(mongooseAutoIncrement.plugin, {model: 'Identity', field: 'seq'});
+
 IdentitySchema.pre('validate', function (next:() => void) {
     const identityType = IdentityType.valueOf(this.identityType) as IdentityType;
-    this.idValue = identityType ? identityType.buildIdValue(this) : null;
-    next();
+    if (identityType === IdentityType.InvitationCode && !this.rawIdValue) {
+        this.nextCount((err:Error, count:number) => {
+            this.rawIdValue = saltedHashids.encode(count);
+            this.idValue = identityType ? identityType.buildIdValue(this) : null;
+            next();
+        });
+    } else {
+        this.idValue = identityType ? identityType.buildIdValue(this) : null;
+        next();
+    }
 });
 
 // interfaces .........................................................................................................
 
 export interface IIdentity extends IRAMObject {
-    idValue: string;
-    rawIdValue: string;
-    identityType: string;
-    defaultInd: boolean;
-    agencyScheme: string;
-    agencyToken: string;
-    invitationCodeStatus: string;
-    invitationCodeExpiryTimestamp: Date;
-    invitationCodeClaimedTimestamp: Date;
-    invitationCodeTemporaryEmailAddress: string;
-    publicIdentifierScheme: string;
-    linkIdScheme: string;
-    linkIdConsumer: string;
-    profile: IProfile;
-    party: IParty;
-    identityTypeEnum(): IdentityType;
-    agencySchemeEnum(): IdentityAgencyScheme;
-    invitationCodeStatusEnum(): IdentityInvitationCodeStatus;
-    publicIdentifierSchemeEnum(): IdentityPublicIdentifierScheme;
-    linkIdSchemeEnum(): IdentityLinkIdScheme;
+    idValue:string;
+    rawIdValue:string;
+    identityType:string;
+    defaultInd:boolean;
+    agencyScheme:string;
+    agencyToken:string;
+    invitationCodeStatus:string;
+    invitationCodeExpiryTimestamp:Date;
+    invitationCodeClaimedTimestamp:Date;
+    invitationCodeTemporaryEmailAddress:string;
+    publicIdentifierScheme:string;
+    linkIdScheme:string;
+    linkIdConsumer:string;
+    profile:IProfile;
+    party:IParty;
+    identityTypeEnum():IdentityType;
+    agencySchemeEnum():IdentityAgencyScheme;
+    invitationCodeStatusEnum():IdentityInvitationCodeStatus;
+    publicIdentifierSchemeEnum():IdentityPublicIdentifierScheme;
+    linkIdSchemeEnum():IdentityLinkIdScheme;
+    toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
+    toDTO():Promise<DTO>;
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
-    findByIdValue: (idValue:String) => mongoose.Promise<IIdentity>;
+    findByIdValue:(idValue:String) => mongoose.Promise<IIdentity>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => mongoose.Promise<IIdentity>;
+    findDefaultByPartyId:(partyId:String) => mongoose.Promise<IIdentity>;
+    listByPartyId:(partyId:String) => mongoose.Promise<IIdentity[]>;
+    search:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
 }
 
 // instance methods ...................................................................................................
@@ -265,6 +294,33 @@ IdentitySchema.method('linkIdSchemeEnum', function () {
     return IdentityLinkIdScheme.valueOf(this.linkIdScheme);
 });
 
+IdentitySchema.method('toHrefValue', async function (includeValue:boolean) {
+    return new HrefValue(
+        '/api/v1/identity/' + this.idValue,
+        includeValue ? await this.toDTO() : undefined
+    );
+});
+
+IdentitySchema.method('toDTO', async function () {
+    return new DTO(
+        this.idValue,
+        this.rawIdValue,
+        this.identityType,
+        this.defaultInd,
+        this.agencyScheme,
+        this.agencyToken,
+        this.invitationCodeStatus,
+        this.invitationCodeExpiryTimestamp,
+        this.invitationCodeClaimedTimestamp,
+        this.invitationCodeTemporaryEmailAddress,
+        this.publicIdentifierScheme,
+        this.linkIdScheme,
+        this.linkIdConsumer,
+        await this.profile.toDTO(),
+        await this.party.toHrefValue()
+    );
+});
+
 // static methods .....................................................................................................
 
 IdentitySchema.static('findByIdValue', (idValue:String) => {
@@ -278,6 +334,76 @@ IdentitySchema.static('findByIdValue', (idValue:String) => {
             'party'
         ])
         .exec();
+});
+
+IdentitySchema.static('findPendingByInvitationCodeInDateRange', (invitationCode:String, date:Date) => {
+    return this.IdentityModel
+        .findOne({
+            rawIdValue: invitationCode,
+            identityType: IdentityType.InvitationCode.name,
+            invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
+            invitationCodeExpiryTimestamp: {$gte: date}
+        })
+        .deepPopulate([
+            'profile.name',
+            'profile.sharedSecrets.sharedSecretType',
+            'party'
+        ])
+        .exec();
+});
+
+IdentitySchema.static('findDefaultByPartyId', (partyId:String) => {
+    return this.IdentityModel
+        .findOne({
+            'party': partyId,
+            defaultInd: true
+        })
+        .deepPopulate([
+            'profile.name',
+            'profile.sharedSecrets.sharedSecretType',
+            'party'
+        ])
+        .sort({createdAt: 1})
+        .exec();
+});
+
+IdentitySchema.static('listByPartyId', (partyId:String) => {
+    return this.IdentityModel
+        .find({
+            'party': partyId
+        })
+        .deepPopulate([
+            'profile.name',
+            'profile.sharedSecrets.sharedSecretType',
+            'party'
+        ])
+        .sort({idValue: 1})
+        .exec();
+});
+
+IdentitySchema.static('search', (page:number, reqPageSize:number) => {
+    return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
+        const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
+        try {
+            const query = {};
+            const count = await this.IdentityModel
+                .count(query)
+                .exec();
+            const list = await this.IdentityModel
+                .find(query)
+                .deepPopulate([
+                    'profile.name',
+                    'party'
+                ])
+                .skip((page - 1) * pageSize)
+                .limit(pageSize)
+                .sort({name: 1})
+                .exec();
+            resolve(new SearchResult<IIdentity>(count, pageSize, list));
+        } catch (e) {
+            reject(e);
+        }
+    });
 });
 
 // concrete model .....................................................................................................

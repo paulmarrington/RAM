@@ -1,63 +1,80 @@
-import {connectDisconnectMongo, dropMongo} from './helpers';
+import {connectDisconnectMongo} from './helpers';
 import {
     IName,
-    NameModel} from '../models/name.model';
+    NameModel
+} from '../models/name.model';
 import {
     IParty,
     PartyModel,
-    PartyType} from '../models/party.model';
+    PartyType
+} from '../models/party.model';
 import {
     IRelationship,
     RelationshipModel,
-    RelationshipStatus} from '../models/relationship.model';
+    RelationshipStatus
+} from '../models/relationship.model';
+import {IRelationshipType, RelationshipTypeModel} from '../models/relationshipType.model';
+import {Seeder} from '../seeding/seed';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Relationship', () => {
 
     connectDisconnectMongo();
-    dropMongo();
 
-    let subjectNickName1: IName;
-    let subjectParty1: IParty;
+    let relationshipTypeCustom:IRelationshipType;
 
-    let delegateNickName1: IName;
-    let delegateParty1: IParty;
+    let subjectNickName1:IName;
+    let subjectParty1:IParty;
 
-    beforeEach(async (done) => {
+    let delegateNickName1:IName;
+    let delegateParty1:IParty;
 
-        try {
+    beforeEach((done) => {
 
-            subjectNickName1 = await NameModel.create({
-                givenName: 'Jane',
-                familyName: 'Subject 1'
+        Seeder.verbose(false);
+
+        Promise.resolve(null)
+            .then()
+            .then(Seeder.resetDataInMongo)
+            .then(Seeder.loadReference)
+            .then(async ()=> {
+                try {
+
+                    relationshipTypeCustom = await RelationshipTypeModel.findByCodeIgnoringDateRange('CUSTOM_REPRESENTATIVE');
+
+                    subjectNickName1 = await NameModel.create({
+                        givenName: 'Jane',
+                        familyName: 'Subject 1'
+                    });
+
+                    subjectParty1 = await PartyModel.create({
+                        partyType: PartyType.Individual.name
+                    });
+
+                    delegateNickName1 = await NameModel.create({
+                        givenName: 'John',
+                        familyName: 'Delegate 1'
+                    });
+
+                    delegateParty1 = await PartyModel.create({
+                        partyType: PartyType.Individual.name
+                    });
+
+                } catch (e) {
+                    fail('Because ' + e);
+                    done();
+                }
+
+            }).then(()=> {
+                done();
             });
-
-            subjectParty1 = await PartyModel.create({
-                partyType: PartyType.Individual.name
-            });
-
-            delegateNickName1 = await NameModel.create({
-                givenName: 'John',
-                familyName: 'Delegate 1'
-            });
-
-            delegateParty1 = await PartyModel.create({
-                partyType: PartyType.Individual.name
-            });
-
-            done();
-
-        } catch (e) {
-            fail('Because ' + e);
-            done();
-        }
-
     });
 
-    it('inserts with no end timestamp', async (done) => {
+    it('inserts with no end timestamp', async(done) => {
         try {
 
             const instance:IRelationship = await RelationshipModel.create({
+                relationshipType: relationshipTypeCustom,
                 subject: subjectParty1,
                 subjectNickName: subjectNickName1,
                 delegate: delegateParty1,
@@ -81,10 +98,11 @@ describe('RAM Relationship', () => {
         }
     });
 
-    it('inserts with end timestamp', async (done) => {
+    it('inserts with end timestamp', async(done) => {
         try {
 
             const instance:IRelationship = await RelationshipModel.create({
+                relationshipType: relationshipTypeCustom,
                 subject: subjectParty1,
                 subjectNickName: subjectNickName1,
                 delegate: delegateParty1,

@@ -1,3 +1,5 @@
+import {logger} from '../logger';
+import * as colors from 'colors';
 import {Request, Response} from 'express';
 import {Headers} from './headers';
 import {IIdentity, IdentityModel} from '../models/identity.model';
@@ -22,7 +24,7 @@ class ForgeRockSimulator {
     private resolve(res:Response, next:() => void) {
         return (identity?:IIdentity) => {
             if (identity) {
-                console.log(`Setting ${Headers.IdentityIdValue}: ${identity.idValue}`);
+                logger.info(colors.red(`Setting ${Headers.IdentityIdValue}: ${identity.idValue}`));
                 res.locals[Headers.IdentityIdValue] = identity.idValue;
             }
             next();
@@ -32,7 +34,7 @@ class ForgeRockSimulator {
 
     private reject(res:Response, next:() => void) {
         return ():void => {
-            console.log('Unable to look up identity!');
+            logger.info('Unable to look up identity!');
             res.status(401);
             res.send({});
         };

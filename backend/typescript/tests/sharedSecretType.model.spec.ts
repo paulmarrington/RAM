@@ -1,4 +1,4 @@
-import {connectDisconnectMongo, dropMongo} from './helpers';
+import {connectDisconnectMongo, resetDataInMongo} from './helpers';
 import {
     ISharedSecretType,
     SharedSecretTypeModel} from '../models/sharedSecretType.model';
@@ -7,7 +7,7 @@ import {
 describe('RAM Shared Secret Type', () => {
 
     connectDisconnectMongo();
-    dropMongo();
+    resetDataInMongo();
 
     let sharedSecretTypeNoEndDate: ISharedSecretType;
     let sharedSecretTypeFutureEndDate: ISharedSecretType;

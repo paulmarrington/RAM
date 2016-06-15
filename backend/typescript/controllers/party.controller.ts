@@ -1,29 +1,42 @@
 import {Router, Request, Response} from 'express';
-import {sendDocument, sendError} from './helpers';
-import {IPartyModel} from '../models/party-old.model';
+import {sendResource, sendError, sendNotFoundError, validateReqSchema} from './helpers';
+import {Headers} from './headers';
+import {IPartyModel} from '../models/party.model';
 
 export class PartyController {
 
-  constructor(private partyModel: IPartyModel) {
-  }
+    constructor(private partyModel:IPartyModel) {
+    }
 
-  /* given identity type and value, retrieve identity and party documents */
-  private getParty = (req: Request, res: Response) => {
-    this.partyModel.getPartyByIdentity(req.params.type, req.params.value)
-      .then(sendDocument(res), sendError(res));
-  };
+    private findMe = async (req:Request, res:Response) => {
+        const identity = res.locals[Headers.Identity];
+        const schema = {};
+        validateReqSchema(req, schema)
+            .then((req:Request) => identity ? this.partyModel.findByIdentityIdValue(identity.idValue) : null)
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
 
-  /*
-   * Add a Party. It must have one identity to be valid.
-   */
-  private addParty = (req: Request, res: Response) => {
-    this.partyModel.create(req.body)
-      .then(sendDocument(res), sendError(res));
-  };
+    private findByIdentityIdValue = (req:Request, res:Response) => {
+        const schema = {
+            'idValue': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Id Value is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.partyModel.findByIdentityIdValue(req.params.idValue))
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
 
-  public assignRoutes = (router: Router) => {
-    router.get('/identity/:value/:type', this.getParty);
-    router.post('/', this.addParty);
-    return router;
-  };
+    public assignRoutes = (router:Router) => {
+        router.get('/v1/party/identity/me', this.findMe);
+        router.get('/v1/party/identity/:idValue', this.findByIdentityIdValue);
+        return router;
+    };
+
 }
