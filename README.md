@@ -106,7 +106,7 @@ From a browser run http://ramvm01.expoctest.com/dev. Enter a branch/tag/hash and
 
 ## The ```ram``` script
 
-At the root of the project, there is a ```do``` script which provides a self documenting list of useful commands from setting up the environment to running the frontend/backend and executing tests. You can see the list of commands simply by executing:
+At the root of the project, there is a ```ram``` script which provides a self documenting list of useful commands from setting up the environment to running the frontend/backend and executing tests. You can see the list of commands simply by executing:
 
 * ```./ram```
 

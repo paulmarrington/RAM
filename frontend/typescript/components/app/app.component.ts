@@ -6,6 +6,8 @@ import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RelationshipsComponent} from '../relationships/relationships.component';
 import {AddRelationshipComponent} from '../add-relationship/add-relationship.component';
+import {AddRelationshipCompleteComponent} from '../add-relationship-complete/add-relationship-complete.component';
+import {AcceptRelationshipCodeComponent} from '../accept-relationship-code/accept-relationship-code.component';
 
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {provide} from '@angular/core';
@@ -32,16 +34,24 @@ import {RamComponent} from '../ram/ram.component';
     ]
 })
 @RouteConfig([
-    {path: '/', name: 'Ram', component: RamComponent, useAsDefault: true},
+    { path: '/', name: 'Ram', component: RamComponent, useAsDefault: true },
 
     {
-        path: '/parties/identities/:identityValue/relationships/',
+        path: '/relationships/:identityValue/:identityResolver',
         name: 'Relationships',
         component: RelationshipsComponent
-    },{
+    }, {
         path: '/relationships/add',
         name: 'AddRelationship',
         component: AddRelationshipComponent
+    }, {
+        path: '/relationships/add/complete',
+        name: 'AddRelationshipCompleteComponent',
+        component: AddRelationshipCompleteComponent
+    }, {
+        path: '/relationships/accept',
+        name: 'AcceptRelationshipCodeComponent',
+        component: AcceptRelationshipCodeComponent
     }
 ])
 export class AppComponent {

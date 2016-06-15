@@ -4,7 +4,7 @@ import {
 import {RestCalls} from './support/rest';
 import {FakerTestHelper} from './support/faker.test.helper';
 
-const rest = new RestCalls('localhost', 3000);
+const rest = new RestCalls('127.0.0.1', 3000);
 
 const newRelationship = (party1, abn1, party2, abn2) => {
     const now = new Date();
