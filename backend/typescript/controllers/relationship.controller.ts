@@ -10,14 +10,14 @@ export class RelationshipController {
 
     private findByIdentifier = async(req:Request, res:Response) => {
         const schema = {
-            'id': {
+            'identifier': {
                 in: 'params',
                 notEmpty: true,
-                errorMessage: 'Id is not valid'
+                errorMessage: 'Identifier is not valid'
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findByIdentifier(req.params.id))
+            .then((req:Request) => this.relationshipModel.findByIdentifier(req.params.identifier))
             .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
@@ -67,7 +67,7 @@ export class RelationshipController {
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/relationship/:id', this.findByIdentifier);
+        router.get('/v1/relationship/:identifier', this.findByIdentifier);
         router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.listBySubjectOrDelegate);
         return router;
     };
