@@ -1,4 +1,5 @@
 import {Router, Request, Response} from 'express';
+import {security} from './security.middleware';
 import {sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult} from './helpers';
 import {IRelationshipModel} from '../models/relationship.model';
 
@@ -82,9 +83,20 @@ export class RelationshipController {
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/relationship/:identifier', this.findByIdentifier);
-        router.get('/v1/relationship/invitationCode/:invitationCode', this.findPendingByInvitationCodeInDateRange);
-        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.listBySubjectOrDelegate);
+
+        router.get('/v1/relationship/:identifier',
+            security.isAuthenticated,
+            this.findByIdentifier);
+
+        router.get('/v1/relationship/invitationCode/:invitationCode',
+            security.isAuthenticated,
+            this.findPendingByInvitationCodeInDateRange);
+
+        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id',
+            security.isAuthenticated,
+            this.listBySubjectOrDelegate);
+
         return router;
+
     };
 }
