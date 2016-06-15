@@ -90,12 +90,12 @@ export function sendError<T>(res: Response) {
                 res.json(new ErrorResponse(
                     _.values<string>(_.mapValues((error as ValidationError).errors, (v) => v.message))
                 ));
-                console.log((error as Error).stack);
+                logger.error((error as Error).stack);
                 break;
             case 'Error':
                 res.status(500);
                 res.json(new ErrorResponse((error as Error).message));
-                console.log((error as Error).stack);
+                logger.error((error as Error).stack);
                 break;
             default:
                 res.status(500);
