@@ -45,6 +45,10 @@ import {
     RelationshipStatus} from '../models/relationship.model';
 
 import {
+    IRelationshipAttribute,
+    RelationshipAttributeModel} from '../models/relationshipAttribute.model';
+
+import {
     IIdentity,
     IdentityModel,
     IdentityType,
@@ -244,7 +248,20 @@ export class Seeder {
         return model;
     }
 
+    public static async createRelationshipAttributeModel(values:IRelationshipAttribute) {
+        const model = await RelationshipAttributeModel.create(values);
+        return model;
+    }
+
     public static async createRelationshipModel(values:IRelationship) {
+        Seeder.log(`- ${Seeder.custom_delegate_relationshipType.code}`.magenta);
+        if (values.attributes) {
+            for (let attribute of values.attributes) {
+                const truncatedValue = truncateString(attribute.value);
+                Seeder.log(`  - ${attribute.attributeName.code} (${truncatedValue})`.green);
+            }
+        }
+        Seeder.log('');
         if (values.subjectNickName.givenName || values.subjectNickName.familyName) {
             Seeder.log(`- Subject   : ${values.subjectNickName.givenName} ${values.subjectNickName.familyName}`.cyan);
         } else {
@@ -689,8 +706,16 @@ export class Seeder {
                     delegate: Seeder.jennifermaxims_party,
                     delegateNickName: Seeder.jennifermaxims_name,
                     startTimestamp: new Date(),
-                    status: RelationshipStatus.Active.name
+                    status: RelationshipStatus.Active.name,
+                    attributes: [
+                        await Seeder.createRelationshipAttributeModel({
+                            value: true,
+                            attributeName: Seeder.permissionCustomisationAllowedInd_attributeName
+                        } as any)
+                    ]
                 } as any);
+
+                Seeder.log('');
 
             }
 
@@ -751,7 +776,12 @@ export class Seeder {
                     delegate: Seeder.fredjohnson_party,
                     delegateNickName: Seeder.fredjohnson_name,
                     startTimestamp: new Date(),
-                    status: RelationshipStatus.Pending.name
+                    status: RelationshipStatus.Pending.name,
+                    attributes: [
+                        await Seeder.createRelationshipAttributeModel({
+                            value: true,
+                            attributeName: Seeder.permissionCustomisationAllowedInd_attributeName
+                        } as any)
                 } as any);
 
             }
