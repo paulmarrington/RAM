@@ -8,6 +8,7 @@ import {IdentityModel} from './identity.model';
 import {
     HrefValue,
     Relationship as DTO,
+    RelationshipAttribute as RelationshipAttributeDTO,
     SearchResult
 } from '../../../commons/RamAPI';
 
@@ -155,7 +156,11 @@ RelationshipSchema.method('toDTO', async function () {
         this.startTimestamp,
         this.endTimestamp,
         this.endEventTimestamp,
-        this.status
+        this.status,
+        await Promise.all<RelationshipAttributeDTO>(this.attributes.map(
+            async (attribute:IRelationshipAttribute) => {
+                return await attribute.toDTO();
+            }))
     );
 });
 
