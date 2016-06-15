@@ -733,7 +733,7 @@ export class Seeder {
 
                 Seeder.log('');
 
-                Seeder.bobsmith_identity_1 = await Seeder.createIdentityModel({
+                Seeder.fredjohnson_identity_1 = await Seeder.createIdentityModel({
                     identityType: IdentityType.InvitationCode.name,
                     defaultInd: true,
                     invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
@@ -741,6 +741,8 @@ export class Seeder {
                     profile: Seeder.fredjohnson_profile,
                     party: Seeder.fredjohnson_party
                 } as any);
+
+                Seeder.log('');
 
                 Seeder.j_and_f_relationship = await Seeder.createRelationshipModel({
                     relationshipType: Seeder.custom_delegate_relationshipType,
