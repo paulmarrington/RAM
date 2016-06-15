@@ -76,36 +76,30 @@ if (conf.devMode) {
 
 // setup route handlers (dev) .........................................................................................
 
-// setup route handlers (production) ..................................................................................
-
 server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
-server.use('/api/',
-    new IdentityController(IdentityModel).assignRoutes(express.Router()));
-server.use('/api/',
-    new PartyController(PartyModel).assignRoutes(express.Router()));
-//server.use('/api/',
-//    new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
-server.use('/api/',
-    new RelationshipTypeController(RelationshipTypeModel).assignRoutes(express.Router()));
-server.use('/api/',
-    new RelationshipAttributeNameController(RelationshipAttributeNameModel).assignRoutes(express.Router()));
-server.use('/api/',
-    new RelationshipController(RelationshipModel).assignRoutes(express.Router()));
 
-// catch 404 and forward to error handler
-server.use((req: express.Request, res: express.Response) => {
-    const err = new cApi.ErrorResponse('Request Not Found');
-    res.send(err);
-});
+// setup route handlers (production) ..................................................................................
 
-// server.use((ramResponse: cApi.IResponse, req: express.Request, res: express.Response, next: express.NextFunction) => {
-//     if (ramResponse.isError) {
-//         res.send(ramResponse); // Todo: More specific error handling
-//     } else {
-//         res.send(ramResponse);
-//     }
-// });
+server.use('/api/',
+    new RelationshipTypeController(RelationshipTypeModel)
+        .assignRoutes(express.Router()));
+
+server.use('/api/',
+    new RelationshipAttributeNameController(RelationshipAttributeNameModel)
+        .assignRoutes(express.Router()));
+
+server.use('/api/',
+    new IdentityController(IdentityModel)
+        .assignRoutes(express.Router()));
+
+server.use('/api/',
+    new PartyController(PartyModel)
+        .assignRoutes(express.Router()));
+
+server.use('/api/',
+    new RelationshipController(RelationshipModel)
+        .assignRoutes(express.Router()));
 
 // start server .......................................................................................................
 
