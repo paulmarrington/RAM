@@ -497,6 +497,20 @@
 					"response": []
 				},
 				{
+					"name": "Get By Invitation Code (bad)",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/bad",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
 					"name": "Get By Invitation Code (jEVYNX)",
 					"request": {
 						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX",

@@ -169,19 +169,22 @@ RelationshipSchema.static('findByIdentifier', (id:String) => {
 
 RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invitationCode:String, date:Date) => {
     const identity = await IdentityModel.findPendingByInvitationCodeInDateRange(invitationCode, date);
-    const delegate = identity.party;
-    return this.RelationshipModel
-        .findOne({
-            delegate: delegate
-        })
-        .deepPopulate([
-            'relationshipType',
-            'subject',
-            'subjectNickName',
-            'delegate',
-            'delegateNickName'
-        ])
-        .exec();
+    if (identity) {
+        const delegate = identity.party;
+        return this.RelationshipModel
+            .findOne({
+                delegate: delegate
+            })
+            .deepPopulate([
+                'relationshipType',
+                'subject',
+                'subjectNickName',
+                'delegate',
+                'delegateNickName'
+            ])
+            .exec();
+    }
+    return null;
 });
 
 RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, reqPageSize:number) => {
