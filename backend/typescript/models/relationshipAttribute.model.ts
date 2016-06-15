@@ -25,7 +25,8 @@ const RelationshipAttributeSchema = new mongoose.Schema({
     },
     attributeName: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'RelationshipAttributeName'
+        ref: 'RelationshipAttributeName',
+        required: false
     }
 });
 
