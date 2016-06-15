@@ -81,7 +81,7 @@
       </div>
 
       <p class="text-center">
-        <a href="http://localhost:3001/#" target="_blank" class="btn btn-primary">Launch RAM</a>
+        <a href="/#relationships/" target="_blank" class="btn btn-primary" id=launch-ram-link>Launch RAM</a>
       </p>
     </div>
   </div>
@@ -129,6 +129,7 @@
       var $userDetail = $('#user-detail');
       var $userList = $('#user-list');
       var $notLoggedIn = $('#not-logged-in');
+      var $launchRamLink = $('#launch-ram-link');
 
       $userDetail.removeClass(effect);
 
@@ -154,6 +155,9 @@
               $(this).addClass('active');
             }
           });
+
+          // update link to open RAM
+          $launchRamLink.attr('href', "/#relationships/" + data['X-RAM-Identity-IdValue'])
         }
         else {
           // not logged in
@@ -168,9 +172,6 @@
 </script>
 <hr/>
 
-<ol>
-  <li><a href="#/relationships/pi/bob">Bob Bartholomew</a>
-</ol>
 <p>
   <script>
     window.redeploy = function () {

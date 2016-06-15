@@ -37,7 +37,7 @@ import {RamComponent} from '../ram/ram.component';
     { path: '/', name: 'Ram', component: RamComponent, useAsDefault: true },
 
     {
-        path: '/relationships/:identityValue/:identityResolver',
+        path: '/relationships/:identityValue',
         name: 'Relationships',
         component: RelationshipsComponent
     }, {
