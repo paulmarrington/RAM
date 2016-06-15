@@ -1,19 +1,27 @@
 import { Injectable } from '@angular/core';
 import {
-    RelationshipSearchDTO,
-    IRelationshipRef
+    RelationshipSearchDTO, HrefValue, Relationship2, Name2
 } from '../../../commons/RamAPI';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import {Response, Http} from '@angular/http';
 
+// TODO: pass in Party2 and use identity name if no nickname
+const whatName = (nickname:Name2) => {
+    if (nickname.unstructuredName) {
+        return nickname.unstructuredName;
+    } else {
+        return nickname.givenName + ' ' + nickname.familyName;
+    }
+};
+
 const relationshipsToTable = (relationshipSearchDTO: RelationshipSearchDTO, relType: string):IRelationshipTableRes => {
-    const relationshipDTOToTable = (relref: IRelationshipRef):IRelationshipTableRow => {
+    const relationshipDTOToTable = (relref: HrefValue<Relationship2>):IRelationshipTableRow => {
         const rel = relref.value;
         const relationshipType = rel.relationshipType.href.split('/').slice(-1);
         return {
-            name:       rel[relType].familyName,
-            subName:    rel[relType].givenName,
+            name:       whatName(rel[relType+'NickName']),
+            subName:    '', // TODO: extract ABN when server provides it
             rel:        relationshipType[0],
             access:     'Universal',
             status:     rel.status
@@ -136,20 +144,15 @@ export class RAMRestService {
 
         // temporary until we talk to real server
         const data = relationshipSearchDTOToTable(sampleRelationshipSearchResponseData);
+        const tableBS:BehaviorSubject<IRelationshipTableRes> = new BehaviorSubject(data);
+        return tableBS.asObservable();
 
-        const tableData = Observable.create(observer => {
-            // Yield a single value and complete
-            observer.onNext(data);
-            observer.onCompleted();
-        }) as Observable<IRelationshipTableRes>;
-
-        // const tableData = this.http
+        // return = this.http
         // .get(url)
         // .map(this.extractData)
         // .map(relationshipSearchDTOToTable)
         // .publishReplay()
         // .refCount();
-        return tableData;
     }
 
     // A call external to RAM to get organisation name from ABN
