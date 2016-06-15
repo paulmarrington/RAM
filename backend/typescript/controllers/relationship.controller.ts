@@ -101,7 +101,6 @@ export class RelationshipController {
 
     private create = async(req:Request, res:Response) => {
         const schema = {}; // TODO when DTO is confirmed with front end
-
         validateReqSchema(req, schema)
             .then((req:Request) => {
                 return PartyModel.findByIdentityIdValue(req.body.subject);
