@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "8c66ab13-91f2-9615-9811-3877e6857eea",
+		"_postman_id": "f3597c68-a620-2b4a-3aa2-8a8a174a6d0b",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -505,8 +505,7 @@
 						"body": {
 							"mode": "formdata",
 							"formdata": []
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -519,8 +518,7 @@
 						"body": {
 							"mode": "formdata",
 							"formdata": []
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -533,8 +531,26 @@
 						"body": {
 							"mode": "formdata",
 							"formdata": []
-						},
-						"description": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add",
+					"request": {
+						"url": "{{host}}/api/v1/relationship",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"relationshipType\": \"CUSTOM_REPRESENTATIVE\",\n  \"subject\": \"PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1\",\n  \"delegate\": {\n    \"partyTypeCode\": \"INDIVIDUAL\",\n    \"givenName\": \"a\",\n    \"familyName\": \"b\",\n    \"unstructuredName\": \"\",\n    \"sharedSecret\": {\n      \"code\": \"DATE_OF_BIRTH\",\n      \"value\": \"2016-06-15\"\n    }\n  },\n  \"startTimestamp\": \"2016-06-15T03:49:06.682Z\",\n  \"endTimestamp\": \"2017-06-15T03:49:06.682Z\",\n  \"attributes\": [\n    {\n      \"code\": \"PERMISSION_CUSTOMISATION_ALLOWED_IND\",\n      \"value\": \"true\"\n    }\n  ]\n}"
+						}
 					},
 					"response": []
 				}
