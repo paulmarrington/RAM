@@ -212,7 +212,9 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
                 .when(subjectIdentityIdValue, 'subject', () => PartyModel.findByIdentityIdValue(subjectIdentityIdValue))
                 .when(delegateIdentityIdValue, 'delegate', () => PartyModel.findByIdentityIdValue(delegateIdentityIdValue))
                 .build());
-            const count = await this.RelationshipModel.count(query).exec();
+            const count = await this.RelationshipModel
+                .count(query)
+                .exec();
             const list = await this.RelationshipModel
                 .find(query)
                 .deepPopulate([
