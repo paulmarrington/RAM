@@ -70,10 +70,12 @@ export class IdentityInvitationCodeStatus extends RAMEnum {
 
     public static Claimed = new IdentityInvitationCodeStatus('CLAIMED');
     public static Pending = new IdentityInvitationCodeStatus('PENDING');
+    public static Rejected = new IdentityInvitationCodeStatus('REJECTED');
 
     protected static AllValues = [
         IdentityInvitationCodeStatus.Claimed,
-        IdentityInvitationCodeStatus.Pending
+        IdentityInvitationCodeStatus.Pending,
+        IdentityInvitationCodeStatus.Rejected
     ];
 
     constructor(name:String) {
