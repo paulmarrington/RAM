@@ -22,17 +22,16 @@ describe('RelationshipType API', () => {
 
     it('can find by code', async(done) => {
 
-        const code = 'BUSINESS_REPRESENTATIVE';
+        const code = 'CUSTOM_REPRESENTATIVE';
 
         try {
-
             const response = await relationshipTypeHelper.findByCode(code);
             const relationshipType = response.body;
 
             relationshipTypeHelper.validateRelationshipType(relationshipType);
 
             expect(relationshipType.code).toBe(code);
-            expect(relationshipType.shortDecodeText).toBe('Business Representative');
+            expect(relationshipType.shortDecodeText).toBe('Custom Representative');
         } catch (e) {
             fail(e);
         }

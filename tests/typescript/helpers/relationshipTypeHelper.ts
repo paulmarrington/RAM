@@ -11,7 +11,7 @@ const rest = new RestCalls(config.host, config.port);
 export default class RelationshipTypeHelper {
 
     public findByCode = (code:string) => {
-        return rest.promisify(rest.get('/v1/relationshipType/' + code));
+        return rest.promisify(rest.get(`/v1/relationshipType/${code}`));
     };
 
     public listAllCurrent = () => {
