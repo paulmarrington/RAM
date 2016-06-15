@@ -2,7 +2,7 @@ import {Router, Request, Response} from 'express';
 import {security} from './security.middleware';
 import {sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult} from './helpers';
 import {IRelationshipModel} from '../models/relationship.model';
-import {RelationshipAddDTO, IdentityDTO} from '../../../commons/RamAPI';
+import {RelationshipAddDTO, IdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
 import {PartyModel} from '../models/party.model';
 
 // todo add data security
@@ -120,8 +120,8 @@ export class RelationshipController {
                             req.body.delegate.unstructuredName
                         ),
                         new Date(req.body.startTimestamp),
-                        new Date(req.body.endTimestamp)
-                        // TODO attributes
+                        new Date(req.body.endTimestamp),
+                        AttributeDTO.build(req.body.attributes)
                     ));
             })
             .then((model) => model ? model.toDTO() : null)
@@ -147,7 +147,9 @@ export class RelationshipController {
             security.isAuthenticated,
             this.listBySubjectOrDelegate);
 
-        router.post('/v1/relationship', this.create);
+        router.post('/v1/relationship',
+            security.isAuthenticated,
+            this.create);
 
         return router;
 

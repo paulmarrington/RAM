@@ -8,6 +8,8 @@ import {
 } from '../../../commons/RamAPI';
 import {RelationshipModel, RelationshipStatus, IRelationship} from './relationship.model';
 import {RelationshipTypeModel} from './relationshipType.model';
+import {RelationshipAttributeModel, IRelationshipAttribute} from './relationshipAttribute.model';
+import {RelationshipAttributeNameModel} from './relationshipAttributeName.model';
 
 // enums, utilities, helpers ..........................................................................................
 
@@ -81,13 +83,22 @@ PartySchema.method('toDTO', async function () {
     );
 });
 
-PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
+PartySchema.method('addRelationship', async(dto:RelationshipAddDTO) => {
     // lookups
     const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipTypeCode, new Date());
     const subject = await IdentityModel.findByIdValue(dto.subjectIdValue);
 
     // create the temp identity for the invitation code
     const identity = await IdentityModel.createTempIdentityForInvitationCode(dto.delegate);
+
+    const attributes:IRelationshipAttribute[] = [];
+
+    for (let attr of dto.attributes) {
+        attributes.push(await RelationshipAttributeModel.create({
+            value: true,
+            attributeName: await RelationshipAttributeNameModel.findByCodeInDateRange(attr.code, new Date())
+        }));
+    }
 
     // create the relationship
     const relationship = await RelationshipModel.create({
@@ -98,11 +109,12 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
         delegateNickName: identity.profile.name, // TODO - confirm this
         startTimestamp: dto.startTimestamp,
         endTimestamp: dto.endTimestamp,
-        status: RelationshipStatus.Pending.name
+        status: RelationshipStatus.Pending.name,
+        attributes: attributes
     });
-
     return relationship;
 });
+
 // static methods .....................................................................................................
 
 PartySchema.static('findByIdentityIdValue', async(idValue:string) => {

@@ -192,10 +192,10 @@ export class Party {
     }
 
     public static fromJson(json:Party):Party {
-        if(json) {
-            const identities : HrefValue<Identity>[] = [];
-            if(json.identities) {
-                for(var identity of json.identities) {
+        if (json) {
+            const identities:HrefValue<Identity>[] = [];
+            if (json.identities) {
+                for (var identity of json.identities) {
                     identities.push(new HrefValue<Identity>(identity.href, Identity.fromJson(identity.value)));
                 }
             }
@@ -231,8 +231,21 @@ export class IdentityDTO {
                 public sharedSecretValue:string,
                 public givenName:string,
                 public familyName:string,
-                public unstructuredName:string
-    ) {
+                public unstructuredName:string) {
+    }
+}
+
+export class AttributeDTO {
+    constructor(public code:string,
+                public value:string) {
+    }
+
+    public static build(data:AttributeDTO[]):AttributeDTO[] {
+        const attributes:AttributeDTO[] = [];
+        for (let attribute of data) {
+            attributes.push(new AttributeDTO(attribute.code, attribute.value));
+        }
+        return attributes;
     }
 }
 
@@ -241,8 +254,8 @@ export class RelationshipAddDTO {
                 public subjectIdValue:string,
                 public delegate:IdentityDTO,
                 public startTimestamp:Date,
-                public endTimestamp:Date
-    ) {
+                public endTimestamp:Date,
+                public attributes:AttributeDTO[]) {
     }
 }
 
