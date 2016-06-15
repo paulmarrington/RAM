@@ -699,6 +699,7 @@ export class Seeder {
             } else {
 
                 Seeder.j_and_j_relationship = await Seeder.createRelationshipModel({
+                    _id: '575fe8a6cb1427cc82a924cf',
                     relationshipType: Seeder.custom_delegate_relationshipType,
                     subject: Seeder.jenscatering_party,
                     subjectNickName: Seeder.jenscatering_name,
@@ -781,6 +782,7 @@ export class Seeder {
                 Seeder.log('');
 
                 Seeder.j_and_f_relationship = await Seeder.createRelationshipModel({
+                    _id: '576151a957a8b34a244fc8c1',
                     relationshipType: Seeder.custom_delegate_relationshipType,
                     subject: Seeder.jenscatering_party,
                     subjectNickName: Seeder.jenscatering_name,
