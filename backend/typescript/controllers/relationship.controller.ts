@@ -11,7 +11,7 @@ export class RelationshipController {
     constructor(private relationshipModel:IRelationshipModel) {
     }
 
-    private findByIdentifier = async(req:Request, res:Response) => {
+    private findByIdentifier = async (req:Request, res:Response) => {
         const schema = {
             'identifier': {
                 in: 'params',
@@ -26,7 +26,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private findPendingByInvitationCodeInDateRange = async(req:Request, res:Response) => {
+    private findPendingByInvitationCodeInDateRange = async (req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -40,7 +40,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private rejectByInvitationCode = async(req:Request, res:Response) => {
+    private rejectByInvitationCode = async (req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -56,7 +56,7 @@ export class RelationshipController {
     };
 
     /* tslint:disable:max-func-body-length */
-    private listBySubjectOrDelegate = async(req:Request, res:Response) => {
+    private listBySubjectOrDelegate = async (req:Request, res:Response) => {
         const schema = {
             'subject_or_delegate': {
                 in: 'params',
@@ -99,7 +99,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private create = async(req:Request, res:Response) => {
+    private create = async (req:Request, res:Response) => {
         const schema = {}; // TODO when DTO is confirmed with front end
         validateReqSchema(req, schema)
             .then((req:Request) => {

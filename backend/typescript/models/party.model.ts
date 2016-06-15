@@ -84,7 +84,9 @@ PartySchema.method('toDTO', async function () {
     );
 });
 
+/* tslint:disable:max-func-body-length */
 PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
+
     // lookups
     const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipTypeCode, new Date());
     const subject = await IdentityModel.findByIdValue(dto.subjectIdValue);
@@ -115,6 +117,7 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
     });
 
     return relationship;
+
 });
 
 // static methods .....................................................................................................
