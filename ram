@@ -77,6 +77,42 @@ case "$1" in
     echo ""
     ;;
 
+# LINT
+
+  'lint:frontend')
+    echo ""
+    echo "Running ts:lint on frontend"
+    cd frontend
+    gulp ts:lint
+    echo ""
+    ;;
+
+  'lint:backend')
+    echo ""
+    echo "Running ts:lint on backend"
+    cd backend
+    gulp ts:lint
+    echo ""
+    ;;
+
+# COMPILE
+
+  'compile:frontend')
+    echo ""
+    echo "Running ts:compile on frontend"
+    cd frontend
+    gulp ts:compile
+    echo ""
+    ;;
+
+  'compile:backend')
+    echo ""
+    echo "Running ts:compile on backend"
+    cd backend
+    gulp ts:compile
+    echo ""
+    ;;
+
 # TEST
 
   # run all API tests or, limit to one with --test <test name>
@@ -212,6 +248,12 @@ case "$1" in
     echo "$(tput setaf 3)    deps:frontend                        $(tput sgr0)      Download frontend dependencies"
     echo "$(tput setaf 3)    deps:backend                         $(tput sgr0)      Download backend dependencies"
     echo "$(tput setaf 3)    deps:test                            $(tput sgr0)      Download api test dependencies"
+    echo ""
+    echo "$(tput setaf 3)    lint:frontend                        $(tput sgr0)      Runs lint on frontend"
+    echo "$(tput setaf 3)    lint:backend                         $(tput sgr0)      Runs lint on backend"
+    echo ""
+    echo "$(tput setaf 3)    compile:frontend                     $(tput sgr0)      Runs compile on frontend"
+    echo "$(tput setaf 3)    compile:backend                      $(tput sgr0)      Runs compile on backend"
     echo ""
     echo "$(tput setaf 3)    test:backend                         $(tput sgr0)      Runs backend tests"
     echo "$(tput setaf 3)    test:api                             $(tput sgr0)      Runs API tests"
