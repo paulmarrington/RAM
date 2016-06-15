@@ -86,9 +86,9 @@ export class RelationshipAttributeName extends ICodeDecode {
 }
 
 export interface IName {
-  givenName:        string;
-  familyName:         string;
-  unstructuredName: string;
+  givenName?:           string;
+  familyName?:          string;
+  unstructuredName?:    string;
 }
 
 export interface IIdentity {
@@ -98,67 +98,38 @@ export interface IIdentity {
   name:   IName;
 }
 
-export interface IParty {
-  _id:            string;
-  roles:          [string];
-  attributes:     {};
-  identities:     [IIdentity];
-  iCanActFor:  [IRelationship];
-  canActForMe: [IRelationship];
+interface IIdentityRef {
+    href:   string;
+    value?: IIdentity;
 }
 
-export interface IRelationship {
-  type?:             string;
-  status?:           string;
-  startTimestamp?:   Date;
-  endTimestamp?:     Date;
-  delegateId?:       string;
-  delegateAbn?:      string;
-  delegateName?:     string;
-  delegateRole?:     string;
-  delegateNickName?: string;
-  subjectId?:        string;
-  subjectAbn?:       string;
-  subjectName?:      string;
-  subjectRole?:      string;
-  subjectNickName?:  string;
-}
-
-/***************************************************
- *            RELATIONSHIP TABLE
- ***************************************************/
-export class RelationshipTableReq {
-    constructor(
-        public pageSize: number,
-        public pageNumber: number,
-        public canActFor: boolean,
-        public filters: { [index: string]: string },
-        public sortByField: string
-    ) {
+interface IPartyRef {
+    href:   string;
+    value?: {
+        partyType:  string;
+        identities: IIdentityRef
     }
 }
 
-export interface IRelationshipTableRes {
-    total: number;
-    table: IRelationshipTableRow[];
-    relationshipOptions: Array<string>;
-    accessLevelOptions: Array<string>;
-    statusValueOptions: Array<string>;
-}
-
-export class EmptyRelationshipTableRes implements IRelationshipTableRes {
-    total = 0;
-    table = new Array<IRelationshipTableRow>();
-    relationshipOptions = new Array<string>();
-    accessLevelOptions = new Array<string>();
-    statusValueOptions = new Array<string>();
-}
-
-export interface IRelationshipTableRow {
-    name: string;
-    subName?: string;
-    relId: string;
-    rel: string;
-    access: string;
+export interface IRelationship {
+    relationshipType: {href: string}
+    subject: IPartyRef;
+    subjectNickName: IName;
+    delegate: IPartyRef;
+    delegateNickName: IName;
+    startTimestamp: Date;
+    endTimestamp?: Date;
+    endEventTimestamp?: Date;
     status: string;
+}
+
+export interface IRelationshipRef {
+    href:   string;
+    value?: IRelationship;
+}
+
+export interface RelationshipSearchDTO {
+    totalCount: number;
+    pageSize:   number;
+    list:       Array<IRelationshipRef>;
 }

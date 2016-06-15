@@ -2,12 +2,9 @@ import {Component, OnInit, Input} from '@angular/core';
 import {RouteParams} from '@angular/router-deprecated';
 import Rx from 'rxjs/Rx';
 import {ControlGroup, Control, FORM_DIRECTIVES,FORM_PROVIDERS} from '@angular/common';
-import {
-    IRelationshipTableRow
-}  from '../../../../commons/RamAPI';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RAMNavService} from '../../services/ram-nav.service';
-import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMRestService, IRelationshipTableRow} from '../../services/ram-rest.service';
 
 @Component({
     selector: 'ram-relationships-table',
@@ -103,8 +100,7 @@ export class RelationshipsTableComponent implements OnInit {
         this._relIds = relIds;
         this._isLoading = true;
         const identityValue = this.routeParams.get('identityValue');
-        const identityResolver = this.routeParams.get('identityResolver');
-        const response = this.rest.getRelationshipTableData(identityResolver,
+        const response = this.rest.getRelationshipTableData(
         identityValue, this._delegate, relIds, this._filters$.value,
         this._pageNo, this._pageSize)
             .do(() => {

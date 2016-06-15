@@ -139,7 +139,9 @@ export class RelationshipController {
   private getList = async (req: Request, res: Response) => {
     try {
       const params = await this.parsePaginationParams(req);
+console.log(0,params)
       const query = this.createQueryObject(params.delegateOrSubject, params.id);
+console.log(1,query)
       const toReturn = await this.relationshipModel.find(query)
         .skip((params.pageNo - 1) * params.pageSize)
         .limit(params.pageSize).exec();
