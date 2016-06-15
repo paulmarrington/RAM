@@ -50,19 +50,21 @@ gulp.task('serve', ["ts:watch"], function () {
     nodemon({
         script: 'dist/backend/typescript/server.js',
         "verbose": true,
-        "delay": 5,
+        "delay": 1000,
+        "ignore": ["**/*.js.map", "**/*.spec.js", "**/*.log"],
         "execMap": {
             "js": "node --harmony"
         }
     })
         .on('restart', function () {
-            console.log('RAM Backend Server: restarted [OK]')
+            console.log('              [gulp] RAM Backend Server: restarted [OK]');
+            console.log('              [gulp] ..................................');
         });
 });
 
 gulp.task('seed', ["ts:compile"], function () {
     console.log('Seeding the database ...');
-    exec('node dist/backend/typescript/seeding/seed.js --color', function (err, stdout, stderr) {
+    exec('node dist/backend/typescript/seeding/seeder.js --color', function (err, stdout, stderr) {
         if (stdout) {
             console.log(stdout);
         }

@@ -1,3 +1,5 @@
+import {logger} from '../logger';
+import * as colors from 'colors';
 import {Request, Response} from 'express';
 import {Headers} from './headers';
 import {conf} from '../bootstrap';
@@ -21,7 +23,7 @@ class Security {
             if (keyUpper.startsWith(Headers.Prefix)) {
                 const value = req.headers[key];
                 res.locals[keyUpper] = value;
-                console.log(`${keyUpper}=${value}`);
+                logger.debug(`${keyUpper}=${value}`);
             }
         }
         next();
@@ -39,8 +41,9 @@ class Security {
 
     private resolveForDevelopment(res:Response, next:() => void) {
         return (identity?:IIdentity) => {
-            console.log('Identity context:', (identity ? identity.idValue : '[not found]'));
+            logger.info('Identity context:', (identity ? colors.magenta(identity.idValue) : colors.red('[not found]')));
             if (identity) {
+                res.locals[Headers.Identity] = identity;
                 res.locals[Headers.IdentityIdValue] = identity.idValue;
                 res.locals[Headers.GivenName] = identity.profile.name.givenName;
                 res.locals[Headers.FamilyName] = identity.profile.name.familyName;
@@ -56,7 +59,7 @@ class Security {
 
     private rejectForDevelopment(res:Response, next:() => void) {
         return ():void => {
-            console.log('Unable to look up identity!');
+            logger.error('Unable to look up identity!');
             res.status(401);
             res.send({});
         };

@@ -10,6 +10,7 @@ export class RelationshipTypeController {
     private findByCodeIgnoringDateRange = async (req:Request, res:Response) => {
         const schema = {
             'code': {
+                in: 'params',
                 notEmpty: true,
                 errorMessage: 'Code is not valid'
             }
@@ -25,7 +26,7 @@ export class RelationshipTypeController {
         const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipTypeModel.listIgnoringDateRange())
-            .then((results) => results ? results.map((model) => model.toHrefValue()) : null)
+            .then((results) => results ? results.map((model) => model.toHrefValue(true)) : null)
             .then(sendList(res), sendError(res))
             .then(sendNotFoundError(res));
     };

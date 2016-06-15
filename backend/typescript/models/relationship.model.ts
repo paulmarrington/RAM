@@ -1,7 +1,13 @@
 import * as mongoose from 'mongoose';
-import {RAMEnum, IRAMObject, RAMSchema} from './base';
+import {RAMEnum, IRAMObject, RAMSchema, Query} from './base';
 import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
+import {IRelationshipType} from './relationshipType.model';
+import {
+    HrefValue,
+    Relationship as DTO,
+    SearchResult
+} from '../../../commons/RamAPI';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
@@ -10,6 +16,8 @@ const _PartyModel = PartyModel;
 
 /* tslint:disable:no-unused-variable */
 const _NameModel = NameModel;
+
+const MAX_PAGE_SIZE = 10;
 
 // enums, utilities, helpers ..........................................................................................
 
@@ -37,6 +45,11 @@ export class RelationshipStatus extends RAMEnum {
 // schema .............................................................................................................
 
 const RelationshipSchema = RAMSchema({
+    relationshipType: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'RelationshipType',
+        required: [true, 'Relationship Type is required']
+    },
     subject: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Party',
@@ -87,6 +100,7 @@ const RelationshipSchema = RAMSchema({
 // interfaces .........................................................................................................
 
 export interface IRelationship extends IRAMObject {
+    relationshipType:IRelationshipType;
     subject: IParty;
     subjectNickName: IName;
     delegate: IParty;
@@ -96,10 +110,13 @@ export interface IRelationship extends IRAMObject {
     endEventTimestamp?: Date;
     status: string;
     statusEnum(): RelationshipStatus;
+    toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
+    toDTO():Promise<DTO>;
 }
 
-/* tslint:disable:no-empty-interfaces */
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
+    findByIdentifier:(id:String) => mongoose.Promise<IRelationship>;
+    search:(subjectId:string, delegateId:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
 }
 
 // instance methods ...................................................................................................
@@ -108,8 +125,75 @@ RelationshipSchema.method('statusEnum', function () {
     return RelationshipStatus.valueOf(this.status);
 });
 
+RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
+    const relationshipId:string = this._id.toString();
+    return new HrefValue(
+        `/api/v1/relationship/${relationshipId}`,
+        includeValue ? await this.toDTO() : undefined
+    );
+});
+
+RelationshipSchema.method('toDTO', async function () {
+    return new DTO(
+        await this.relationshipType.toHrefValue(false),
+        await this.subject.toHrefValue(true),
+        await this.subjectNickName.toDTO(),
+        await this.delegate.toHrefValue(true),
+        await this.delegateNickName.toDTO(),
+        this.startTimestamp,
+        this.endTimestamp,
+        this.endEventTimestamp,
+        this.status
+    );
+});
+
 // static methods .....................................................................................................
 
+RelationshipSchema.static('findByIdentifier', (id:String) => {
+    // TODO migrate from _id to another id
+    return this.RelationshipModel
+        .findOne({
+            _id: id
+        })
+        .deepPopulate([
+            'relationshipType',
+            'subject',
+            'subjectNickName',
+            'delegate',
+            'delegateNickName'
+        ])
+        .exec();
+});
+
+RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, reqPageSize:number) => {
+    return new Promise<SearchResult<IRelationship>>(async (resolve, reject) => {
+        const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
+        try {
+            const query = new Query()
+                .add('subject', await PartyModel.findByIdentityIdValue(subjectIdentityIdValue), subjectIdentityIdValue)
+                .add('delegate', await PartyModel.findByIdentityIdValue(delegateIdentityIdValue), delegateIdentityIdValue)
+                .build();
+
+            const count = await this.RelationshipModel.count(query).exec();
+            const list = await this.RelationshipModel
+                .find(query)
+                .deepPopulate([
+                    'relationshipType',
+                    'subject',
+                    'subjectNickName',
+                    'delegate',
+                    'delegateNickName'
+                ])
+                .skip((page - 1) * pageSize)
+                .limit(pageSize)
+                .sort({name: 1})
+                .exec();
+            resolve(new SearchResult<IRelationship>(count, pageSize, list));
+        } catch (e) {
+            reject(e);
+        }
+    });
+});
 // concrete model .....................................................................................................
 
 export const RelationshipModel = mongoose.model(

@@ -1,4 +1,4 @@
-import {connectDisconnectMongo, dropMongo} from './helpers';
+import {connectDisconnectMongo, resetDataInMongo} from './helpers';
 import {
     IIdentity,
     IdentityModel,
@@ -23,7 +23,7 @@ import {
 describe('RAM Identity', () => {
 
     connectDisconnectMongo();
-    dropMongo();
+    resetDataInMongo();
 
     let name1: IName;
     let profile1: IProfile;
@@ -71,8 +71,34 @@ describe('RAM Identity', () => {
         try {
             const instance = await IdentityModel.findByIdValue(identity1.idValue);
             expect(instance).not.toBeNull();
+            expect(instance.party.id).toBe(party1.id);
             expect(instance.party.partyType).not.toBeNull();
             done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('finds pending by invitation code', async (done) => {
+        try {
+
+            const instance = await IdentityModel.create({
+                identityType: IdentityType.InvitationCode.name,
+                defaultInd: false,
+                invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
+                invitationCodeExpiryTimestamp: new Date(2055, 1, 1),
+                invitationCodeTemporaryEmailAddress: 'bob@example.com',
+                profile: profile1,
+                party: party1
+            });
+
+            const retrievedInstance = await IdentityModel.findPendingByInvitationCodeInDateRange(instance.rawIdValue, new Date());
+            expect(retrievedInstance).not.toBeNull();
+            expect(retrievedInstance.id).toBe(instance.id);
+
+            done();
+
         } catch (e) {
             fail('Because ' + e);
             done();
@@ -83,6 +109,21 @@ describe('RAM Identity', () => {
         try {
             const instance = await IdentityModel.findByIdValue('__BOGUS__');
             expect(instance).toBeNull();
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('lists for party', async (done) => {
+        try {
+            const instances = await IdentityModel.listByPartyId(party1.id);
+            expect(instances).not.toBeNull();
+            expect(instances.length).toBe(1);
+            for (let instance of instances) {
+                expect(instance.party.id).toBe(party1.id);
+            }
             done();
         } catch (e) {
             fail('Because ' + e);
@@ -201,6 +242,43 @@ describe('RAM Identity', () => {
             expect(retrievedInstance.invitationCodeExpiryTimestamp.getTime()).toBe(expiryTimestamp.getTime());
             expect(retrievedInstance.invitationCodeClaimedTimestamp.getTime()).toBe(claimedTimestamp.getTime());
             expect(retrievedInstance.invitationCodeTemporaryEmailAddress).toBe(emailAddress);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('inserts invitation code with generated raw id value', async (done) => {
+        try {
+
+            const expectedIdValues = [
+                '9dRZvR',
+                'kYVnxr',
+                'jEVYNX',
+                '1LVxvr',
+                'wGV7nR',
+                'wEXWJV',
+                'y7RpLR',
+                'ewRgKR',
+                'EJrqPX',
+                'gqXKzV'
+            ];
+
+            for (let i = 0; i < 10; i=i+1) {
+                const instance = await IdentityModel.create({
+                    identityType: IdentityType.InvitationCode.name,
+                    defaultInd: false,
+                    invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
+                    invitationCodeExpiryTimestamp: new Date(),
+                    profile: profile1,
+                    party: party1
+                });
+                expect(instance.rawIdValue).not.toBeNull();
+                expect(instance.rawIdValue).toBe(expectedIdValues[i]);
+            }
 
             done();
 
@@ -354,6 +432,18 @@ describe('RAM Identity', () => {
             expect(identity1).not.toBeNull();
             expect(identity1.identityType).toBe(IdentityType.LinkId.name);
             expect(identity1.identityTypeEnum()).toBe(IdentityType.LinkId);
+            done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('search should be populated', async(done) => {
+        try {
+            const searchResult = await IdentityModel.search(1, 10);
+            expect(searchResult.list[0].idValue).toBe(identity1.idValue);
+            expect(searchResult.list[0].party.partyType).toBe(party1.partyType);
             done();
         } catch (e) {
             fail('Because ' + e);

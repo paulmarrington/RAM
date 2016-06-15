@@ -13,6 +13,7 @@ export interface IRamConf {
     devMode: boolean;
     jwtSecretKey: string;
     jwtExpiryInMSec: number;
+    hashIdsSalt: string;
 }
 
 export interface SecurityToken {

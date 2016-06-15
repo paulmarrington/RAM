@@ -1,35 +1,206 @@
+<!-- THIS IS A DEVELOPMENT ONLY PAGE PROVIDING A CONVENIENT WAY TO LOG IN AS TEST USERS -->
 <html>
-  <body> 
-    <ol>
-      <li><a href="#/relationships/pi/bob">Bob Bartholomew</a>
-    </ol><p>
-      <script>
-        window.redeploy = function() {
-          var msg_element = document.getElementById("msg")
-          var tag_element = document.getElementById("tag")
-          var tag = tag_element.value
-          tag_element.value = ""
-          msg_element.innerHTML = "Reloading from " + tag + "..."
-          var dots = setInterval(function() {
-            msg_element.innerHTML += "."
-          }, 1000)
-          http_request("/api/reset?tag="+tag, "GET",
-          function(err, data) {
+<head>
+  <link rel="stylesheet" href="http://s.mlcdn.co/animate.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+        integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+          integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+          crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/log4javascript/1.4.9/log4javascript.min.js"></script>
+
+  <style>
+    #user-list ul li { cursor: pointer; }
+    #user-detail {
+      text-align: center;
+    }
+
+    #user-detail .glyphicon {
+      font-size: 75px;
+    }
+
+    #user-detail table {
+      font-size: 12px;
+      margin-top: 20px;
+    }
+
+    #user-detail table td:first-child {
+      white-space: nowrap;
+    }
+
+    .disabled {
+      opacity: 0.5;
+    }
+
+    .dont-break-out {
+
+      /* These are technically the same, but use both */
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+
+      -ms-word-break: break-all;
+      /* This is the dangerous one in WebKit, as it breaks things wherever */
+      word-break: break-all;
+      /* Instead use this non-standard one: */
+      word-break: break-word;
+
+      /* Adds a hyphen where the word breaks, if supported (No Blink) */
+      -ms-hyphens: auto;
+      -moz-hyphens: auto;
+      -webkit-hyphens: auto;
+      hyphens: auto;
+
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h2 class="animated bounce">RAM Mock Login</h2>
+  <p>Please select a user from the list below to simulate logging in as that user:</p>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div id="user-list">
+        <ul class="list-group">
+          <li class="list-group-item" data-id="">Log Out</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="col-md-6">
+      <div id="user-detail" class="animated">
+        <span class="glyphicon glyphicon-user disabled" aria-hidden="true"></span>
+        <h2 id="not-logged-in">Not Logged In</h2>
+        <table class="table dont-break-out">
+
+        </table>
+      </div>
+
+      <p class="text-center">
+        <a href="http://localhost:3001/#" target="_blank" class="btn btn-primary">Launch RAM</a>
+      </p>
+    </div>
+  </div>
+
+
+<script>
+  $(function () {
+    var log = log4javascript.getLogger('my_logger');
+    var consoleAppender = new log4javascript.BrowserConsoleAppender();
+    log.addAppender(consoleAppender);
+
+    // Build list of known identities
+    $.get('/api/v1/identities?page=1', function (data) {
+      for(var i=0;i<data.list.length;i++) {
+        // eg. <li class="list-group-item" data-id="LINK_ID:MY_GOV:jennifermaxims_identity_1">Jennifer Maxims</li>
+        var item = data.list[i];
+        $('#user-list ul').append($('<li></li>').addClass('list-group-item').data('id', item.value.idValue).text(buildName(item.value.profile.name)));
+      }
+
+      updateUser();
+
+      // Select user
+      $('#user-list li').click(function () {
+        var identity = $(this).data('id');
+        log.debug('Logging in with identity ', identity);
+        $.post('/api/v1/simulators/authenticator/authenticate', {credentials: identity}, function (data) {
+        }).always(function() {
+          updateUser();
+        });
+      });
+
+      // Construct name
+      function buildName(name) {
+        if(name.unstructuredName) {
+          return name.unstructuredName;
+        }
+        else {
+          return name.givenName+' '+name.familyName;
+        }
+      }
+    });
+
+    function updateUser() {
+      var effect = 'rubberBand';
+      var $userDetail = $('#user-detail');
+      var $userList = $('#user-list');
+      var $notLoggedIn = $('#not-logged-in');
+
+      $userDetail.removeClass(effect);
+
+      $.get('/api/v1/simulators/authenticator/locals', function (data) {
+
+        // clean up state
+        $userDetail.find('table tr').remove();
+        $userDetail.find('.glyphicon').addClass('disabled');
+        $userList.find('li').removeClass('active');
+
+        if (Object.keys(data).length > 0) {
+          // display login details
+          $notLoggedIn.hide();
+          $userDetail.find('.glyphicon').removeClass('disabled');
+
+          for (var key in data) {
+            $userDetail.find('table').append('<tr><td>' + key + '</td><td>' + data[key] + '</td></tr>');
+          }
+
+          // highlight logged in user
+          $userList.find('li').each(function( index ) {
+            if($(this).data('id') == data['X-RAM-Identity-IdValue']) {
+              $(this).addClass('active');
+            }
+          });
+        }
+        else {
+          // not logged in
+          $notLoggedIn.show();
+        }
+
+        log.debug('updated');
+        $userDetail.addClass(effect);
+      });
+    }
+  });
+</script>
+<hr/>
+
+<ol>
+  <li><a href="#/relationships/pi/bob">Bob Bartholomew</a>
+</ol>
+<p>
+  <script>
+    window.redeploy = function () {
+      var msg_element = document.getElementById("msg")
+      var tag_element = document.getElementById("tag")
+      var tag = tag_element.value
+      tag_element.value = ""
+      msg_element.innerHTML = "Reloading from " + tag + "..."
+      var dots = setInterval(function () {
+        msg_element.innerHTML += "."
+      }, 1000)
+      http_request("/api/reset?tag=" + tag, "GET",
+          function (err, data) {
             clearInterval(dots)
             if (err) {
               msg_element.innerHTML = "Reloading page..."
               window.location.href = "/"
             } else {
-              console.log(err,data)
+              console.log(err, data)
               msg_element.innerHTML = data;
             }
           })
-        }
-      </script>
-      Tag/Branch/Hash:
-      <input id="tag" type="text" value="develop">
-      <button onclick="redeploy()">Redeploy</button>
-    </p>
-    <p id=msg></p>
-  </body>
+    }
+  </script>
+  Tag/Branch/Hash:
+  <input id="tag" type="text" value="develop">
+  <button onclick="redeploy()">Redeploy</button>
+</p>
+<p id=msg></p>
+</div>
+
+</body>
 </html>

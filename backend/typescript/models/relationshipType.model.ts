@@ -49,8 +49,8 @@ export interface IRelationshipType extends ICodeDecode {
     minIdentityStrength: number;
     voluntaryInd: boolean;
     attributeNameUsages: IRelationshipAttributeNameUsage[];
-    toHrefValue(): HrefValue<DTO>;
-    toDTO(): DTO;
+    toHrefValue(includeValue:boolean): Promise<HrefValue<DTO>>;
+    toDTO(): Promise<DTO>;
 }
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
@@ -112,14 +112,14 @@ RelationshipTypeSchema.static('listInDateRange', (date:Date) => {
 
 // instance methods ...................................................................................................
 
-RelationshipTypeSchema.method('toHrefValue', function () {
+RelationshipTypeSchema.method('toHrefValue', async function (includeValue:boolean) {
     return new HrefValue(
         '/api/v1/relationshipType/' + this.code,
-        this.toDTO()
+        includeValue ? await this.toDTO() : undefined
     );
 });
 
-RelationshipTypeSchema.method('toDTO', function () {
+RelationshipTypeSchema.method('toDTO', async function () {
     return new DTO(
         this.code,
         this.shortDecodeText,
@@ -127,13 +127,14 @@ RelationshipTypeSchema.method('toDTO', function () {
         this.startDate,
         this.endDate,
         this.voluntaryInd,
-        this.attributeNameUsages.map((attributeNameUsage:IRelationshipAttributeNameUsage) => {
-            return new RelationshipAttributeNameUsageDTO(
-                attributeNameUsage.optionalInd,
-                attributeNameUsage.defaultValue,
-                attributeNameUsage.attributeName.toHrefValue()
-            );
-        })
+        await Promise.all<RelationshipAttributeNameUsageDTO>(this.attributeNameUsages.map(
+            async (attributeNameUsage:IRelationshipAttributeNameUsage) => {
+                return new RelationshipAttributeNameUsageDTO(
+                    attributeNameUsage.optionalInd,
+                    attributeNameUsage.defaultValue,
+                    await attributeNameUsage.attributeName.toHrefValue(true)
+                );
+            }))
     );
 });
 

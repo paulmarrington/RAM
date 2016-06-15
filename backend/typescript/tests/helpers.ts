@@ -1,23 +1,24 @@
 import * as mongoose from 'mongoose';
+import {conf} from '../bootstrap';
+import {doResetDataInMongo} from '../resetDataInMongo';
 
-const mongoDbUrl = 'mongodb://localhost/ram-test';
-console.log('\nUsing mongo: ', mongoDbUrl, '\n');
+console.log('\nUsing mongo: ', conf.mongoURL, '\n');
 
 export const connectDisconnectMongo = () => {
 
     beforeEach((done) => {
-        mongoose.connect(mongoDbUrl, {}, done);
+        mongoose.connect(conf.mongoURL, {}, done);
     });
 
     afterEach((done) => {
-        // mongoose.disconnect().then(done); // TODO: disconnect(fn) doesn't work !
         mongoose.connection.close(done);
     });
 
 };
 
-export const dropMongo = () => {
+/* tslint:disable:max-func-body-length */
+export const resetDataInMongo = () => {
     beforeEach((done) => {
-        mongoose.connection.db.dropDatabase(done);
+        doResetDataInMongo(done);
     });
 };

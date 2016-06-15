@@ -39,7 +39,7 @@ case "$1" in
     echo ""
     echo "Downloading frontend dependencies ..."
     cd frontend
-    npm install && bower install && typings install
+    npm install && bower install && typings install && ./node_modules/.bin/jspm install
     echo ""
     ;;
 
@@ -73,7 +73,7 @@ case "$1" in
     echo ""
     echo "Starting backend"
     cd backend
-    RAM_CONF=$DIR/backend/conf/conf.js gulp serve
+    RAM_CONF=$DIR/backend/conf/conf-localhost.js gulp serve
     echo ""
     ;;
 
@@ -81,23 +81,23 @@ case "$1" in
 
   # run all API tests or, limit to one with --test <test name>
   # e.g.
-  #     ./do test:backend --test relationshipType.model
+  #     ./ram test:backend --test relationshipType.model
   'test:backend')
     echo ""
     echo "Starting tests"
     cd backend
     if [ -z "$3" ]
       then
-        gulp test
+        RAM_CONF=$DIR/backend/conf/conf-test.js gulp test
       else
-        gulp test "$2" "$3"
+        RAM_CONF=$DIR/backend/conf/conf-test.js gulp test "$2" "$3"
     fi
     echo ""
     ;;
 
   # run all API tests or, limit to one with --test <test name>
   # e.g.
-  #     ./do test:api --test relationshipType.controller
+  #     ./ram test:api --test relationshipType.controller
   'test:api')
     echo ""
     echo "Starting tests"
@@ -118,7 +118,7 @@ case "$1" in
     echo "Seeding database"
     echo ""
     cd backend
-    RAM_CONF=$DIR/backend/conf/conf.js gulp seed
+    RAM_CONF=$DIR/backend/conf/conf-localhost.js gulp seed
     echo ""
     ;;
 
@@ -163,6 +163,14 @@ case "$1" in
     echo "Opening browser to github repository ..."
     echo ""
     open "https://github.com/atogov/RAM/wiki"
+    echo ""
+    ;;
+
+  'login')
+    echo ""
+    echo "Opening browser to mock login page ..."
+    echo ""
+    open "http://localhost:3001/dev/"
     echo ""
     ;;
 
