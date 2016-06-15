@@ -4,7 +4,8 @@ import {IIdentity, IdentityModel} from './identity.model';
 import {
     HrefValue,
     Party as DTO,
-    Identity as IdentityDTO, RelationshipAddDTO
+    Identity as IdentityDTO,
+    RelationshipAddDTO
 } from '../../../commons/RamAPI';
 import {RelationshipModel, RelationshipStatus, IRelationship} from './relationship.model';
 import {RelationshipTypeModel} from './relationshipType.model';
@@ -77,13 +78,13 @@ PartySchema.method('toDTO', async function () {
     return new DTO(
         this.partyType,
         await Promise.all<HrefValue<IdentityDTO>>(identities.map(
-            async(identity:IIdentity) => {
+            async (identity:IIdentity) => {
                 return await identity.toHrefValue(false);
             }))
     );
 });
 
-PartySchema.method('addRelationship', async(dto:RelationshipAddDTO) => {
+PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
     // lookups
     const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipTypeCode, new Date());
     const subject = await IdentityModel.findByIdValue(dto.subjectIdValue);
@@ -112,6 +113,7 @@ PartySchema.method('addRelationship', async(dto:RelationshipAddDTO) => {
         status: RelationshipStatus.Pending.name,
         attributes: attributes
     });
+
     return relationship;
 });
 
