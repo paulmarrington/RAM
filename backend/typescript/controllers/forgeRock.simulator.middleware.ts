@@ -40,7 +40,7 @@ class ForgeRockSimulator {
         };
     }
 
-    private getIdentityIdValueFromAuthToken(authToken:String):String {
+    private getIdentityIdValueFromAuthToken(authToken:string):string {
         return authToken;
     }
 

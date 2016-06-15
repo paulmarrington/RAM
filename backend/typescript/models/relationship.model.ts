@@ -43,7 +43,7 @@ export class RelationshipStatus extends RAMEnum {
         RelationshipStatus.Pending
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -127,8 +127,8 @@ export interface IRelationship extends IRAMObject {
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
-    findByIdentifier:(id:String) => Promise<IRelationship>;
-    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => Promise<IRelationship>;
+    findByIdentifier:(id:string) => Promise<IRelationship>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
     search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IRelationship>>;
 }
@@ -184,7 +184,7 @@ RelationshipSchema.method('rejectPendingInvitation', async function () {
 
 // static methods .....................................................................................................
 
-RelationshipSchema.static('findByIdentifier', (id:String) => {
+RelationshipSchema.static('findByIdentifier', (id:string) => {
     // TODO migrate from _id to another id
     return this.RelationshipModel
         .findOne({
@@ -201,7 +201,7 @@ RelationshipSchema.static('findByIdentifier', (id:String) => {
         .exec();
 });
 
-RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invitationCode:String, date:Date) => {
+RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invitationCode:string, date:Date) => {
     const identity = await IdentityModel.findPendingByInvitationCodeInDateRange(invitationCode, date);
     if (identity) {
         const delegate = identity.party;

@@ -19,7 +19,7 @@ export class PartyType extends RAMEnum {
         PartyType.Individual,
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -46,7 +46,7 @@ export interface IParty extends IRAMObject {
 
 /* tslint:disable:no-empty-interfaces */
 export interface IPartyModel extends mongoose.Model<IParty> {
-    findByIdentityIdValue: (idValue:String) => Promise<IParty>;
+    findByIdentityIdValue: (idValue:string) => Promise<IParty>;
 }
 
 // instance methods ...................................................................................................
@@ -80,7 +80,7 @@ PartySchema.method('toDTO', async function () {
 
 // static methods .....................................................................................................
 
-PartySchema.static('findByIdentityIdValue', async (idValue:String) => {
+PartySchema.static('findByIdentityIdValue', async (idValue:string) => {
     const identity = await IdentityModel.findByIdValue(idValue);
     return identity ? identity.party : null;
 });

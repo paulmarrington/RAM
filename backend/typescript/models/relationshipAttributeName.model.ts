@@ -27,7 +27,7 @@ export class RelationshipAttributeNameDomain extends RAMEnum {
         RelationshipAttributeNameDomain.SelectMulti
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -42,7 +42,7 @@ export class RelationshipAttributeNameClassifier extends RAMEnum {
         RelationshipAttributeNameClassifier.Permission
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -90,8 +90,8 @@ export interface IRelationshipAttributeName extends ICodeDecode {
 }
 
 export interface IRelationshipAttributeNameModel extends mongoose.Model<IRelationshipAttributeName> {
-    findByCodeIgnoringDateRange: (code:String) => Promise<IRelationshipAttributeName>;
-    findByCodeInDateRange: (code:String, date:Date) => Promise<IRelationshipAttributeName>;
+    findByCodeIgnoringDateRange: (code:string) => Promise<IRelationshipAttributeName>;
+    findByCodeInDateRange: (code:string, date:Date) => Promise<IRelationshipAttributeName>;
     listIgnoringDateRange: () => Promise<IRelationshipAttributeName[]>;
     listInDateRange: (date:Date) => Promise<IRelationshipAttributeName[]>;
 }
@@ -126,7 +126,7 @@ RelationshipAttributeNameSchema.method('toDTO', async function () {
 
 // static methods .....................................................................................................
 
-RelationshipAttributeNameSchema.static('findByCodeIgnoringDateRange', (code:String) => {
+RelationshipAttributeNameSchema.static('findByCodeIgnoringDateRange', (code:string) => {
     return this.RelationshipAttributeNameModel
         .findOne({
             code: code
@@ -134,7 +134,7 @@ RelationshipAttributeNameSchema.static('findByCodeIgnoringDateRange', (code:Stri
         .exec();
 });
 
-RelationshipAttributeNameSchema.static('findByCodeInDateRange', (code:String, date:Date) => {
+RelationshipAttributeNameSchema.static('findByCodeInDateRange', (code:string, date:Date) => {
     return this.RelationshipAttributeNameModel
         .findOne({
             code: code,

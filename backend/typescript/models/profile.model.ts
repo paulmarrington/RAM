@@ -33,7 +33,7 @@ export class ProfileProvider extends RAMEnum {
         ProfileProvider.Vanguard
     ];
 
-    constructor(public name:String) {
+    constructor(public name:string) {
         super(name);
     }
 }
@@ -65,7 +65,7 @@ export interface IProfile extends IRAMObject {
     name: IName;
     sharedSecrets: [ISharedSecret];
     providerEnum(): ProfileProvider;
-    getSharedSecret(code:String): ISharedSecret;
+    getSharedSecret(code:string): ISharedSecret;
     toHrefValue():Promise<HrefValue<DTO>>;
     toDTO():Promise<DTO>;
 }
@@ -80,7 +80,7 @@ ProfileSchema.method('providerEnum', function () {
     return ProfileProvider.valueOf(this.provider);
 });
 
-ProfileSchema.method('getSharedSecret', function (code:String) {
+ProfileSchema.method('getSharedSecret', function (code:string) {
     if (code && this.sharedSecrets) {
         for (let sharedSecret of this.sharedSecrets) {
             if (sharedSecret.sharedSecretType.code === code) {

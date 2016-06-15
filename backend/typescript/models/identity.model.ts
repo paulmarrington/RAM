@@ -56,7 +56,7 @@ export class IdentityType extends RAMEnum {
 
     public buildIdValue:(identity:IIdentity) => String;
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 
@@ -78,7 +78,7 @@ export class IdentityInvitationCodeStatus extends RAMEnum {
         IdentityInvitationCodeStatus.Rejected
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -91,7 +91,7 @@ export class IdentityAgencyScheme extends RAMEnum {
         IdentityAgencyScheme.Medicare
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -104,7 +104,7 @@ export class IdentityPublicIdentifierScheme extends RAMEnum {
         IdentityPublicIdentifierScheme.ABN
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -121,7 +121,7 @@ export class IdentityLinkIdScheme extends RAMEnum {
         IdentityLinkIdScheme.Vanguard
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -267,10 +267,10 @@ export interface IIdentity extends IRAMObject {
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
-    findByIdValue:(idValue:String) => Promise<IIdentity>;
-    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => Promise<IIdentity>;
-    findDefaultByPartyId:(partyId:String) => Promise<IIdentity>;
-    listByPartyId:(partyId:String) => Promise<IIdentity[]>;
+    findByIdValue:(idValue:string) => Promise<IIdentity>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IIdentity>;
+    findDefaultByPartyId:(partyId:string) => Promise<IIdentity>;
+    listByPartyId:(partyId:string) => Promise<IIdentity[]>;
     search:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
 }
 
@@ -325,7 +325,7 @@ IdentitySchema.method('toDTO', async function () {
 
 // static methods .....................................................................................................
 
-IdentitySchema.static('findByIdValue', (idValue:String) => {
+IdentitySchema.static('findByIdValue', (idValue:string) => {
     return this.IdentityModel
         .findOne({
             idValue: idValue
@@ -338,7 +338,7 @@ IdentitySchema.static('findByIdValue', (idValue:String) => {
         .exec();
 });
 
-IdentitySchema.static('findPendingByInvitationCodeInDateRange', (invitationCode:String, date:Date) => {
+IdentitySchema.static('findPendingByInvitationCodeInDateRange', (invitationCode:string, date:Date) => {
     return this.IdentityModel
         .findOne({
             rawIdValue: invitationCode,
@@ -354,7 +354,7 @@ IdentitySchema.static('findPendingByInvitationCodeInDateRange', (invitationCode:
         .exec();
 });
 
-IdentitySchema.static('findDefaultByPartyId', (partyId:String) => {
+IdentitySchema.static('findDefaultByPartyId', (partyId:string) => {
     return this.IdentityModel
         .findOne({
             'party': partyId,
@@ -369,7 +369,7 @@ IdentitySchema.static('findDefaultByPartyId', (partyId:String) => {
         .exec();
 });
 
-IdentitySchema.static('listByPartyId', (partyId:String) => {
+IdentitySchema.static('listByPartyId', (partyId:string) => {
     return this.IdentityModel
         .find({
             'party': partyId
