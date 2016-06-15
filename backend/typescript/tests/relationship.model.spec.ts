@@ -15,7 +15,8 @@ import {
 import {
     IParty,
     PartyModel,
-    PartyType} from '../models/party.model';import {
+    PartyType} from '../models/party.model';
+import {
     IRelationship,
     RelationshipModel,
     RelationshipStatus
