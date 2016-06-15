@@ -3,6 +3,7 @@ import {RAMEnum, IRAMObject, RAMSchema, Query} from './base';
 import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
 import {IRelationshipType} from './relationshipType.model';
+import {IRelationshipAttribute, RelationshipAttributeModel} from './relationshipAttribute.model';
 import {IdentityModel} from './identity.model';
 import {
     HrefValue,
@@ -17,6 +18,9 @@ const _PartyModel = PartyModel;
 
 /* tslint:disable:no-unused-variable */
 const _NameModel = NameModel;
+
+/* tslint:disable:no-unused-variable */
+const _RelationshipAttributeModel = RelationshipAttributeModel;
 
 const MAX_PAGE_SIZE = 10;
 
@@ -95,7 +99,11 @@ const RelationshipSchema = RAMSchema({
         required: [true, 'Status is required'],
         trim: true,
         enum: RelationshipStatus.valueStrings()
-    }
+    },
+    attributes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'RelationshipAttribute'
+    }]
 });
 
 // interfaces .........................................................................................................
@@ -110,6 +118,7 @@ export interface IRelationship extends IRAMObject {
     endTimestamp?: Date;
     endEventTimestamp?: Date;
     status: string;
+    attributes: IRelationshipAttribute[];
     statusEnum(): RelationshipStatus;
     toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
     toDTO():Promise<DTO>;
@@ -118,7 +127,8 @@ export interface IRelationship extends IRAMObject {
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
     findByIdentifier:(id:String) => mongoose.Promise<IRelationship>;
     findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => mongoose.Promise<IRelationship>;
-    search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
+    search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
+        => Promise<SearchResult<IRelationship>>;
 }
 
 // instance methods ...................................................................................................
@@ -162,7 +172,8 @@ RelationshipSchema.static('findByIdentifier', (id:String) => {
             'subject',
             'subjectNickName',
             'delegate',
-            'delegateNickName'
+            'delegateNickName',
+            'attributes.attributeName'
         ])
         .exec();
 });
@@ -180,7 +191,8 @@ RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invit
                 'subject',
                 'subjectNickName',
                 'delegate',
-                'delegateNickName'
+                'delegateNickName',
+                'attributes.attributeName'
             ])
             .exec();
     }
@@ -203,7 +215,8 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
                     'subject',
                     'subjectNickName',
                     'delegate',
-                    'delegateNickName'
+                    'delegateNickName',
+                    'attributes.attributeName'
                 ])
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)
