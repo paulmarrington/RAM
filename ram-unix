@@ -138,7 +138,7 @@ case "$1" in
     echo ""
     echo "Opening browser to swagger apis on local server ..."
     echo ""
-    open "http://localhost:3000/api-docs/"
+    open "http://127.0.0.1:3000/api-docs/"
     echo ""
     ;;
 
@@ -170,7 +170,7 @@ case "$1" in
     echo ""
     echo "Opening browser to mock login page ..."
     echo ""
-    open "http://localhost:3001/dev/"
+    open "http://127.0.0.1:3001/dev/"
     echo ""
     ;;
 
