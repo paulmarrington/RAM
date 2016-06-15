@@ -1,8 +1,11 @@
 import * as mongoose from 'mongoose';
 
-/* tslint:disable:no-var-requires */ const mongooseUniqueValidator = require('mongoose-unique-validator');
-/* tslint:disable:no-var-requires */ const mongooseIdValidator = require('mongoose-id-validator');
-/* tslint:disable:no-var-requires */ const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
+/* tslint:disable:no-var-requires */
+const mongooseUniqueValidator = require('mongoose-unique-validator');
+/* tslint:disable:no-var-requires */
+const mongooseIdValidator = require('mongoose-id-validator');
+/* tslint:disable:no-var-requires */
+const mongooseDeepPopulate = require('mongoose-deep-populate')(mongoose);
 
 /**
  * A convenience class to build a query object, only adding criteria when specified.
@@ -14,27 +17,43 @@ export class Query {
     /**
      * Adds the given filter (name:value) only if 'condition' is truthy.
      */
-    public add(name:string, value:Object, condition:Object):Query {
+    public when(condition:Object, name:string, callback:<T extends Object>() => Promise<T>) {
         if (condition) {
-            this.data[name] = value;
+            this.data[name] = callback();
         }
         return this;
     }
 
-    public build():Object {
-        return this.data;
+    public async build():Promise<Object> {
+
+        try {
+            const promises = Object.keys(this.data).map(val => this.data[val]);
+            const values:Object[] = await Promise.all(promises);
+
+            let i = 0;
+            let result:IQueryData = {};
+            for (let key of Object.keys(this.data)) {
+                result[key] = values[i];
+                i = i + 1;
+            }
+
+            return result;
+
+        } catch (e) {
+            throw e;
+        }
     }
 }
 
 interface IQueryData {
-    [name:string]: Object;
+    [name:string]:Promise<Object>;
 }
 
 /* RAMEnum is a simple class construct that represents a enumerated type so we can work with classes not strings.
  */
 export class RAMEnum {
 
-    protected static AllValues: RAMEnum[];
+    protected static AllValues:RAMEnum[];
 
     public static values<T extends RAMEnum>():T[] {
         return this.AllValues as T[];
@@ -62,80 +81,80 @@ export class RAMEnum {
  * Most objects in RAM extend off the RAMObject
  */
 export interface IRAMObject extends mongoose.Document {
-  createdAt: Date;
-  updatedAt: Date;
-  deleteInd: boolean;
-  resourceVersion: string;
+    createdAt:Date;
+    updatedAt:Date;
+    deleteInd:boolean;
+    resourceVersion:string;
 
-  /** Instance methods */
-  delete(): void;
+    /** Instance methods */
+    delete():void;
 }
 
-export const RAMSchema = (schema: Object) => {
+export const RAMSchema = (schema:Object) => {
 
-  const result = new mongoose.Schema({
-    deleteInd: { type: Boolean, default: false },
-    resourceVersion: { type: String, default: '1' }
-  }, { timestamps: true });
+    const result = new mongoose.Schema({
+        deleteInd: {type: Boolean, default: false},
+        resourceVersion: {type: String, default: '1'}
+    }, {timestamps: true});
 
-  result.add(schema);
+    result.add(schema);
 
-  result.plugin(mongooseIdValidator);
-  result.plugin(mongooseDeepPopulate);
+    result.plugin(mongooseIdValidator);
+    result.plugin(mongooseDeepPopulate);
 
-  result.method('delete', function () {
-    this.deleteInd = true;
-    this.save();
-  });
+    result.method('delete', function () {
+        this.deleteInd = true;
+        this.save();
+    });
 
-  return result;
+    return result;
 };
 
 export interface ICodeDecode extends mongoose.Document {
-  shortDecodeText: string;
-  longDecodeText: string;
-  startDate: Date;
-  endDate: Date;
-  code: string;
+    shortDecodeText:string;
+    longDecodeText:string;
+    startDate:Date;
+    endDate:Date;
+    code:string;
 
-  /** Instance methods below */
+    /** Instance methods below */
 
 }
 
 /* tslint:disable:max-func-body-length */
-export const CodeDecodeSchema = (schema: Object) => {
+export const CodeDecodeSchema = (schema:Object) => {
 
-  const result = new mongoose.Schema({
-    shortDecodeText: {
-      type: String,
-      required: [true, 'Short description text is required'],
-      trim: true
-    },
-    longDecodeText: {
-      type: String,
-      required: [true, 'Long description text is required'],
-      trim: true
-    },
-    code: {
-      type: String,
-      required: [true, 'Code is required and must be string and unique'],
-      trim: true,
-      index: { unique: true }
-    },
-    startDate: {
-      type: Date,
-      required: [true, 'Start date is required'],
-    },
-    endDate: {
-      type: Date
-    }
-  });
+    const result = new mongoose.Schema({
+        shortDecodeText: {
+            type: String,
+            required: [true, 'Short description text is required'],
+            trim: true
+        },
+        longDecodeText: {
+            type: String,
+            required: [true, 'Long description text is required'],
+            trim: true
+        },
+        code: {
+            type: String,
+            required: [true, 'Code is required and must be string and unique'],
+            trim: true,
+            index: {unique: true}
+        },
+        startDate: {
+            type: Date,
+            required: [true, 'Start date is required'],
+        },
+        endDate: {
+            type: Date
+        }
+    });
 
-  result.add(schema);
+    result.add(schema);
 
-  result.plugin(mongooseIdValidator);
-  result.plugin(mongooseDeepPopulate);
-  result.plugin(mongooseUniqueValidator);
+    result.plugin(mongooseIdValidator);
+    result.plugin(mongooseDeepPopulate);
+    result.plugin(mongooseUniqueValidator);
 
-  return result;
+    return result;
 };

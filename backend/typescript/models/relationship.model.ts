@@ -191,10 +191,10 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
     return new Promise<SearchResult<IRelationship>>(async (resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
-            const query = new Query()
-                .add('subject', await PartyModel.findByIdentityIdValue(subjectIdentityIdValue), subjectIdentityIdValue)
-                .add('delegate', await PartyModel.findByIdentityIdValue(delegateIdentityIdValue), delegateIdentityIdValue)
-                .build();
+            const query = await (new Query()
+                .when(subjectIdentityIdValue, 'subject', () => PartyModel.findByIdentityIdValue(subjectIdentityIdValue))
+                .when(delegateIdentityIdValue, 'delegate', () => PartyModel.findByIdentityIdValue(delegateIdentityIdValue))
+                .build());
             const count = await this.RelationshipModel.count(query).exec();
             const list = await this.RelationshipModel
                 .find(query)
