@@ -6,7 +6,8 @@ import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {
     HrefValue,
     Identity as DTO,
-    SearchResult, IdentityDTO
+    IdentityDTO,
+    SearchResult
 } from '../../../commons/RamAPI';
 
 import {NameModel} from './name.model';
@@ -396,7 +397,7 @@ IdentitySchema.static('listByPartyId', (partyId:string) => {
 });
 
 IdentitySchema.static('search', (page:number, reqPageSize:number) => {
-    return new Promise<SearchResult<IIdentity>>(async(resolve, reject) => {
+    return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
             const query = {};
@@ -427,7 +428,7 @@ IdentitySchema.static('search', (page:number, reqPageSize:number) => {
  */
 IdentitySchema.static('createTempIdentityForInvitationCode',
     /* tslint:disable:max-func-body-length */
-    async(dto:IdentityDTO):Promise<IIdentity> => {
+    async (dto:IdentityDTO):Promise<IIdentity> => {
         const partyType = PartyType.valueOf(dto.partyTypeCode);
 
         const name = await NameModel.create({
@@ -439,15 +440,19 @@ IdentitySchema.static('createTempIdentityForInvitationCode',
         const sharedSecretType = await SharedSecretTypeModel.findByCodeInDateRange(dto.sharedSecretTypeCode, new Date());
 
         const sharedSecret = await SharedSecretModel.create({
-            value: dto.sharedSecretValue, sharedSecretType: sharedSecretType
+            value: dto.sharedSecretValue,
+            sharedSecretType: sharedSecretType
         });
 
         const profile = await ProfileModel.create({
-            provider: ProfileProvider.Temp.name, name: name, sharedSecrets: [sharedSecret]
+            provider: ProfileProvider.Temp.name,
+            name: name,
+            sharedSecrets: [sharedSecret]
         });
 
         const party = await PartyModel.create({
-            partyType: partyType.name, name: name
+            partyType: partyType.name,
+            name: name
         });
 
         const identity = await this.IdentityModel.create({
