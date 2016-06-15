@@ -225,6 +225,27 @@ export class RelationshipAttribute {
     }
 }
 
+export class IdentityDTO {
+    constructor(public partyTypeCode:string,
+                public sharedSecretTypeCode:string,
+                public sharedSecretValue:string,
+                public givenName:string,
+                public familyName:string,
+                public unstructuredName:string
+    ) {
+    }
+}
+
+export class RelationshipAddDTO {
+    constructor(public relationshipTypeCode:string,
+                public subjectIdValue:string,
+                public delegate:IdentityDTO,
+                public startTimestamp:Date,
+                public endTimestamp:Date
+    ) {
+    }
+}
+
 // old deprecated .....................................................................................................
 
 export class RelationshipTableReq {

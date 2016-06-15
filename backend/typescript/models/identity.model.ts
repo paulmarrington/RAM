@@ -3,13 +3,17 @@ import * as mongooseAutoIncrement from 'mongoose-auto-increment';
 import {conf} from '../bootstrap';
 import * as Hashids from 'hashids';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
-import {IProfile, ProfileModel} from './profile.model';
-import {IParty, PartyModel} from './party.model';
 import {
     HrefValue,
     Identity as DTO,
-    SearchResult
+    SearchResult, IdentityDTO
 } from '../../../commons/RamAPI';
+
+import {NameModel} from './name.model';
+import {SharedSecretModel} from './sharedSecret.model';
+import {IProfile, ProfileModel, ProfileProvider} from './profile.model';
+import {IParty, PartyModel, PartyType} from './party.model';
+import {SharedSecretTypeModel} from './sharedSecretType.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
@@ -19,11 +23,18 @@ const _ProfileModel = ProfileModel;
 /* tslint:disable:no-unused-variable */
 const _PartyModel = PartyModel;
 
-const MAX_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE:number = 10;
+const NEW_INVITATION_CODE_EXPIRY_DAYS:number = 7;
 
 // enums, utilities, helpers ..........................................................................................
 
 const saltedHashids = new Hashids(conf.hashIdsSalt, 6, 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789');
+
+const getNewInvitationCodeExpiry = ():Date => {
+    let date = new Date();
+    date.setDate(date.getDate() + NEW_INVITATION_CODE_EXPIRY_DAYS);
+    return date;
+};
 
 export class IdentityType extends RAMEnum {
 
@@ -141,7 +152,7 @@ const IdentitySchema = RAMSchema({
     },
     identityType: {
         type: String,
-        required: [true, 'Type is required'],
+        required: [true, 'Identity Type is required'],
         trim: true,
         enum: IdentityType.valueStrings()
     },
@@ -267,6 +278,7 @@ export interface IIdentity extends IRAMObject {
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
+    createTempIdentityForInvitationCode:(dto:IdentityDTO) => Promise<IIdentity>;
     findByIdValue:(idValue:string) => Promise<IIdentity>;
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IIdentity>;
     findDefaultByPartyId:(partyId:string) => Promise<IIdentity>;
@@ -384,7 +396,7 @@ IdentitySchema.static('listByPartyId', (partyId:string) => {
 });
 
 IdentitySchema.static('search', (page:number, reqPageSize:number) => {
-    return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
+    return new Promise<SearchResult<IIdentity>>(async(resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
             const query = {};
@@ -407,6 +419,48 @@ IdentitySchema.static('search', (page:number, reqPageSize:number) => {
         }
     });
 });
+
+/**
+ * Creates an InvitationCode identity required when creating a new relationship. This identity is temporary and will
+ * only be associated with the relationship until the relationship is accepted, whereby the relationship will be
+ * transferred to the authorised identity.
+ */
+IdentitySchema.static('createTempIdentityForInvitationCode',
+    /* tslint:disable:max-func-body-length */
+    async(dto:IdentityDTO):Promise<IIdentity> => {
+        const partyType = PartyType.valueOf(dto.partyTypeCode);
+
+        const name = await NameModel.create({
+            givenName: dto.givenName,
+            familyName: dto.familyName,
+            unstructuredName: dto.unstructuredName
+        });
+
+        const sharedSecretType = await SharedSecretTypeModel.findByCodeInDateRange(dto.sharedSecretTypeCode, new Date());
+
+        const sharedSecret = await SharedSecretModel.create({
+            value: dto.sharedSecretValue, sharedSecretType: sharedSecretType
+        });
+
+        const profile = await ProfileModel.create({
+            provider: ProfileProvider.Temp.name, name: name, sharedSecrets: [sharedSecret]
+        });
+
+        const party = await PartyModel.create({
+            partyType: partyType.name, name: name
+        });
+
+        const identity = await this.IdentityModel.create({
+            identityType: IdentityType.InvitationCode.name,
+            defaultInd: true,
+            invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
+            invitationCodeExpiryTimestamp: getNewInvitationCodeExpiry(),
+            profile: profile,
+            party: party
+        });
+
+        return identity;
+    });
 
 // concrete model .....................................................................................................
 

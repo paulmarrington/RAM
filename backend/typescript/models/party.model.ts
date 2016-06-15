@@ -4,8 +4,10 @@ import {IIdentity, IdentityModel} from './identity.model';
 import {
     HrefValue,
     Party as DTO,
-    Identity as IdentityDTO
+    Identity as IdentityDTO, RelationshipAddDTO
 } from '../../../commons/RamAPI';
+import {RelationshipModel, RelationshipStatus, IRelationship} from './relationship.model';
+import {RelationshipTypeModel} from './relationshipType.model';
 
 // enums, utilities, helpers ..........................................................................................
 
@@ -38,15 +40,16 @@ const PartySchema = RAMSchema({
 // interfaces .........................................................................................................
 
 export interface IParty extends IRAMObject {
-    partyType: string;
-    partyTypeEnum(): PartyType;
-    toHrefValue(includeValue:boolean): Promise<HrefValue<DTO>>;
-    toDTO(): Promise<DTO>;
+    partyType:string;
+    partyTypeEnum():PartyType;
+    toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
+    toDTO():Promise<DTO>;
+    addRelationship(dto:RelationshipAddDTO):Promise<IRelationship>;
 }
 
 /* tslint:disable:no-empty-interfaces */
 export interface IPartyModel extends mongoose.Model<IParty> {
-    findByIdentityIdValue: (idValue:string) => Promise<IParty>;
+    findByIdentityIdValue:(idValue:string) => Promise<IParty>;
 }
 
 // instance methods ...................................................................................................
@@ -72,15 +75,37 @@ PartySchema.method('toDTO', async function () {
     return new DTO(
         this.partyType,
         await Promise.all<HrefValue<IdentityDTO>>(identities.map(
-            async (identity:IIdentity) => {
+            async(identity:IIdentity) => {
                 return await identity.toHrefValue(false);
             }))
     );
 });
 
+PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
+    // lookups
+    const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipTypeCode, new Date());
+    const subject = await IdentityModel.findByIdValue(dto.subjectIdValue);
+
+    // create the temp identity for the invitation code
+    const identity = await IdentityModel.createTempIdentityForInvitationCode(dto.delegate);
+
+    // create the relationship
+    const relationship = await RelationshipModel.create({
+        relationshipType: relationshipType,
+        subject: subject.party,
+        subjectNickName: subject.profile.name, // TODO - confirm this
+        delegate: identity.party,
+        delegateNickName: identity.profile.name, // TODO - confirm this
+        startTimestamp: dto.startTimestamp,
+        endTimestamp: dto.endTimestamp,
+        status: RelationshipStatus.Pending.name
+    });
+
+    return relationship;
+});
 // static methods .....................................................................................................
 
-PartySchema.static('findByIdentityIdValue', async (idValue:string) => {
+PartySchema.static('findByIdentityIdValue', async(idValue:string) => {
     const identity = await IdentityModel.findByIdValue(idValue);
     return identity ? identity.party : null;
 });
