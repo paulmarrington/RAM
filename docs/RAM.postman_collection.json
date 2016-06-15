@@ -523,6 +523,20 @@
 						"description": ""
 					},
 					"response": []
+				},
+				{
+					"name": "Reject By Invitation Code (jEVYNX)",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/reject",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},
