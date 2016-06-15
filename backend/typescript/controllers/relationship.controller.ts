@@ -5,28 +5,6 @@ import {IRelationshipModel} from '../models/relationship.model';
 // todo add data security
 export class RelationshipController {
 
-    private static SEARCH_SCHEMA = {
-        'page': {
-            in: 'query',
-            notEmpty: true,
-            isNumeric: {
-                errorMessage: 'Page is not valid'
-            }
-        },
-        'pageSize': {
-            in: 'query',
-            optional: true,
-            isNumeric: {
-                errorMessage: 'Page Size is not valid'
-            }
-        },
-        'identity_id': {
-            in: 'path',
-            notEmpty: true,
-            errorMessage: 'Identity Id is not valid'
-        }
-    };
-
     constructor(private relationshipModel:IRelationshipModel) {
     }
 
@@ -46,27 +24,56 @@ export class RelationshipController {
     };
 
     private subject = async(req:Request, res:Response) => {
-
-        validateReqSchema(req, RelationshipController.SEARCH_SCHEMA)
-            .then((req:Request) => this.relationshipModel.search(req.params.identity_id, null, req.query.page, req.query.pageSize))
-            .then((results) => (results.map((model) => model.toHrefValue(true))))
-            .then(sendSearchResult(res), sendError(res))
-            .then(sendNotFoundError(res));
-    };
-
-    private delegate = async(req:Request, res:Response) => {
-
-        validateReqSchema(req, RelationshipController.SEARCH_SCHEMA)
-            .then((req:Request) => this.relationshipModel.search(null, req.params.identity_id, req.query.page, req.query.pageSize))
-            .then((results) => (results.map((model) => model.toHrefValue(true))))
-            .then(sendSearchResult(res), sendError(res))
-            .then(sendNotFoundError(res));
+        const schema = {
+            'subject_or_delegate': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Subject Or Delegate is not valid',
+                matches: {
+                    options: ['^(subject|delegate)$'],
+                    errorMessage: 'Subject Or Delegate is not valid'
+                }
+            },
+            'identity_id': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Identity Id is not valid'
+            },
+            'page': {
+                in: 'query',
+                notEmpty: true,
+                isNumeric: {
+                    errorMessage: 'Page is not valid'
+                }
+            },
+            'pageSize': {
+                in: 'query',
+                optional: true,
+                isNumeric: {
+                    errorMessage: 'Page Size is not valid'
+                }
+            }
+        };
+        try {
+            console.log('req.params.subject_or_delegate=', req.params.subject_or_delegate);
+            validateReqSchema(req, schema)
+                .then((req:Request) => this.relationshipModel.search(
+                    req.params.subject_or_delegate === 'subject' ? req.params.identity_id : null,
+                    req.params.subject_or_delegate === 'delegate' ? null : req.params.identity_id,
+                    req.query.page,
+                    req.query.pageSize)
+                )
+                .then((results) => (results.map((model) => model.toHrefValue(true))))
+                .then(sendSearchResult(res), sendError(res))
+                .then(sendNotFoundError(res));
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     public assignRoutes = (router:Router) => {
         router.get('/v1/relationship/:id', this.findByIdentifier);
-        router.get('/v1/relationships/subject/identity/:identity_id', this.subject);
-        router.get('/v1/relationships/delegate/identity/:identity_id', this.delegate);
+        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.subject);
         return router;
     };
 }
