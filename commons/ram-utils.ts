@@ -1,10 +1,11 @@
 export class Utils {
-    public static applyMixins(derivedCtor: any, baseCtors: any[]) {
+    public static applyMixins<T extends { new (): T }>(derivedCtor: T, baseCtors: any[]) {
         baseCtors.forEach(baseCtor => {
             Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
                 derivedCtor.prototype[name] = baseCtor.prototype[name];
             });
         });
+        return derivedCtor;
     }
 
     public static dateToDDMMYYYY(date: Date) {
