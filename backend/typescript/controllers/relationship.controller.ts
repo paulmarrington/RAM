@@ -23,7 +23,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private subject = async(req:Request, res:Response) => {
+    private listBySubjectOrDelegate = async(req:Request, res:Response) => {
         const schema = {
             'subject_or_delegate': {
                 in: 'params',
@@ -68,7 +68,7 @@ export class RelationshipController {
 
     public assignRoutes = (router:Router) => {
         router.get('/v1/relationship/:id', this.findByIdentifier);
-        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.subject);
+        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.listBySubjectOrDelegate);
         return router;
     };
 }
