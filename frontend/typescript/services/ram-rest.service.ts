@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
     RelationshipSearchDTO, HrefValue, Relationship2, Name2
-} from '../../../commons/RamAPI';
+} from '../../../commons/RamAPI2';
 
-import { Observable, BehaviorSubject } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 import {Response, Http} from '@angular/http';
 
 // TODO: pass in Party2 and use identity name if no nickname
@@ -20,12 +20,14 @@ const relationshipsToTable = (relationshipSearchDTO: RelationshipSearchDTO, isDe
     const relationshipDTOToTable = (relref: HrefValue<Relationship2>):IRelationshipTableRow => {
         const rel = relref.value;
         const relationshipType = rel.relationshipType.href.split('/').slice(-1);
+        const relId = rel.subject.href.split('/').slice(-1)[0];
         return {
             name:       whatName(rel[relType+'NickName']),
             subName:    '', // TODO: extract ABN when server provides it
             rel:        relationshipType[0],
             access:     'Universal',
-            status:     rel.status
+            status:     rel.status,
+            relId:      relId
         } as IRelationshipTableRow;
     };
 
