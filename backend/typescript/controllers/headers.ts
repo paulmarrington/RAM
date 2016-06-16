@@ -8,6 +8,8 @@ export class Headers {
     public static Identity = `${Headers.Prefix}-Identity`;
     public static IdentityIdValue = `${Headers.Prefix}-Identity-IdValue`;
 
+    public static PartyType = `${Headers.Prefix}-PartyType`;
+
     public static GivenName = `${Headers.Prefix}-GivenName`;
     public static FamilyName = `${Headers.Prefix}-FamilyName`;
     public static UnstructuredName = `${Headers.Prefix}-UnstructuredName`;
