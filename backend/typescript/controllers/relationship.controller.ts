@@ -105,8 +105,8 @@ export class RelationshipController {
             .then((req:Request) => {
                 return PartyModel.findByIdentityIdValue(req.body.subject);
             })
-            .then((party) => {
-                return party.addRelationship(
+            .then((subjectParty) => {
+                return subjectParty.addRelationship(
                     new RelationshipAddDTO(
                         req.body.relationshipType,
                         req.body.subject,
