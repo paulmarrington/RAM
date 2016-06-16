@@ -47,7 +47,7 @@ export class AcceptAuthorisationComponent implements OnInit {
         });
     }
 
-    public acceptAuthorisation() {
+    public acceptAuthorisation = () => {
         this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {
             this.gotoRelationshipsPage();
         }, (err) => {
