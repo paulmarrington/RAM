@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
     IIdentity,
-    IRelationship
+    IRelationship,
+    IRelationshipType
 } from '../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
 import {Response, Http} from '@angular/http';
