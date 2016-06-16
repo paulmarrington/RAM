@@ -4,17 +4,20 @@
             <h2 class="col-sm-12 col-md-7 col-lg-8 col-xs-12">Add Relationship</h2>
         </div>
     </div>
+
+    {{idValue}}
+    <strong>{{ identityDisplayName$ | async }}</strong>
     
-    <representative-details [(data)]='myVar.representativeDetails' (isValid)='representativeIsValid=$event'>
+    <representative-details [(data)]='newRelationship.representativeDetails' (isValid)='representativeIsValid=$event'>
     </representative-details>
-    <authorisation-type [(data)]='myVar.authType' (isValid)='authTypeIsValid=$event'>
+    <authorisation-type [(data)]='newRelationship.authType' (isValid)='authTypeIsValid=$event'>
     </authorisation-type>
-    <access-period [(data)]='myVar.accessPeriod' (isValid)='accessPeriodIsValid=$event'>
+    <access-period [(data)]='newRelationship.accessPeriod' (isValid)='accessPeriodIsValid=$event'>
     </access-period>
     <!--authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions-->
-    <declaration [(data)]='myVar.decalaration' (isValid)='declarationIsValid=$event'
+    <declaration [(data)]='newRelationship.decalaration' (isValid)='declarationIsValid=$event'
     [isAuthorizedBtnEnabled]='accessPeriodIsValid && authTypeIsValid && representativeIsValid'></declaration>
-    <!--{{dumpObject(myVar)}}-->
+    <!--{{dumpObject(newRelationship)}}-->
 
 
 </div>

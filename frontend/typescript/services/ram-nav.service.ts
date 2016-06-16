@@ -17,7 +17,7 @@ export class RAMNavService {
 
     public navigateToRel(relIds: string[]) {
         this._currentRelIds = relIds;
-        this._currentRelId = relIds.slice(-1)[0]
+        this._currentRelId = relIds.slice(-1)[0];
         this._navSource.next(this._currentRelIds);
     }
 

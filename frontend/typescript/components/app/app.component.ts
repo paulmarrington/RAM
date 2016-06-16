@@ -8,6 +8,7 @@ import {RelationshipsComponent} from '../relationships/relationships.component';
 import {AddRelationshipComponent} from '../add-relationship/add-relationship.component';
 import {AddRelationshipCompleteComponent} from '../add-relationship-complete/add-relationship-complete.component';
 import {AcceptRelationshipCodeComponent} from '../accept-relationship-code/accept-relationship-code.component';
+import {AcceptAuthorisationComponent} from '../accept-authorisation/accept-authorisation.component';
 
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {provide} from '@angular/core';
@@ -41,17 +42,21 @@ import {RamComponent} from '../ram/ram.component';
         name: 'Relationships',
         component: RelationshipsComponent
     }, {
-        path: '/relationships/add',
+        path: '/relationships/add/:idValue',
         name: 'AddRelationship',
         component: AddRelationshipComponent
     }, {
-        path: '/relationships/add/complete',
+        path: '/relationships/add/:idValue/:invitationCode/complete',
         name: 'AddRelationshipCompleteComponent',
         component: AddRelationshipCompleteComponent
     }, {
-        path: '/relationships/accept',
+        path: '/relationships/add/:idValue/:invitationCode/accept',
         name: 'AcceptRelationshipCodeComponent',
         component: AcceptRelationshipCodeComponent
+    },{
+        path: '/relationships/add/:idValue/:invitationCode/acceptAuthorisation',
+        name: 'AcceptAuthorisationComponent',
+        component: AcceptAuthorisationComponent
     }
 ])
 export class AppComponent {

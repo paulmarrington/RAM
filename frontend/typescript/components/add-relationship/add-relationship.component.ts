@@ -5,6 +5,13 @@ import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from '../com
 import {DeclarationComponent, DeclarationComponentData} from '../commons/declaration/declaration.component';
 import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
 '../commons/representative-details/representative-details.component';
+import {ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
+import {RAMIdentityService} from '../../services/ram-identity.service';
+import Rx from 'rxjs/Rx';
+import {
+    IName
+} from '../../../../commons/RamAPI2';
+
 
 @Component({
     selector: 'add-relationship',
@@ -15,12 +22,17 @@ import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
         AuthorisationTypeComponent,
         DeclarationComponent,
         RepresentativeDetailsComponent
-    ]
+    ],
+    providers: [ROUTER_PROVIDERS, RAMIdentityService]
 })
 export class AddRelationshipComponent {
+    public idValue: string;
+
+    public identityDisplayName$: Rx.Observable<IName>;
+
     public accessPeriodValidationErrors = {};
 
-    public myVar: AddRelationshipComponentData = {
+    public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
             startDate: null,
             noEndDate: true,
@@ -44,13 +56,23 @@ export class AddRelationshipComponent {
         }
     };
 
+    constructor(private routeParams: RouteParams,
+        private identityService: RAMIdentityService) {
+    }
+
+    public ngOnInit() {
+        this.idValue = this.routeParams.get('idValue');
+        this.identityDisplayName$ = this.identityService
+            .getDefaultName(this.idValue);
+    }
+
     public dumpObject(v: Object) {
         // creates formatted JSON - display in <pre> tag
         return JSON.stringify(v, null, 2);
     }
 
     public submit() {
-        console.dir(this.myVar);
+        console.dir(this.newRelationship);
     }
 }
 
