@@ -4,7 +4,8 @@ import {Router, ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated'
 import {RAMIdentityService} from '../../services/ram-identity.service';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {
-    IRelationship
+    IRelationship,
+    IName
 } from '../../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
 
@@ -20,7 +21,7 @@ export class AcceptAuthorisationComponent implements OnInit {
 
     public idValue: string;
 
-    public relationship: Rx.Observable<IRelationship>;
+    public relationship$: Rx.Observable<IRelationship>;
 
     constructor(private routeParams: RouteParams,
         private router: Router,
@@ -31,14 +32,27 @@ export class AcceptAuthorisationComponent implements OnInit {
     public ngOnInit() {
         this.code = this.routeParams.get('invitationCode');
         this.idValue = this.routeParams.get('idValue');
-        this.relationship = this.rest.viewPendingRelationshipByInvitationCode(this.code);
+        this.relationship$ = this.rest.viewPendingRelationshipByInvitationCode(this.code);
     }
 
-    public acceptAuthorisation() {
+    public acceptAuthorisation = () => {
         this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {
-            this.router.navigate(['Relationships', { identityValue: this.idValue }]);
+            this.gotoRelationshipsPage();
         }, (err) => {
             alert(err); // todo
         });
+    }
+
+    /**
+     * Todo: Implement displayName as a pipe
+     **/
+    public displayName(name: IName) {
+        if (name) {
+            return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
+        }
+    }
+
+    public gotoRelationshipsPage() {
+        this.router.navigate(['Relationships', { identityValue: this.idValue }]);
     }
 }
