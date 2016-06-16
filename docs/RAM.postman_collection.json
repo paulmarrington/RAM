@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "cef38e97-e68c-699a-3393-0b6f873194d9",
+		"_postman_id": "fc81fba5-46c4-5e70-525b-4f36d8557946",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -643,7 +643,7 @@
 					"response": []
 				},
 				{
-					"name": "Notify delegate (jEVYNX)",
+					"name": "Notify Delegate By Invitation Code (jEVYNX)",
 					"request": {
 						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/notifyDelegate",
 						"method": "POST",
@@ -675,7 +675,7 @@
 					"response": []
 				},
 				{
-					"name": "Add",
+					"name": "Create",
 					"request": {
 						"url": "{{host}}/api/v1/relationship",
 						"method": "POST",
