@@ -81,7 +81,10 @@ export class RelationshipController {
             'email': {
                 in: 'body',
                 notEmpty: true,
-                errorMessage: 'Email is not valid'
+                isEmail: {
+                    errorMessage: 'Email is not valid'
+                },
+                errorMessage: 'Email is not supplied'
             }
         };
 
