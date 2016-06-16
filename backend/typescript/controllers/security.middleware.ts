@@ -10,6 +10,7 @@ class Security {
 
     public prepareRequest():(req:Request, res:Response, next:() => void) => void {
         return (req:Request, res:Response, next:() => void) => {
+            console.log('..... RUNNING SECURITY MIDDLEWAREE!!!!');
             if (conf.devMode) {
                 this.prepareRequestForDevelopment(req, res, next);
             } else {
@@ -18,32 +19,38 @@ class Security {
         };
     }
 
-    private prepareRequestForProduction(req:Request, res:Response, next:() => void) {
-        for (let key of Object.keys(req.headers)) {
-            const keyUpper = key.toUpperCase();
-            if (keyUpper.startsWith(Headers.Prefix)) {
-                const value = req.headers[key];
-                res.locals[keyUpper] = value;
-                logger.debug(`${keyUpper}=${value}`);
-            }
-        }
-        next();
-    }
-
     private prepareRequestForDevelopment(req:Request, res:Response, next:() => void) {
         const idValue = res.locals[Headers.IdentityIdValue];
         if (!idValue) {
             next();
         } else {
             IdentityModel.findByIdValue(idValue)
-                .then(this.resolveForDevelopment(res, next), this.rejectForDevelopment(res, next));
+                .then(this.resolveWithIdentity(req, res, next), this.rejectWithNoIdentity(res, next));
         }
     }
 
-    private resolveForDevelopment(res:Response, next:() => void) {
+    private prepareRequestForProduction(req:Request, res:Response, next:() => void) {
+        const idValue = req.headers[Headers.IdentityIdValue];
+        if (!idValue) {
+            next();
+        } else {
+            IdentityModel.findByIdValue(idValue)
+                .then(this.resolveWithIdentity(req, res, next), this.rejectWithNoIdentity(res, next));
+        }
+    }
+
+    private resolveWithIdentity(req:Request, res:Response, next:() => void) {
         return (identity?:IIdentity) => {
             logger.info('Identity context:', (identity ? colors.magenta(identity.idValue) : colors.red('[not found]')));
             if (identity) {
+                for (let key of Object.keys(req.headers)) {
+                    const keyUpper = key.toUpperCase();
+                    if (keyUpper.startsWith(Headers.Prefix)) {
+                        const value = req.headers[key];
+                        res.locals[keyUpper] = value;
+                        logger.debug(`${keyUpper}=${value}`);
+                    }
+                }
                 res.locals[Headers.Identity] = identity;
                 res.locals[Headers.IdentityIdValue] = identity.idValue;
                 res.locals[Headers.GivenName] = identity.profile.name.givenName;
@@ -58,7 +65,7 @@ class Security {
         };
     }
 
-    private rejectForDevelopment(res:Response, next:() => void) {
+    private rejectWithNoIdentity(res:Response, next:() => void) {
         return ():void => {
             logger.error('Unable to look up identity!'.red);
             res.status(401);
