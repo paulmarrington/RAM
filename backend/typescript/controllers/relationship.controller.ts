@@ -128,7 +128,8 @@ export class RelationshipController {
                         req.body.relationshipType,
                         req.body.subject,
                         new CreateIdentityDTO(
-                            req.body.delegate.partyTypeCode,
+                            undefined,
+                            req.body.delegate.partyType,
                             req.body.delegate.givenName,
                             req.body.delegate.familyName,
                             req.body.delegate.unstructuredName,

@@ -7,6 +7,7 @@ export class Headers {
 
     public static Identity = `${Headers.Prefix}-Identity`;
     public static IdentityIdValue = `${Headers.Prefix}-Identity-IdValue`;
+    public static IdentityRawIdValue = `${Headers.Prefix}-Identity-RawIdValue`;
     public static IdentityType = `${Headers.Prefix}-IdentityType`;
 
     public static PartyType = `${Headers.Prefix}-PartyType`;

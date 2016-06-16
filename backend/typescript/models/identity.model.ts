@@ -446,11 +446,12 @@ IdentitySchema.static('createFromDTO', async (dto:CreateIdentityDTO):Promise<IId
         });
 
         const party = await PartyModel.create({
-            partyType: dto.partyTypeCode,
+            partyType: dto.partyType,
             name: name
         });
 
         const identity = await this.IdentityModel.create({
+            rawIdValue: dto.rawIdValue,
             identityType: dto.identityType,
             defaultInd: true,
             agencyScheme: dto.agencyScheme,

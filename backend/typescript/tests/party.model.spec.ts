@@ -109,6 +109,7 @@ describe('RAM Party', () => {
                 Seeder.custom_delegate_relationshipType.code,
                 identity1.idValue,
                 new CreateIdentityDTO(
+                    undefined,
                     PartyType.Individual.name,
                     'John',
                     'Doe',

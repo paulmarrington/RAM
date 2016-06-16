@@ -474,6 +474,7 @@ describe('RAM Identity', () => {
 
             // DTOs
             const identityDTO = new CreateIdentityDTO(
+                undefined,
                 PartyType.Individual.name,
                 'John',
                 'Doe',

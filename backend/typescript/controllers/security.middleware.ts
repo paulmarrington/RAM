@@ -2,7 +2,6 @@ import {logger} from '../logger';
 import * as colors from 'colors';
 import {Request, Response} from 'express';
 import {Headers} from './headers';
-import {conf} from '../bootstrap';
 import {ErrorResponse} from '../../../commons/RamAPI';
 import {CreateIdentityDTO} from '../../../commons/RamAPI';
 import {IIdentity, IdentityModel} from '../models/identity.model';
@@ -11,33 +10,19 @@ class Security {
 
     public prepareRequest():(req:Request, res:Response, next:() => void) => void {
         return (req:Request, res:Response, next:() => void) => {
-            if (conf.devMode) {
-                this.prepareRequestForDevelopment(req, res, next);
+            const idValue = req.get(Headers.IdentityIdValue);
+            const rawIdValue = req.get(Headers.IdentityRawIdValue);
+            if (!idValue || !rawIdValue) {
+                // id not supplied, carry on
+                Promise.resolve(null)
+                    .then(this.resolve(req, res, next), this.reject(res, next));
             } else {
-                this.prepareRequestForProduction(req, res, next);
+                // id supplied, try to lookup and if not found create a new identity before carrying on
+                IdentityModel.findByIdValue(idValue)
+                    .then(this.createIdentityIfNotFound(req, res))
+                    .then(this.resolve(req, res, next), this.reject(res, next));
             }
         };
-    }
-
-    private prepareRequestForDevelopment(req:Request, res:Response, next:() => void) {
-        const idValue = res.locals[Headers.IdentityIdValue];
-        console.log('Processing id:', idValue);
-        if (!idValue) {
-            next();
-        } else {
-            IdentityModel.findByIdValue(idValue)
-                .then(this.resolveWithIdentity(req, res, next), this.rejectWithNoIdentity(res, next));
-        }
-    }
-
-    private prepareRequestForProduction(req:Request, res:Response, next:() => void) {
-        const idValue = req.headers[Headers.IdentityIdValue];
-        if (!idValue) {
-            next();
-        } else {
-            IdentityModel.findByIdValue(idValue)
-                .then(this.resolveWithIdentity(req, res, next), this.rejectWithNoIdentity(res, next));
-        }
     }
 
     private createIdentityIfNotFound(req:Request, res:Response) {
@@ -46,27 +31,28 @@ class Security {
                 return Promise.resolve(identity);
             } else {
                 const dto = new CreateIdentityDTO(
-                    req.headers[Headers.PartyType],
-                    req.headers[Headers.GivenName],
-                    req.headers[Headers.FamilyName],
-                    req.headers[Headers.UnstructuredName],
-                    req.headers[Headers.DOB] /*wrong*/,
-                    req.headers[Headers.DOB],
-                    req.headers[Headers.IdentityType],
-                    req.headers[Headers.AgencyScheme],
-                    req.headers[Headers.AgencyToken],
-                    req.headers[Headers.LinkIdScheme],
-                    req.headers[Headers.LinkIdConsumer],
-                    req.headers[Headers.PublicIdentifierScheme],
-                    req.headers[Headers.ProfileProvider]
+                    req.get(Headers.IdentityRawIdValue),
+                    req.get(Headers.PartyType),
+                    req.get(Headers.GivenName),
+                    req.get(Headers.FamilyName),
+                    req.get(Headers.UnstructuredName),
+                    'DATE_OF_BIRTH'/* TODO use a constant */,
+                    req.get(Headers.DOB),
+                    req.get(Headers.IdentityType),
+                    req.get(Headers.AgencyScheme),
+                    req.get(Headers.AgencyToken),
+                    req.get(Headers.LinkIdScheme),
+                    req.get(Headers.LinkIdConsumer),
+                    req.get(Headers.PublicIdentifierScheme),
+                    req.get(Headers.ProfileProvider)
                 );
-                console.log('ABOUT TO CREATE=', dto);
+                logger.info(`Creating identity: ${dto.toString()}`.red);
                 return IdentityModel.createFromDTO(dto);
             }
         };
     }
 
-    private resolveWithIdentity(req:Request, res:Response, next:() => void) {
+    private resolve(req:Request, res:Response, next:() => void) {
         return (identity?:IIdentity) => {
             logger.info('Identity context:', (identity ? colors.magenta(identity.idValue) : colors.red('[not found]')));
             console.log('IDENTITY=', identity);
@@ -74,13 +60,14 @@ class Security {
                 for (let key of Object.keys(req.headers)) {
                     const keyUpper = key.toUpperCase();
                     if (keyUpper.startsWith(Headers.Prefix)) {
-                        const value = req.headers[key];
+                        const value = req.get(key);
                         res.locals[keyUpper] = value;
                         logger.debug(`${keyUpper}=${value}`);
                     }
                 }
                 res.locals[Headers.Identity] = identity;
                 res.locals[Headers.IdentityIdValue] = identity.idValue;
+                res.locals[Headers.IdentityRawIdValue] = identity.rawIdValue;
                 res.locals[Headers.GivenName] = identity.profile.name.givenName;
                 res.locals[Headers.FamilyName] = identity.profile.name.familyName;
                 res.locals[Headers.UnstructuredName] = identity.profile.name.unstructuredName;
@@ -93,9 +80,9 @@ class Security {
         };
     }
 
-    private rejectWithNoIdentity(res:Response, next:() => void) {
-        return ():void => {
-            logger.error('Unable to look up identity!'.red);
+    private reject(res:Response, next:() => void) {
+        return (err:Error):void => {
+            logger.error(('Unable to look up identity: ' + err).red);
             res.status(401);
             res.send(new ErrorResponse('Unable to look up identity.'));
         };

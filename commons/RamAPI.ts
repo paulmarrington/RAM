@@ -226,7 +226,8 @@ export class RelationshipAttribute {
 }
 
 export class CreateIdentityDTO {
-    constructor(public partyTypeCode:string,
+    constructor(public rawIdValue:string,
+                public partyType:string,
                 public givenName:string,
                 public familyName:string,
                 public unstructuredName:string,
