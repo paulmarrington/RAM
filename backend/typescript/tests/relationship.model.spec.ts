@@ -4,6 +4,7 @@ import {
     IIdentity,
     IdentityModel,
     IdentityType,
+    IdentityLinkIdScheme,
     IdentityInvitationCodeStatus} from '../models/identity.model';
 import {
     IName,
@@ -217,6 +218,84 @@ describe('RAM Relationship', () => {
         }
     });
 
+    it('accepts pending invitation', async (done) => {
+        try {
+
+            const acceptingDelegateIdentity1 = await IdentityModel.create({
+                rawIdValue: 'accepting_delegate_identity_1',
+                identityType: IdentityType.LinkId.name,
+                defaultInd: true,
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                profile: delegateProfile1,
+                party: delegateParty1
+            });
+
+            const acceptedInstance = await relationship1.acceptPendingInvitation(acceptingDelegateIdentity1);
+            const retrievedAcceptedInstance = await RelationshipModel.findByIdentifier(relationship1.id);
+
+            const retrievedClaimedDelegateIdentity = await IdentityModel.findByIdValue(delegateIdentity1.idValue);
+            const retrievedAcceptedDelegateIdentity = await IdentityModel.findByIdValue(acceptingDelegateIdentity1.idValue);
+
+            expect(relationship1.statusEnum()).toBe(RelationshipStatus.Active);
+            expect(acceptedInstance.statusEnum()).toBe(relationship1.statusEnum());
+            expect(retrievedClaimedDelegateIdentity.invitationCodeStatusEnum()).toBe(IdentityInvitationCodeStatus.Claimed);
+            expect(retrievedClaimedDelegateIdentity.invitationCodeClaimedTimestamp).not.toBeNull();
+            expect(acceptedInstance.delegate.id).toBe(retrievedAcceptedDelegateIdentity.party.id);
+            expect(retrievedAcceptedInstance.delegate.id).toBe(retrievedAcceptedDelegateIdentity.party.id);
+            expect(retrievedAcceptedInstance.id).toBe(acceptedInstance.id);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+    
+    it('stores email when notifying delegate', async (done) => {
+        try {
+
+            const email = 'test@example.com';
+            await relationship1.notifyDelegate(email);
+
+            const retrievedInstance = await RelationshipModel.findByIdentifier(relationship1.id);
+            const retrievedDelegateIdentity = await IdentityModel.findByIdValue(delegateIdentity1.idValue);
+
+            expect(retrievedDelegateIdentity.invitationCodeTemporaryEmailAddress).toBe(email);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('fails accept non-pending invitation', async (done) => {
+        try {
+
+            const acceptingDelegateIdentity1 = await IdentityModel.create({
+                rawIdValue: 'accepting_delegate_identity_1',
+                identityType: IdentityType.LinkId.name,
+                defaultInd: true,
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                profile: delegateProfile1,
+                party: delegateParty1
+            });
+
+            await relationship1.acceptPendingInvitation(acceptingDelegateIdentity1);
+            expect(relationship1.statusEnum()).toBe(RelationshipStatus.Active);
+
+            await relationship1.acceptPendingInvitation(acceptingDelegateIdentity1);
+            fail('should not have been able to accept a non-pending relationship');
+
+            done();
+
+        } catch (e) {
+            done();
+        }
+    });
+
     it('rejects pending invitation', async (done) => {
         try {
 
@@ -244,7 +323,7 @@ describe('RAM Relationship', () => {
             expect(relationship1.statusEnum()).toBe(RelationshipStatus.Invalid);
 
             await relationship1.rejectPendingInvitation();
-            fail('should not have inserted with null profile');
+            fail('should not have been able to reject a non-pending relationship');
 
             done();
 

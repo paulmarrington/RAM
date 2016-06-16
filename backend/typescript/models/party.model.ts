@@ -34,7 +34,7 @@ export class PartyType extends RAMEnum {
 const PartySchema = RAMSchema({
     partyType: {
         type: String,
-        required: [true, 'Type is required'],
+        required: [true, 'Party Type is required'],
         trim: true,
         enum: PartyType.valueStrings()
     }
@@ -91,29 +91,34 @@ PartySchema.method('toDTO', async function () {
 /* tslint:disable:max-func-body-length */
 PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
 
+    // TODO improve handling of lookups that return null outside of the date range
+
     // lookups
     const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipTypeCode, new Date());
-    const subject = await IdentityModel.findByIdValue(dto.subjectIdValue);
+    const subjectIdentity = await IdentityModel.findByIdValue(dto.subjectIdValue);
 
     // create the temp identity for the invitation code
-    const identity = await IdentityModel.createTempIdentityForInvitationCode(dto.delegate);
+    const temporaryDelegateIdentity = await IdentityModel.createFromDTO(dto.delegate);
 
     const attributes:IRelationshipAttribute[] = [];
 
     for (let attr of dto.attributes) {
-        attributes.push(await RelationshipAttributeModel.create({
-            value: true,
-            attributeName: await RelationshipAttributeNameModel.findByCodeInDateRange(attr.code, new Date())
-        }));
+        const attributeName = await RelationshipAttributeNameModel.findByCodeInDateRange(attr.code, new Date());
+        if (attributeName) {
+            attributes.push(await RelationshipAttributeModel.create({
+                value: true,
+                attributeName: attributeName
+            }));
+        }
     }
 
     // create the relationship
     const relationship = await RelationshipModel.create({
         relationshipType: relationshipType,
-        subject: subject.party,
-        subjectNickName: subject.profile.name, // TODO - confirm this
-        delegate: identity.party,
-        delegateNickName: identity.profile.name, // TODO - confirm this
+        subject: subjectIdentity.party,
+        subjectNickName: subjectIdentity.profile.name,
+        delegate: temporaryDelegateIdentity.party,
+        delegateNickName: temporaryDelegateIdentity.profile.name,
         startTimestamp: dto.startTimestamp,
         endTimestamp: dto.endTimestamp,
         status: RelationshipStatus.Pending.name,

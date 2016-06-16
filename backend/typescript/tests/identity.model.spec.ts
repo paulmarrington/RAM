@@ -22,7 +22,7 @@ import {
     PartyModel,
     PartyType
 } from '../models/party.model';
-import {IdentityDTO} from '../../../commons/RamAPI';
+import {CreateIdentityDTO} from '../../../commons/RamAPI';
 import {Seeder} from '../seeding/seed';
 
 /* tslint:disable:max-func-body-length */
@@ -473,10 +473,24 @@ describe('RAM Identity', () => {
         try {
 
             // DTOs
-            const identityDTO = new IdentityDTO(PartyType.Individual.name, 'DATE_OF_BIRTH', '2015-07-31', 'John', 'Doe', undefined);
+            const identityDTO = new CreateIdentityDTO(
+                undefined,
+                PartyType.Individual.name,
+                'John',
+                'Doe',
+                undefined,
+                Seeder.dob_sharedSecretType.code,
+                '2015-07-31',
+                IdentityType.InvitationCode.name,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                ProfileProvider.Temp.name);
 
             // Create new temp identity for invitation code
-            const tempIdentity = await IdentityModel.createTempIdentityForInvitationCode(identityDTO);
+            const tempIdentity = await IdentityModel.createFromDTO(identityDTO);
 
             // Verify
             expect(tempIdentity).not.toBeNull();

@@ -1,5 +1,6 @@
 // system domain ......................................................................................................
 
+import {ICreateIdentityDTO, IAttributeDTO, IRelationshipAddDTO} from './RamAPI2';
 export enum RAMMessageType {
     Error = 1,
     Info = 2,
@@ -225,17 +226,25 @@ export class RelationshipAttribute {
     }
 }
 
-export class IdentityDTO {
-    constructor(public partyTypeCode:string,
-                public sharedSecretTypeCode:string,
-                public sharedSecretValue:string,
+export class CreateIdentityDTO implements ICreateIdentityDTO {
+    constructor(public rawIdValue:string,
+                public partyType:string,
                 public givenName:string,
                 public familyName:string,
-                public unstructuredName:string) {
+                public unstructuredName:string,
+                public sharedSecretTypeCode:string,
+                public sharedSecretValue:string,
+                public identityType:string,
+                public agencyScheme:string,
+                public agencyToken:string,
+                public linkIdScheme:string,
+                public linkIdConsumer:string,
+                public publicIdentifierScheme:string,
+                public profileProvider:string) {
     }
 }
 
-export class AttributeDTO {
+export class AttributeDTO implements IAttributeDTO {
     constructor(public code:string,
                 public value:string) {
     }
@@ -249,15 +258,16 @@ export class AttributeDTO {
     }
 }
 
-export class RelationshipAddDTO {
+export class RelationshipAddDTO implements IRelationshipAddDTO {
     constructor(public relationshipTypeCode:string,
                 public subjectIdValue:string,
-                public delegate:IdentityDTO,
+                public delegate:CreateIdentityDTO,
                 public startTimestamp:Date,
                 public endTimestamp:Date,
                 public attributes:AttributeDTO[]) {
     }
 }
+
 
 // old deprecated .....................................................................................................
 

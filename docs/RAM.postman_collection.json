@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "f3597c68-a620-2b4a-3aa2-8a8a174a6d0b",
+		"_postman_id": "cef38e97-e68c-699a-3393-0b6f873194d9",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -67,6 +67,113 @@
 								{
 									"key": "credentials",
 									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate (Bob Smith)",
+					"request": {
+						"url": "{{host}}/api/v1/simulators/authenticator/authenticate",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:bobsmith_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate As New User (Fred Johnson)",
+					"request": {
+						"url": "{{host}}/api/v1/simulators/authenticator/authenticate",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-Identity-IdValue",
+								"value": "LINK_ID:MY_GOV:fredjohnson_identity_xxx",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-Identity-RawIdValue",
+								"value": "fredjohnson_identity_xxx",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-PartyType",
+								"value": "INDIVIDUAL",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-GivenName",
+								"value": "Fred",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-FamilyName",
+								"value": "Johnson",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-DOB",
+								"value": "01/01/2000",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-IdentityType",
+								"value": "LINK_ID",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-ProfileProvider",
+								"value": "MY_GOV",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-LinkIdScheme",
+								"value": "MY_GOV",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-AgencyScheme",
+								"value": "",
+								"description": ""
+							},
+							{
+								"key": "X-RAM-PublicIdentifierScheme",
+								"value": "",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:fredjohnson_identity_xxx",
 									"type": "text",
 									"enabled": true
 								}
@@ -523,6 +630,38 @@
 					"response": []
 				},
 				{
+					"name": "Accept By Invitation Code (jEVYNX)",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/accept",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notify delegate (jEVYNX)",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/notifyDelegate",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\"\n}"
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Reject By Invitation Code (jEVYNX)",
 					"request": {
 						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/reject",
@@ -549,7 +688,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"relationshipType\": \"CUSTOM_REPRESENTATIVE\",\n  \"subject\": \"PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1\",\n  \"delegate\": {\n    \"partyTypeCode\": \"INDIVIDUAL\",\n    \"givenName\": \"a\",\n    \"familyName\": \"b\",\n    \"unstructuredName\": \"\",\n    \"sharedSecret\": {\n      \"code\": \"DATE_OF_BIRTH\",\n      \"value\": \"2016-06-15\"\n    }\n  },\n  \"startTimestamp\": \"2016-06-15T03:49:06.682Z\",\n  \"endTimestamp\": \"2017-06-15T03:49:06.682Z\",\n  \"attributes\": [\n    {\n      \"code\": \"PERMISSION_CUSTOMISATION_ALLOWED_IND\",\n      \"value\": \"true\"\n    }\n  ]\n}"
+							"raw": "{\n  \"relationshipType\": \"CUSTOM_REPRESENTATIVE\",\n  \"subject\": \"PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1\",\n  \"delegate\": {\n    \"partyType\": \"INDIVIDUAL\",\n    \"givenName\": \"a\",\n    \"familyName\": \"b\",\n    \"unstructuredName\": \"\",\n    \"sharedSecret\": {\n      \"code\": \"DATE_OF_BIRTH\",\n      \"value\": \"2016-06-15\"\n    }\n  },\n  \"startTimestamp\": \"2016-06-15T03:49:06.682Z\",\n  \"endTimestamp\": \"2017-06-15T03:49:06.682Z\",\n  \"attributes\": [\n    {\n      \"code\": \"PERMISSION_CUSTOMISATION_ALLOWED_IND\",\n      \"value\": \"true\"\n    }\n  ]\n}"
 						}
 					},
 					"response": []

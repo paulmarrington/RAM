@@ -4,7 +4,7 @@ import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
 import {IRelationshipType} from './relationshipType.model';
 import {IRelationshipAttribute, RelationshipAttributeModel} from './relationshipAttribute.model';
-import {IdentityModel, IdentityType, IdentityInvitationCodeStatus} from './identity.model';
+import {IdentityModel, IIdentity, IdentityType, IdentityInvitationCodeStatus} from './identity.model';
 import {
     HrefValue,
     Relationship as DTO,
@@ -111,19 +111,21 @@ const RelationshipSchema = RAMSchema({
 
 export interface IRelationship extends IRAMObject {
     relationshipType:IRelationshipType;
-    subject: IParty;
-    subjectNickName: IName;
-    delegate: IParty;
-    delegateNickName: IName;
-    startTimestamp: Date;
-    endTimestamp?: Date;
-    endEventTimestamp?: Date;
-    status: string;
-    attributes: IRelationshipAttribute[];
-    statusEnum(): RelationshipStatus;
+    subject:IParty;
+    subjectNickName:IName;
+    delegate:IParty;
+    delegateNickName:IName;
+    startTimestamp:Date;
+    endTimestamp?:Date;
+    endEventTimestamp?:Date;
+    status:string;
+    attributes:IRelationshipAttribute[];
+    statusEnum():RelationshipStatus;
     toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
     toDTO():Promise<DTO>;
+    acceptPendingInvitation(acceptingDelegateIdentity:IIdentity):Promise<IRelationship>;
     rejectPendingInvitation():void;
+    notifyDelegate(email:string):Promise<IRelationship>;
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
@@ -159,16 +161,54 @@ RelationshipSchema.method('toDTO', async function () {
         this.endEventTimestamp,
         this.status,
         await Promise.all<RelationshipAttributeDTO>(this.attributes.map(
-            async (attribute:IRelationshipAttribute) => {
+            async(attribute:IRelationshipAttribute) => {
                 return await attribute.toDTO();
             }))
     );
 });
 
-RelationshipSchema.method('rejectPendingInvitation', async function () {
+RelationshipSchema.method('acceptPendingInvitation', async function (acceptingDelegateIdentity:IIdentity) {
+
     if (this.statusEnum() === RelationshipStatus.Pending) {
+
+        // TODO need to match identity details, validate identity and credentials strengths (not spec'ed out yet)
+
+        // mark claimed with timestamp on the temporary delegate identity
+        const identities = await IdentityModel.listByPartyId(this.delegate.id);
+        for (let identity of identities) {
+            if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
+                identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending) {
+                identity.invitationCodeStatus = IdentityInvitationCodeStatus.Claimed.name;
+                identity.invitationCodeClaimedTimestamp = new Date();
+                await identity.save();
+            }
+        }
+
+        // mark relationship as active
+        // point relationship to the accepting delegate identity
+        this.status = RelationshipStatus.Active.name;
+        this.delegate = acceptingDelegateIdentity.party;
+        await this.save();
+
+        // TODO notify relevant parties
+
+        return Promise.resolve(this);
+
+    } else {
+        throw new Error('Unable to accept a non-pending relationship');
+    }
+});
+
+RelationshipSchema.method('rejectPendingInvitation', async function () {
+
+    if (this.statusEnum() === RelationshipStatus.Pending) {
+
+        // mark relationship as invalid
         this.status = RelationshipStatus.Invalid.name;
         await this.save();
+
+        // as relationship doesn't have a pointer to the identity, this rejects all invitation identities
+        // associated with the temporary delegate (there should only be one)
         const identities = await IdentityModel.listByPartyId(this.delegate.id);
         for (let identity of identities) {
             if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
@@ -177,10 +217,45 @@ RelationshipSchema.method('rejectPendingInvitation', async function () {
                 await identity.save();
             }
         }
+
+        // TODO notify relevant parties
+
     } else {
         throw new Error('Unable to reject a non-pending relationship');
     }
+
 });
+
+RelationshipSchema.method('notifyDelegate', async function (email:string) {
+
+    if (this.statusEnum() === RelationshipStatus.Pending) {
+
+        // save email
+        // as relationship doesn't have a pointer to the identity, this sets email on all invitation identities
+        // associated with the temporary delegate (there should only be one)
+        const identities = await IdentityModel.listByPartyId(this.delegate.id);
+        for (let identity of identities) {
+            if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
+                identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending) {
+                identity.invitationCodeTemporaryEmailAddress = email;
+                await identity.save();
+            }
+        }
+
+        // TODO notify relevant parties
+
+        return Promise.resolve(this);
+    } else {
+        throw new Error('Unable to update relationship with delegate email');
+    }
+
+});
+
+// RelationshipSchema.method('identitiesByTypeAndStatus', async function (identityType:IdentityType, status:IdentityInvitationCodeStatus) {
+//      const identities = await IdentityModel.listByPartyId(this.delegate.id);
+//     return identities.filter((identity) => identity.identityTypeEnum() === identityType
+//             && identity.invitationCodeStatusEnum() === status)
+// });
 
 // static methods .....................................................................................................
 
@@ -201,7 +276,7 @@ RelationshipSchema.static('findByIdentifier', (id:string) => {
         .exec();
 });
 
-RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invitationCode:string, date:Date) => {
+RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async(invitationCode:string, date:Date) => {
     const identity = await IdentityModel.findPendingByInvitationCodeInDateRange(invitationCode, date);
     if (identity) {
         const delegate = identity.party;
@@ -223,7 +298,7 @@ RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invit
 });
 
 RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, reqPageSize:number) => {
-    return new Promise<SearchResult<IRelationship>>(async (resolve, reject) => {
+    return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
             const query = await (new Query()
