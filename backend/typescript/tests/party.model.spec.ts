@@ -43,7 +43,6 @@ describe('RAM Party', () => {
         Seeder.verbose(false);
 
         Promise.resolve(null)
-            .then()
             .then(Seeder.resetDataInMongo)
             .then(Seeder.loadReference)
             .then(async() => {
