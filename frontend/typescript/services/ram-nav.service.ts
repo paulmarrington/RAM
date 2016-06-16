@@ -8,12 +8,21 @@ export class RAMNavService {
 
     private _navObservable$ = this._navSource.asObservable();
 
+    private _currentRelIds = new Array<string>();
+    private _currentRelId = '';
+
     public get navObservable$() {
         return this._navObservable$;
     }
 
     public navigateToRel(relIds: string[]) {
-        this._navSource.next(relIds);
+        this._currentRelIds = relIds;
+        this._currentRelId = relIds.slice(-1)[0]
+        this._navSource.next(this._currentRelIds);
+    }
+
+    public get currentIdentityName() {
+        return this._currentRelId;
     }
 
     constructor() {
