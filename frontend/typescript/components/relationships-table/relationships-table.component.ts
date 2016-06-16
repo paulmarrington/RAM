@@ -2,17 +2,14 @@ import {Component, OnInit, Input} from '@angular/core';
 import {RouteParams} from '@angular/router-deprecated';
 import Rx from 'rxjs/Rx';
 import {ControlGroup, Control, FORM_DIRECTIVES,FORM_PROVIDERS} from '@angular/common';
-import {
-    IRelationshipTableRow
-}  from '../../../../commons/RamAPI';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RAMNavService} from '../../services/ram-nav.service';
-import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMRestService2, IRelationshipTableRow} from '../../services/ram-rest2.service';
 
 @Component({
     selector: 'ram-relationships-table',
     templateUrl: 'relationships-table.component.html',
-    providers: [FORM_PROVIDERS],
+    providers: [FORM_PROVIDERS, RAMRestService2],
     directives: [FORM_DIRECTIVES]
 })
 export class RelationshipsTableComponent implements OnInit {
@@ -78,7 +75,7 @@ export class RelationshipsTableComponent implements OnInit {
         private constants: RAMConstantsService,
         private routeParams:RouteParams,
         private nav: RAMNavService,
-        private rest: RAMRestService) {
+        private rest: RAMRestService2) {
         this._filters$ = new ControlGroup({
             'name': new Control(''),
             'accessLevel': new Control(''),
@@ -100,12 +97,17 @@ export class RelationshipsTableComponent implements OnInit {
     }
 
     private refreshContents(relIds: string[]) {
-        this._relIds = relIds;
+        if (!relIds.length) {
+            // THe first time through we need to load relationships for
+            // the real identity.
+            this._relIds = [this.routeParams.get('identityValue')];
+        } else {
+            this._relIds = relIds;
+        }
+        const identityValue = this._relIds.slice(-1)[0];
         this._isLoading = true;
-        const identityValue = this.routeParams.get('identityValue');
-        const identityResolver = this.routeParams.get('identityResolver');
-        const response = this.rest.getRelationshipTableData(identityResolver,
-        identityValue, this._delegate, relIds, this._filters$.value,
+        const response = this.rest.getRelationshipTableData(
+        identityValue, this._delegate, this._filters$.value,
         this._pageNo, this._pageSize)
             .do(() => {
                 this._isLoading = false;
@@ -118,8 +120,8 @@ export class RelationshipsTableComponent implements OnInit {
         return response;
     }
 
-    public navigateTo(relId: string[]) {
-        this.nav.navigateToRel(relId);
+    public navigateTo(relId: string) {
+        this.nav.navigateToRel([relId]);
     }
 
     public viewRelationship(relId: string) {
