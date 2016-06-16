@@ -38,6 +38,7 @@ export class AcceptAuthorisationComponent implements OnInit {
         this.relationship$.subscribe((relationship) => {
             this.relationshipType$ = this.rest.viewRelationshipTypeByHref(relationship.relationshipType.href);
         }, (err) => {
+            // todo
             alert(err);
         });
     }
@@ -46,8 +47,13 @@ export class AcceptAuthorisationComponent implements OnInit {
         this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {
             this.gotoRelationshipsPage();
         }, (err) => {
-            alert(err); // todo
+            // todo
+            alert(JSON.stringify(err, null, 4));
         });
+    };
+
+    public gotoRelationshipsPage() {
+        this.router.navigate(['Relationships', { identityValue: this.idValue }]);
     }
 
     /**
@@ -59,7 +65,4 @@ export class AcceptAuthorisationComponent implements OnInit {
         }
     }
 
-    public gotoRelationshipsPage() {
-        this.router.navigate(['Relationships', { identityValue: this.idValue }]);
-    }
 }
