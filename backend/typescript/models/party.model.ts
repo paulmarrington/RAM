@@ -93,10 +93,10 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
 
     // lookups
     const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipTypeCode, new Date());
-    const subject = await IdentityModel.findByIdValue(dto.subjectIdValue);
+    const subjectIdentity = await IdentityModel.findByIdValue(dto.subjectIdValue);
 
     // create the temp identity for the invitation code
-    const identity = await IdentityModel.createTempIdentityForInvitationCode(dto.delegate);
+    const temporaryDelegateIdentity = await IdentityModel.createTempIdentityForInvitationCode(dto.delegate);
 
     const attributes:IRelationshipAttribute[] = [];
 
@@ -110,10 +110,10 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
     // create the relationship
     const relationship = await RelationshipModel.create({
         relationshipType: relationshipType,
-        subject: subject.party,
-        subjectNickName: subject.profile.name, // TODO - confirm this
-        delegate: identity.party,
-        delegateNickName: identity.profile.name, // TODO - confirm this
+        subject: subjectIdentity.party,
+        subjectNickName: subjectIdentity.profile.name,
+        delegate: temporaryDelegateIdentity.party,
+        delegateNickName: temporaryDelegateIdentity.profile.name,
         startTimestamp: dto.startTimestamp,
         endTimestamp: dto.endTimestamp,
         status: RelationshipStatus.Pending.name,
