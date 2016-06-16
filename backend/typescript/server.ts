@@ -7,6 +7,7 @@ import * as methodOverride from 'method-override';
 import * as mongoose from 'mongoose';
 import {conf} from './bootstrap';
 import {logStream, logger} from './logger';
+import * as cApi from '../../commons/RamAPI';
 // import {continueOnlyIfJWTisValid} from './security'
 import expressValidator = require('express-validator');
 
@@ -99,6 +100,14 @@ server.use('/api/',
 server.use('/api/',
     new RelationshipController(RelationshipModel)
         .assignRoutes(express.Router()));
+
+// setup error handlers ...............................................................................................
+
+// catch 404 and forward to error handler
+server.use((req: express.Request, res: express.Response) => {
+    const err = new cApi.ErrorResponse('Request Not Found');
+    res.send(err);
+});
 
 // start server .......................................................................................................
 
