@@ -1,15 +1,14 @@
-import {RAMNgValidators} from '../../commons/ram-ng-validators';
 import {OnInit, Component} from '@angular/core';
 import {Validators, ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
 import {ROUTER_PROVIDERS, RouteData} from '@angular/router-deprecated';
 
 @Component({
-    selector: 'accept-relationship-code',
-    templateUrl: 'accept-relationship-code.component.html',
+    selector: 'enter-invitation-code',
+    templateUrl: 'enter-invitation-code.component.html',
     directives: [FORM_DIRECTIVES],
     providers: [ROUTER_PROVIDERS]
 })
-export class AcceptRelationshipCodeComponent implements OnInit {
+export class EnterInvitationCodeComponent implements OnInit {
 
     public form: ControlGroup;
 
