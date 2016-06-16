@@ -46,7 +46,7 @@ export class AcceptAuthorisationComponent implements OnInit {
             }
         }, (err) => {
             if (err.status === 404) {
-                this.gotoRelationshipsPage();
+                this.goToRelationshipsPage();
             } else {
                 // todo
                 alert(JSON.stringify(err, null, 4));
@@ -56,7 +56,7 @@ export class AcceptAuthorisationComponent implements OnInit {
 
     public acceptAuthorisation = () => {
         this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {
-            this.gotoRelationshipsPage();
+            this.goToRelationshipsPage();
         }, (err) => {
             // todo
             alert(JSON.stringify(err, null, 4));
