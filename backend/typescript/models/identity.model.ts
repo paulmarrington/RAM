@@ -457,10 +457,10 @@ IdentitySchema.static('createFromDTO', async (dto:CreateIdentityDTO):Promise<IId
             agencyScheme: dto.agencyScheme,
             agencyToken: dto.agencyToken,
             invitationCodeStatus: dto.identityType === IdentityType.InvitationCode.name ?
-                IdentityInvitationCodeStatus.Pending.name : null,
+                IdentityInvitationCodeStatus.Pending.name : undefined,
             invitationCodeExpiryTimestamp: dto.identityType === IdentityType.InvitationCode.name ?
-                getNewInvitationCodeExpiry() : null,
-            invitationCodeClaimedTimestamp: null,
+                getNewInvitationCodeExpiry() : undefined,
+            invitationCodeClaimedTimestamp: undefined,
             publicIdentifierScheme: dto.publicIdentifierScheme,
             linkIdScheme: dto.linkIdScheme,
             linkIdConsumer: dto.linkIdConsumer,
