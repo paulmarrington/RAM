@@ -25,14 +25,15 @@ class Security {
         };
     }
 
+    /* tslint:disable:max-func-body-length */
     private createIdentityIfNotFound(req:Request, res:Response) {
         return (identity?:IIdentity) => {
             const rawIdValue = req.get(Headers.IdentityRawIdValue);
             if (identity) {
-                logger.info('Using existing identity ...');
+                logger.info('Identity context: Using existing identity ...');
                 return Promise.resolve(identity);
             } else if (!rawIdValue) {
-                logger.info('Unable to create identity as raw id value was not supplied ...'.red);
+                logger.info('Identity context: Unable to create identity as raw id value was not supplied ...'.red);
                 return Promise.resolve(null);
             } else {
                 const dto = new CreateIdentityDTO(
@@ -51,7 +52,7 @@ class Security {
                     req.get(Headers.PublicIdentifierScheme),
                     req.get(Headers.ProfileProvider)
                 );
-                logger.info('Creating new identity ... ');
+                logger.info('Identity context: Creating new identity ... ');
                 console.log(dto);
                 return IdentityModel.createFromDTO(dto);
             }
@@ -67,7 +68,6 @@ class Security {
                     if (keyUpper.startsWith(Headers.Prefix)) {
                         const value = req.get(key);
                         res.locals[keyUpper] = value;
-                        logger.debug(`${keyUpper}=${value}`);
                     }
                 }
                 res.locals[Headers.Identity] = identity;

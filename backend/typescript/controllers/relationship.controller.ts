@@ -51,7 +51,7 @@ export class RelationshipController {
         };
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
-            .then((model) => model.acceptPendingInvitation(security.getAuthenticatedIdentity(res)))
+            .then((model) => model ? model.acceptPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
             .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
@@ -66,7 +66,7 @@ export class RelationshipController {
         };
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
-            .then((model) => model.rejectPendingInvitation())
+            .then((model) => model ? model.rejectPendingInvitation() : null)
             .then((model) => Promise.resolve({}))
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
