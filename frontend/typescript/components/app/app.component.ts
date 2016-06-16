@@ -7,8 +7,8 @@ import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RelationshipsComponent} from '../relationships/relationships.component';
 import {AddRelationshipComponent} from '../add-relationship/add-relationship.component';
 import {AddRelationshipCompleteComponent} from '../add-relationship-complete/add-relationship-complete.component';
-import {AcceptRelationshipCodeComponent} from '../accept-relationship-code/accept-relationship-code.component';
 import {AcceptAuthorisationComponent} from '../accept-authorisation/accept-authorisation.component';
+import {EnterInvitationCodeComponent} from '../enter-invitation-code/enter-invitation-code.component';
 
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {provide} from '@angular/core';
@@ -50,11 +50,11 @@ import {RamComponent} from '../ram/ram.component';
         name: 'AddRelationshipCompleteComponent',
         component: AddRelationshipCompleteComponent
     }, {
-        path: '/relationships/add/:idValue/:invitationCode/accept',
+        path: '/relationships/add/:idValue/:invitationCode/enter',
         name: 'AcceptRelationshipCodeComponent',
-        component: AcceptRelationshipCodeComponent
+        component: EnterInvitationCodeComponent
     },{
-        path: '/relationships/add/:idValue/:invitationCode/acceptAuthorisation',
+        path: '/relationships/add/:idValue/:invitationCode/accept',
         name: 'AcceptAuthorisationComponent',
         component: AcceptAuthorisationComponent
     }

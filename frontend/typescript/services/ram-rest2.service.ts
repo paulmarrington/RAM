@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
-    RelationshipSearchDTO, HrefValue2, Relationship2, Name2
+    RelationshipSearchDTO, IHrefValue, IRelationship, IName
 } from '../../../commons/RamAPI2';
 
 import { Observable } from 'rxjs/Rx';
 import {Response, Http} from '@angular/http';
 
 // TODO: pass in Party2 and use identity name if no nickname
-const whatName = (nickname:Name2) => {
+const whatName = (nickname:IName) => {
     if (nickname.unstructuredName) {
         return nickname.unstructuredName;
     } else {
@@ -17,7 +17,7 @@ const whatName = (nickname:Name2) => {
 
 const relationshipsToTable = (relationshipSearchDTO: RelationshipSearchDTO, isDelegate: boolean):IRelationshipTableRes => {
     const relType = (isDelegate ? 'delegate' : 'subject');
-    const relationshipDTOToTable = (relref: HrefValue2<Relationship2>):IRelationshipTableRow => {
+    const relationshipDTOToTable = (relref: IHrefValue<IRelationship>):IRelationshipTableRow => {
         const rel = relref.value;
         const relationshipType = rel.relationshipType.href.split('/').slice(-1);
         const relId = rel.subject.href.split('/').slice(-1)[0];

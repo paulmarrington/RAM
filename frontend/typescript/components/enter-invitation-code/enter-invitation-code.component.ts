@@ -3,12 +3,12 @@ import {Validators, ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/c
 import {ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
 
 @Component({
-    selector: 'accept-relationship-code',
-    templateUrl: 'accept-relationship-code.component.html',
+    selector: 'enter-invitation-code',
+    templateUrl: 'enter-invitation-code.component.html',
     directives: [FORM_DIRECTIVES],
     providers: [ROUTER_PROVIDERS]
 })
-export class AcceptRelationshipCodeComponent implements OnInit {
+export class EnterInvitationCodeComponent implements OnInit {
 
     public form: ControlGroup;
 
