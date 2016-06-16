@@ -3,10 +3,12 @@ import {RAMEnum, IRAMObject, RAMSchema, Query} from './base';
 import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
 import {IRelationshipType} from './relationshipType.model';
+import {IRelationshipAttribute, RelationshipAttributeModel} from './relationshipAttribute.model';
 import {IdentityModel} from './identity.model';
 import {
     HrefValue,
     Relationship as DTO,
+    RelationshipAttribute as RelationshipAttributeDTO,
     SearchResult
 } from '../../../commons/RamAPI';
 
@@ -17,6 +19,9 @@ const _PartyModel = PartyModel;
 
 /* tslint:disable:no-unused-variable */
 const _NameModel = NameModel;
+
+/* tslint:disable:no-unused-variable */
+const _RelationshipAttributeModel = RelationshipAttributeModel;
 
 const MAX_PAGE_SIZE = 10;
 
@@ -95,7 +100,11 @@ const RelationshipSchema = RAMSchema({
         required: [true, 'Status is required'],
         trim: true,
         enum: RelationshipStatus.valueStrings()
-    }
+    },
+    attributes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'RelationshipAttribute'
+    }]
 });
 
 // interfaces .........................................................................................................
@@ -110,15 +119,17 @@ export interface IRelationship extends IRAMObject {
     endTimestamp?: Date;
     endEventTimestamp?: Date;
     status: string;
+    attributes: IRelationshipAttribute[];
     statusEnum(): RelationshipStatus;
     toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
     toDTO():Promise<DTO>;
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
-    findByIdentifier:(id:String) => mongoose.Promise<IRelationship>;
-    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => mongoose.Promise<IRelationship>;
-    search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
+    findByIdentifier:(id:String) => Promise<IRelationship>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => Promise<IRelationship>;
+    search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
+        => Promise<SearchResult<IRelationship>>;
 }
 
 // instance methods ...................................................................................................
@@ -145,7 +156,11 @@ RelationshipSchema.method('toDTO', async function () {
         this.startTimestamp,
         this.endTimestamp,
         this.endEventTimestamp,
-        this.status
+        this.status,
+        await Promise.all<RelationshipAttributeDTO>(this.attributes.map(
+            async (attribute:IRelationshipAttribute) => {
+                return await attribute.toDTO();
+            }))
     );
 });
 
@@ -162,7 +177,8 @@ RelationshipSchema.static('findByIdentifier', (id:String) => {
             'subject',
             'subjectNickName',
             'delegate',
-            'delegateNickName'
+            'delegateNickName',
+            'attributes.attributeName'
         ])
         .exec();
 });
@@ -180,7 +196,8 @@ RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invit
                 'subject',
                 'subjectNickName',
                 'delegate',
-                'delegateNickName'
+                'delegateNickName',
+                'attributes.attributeName'
             ])
             .exec();
     }
@@ -191,10 +208,10 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
     return new Promise<SearchResult<IRelationship>>(async (resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
-            const query = new Query()
-                .add('subject', await PartyModel.findByIdentityIdValue(subjectIdentityIdValue), subjectIdentityIdValue)
-                .add('delegate', await PartyModel.findByIdentityIdValue(delegateIdentityIdValue), delegateIdentityIdValue)
-                .build();
+            const query = await (new Query()
+                .when(subjectIdentityIdValue, 'subject', () => PartyModel.findByIdentityIdValue(subjectIdentityIdValue))
+                .when(delegateIdentityIdValue, 'delegate', () => PartyModel.findByIdentityIdValue(delegateIdentityIdValue))
+                .build());
             const count = await this.RelationshipModel.count(query).exec();
             const list = await this.RelationshipModel
                 .find(query)
@@ -203,7 +220,8 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
                     'subject',
                     'subjectNickName',
                     'delegate',
-                    'delegateNickName'
+                    'delegateNickName',
+                    'attributes.attributeName'
                 ])
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)

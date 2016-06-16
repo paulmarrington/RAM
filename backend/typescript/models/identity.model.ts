@@ -265,10 +265,10 @@ export interface IIdentity extends IRAMObject {
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
-    findByIdValue:(idValue:String) => mongoose.Promise<IIdentity>;
-    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => mongoose.Promise<IIdentity>;
-    findDefaultByPartyId:(partyId:String) => mongoose.Promise<IIdentity>;
-    listByPartyId:(partyId:String) => mongoose.Promise<IIdentity[]>;
+    findByIdValue:(idValue:String) => Promise<IIdentity>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => Promise<IIdentity>;
+    findDefaultByPartyId:(partyId:String) => Promise<IIdentity>;
+    listByPartyId:(partyId:String) => Promise<IIdentity[]>;
     search:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
 }
 

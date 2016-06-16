@@ -21,10 +21,14 @@ import {
     RelationshipModel,
     RelationshipStatus
 } from '../models/relationship.model';
+import {
+    IRelationshipAttribute,
+    RelationshipAttributeModel
+} from '../models/relationshipAttribute.model';
 import {IRelationshipType} from '../models/relationshipType.model';
 
 /* tslint:disable:max-func-body-length */
-describe('RAM Relationship', () => {
+describe('RAM Relationship Attribute', () => {
 
     connectDisconnectMongo();
 
@@ -39,6 +43,8 @@ describe('RAM Relationship', () => {
 
     let delegateIdentity1:IIdentity;
     let relationship1:IRelationship;
+
+    let relationshipAttribute1:IRelationshipAttribute;
 
     beforeEach((done) => {
 
@@ -86,6 +92,11 @@ describe('RAM Relationship', () => {
                         party: delegateParty1
                     });
 
+                    relationshipAttribute1 = await RelationshipAttributeModel.create({
+                        value: 'true',
+                        attributeName: Seeder.delegateManageAuthorisationAllowedInd_attributeName
+                    });
+
                     relationship1 = await RelationshipModel.create({
                         relationshipType: relationshipTypeCustom,
                         subject: subjectParty1,
@@ -93,7 +104,8 @@ describe('RAM Relationship', () => {
                         delegate: delegateParty1,
                         delegateNickName: delegateNickName1,
                         startTimestamp: new Date(),
-                        status: RelationshipStatus.Pending.name
+                        status: RelationshipStatus.Pending.name,
+                        attributes: [relationshipAttribute1]
                     });
 
                 } catch (e) {
@@ -106,7 +118,7 @@ describe('RAM Relationship', () => {
             });
     });
 
-    it('finds by identifier', async (done) => {
+    it('finds relationship by identifier includes attributes', async (done) => {
         try {
 
             const retrievedInstance = await RelationshipModel.findByIdentifier(relationship1.id);
@@ -114,100 +126,10 @@ describe('RAM Relationship', () => {
             expect(retrievedInstance).not.toBeNull();
             expect(retrievedInstance.id).not.toBeNull();
             expect(retrievedInstance.id).toBe(relationship1.id);
-
-            done();
-
-        } catch (e) {
-            fail('Because ' + e);
-            done();
-        }
-    });
-
-    it('finds by identifier', async (done) => {
-        try {
-
-            const retrievedInstance = await RelationshipModel.findByIdentifier(relationship1.id);
-
-            expect(retrievedInstance).not.toBeNull();
-            expect(retrievedInstance.id).not.toBeNull();
-            expect(retrievedInstance.id).toBe(relationship1.id);
-
-            done();
-
-        } catch (e) {
-            fail('Because ' + e);
-            done();
-        }
-    });
-
-    it('finds by invitation code in date range', async (done) => {
-        try {
-
-            const retrievedInstance = await RelationshipModel.findPendingByInvitationCodeInDateRange(
-                delegateIdentity1.rawIdValue,
-                new Date()
-            );
-
-            expect(retrievedInstance).not.toBeNull();
-            expect(retrievedInstance.id).not.toBeNull();
-            expect(retrievedInstance.id).toBe(relationship1.id);
-
-            done();
-
-        } catch (e) {
-            fail('Because ' + e);
-            done();
-        }
-    });
-
-    it('inserts with no end timestamp', async (done) => {
-        try {
-
-            const instance = await RelationshipModel.create({
-                relationshipType: relationshipTypeCustom,
-                subject: subjectParty1,
-                subjectNickName: subjectNickName1,
-                delegate: delegateParty1,
-                delegateNickName: delegateNickName1,
-                startTimestamp: new Date(),
-                status: RelationshipStatus.Active.name
-            });
-
-            expect(instance).not.toBeNull();
-            expect(instance.id).not.toBeNull();
-            expect(instance.subject).not.toBeNull();
-            expect(instance.status).not.toBeNull();
-            expect(instance.statusEnum()).toBe(RelationshipStatus.Active);
-            expect(instance.endEventTimestamp).toBeFalsy();
-
-            done();
-
-        } catch (e) {
-            fail('Because ' + e);
-            done();
-        }
-    });
-
-    it('inserts with end timestamp', async (done) => {
-        try {
-
-            const instance = await RelationshipModel.create({
-                relationshipType: relationshipTypeCustom,
-                subject: subjectParty1,
-                subjectNickName: subjectNickName1,
-                delegate: delegateParty1,
-                delegateNickName: delegateNickName1,
-                startTimestamp: new Date(),
-                endTimestamp: new Date(),
-                status: RelationshipStatus.Active.name
-            });
-
-            expect(instance).not.toBeNull();
-            expect(instance.id).not.toBeNull();
-            expect(instance.subject).not.toBeNull();
-            expect(instance.status).not.toBeNull();
-            expect(instance.statusEnum()).toBe(RelationshipStatus.Active);
-            expect(instance.endEventTimestamp).not.toBeFalsy();
+            expect(retrievedInstance.attributes).not.toBeNull();
+            expect(retrievedInstance.attributes.length).toBe(1);
+            expect(retrievedInstance.attributes[0].id).toBe(relationshipAttribute1.id);
+            expect(retrievedInstance.attributes[0].value).toBe(relationshipAttribute1.value);
 
             done();
 

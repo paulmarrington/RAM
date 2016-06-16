@@ -53,7 +53,7 @@ case "$1" in
 
   'deps:test')
     echo ""
-    echo "Downloading backend dependencies ..."
+    echo "Downloading test dependencies ..."
     cd tests
     npm install && typings install
     echo ""
@@ -171,6 +171,14 @@ case "$1" in
     echo "Opening browser to mock login page ..."
     echo ""
     open "http://127.0.0.1:3001/dev/"
+    echo ""
+    ;;
+
+  'travis')
+    echo ""
+    echo "Opening Travis continuous integration page ..."
+    echo ""
+    open "https://travis-ci.org/atogov/RAM"
     echo ""
     ;;
 

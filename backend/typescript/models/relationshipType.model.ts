@@ -54,10 +54,10 @@ export interface IRelationshipType extends ICodeDecode {
 }
 
 export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType> {
-    findByCodeIgnoringDateRange: (code:String) => mongoose.Promise<IRelationshipType>;
-    findByCodeInDateRange: (code:String, date:Date) => mongoose.Promise<IRelationshipType>;
-    listIgnoringDateRange: () => mongoose.Promise<IRelationshipType[]>;
-    listInDateRange: (date:Date) => mongoose.Promise<IRelationshipType[]>;
+    findByCodeIgnoringDateRange: (code:String) => Promise<IRelationshipType>;
+    findByCodeInDateRange: (code:String, date:Date) => Promise<IRelationshipType>;
+    listIgnoringDateRange: () => Promise<IRelationshipType[]>;
+    listInDateRange: (date:Date) => Promise<IRelationshipType[]>;
 }
 
 // static methods .....................................................................................................

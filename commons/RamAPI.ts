@@ -214,7 +214,14 @@ export class Relationship {
                 public startTimestamp:Date,
                 public endTimestamp:Date,
                 public endEventTimestamp:Date,
-                public status:string) {
+                public status:string,
+                public attributes:RelationshipAttribute[]) {
+    }
+}
+
+export class RelationshipAttribute {
+    constructor(public value:string,
+                public attributeName:HrefValue<RelationshipAttributeName>) {
     }
 }
 

@@ -20,10 +20,10 @@ export interface ISharedSecretType extends ICodeDecode {
 }
 
 export interface ISharedSecretTypeModel extends mongoose.Model<ISharedSecretType> {
-    findByCodeIgnoringDateRange: (code:String) => mongoose.Promise<ISharedSecretType>;
-    findByCodeInDateRange: (code:String, date:Date) => mongoose.Promise<ISharedSecretType>;
-    listIgnoringDateRange: () => mongoose.Promise<ISharedSecretType[]>;
-    listInDateRange: (date:Date) => mongoose.Promise<ISharedSecretType[]>;
+    findByCodeIgnoringDateRange: (code:String) => Promise<ISharedSecretType>;
+    findByCodeInDateRange: (code:String, date:Date) => Promise<ISharedSecretType>;
+    listIgnoringDateRange: () => Promise<ISharedSecretType[]>;
+    listInDateRange: (date:Date) => Promise<ISharedSecretType[]>;
 }
 
 // instance methods ...................................................................................................
