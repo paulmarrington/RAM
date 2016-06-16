@@ -1,5 +1,5 @@
 import {OnInit, Component} from '@angular/core';
-import {FORM_DIRECTIVES} from '@angular/common';
+import {FORM_DIRECTIVES, DatePipe} from '@angular/common';
 import {Router, ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
 import {RAMIdentityService} from '../../services/ram-identity.service';
 import {RAMRestService} from '../../services/ram-rest.service';
@@ -40,15 +40,13 @@ export class AcceptAuthorisationComponent implements OnInit {
         this.relationship$.subscribe((relationship) => {
             this.relationshipType$ = this.rest.viewRelationshipTypeByHref(relationship.relationshipType.href);
             for (let attribute of relationship.attributes) {
-                console.log('FOUND: ' + attribute.attributeName.value.code);
                 if (attribute.attributeName.value.code === 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND') {
-                    console.log('MATCHED: ' + attribute.attributeName.value.code);
                     this.delegateManageAuthorisationAllowedIndAttribute = attribute;
                 }
             }
         }, (err) => {
             if (err.status === 404) {
-                this.gotoRelationshipsPage();
+                this.goToRelationshipsPage();
             } else {
                 // todo
                 alert(JSON.stringify(err, null, 4));
@@ -58,7 +56,7 @@ export class AcceptAuthorisationComponent implements OnInit {
 
     public acceptAuthorisation = () => {
         this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {
-            this.gotoRelationshipsPage();
+            this.goToRelationshipsPage();
         }, (err) => {
             // todo
             alert(JSON.stringify(err, null, 4));
@@ -76,6 +74,18 @@ export class AcceptAuthorisationComponent implements OnInit {
         if (name) {
             return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
         }
+    }
+
+    // TODO: not sure how to set the locale
+    public displayDate(dateString: string) {
+        if (dateString) {
+            const date = new Date(dateString);
+            const datePipe = new DatePipe();
+            return datePipe.transform(date, 'd') + ' ' +
+                datePipe.transform(date, 'MMMM') + ' ' +
+                datePipe.transform(date, 'yyyy');
+        }
+        return 'Not specified';
     }
 
 }
