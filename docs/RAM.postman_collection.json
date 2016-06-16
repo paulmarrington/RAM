@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "1e30d072-c340-6d0d-f5f1-3aaaa153b1a1",
+		"_postman_id": "cef38e97-e68c-699a-3393-0b6f873194d9",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -97,8 +97,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -179,8 +178,7 @@
 									"enabled": true
 								}
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				}
@@ -640,8 +638,7 @@
 						"body": {
 							"mode": "formdata",
 							"formdata": []
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -673,6 +670,25 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"relationshipType\": \"CUSTOM_REPRESENTATIVE\",\n  \"subject\": \"PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1\",\n  \"delegate\": {\n    \"partyType\": \"INDIVIDUAL\",\n    \"givenName\": \"a\",\n    \"familyName\": \"b\",\n    \"unstructuredName\": \"\",\n    \"sharedSecret\": {\n      \"code\": \"DATE_OF_BIRTH\",\n      \"value\": \"2016-06-15\"\n    }\n  },\n  \"startTimestamp\": \"2016-06-15T03:49:06.682Z\",\n  \"endTimestamp\": \"2017-06-15T03:49:06.682Z\",\n  \"attributes\": [\n    {\n      \"code\": \"PERMISSION_CUSTOMISATION_ALLOWED_IND\",\n      \"value\": \"true\"\n    }\n  ]\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notify delegate (jEVYNX)",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/notifyDelegate",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\"\n}"
 						}
 					},
 					"response": []
