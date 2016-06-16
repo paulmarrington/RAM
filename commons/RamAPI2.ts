@@ -1,39 +1,100 @@
-export interface HrefValue2<T> {
-    href:   string;
-    value?: T;
+interface IParty {
+    partyType: string;
+    identities: Array<IHrefValue<IIdentity>>;
 }
 
-
-interface RelationshipType2 {
+export interface IName {
+    givenName?: string;
+    familyName?: string;
+    unstructuredName?: string;
 }
 
-interface Identity2 {
-}
-
-interface Party2 {
-    partyType:  string;
-    identities: Array<HrefValue2<Identity2>>;
-}
-
-export interface Name2 {
-    givenName?:         string;
-    familyName?:        string;
-    unstructuredName?:  string;
-}
-
-export interface Relationship2 {
-    relationshipType:   HrefValue2<RelationshipType2>;
-    subject:            HrefValue2<Party2>;
-    subjectNickName?:   Name2;
-    delegate:           HrefValue2<Party2>;
-    delegateNickName?:  Name2;
-    startTimestamp:     string;
-    endTimestamp?:      string; 
-    status:             string;
+export interface IRelationship {
+    relationshipType: IHrefValue<IRelationshipType>;
+    subject: IHrefValue<IParty>;
+    subjectNickName?: IName;
+    delegate: IHrefValue<IParty>;
+    delegateNickName?: IName;
+    startTimestamp: string;
+    endTimestamp?: string;
+    endEventTimestamp?: string,
+    status: string;
+    attributes: IRelationshipAttribute[];
 }
 
 export interface RelationshipSearchDTO {
-    totalCount:     number;
-    pageSize:       number;
-    list:           Array<HrefValue2<Relationship2>>;
+    totalCount: number;
+    pageSize: number;
+    list: Array<IHrefValue<IRelationship>>;
+}
+
+
+export interface ICodeDecode {
+    code: string;
+    shortDecodeText: string;
+    longDecodeText: string;
+    startTimestamp: string;
+    endTimestamp: string;
+}
+
+export interface IRelationshipType extends ICodeDecode {
+    voluntaryInd: boolean;
+    relationshipAttributeNames: IRelationshipAttributeNameUsage[];
+}
+
+export interface IRelationshipAttributeNameUsage {
+    mandatory: boolean;
+    defaultValue: string;
+    attributeNameDef: IHrefValue<IRelationshipAttributeName>;
+
+}
+
+export interface IHrefValue<T> {
+    href: string;
+    value?: T;
+}
+
+export interface IRelationshipAttributeName extends ICodeDecode {
+    name: string;
+    domain: string;
+    classifier: string;
+    category: string;
+    permittedValues: string[];
+}
+interface ISharedSecret {
+    value: string;
+    sharedSecretType: ISharedSecretType;
+}
+
+export interface ISharedSecretType extends ICodeDecode {
+    domain: string;
+}
+
+export interface IProfile {
+    provider: string;
+    name: IName;
+    sharedSecrets: ISharedSecret[];
+}
+
+export interface IIdentity {
+    idValue: string;
+    rawIdValue: string;
+    identityType: string;
+    defaultInd: boolean;
+    agencyScheme: string;
+    agencyToken: string;
+    invitationCodeStatus: string;
+    invitationCodeExpiryTimestamp: string;
+    invitationCodeClaimedTimestamp: string;
+    invitationCodeTemporaryEmailAddress: string;
+    publicIdentifierScheme: string;
+    linkIdScheme: string;
+    linkIdConsumer: string;
+    profile: IProfile;
+    party: IHrefValue<IParty>;
+}
+
+export interface IRelationshipAttribute {
+    value: string;
+    attributeName: IHrefValue<IRelationshipAttributeName>;
 }

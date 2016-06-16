@@ -16,7 +16,6 @@ export const connectDisconnectMongo = () => {
 
 };
 
-/* tslint:disable:max-func-body-length */
 export const resetDataInMongo = () => {
     beforeEach((done) => {
         doResetDataInMongo(done);
