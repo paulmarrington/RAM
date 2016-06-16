@@ -32,15 +32,28 @@ export class RAMRestService {
             .get(`/api/v1/identity/${identityValue}`)
             .map(this.extractData);
     }
-    public acceptPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
+
+    public viewRelationshipTypeByCode(code: string): Rx.Observable<IRelationshipType> {
         return this.http
-            .post(`/v1/relationship/invitationCode/${invitationCode}/accept`,'')
+            .get(`/api/v1/relationshipType/${code}`)
+            .map(this.extractData);
+    }
+
+    public viewRelationshipTypeByHref(href: string): Rx.Observable<IRelationshipType> {
+        return this.http
+            .get(href)
             .map(this.extractData);
     }
 
     public viewPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
         return this.http
             .get(`/api/v1/relationship/invitationCode/${invitationCode}`)
+            .map(this.extractData);
+    }
+
+    public acceptPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
+        return this.http
+            .post(`/v1/relationship/invitationCode/${invitationCode}/accept`,'')
             .map(this.extractData);
     }
 

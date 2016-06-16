@@ -5,6 +5,7 @@ import {RAMIdentityService} from '../../services/ram-identity.service';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {
     IRelationship,
+    IRelationshipType,
     IName
 } from '../../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
@@ -22,6 +23,7 @@ export class AcceptAuthorisationComponent implements OnInit {
     public idValue: string;
 
     public relationship$: Rx.Observable<IRelationship>;
+    public relationshipType$: Rx.Observable<IRelationshipType>;
 
     constructor(private routeParams: RouteParams,
         private router: Router,
@@ -33,9 +35,14 @@ export class AcceptAuthorisationComponent implements OnInit {
         this.code = this.routeParams.get('invitationCode');
         this.idValue = this.routeParams.get('idValue');
         this.relationship$ = this.rest.viewPendingRelationshipByInvitationCode(this.code);
+        this.relationship$.subscribe((relationship) => {
+            this.relationshipType$ = this.rest.viewRelationshipTypeByHref(relationship.relationshipType.href);
+        }, (err) => {
+            alert(err);
+        });
     }
 
-    public acceptAuthorisation = () => {
+    public acceptAuthorisation() {
         this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {
             this.gotoRelationshipsPage();
         }, (err) => {
