@@ -5,57 +5,77 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-3">
-            <h4>Subject</h4>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><span class="badge square">1</span> Representative details</h4>
         </div>
-        <div class="col-lg-9">
-            <h4>{{displayName((relationship$ | async)?.subjectNickName)}}</h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-3">
-            <h4>Delegate</h4>
-        </div>
-        <div class="col-lg-9">
-            <h4>{{displayName((relationship$ | async)?.delegateNickName)}}</h4>
+        <div class="panel-body">
+            <h4>{{displayName((relationship$ | async)?.delegateNickName)}} has been authorised to
+            act on behalf of {{displayName((relationship$ | async)?.subjectNickName)}}.</h4>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-3">
-            <h4>Start time</h4>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><span class="badge square">2</span> Authorisation Type</h4>
         </div>
-        <div class="col-lg-3">
-            <h4>{{(relationship$ | async)?.startTimestamp}}</h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-3">
-            <h4>End time</h4>
-        </div>
-        <div class="col-lg-9">
-            <h4>{{(relationship$ | async)?.endTimestamp || 'Not specified'}}</h4>
+        <div class="panel-body">
+            <h4>You have been setup to be a {{(relationshipType$ | async)?.shortDecodeText}} for this subject.</h4>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-3">
-            <h4>Relationship Type</h4>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><span class="badge square">3</span> Access period</h4>
         </div>
-        <div class="col-lg-9">
-            <h4>{{(relationshipType$ | async)?.shortDecodeText}}</h4>
+        <div class="panel-body">
+            <h4>You will be able to act on behalf of the subject for the period:</h4>
+            <div class="row">
+                <div class="col-lg-2">
+                    <h4>Start time</h4>
+                </div>
+                <div class="col-lg-3">
+                    <h4>{{(relationship$ | async)?.startTimestamp}}</h4>
+                </div>
+                <div class="col-lg-2">
+                    <h4>End time</h4>
+                </div>
+                <div class="col-lg-3">
+                    <h4>{{(relationship$ | async)?.endTimestamp || 'Not specified'}}</h4>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-3">
-            <h4>Manage Authorisation</h4>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><span class="badge square">4</span> Online government agency services access level settings</h4>
         </div>
-        <div class="col-lg-9">
+        <div class="panel-body">
+            <h4>NOT IN SCOPE</h4>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><span class="badge square">5</span> Authorisation management</h4>
+        </div>
+        <div class="panel-body">
             <h4>{{delegateManageAuthorisationAllowedIndAttribute?.value ?
-                'Yes, you can manage authorisations on behalf of the subject.' :
-                'No, you cannot manage authorisations on behalf of the subject.'}}</h4>
+            'You will be able to manage authorisations for this subject.' :
+            'You will NOT be able to manage authorisations for this subject.'}}</h4>
+            {{delegateManageAuthorisationAllowedIndAttribute?.attributeName?.value?.longDecodeText}}
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4><span class="badge square">6</span> Declaration</h4>
+        </div>
+        <div class="panel-body">
+            <h4>By accepting to act on behalf of {{displayName((relationship$ | async)?.subjectNickName)}},
+                you acknowledge that:</h4>
+            <h4>TODO Some declaration text goes here</h4>
         </div>
     </div>
 
