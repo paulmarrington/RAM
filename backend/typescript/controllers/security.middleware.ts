@@ -5,6 +5,7 @@ import {Headers} from './headers';
 import {ErrorResponse} from '../../../commons/RamAPI';
 import {CreateIdentityDTO} from '../../../commons/RamAPI';
 import {IIdentity, IdentityModel} from '../models/identity.model';
+import {DOB_SHARED_SECRET_TYPE_CODE} from '../models/sharedSecretType.model';
 
 class Security {
 
@@ -36,7 +37,7 @@ class Security {
                     req.get(Headers.GivenName),
                     req.get(Headers.FamilyName),
                     req.get(Headers.UnstructuredName),
-                    'DATE_OF_BIRTH'/* TODO use a constant */,
+                    DOB_SHARED_SECRET_TYPE_CODE,
                     req.get(Headers.DOB),
                     req.get(Headers.IdentityType),
                     req.get(Headers.AgencyScheme),
@@ -46,7 +47,8 @@ class Security {
                     req.get(Headers.PublicIdentifierScheme),
                     req.get(Headers.ProfileProvider)
                 );
-                logger.info(`Creating identity: ${dto.toString()}`.red);
+                logger.info('Creating identity: '.red);
+                console.log(dto);
                 return IdentityModel.createFromDTO(dto);
             }
         };

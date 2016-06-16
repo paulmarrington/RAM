@@ -19,7 +19,8 @@ import {
 
 import {
     ISharedSecretType,
-    SharedSecretTypeModel} from '../models/sharedSecretType.model';
+    SharedSecretTypeModel,
+    DOB_SHARED_SECRET_TYPE_CODE} from '../models/sharedSecretType.model';
 
 import {
     ISharedSecret,
@@ -537,7 +538,7 @@ export class Seeder {
             Seeder.log('\nInserting Shared Secret Types:\n'.underline);
 
             Seeder.dob_sharedSecretType = await Seeder.createSharedSecretTypeModel({
-                code: 'DATE_OF_BIRTH',
+                code: DOB_SHARED_SECRET_TYPE_CODE,
                 shortDecodeText: 'Date of Birth',
                 longDecodeText: 'Date of Birth',
                 startDate: now,

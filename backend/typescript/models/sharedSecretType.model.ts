@@ -3,6 +3,8 @@ import {ICodeDecode, CodeDecodeSchema} from './base';
 
 // enums, utilities, helpers ..........................................................................................
 
+export const DOB_SHARED_SECRET_TYPE_CODE = 'DATE_OF_BIRTH';
+
 // schema .............................................................................................................
 
 const SharedSecretTypeSchema = CodeDecodeSchema({
