@@ -1,4 +1,4 @@
-interface HrefValue2<T> {
+export interface HrefValue2<T> {
     href:   string;
     value?: T;
 }

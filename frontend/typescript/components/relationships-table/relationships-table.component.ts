@@ -4,12 +4,12 @@ import Rx from 'rxjs/Rx';
 import {ControlGroup, Control, FORM_DIRECTIVES,FORM_PROVIDERS} from '@angular/common';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RAMNavService} from '../../services/ram-nav.service';
-import {RAMRestService, IRelationshipTableRow} from '../../services/ram-rest.service';
+import {RAMRestService2, IRelationshipTableRow} from '../../services/ram-rest2.service';
 
 @Component({
     selector: 'ram-relationships-table',
     templateUrl: 'relationships-table.component.html',
-    providers: [FORM_PROVIDERS],
+    providers: [FORM_PROVIDERS, RAMRestService2],
     directives: [FORM_DIRECTIVES]
 })
 export class RelationshipsTableComponent implements OnInit {
@@ -75,7 +75,7 @@ export class RelationshipsTableComponent implements OnInit {
         private constants: RAMConstantsService,
         private routeParams:RouteParams,
         private nav: RAMNavService,
-        private rest: RAMRestService) {
+        private rest: RAMRestService2) {
         this._filters$ = new ControlGroup({
             'name': new Control(''),
             'accessLevel': new Control(''),

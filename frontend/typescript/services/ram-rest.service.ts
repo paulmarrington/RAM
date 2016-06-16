@@ -1,70 +1,25 @@
 import { Injectable } from '@angular/core';
 import {
-    RelationshipSearchDTO, HrefValue, Relationship2, Name2
-} from '../../../commons/RamAPI2';
+    RelationshipTableReq,
+    IRelationshipTableRes
+} from '../../../commons/RamAPI';
 
-import { Observable } from 'rxjs/Rx';
+import Rx from 'rxjs/Rx';
 import {Response, Http} from '@angular/http';
-
-// TODO: pass in Party2 and use identity name if no nickname
-const whatName = (nickname:Name2) => {
-    if (nickname.unstructuredName) {
-        return nickname.unstructuredName;
-    } else {
-        return nickname.givenName + ' ' + nickname.familyName;
-    }
-};
-
-const relationshipsToTable = (relationshipSearchDTO: RelationshipSearchDTO, isDelegate: boolean):IRelationshipTableRes => {
-    const relType = (isDelegate ? 'delegate' : 'subject');
-    const relationshipDTOToTable = (relref: HrefValue<Relationship2>):IRelationshipTableRow => {
-        const rel = relref.value;
-        const relationshipType = rel.relationshipType.href.split('/').slice(-1);
-        const relId = rel.subject.href.split('/').slice(-1)[0];
-        return {
-            name:       whatName(rel[relType+'NickName']),
-            subName:    '', // TODO: extract ABN when server provides it
-            rel:        relationshipType[0],
-            access:     'Universal',
-            status:     rel.status,
-            relId:      relId
-        } as IRelationshipTableRow;
-    };
-
-    const table:IRelationshipTableRow[] = relationshipSearchDTO.list.map(relationshipDTOToTable);
-
-    return {
-        total:                  relationshipSearchDTO.totalCount,
-        table:                  table,
-        relationshipOptions:    [] as Array<string>,
-        accessLevelOptions:     [] as Array<string>,
-        statusValueOptions:     [] as Array<string>
-    };
-};
 
 @Injectable()
 export class RAMRestService {
 
-    constructor(private http: Http) {}
+    constructor(private http: Http) {
+    }
 
-    public getRelationshipTableData(identityValue: string, isDelegate: boolean,
+    public getRelationshipTableData(identityResolver: string, identityValue: string, isDelegate: boolean, relPathIds: string[],
         filters: RelationshipTableReq, pageNo: number, pageSize: number
-    ): Observable<IRelationshipTableRes> {
-        const relType = (isDelegate ? 'subject' : 'delegate');
-
-        const relationshipSearchDTOToTable = (relationshipSearchDTO: RelationshipSearchDTO) : IRelationshipTableRes => {
-            return relationshipsToTable(relationshipSearchDTO, isDelegate);
-        };
-
-        // TODO: add filters to URL
-        const url = `/api/v1/relationships/${relType}/identity/${identityValue}?page=${pageNo}`;
-
-        return this.http
-        .get(url)
-        .map(this.extractData)
-        .map(relationshipSearchDTOToTable)
-        .publishReplay()
-        .refCount();
+    ): Rx.Observable<IRelationshipTableRes> {
+        const url = `/api/v1/relationship/table/${isDelegate ? 'delegate' : 'subject'}`
+            +
+            `/${identityValue}/${identityResolver}/page/${pageNo}/size/${pageSize}`;
+        return this.http.get(url).map(this.extractData).publishReplay().refCount();
     }
 
     // A call external to RAM to get organisation name from ABN
@@ -79,33 +34,7 @@ export class RAMRestService {
             throw new Error('Status code is:' + res.status);
         }
         const body = res.json();
-        return body || {};
+        return body.data || {};
     }
-}
 
-export class RelationshipTableReq {
-    constructor(
-        public pageSize: number,
-        public pageNumber: number,
-        public canActFor: boolean,
-        public filters: { [index: string]: string },
-        public sortByField: string
-    ) {
-    }
-}
-
-export interface IRelationshipTableRes {
-    total: number;
-    table: IRelationshipTableRow[];
-    relationshipOptions: Array<string>;
-    accessLevelOptions: Array<string>;
-    statusValueOptions: Array<string>;
-}
-
-export interface IRelationshipTableRow {
-    name: string;
-    subName?: string;
-    rel: string;
-    access: string;
-    status: string;
 }
