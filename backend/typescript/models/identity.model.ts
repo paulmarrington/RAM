@@ -23,8 +23,8 @@ const _ProfileModel = ProfileModel;
 /* tslint:disable:no-unused-variable */
 const _PartyModel = PartyModel;
 
-const MAX_PAGE_SIZE:number = 10;
-const NEW_INVITATION_CODE_EXPIRY_DAYS:number = 7;
+const MAX_PAGE_SIZE = 10;
+const NEW_INVITATION_CODE_EXPIRY_DAYS = 7;
 
 // enums, utilities, helpers ..........................................................................................
 
