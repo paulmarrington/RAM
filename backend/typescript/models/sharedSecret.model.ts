@@ -28,7 +28,7 @@ const SharedSecretSchema = RAMSchema({
     sharedSecretType: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SharedSecretType',
-        required: [true, 'Type is required']
+        required: [true, 'Shared Secret Type is required']
     }
 });
 

@@ -1,4 +1,5 @@
 import {Router, Request, Response} from 'express';
+import {security} from './security.middleware';
 import {sendResource, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {Headers} from './headers';
 import {IPartyModel} from '../models/party.model';
@@ -34,9 +35,17 @@ export class PartyController {
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/party/identity/me', this.findMe);
-        router.get('/v1/party/identity/:idValue', this.findByIdentityIdValue);
+
+        router.get('/v1/party/identity/me',
+            security.isAuthenticated,
+            this.findMe);
+
+        router.get('/v1/party/identity/:idValue',
+            security.isAuthenticated,
+            this.findByIdentityIdValue);
+
         return router;
+
     };
 
 }

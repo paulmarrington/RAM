@@ -3,6 +3,7 @@ import * as colors from 'colors';
 import {Request, Response} from 'express';
 import {Headers} from './headers';
 import {conf} from '../bootstrap';
+import {ErrorResponse} from '../../../commons/RamAPI';
 import {IIdentity, IdentityModel} from '../models/identity.model';
 
 class Security {
@@ -17,7 +18,7 @@ class Security {
         };
     }
 
-    public prepareRequestForProduction(req:Request, res:Response, next:() => void) {
+    private prepareRequestForProduction(req:Request, res:Response, next:() => void) {
         for (let key of Object.keys(req.headers)) {
             const keyUpper = key.toUpperCase();
             if (keyUpper.startsWith(Headers.Prefix)) {
@@ -59,12 +60,22 @@ class Security {
 
     private rejectForDevelopment(res:Response, next:() => void) {
         return ():void => {
-            logger.error('Unable to look up identity!');
+            logger.error('Unable to look up identity!'.red);
             res.status(401);
-            res.send({});
+            res.send(new ErrorResponse('Unable to look up identity.'));
         };
     }
 
+    public isAuthenticated(req:Request, res:Response, next:() => void) {
+        const idValue = res.locals[Headers.IdentityIdValue];
+        if (idValue) {
+            next();
+        } else {
+            logger.error('Unable to invoke route requiring authentication'.red);
+            res.status(401);
+            res.send(new ErrorResponse('Not authenticated.'));
+        }
+    }
 }
 
 export const security = new Security();

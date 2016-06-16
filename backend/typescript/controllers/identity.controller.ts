@@ -1,4 +1,5 @@
 import {Router, Request, Response} from 'express';
+import {security} from './security.middleware';
 import {sendResource, sendError, sendNotFoundError, validateReqSchema, sendSearchResult} from './helpers';
 import {Headers} from './headers';
 import {conf} from '../bootstrap';
@@ -73,13 +74,25 @@ export class IdentityController {
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/identity/me', this.findMe);
-        router.get('/v1/identity/:idValue', this.findByIdentityIdValue);
-        router.get('/v1/identity/invitationCode/:invitationCode', this.findPendingByInvitationCodeInDateRange);
+
+        router.get('/v1/identity/me',
+            security.isAuthenticated,
+            this.findMe);
+
+        router.get('/v1/identity/:idValue',
+            security.isAuthenticated,
+            this.findByIdentityIdValue);
+
+        router.get('/v1/identity/invitationCode/:invitationCode',
+            security.isAuthenticated,
+            this.findPendingByInvitationCodeInDateRange);
+
         if (conf.devMode) {
             router.get('/v1/identities', this.search);
         }
+
         return router;
+
     };
 
 }

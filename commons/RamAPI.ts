@@ -192,10 +192,10 @@ export class Party {
     }
 
     public static fromJson(json:Party):Party {
-        if(json) {
-            const identities : HrefValue<Identity>[] = [];
-            if(json.identities) {
-                for(var identity of json.identities) {
+        if (json) {
+            const identities:HrefValue<Identity>[] = [];
+            if (json.identities) {
+                for (var identity of json.identities) {
                     identities.push(new HrefValue<Identity>(identity.href, Identity.fromJson(identity.value)));
                 }
             }
@@ -222,6 +222,40 @@ export class Relationship {
 export class RelationshipAttribute {
     constructor(public value:string,
                 public attributeName:HrefValue<RelationshipAttributeName>) {
+    }
+}
+
+export class IdentityDTO {
+    constructor(public partyTypeCode:string,
+                public sharedSecretTypeCode:string,
+                public sharedSecretValue:string,
+                public givenName:string,
+                public familyName:string,
+                public unstructuredName:string) {
+    }
+}
+
+export class AttributeDTO {
+    constructor(public code:string,
+                public value:string) {
+    }
+
+    public static build(data:[{code:string, value:string}]):AttributeDTO[] {
+        const attributes:AttributeDTO[] = [];
+        for (let attribute of data) {
+            attributes.push(new AttributeDTO(attribute.code, attribute.value));
+        }
+        return attributes;
+    }
+}
+
+export class RelationshipAddDTO {
+    constructor(public relationshipTypeCode:string,
+                public subjectIdValue:string,
+                public delegate:IdentityDTO,
+                public startTimestamp:Date,
+                public endTimestamp:Date,
+                public attributes:AttributeDTO[]) {
     }
 }
 

@@ -24,16 +24,18 @@ export class ProfileProvider extends RAMEnum {
     public static MyGov = new ProfileProvider('MY_GOV');
     public static SelfAsserted = new ProfileProvider('SELF_ASSERTED');
     public static Vanguard = new ProfileProvider('VANGUARD');
+    public static Temp = new ProfileProvider('TEMP'); // TODO validate what this value should be for temp identities
 
     protected static AllValues = [
         ProfileProvider.ABR,
         ProfileProvider.AuthenticatorApp,
         ProfileProvider.MyGov,
         ProfileProvider.SelfAsserted,
-        ProfileProvider.Vanguard
+        ProfileProvider.Vanguard,
+        ProfileProvider.Temp
     ];
 
-    constructor(public name:String) {
+    constructor(public name:string) {
         super(name);
     }
 }
@@ -65,7 +67,7 @@ export interface IProfile extends IRAMObject {
     name: IName;
     sharedSecrets: [ISharedSecret];
     providerEnum(): ProfileProvider;
-    getSharedSecret(code:String): ISharedSecret;
+    getSharedSecret(code:string): ISharedSecret;
     toHrefValue():Promise<HrefValue<DTO>>;
     toDTO():Promise<DTO>;
 }
@@ -80,7 +82,7 @@ ProfileSchema.method('providerEnum', function () {
     return ProfileProvider.valueOf(this.provider);
 });
 
-ProfileSchema.method('getSharedSecret', function (code:String) {
+ProfileSchema.method('getSharedSecret', function (code:string) {
     if (code && this.sharedSecrets) {
         for (let sharedSecret of this.sharedSecrets) {
             if (sharedSecret.sharedSecretType.code === code) {

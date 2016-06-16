@@ -6,18 +6,24 @@ import {
     IdentityInvitationCodeStatus,
     IdentityAgencyScheme,
     IdentityPublicIdentifierScheme,
-    IdentityLinkIdScheme} from '../models/identity.model';
+    IdentityLinkIdScheme
+} from '../models/identity.model';
 import {
     IName,
-    NameModel} from '../models/name.model';
+    NameModel
+} from '../models/name.model';
 import {
     IProfile,
     ProfileModel,
-    ProfileProvider} from '../models/profile.model';
+    ProfileProvider
+} from '../models/profile.model';
 import {
     IParty,
     PartyModel,
-    PartyType} from '../models/party.model';
+    PartyType
+} from '../models/party.model';
+import {IdentityDTO} from '../../../commons/RamAPI';
+import {Seeder} from '../seeding/seed';
 
 /* tslint:disable:max-func-body-length */
 describe('RAM Identity', () => {
@@ -25,45 +31,57 @@ describe('RAM Identity', () => {
     connectDisconnectMongo();
     resetDataInMongo();
 
-    let name1: IName;
-    let profile1: IProfile;
-    let party1: IParty;
-    let identity1: IIdentity;
+    let name1:IName;
+    let profile1:IProfile;
+    let party1:IParty;
+    let identity1:IIdentity;
 
     beforeEach(async (done) => {
 
-        try {
+        Seeder.verbose(false);
 
-            name1 = await NameModel.create({
-                givenName: 'John',
-                familyName: 'Smith'
+        Promise.resolve(null)
+            .then(Seeder.resetDataInMongo)
+            .then(Seeder.loadReference)
+            .then(async () => {
+
+                try {
+
+                    name1 = await NameModel.create({
+                        givenName: 'John',
+                        familyName: 'Smith'
+                    });
+
+                    profile1 = await ProfileModel.create({
+                        provider: ProfileProvider.MyGov.name,
+                        name: name1
+                    });
+
+                    party1 = await PartyModel.create({
+                        partyType: PartyType.Individual.name,
+                        name: name1
+                    });
+
+                    identity1 = await IdentityModel.create({
+                        rawIdValue: 'uuid_1',
+                        identityType: IdentityType.LinkId.name,
+                        defaultInd: false,
+                        linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                        profile: profile1,
+                        party: party1
+                    });
+
+                    done();
+
+                } catch (e) {
+                    fail('Because ' + e);
+                    done();
+                }
+
+            })
+            .then(() => {
+                done();
             });
-
-            profile1 = await ProfileModel.create({
-                provider: ProfileProvider.MyGov.name,
-                name: name1
-            });
-
-            party1 = await PartyModel.create({
-                partyType: PartyType.Individual.name,
-                name: name1
-            });
-
-            identity1 = await IdentityModel.create({
-                rawIdValue: 'uuid_1',
-                identityType: IdentityType.LinkId.name,
-                defaultInd: false,
-                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
-                profile: profile1,
-                party: party1
-            });
-
-            done();
-
-        } catch (e) {
-            fail('Because ' + e);
-            done();
-        }
 
     });
 
@@ -267,7 +285,7 @@ describe('RAM Identity', () => {
                 'gqXKzV'
             ];
 
-            for (let i = 0; i < 10; i=i+1) {
+            for (let i = 0; i < 10; i = i + 1) {
                 const instance = await IdentityModel.create({
                     identityType: IdentityType.InvitationCode.name,
                     defaultInd: false,
@@ -439,12 +457,40 @@ describe('RAM Identity', () => {
         }
     });
 
-    it('search should be populated', async(done) => {
+    it('search should be populated', async (done) => {
         try {
             const searchResult = await IdentityModel.search(1, 10);
             expect(searchResult.list[0].idValue).toBe(identity1.idValue);
             expect(searchResult.list[0].party.partyType).toBe(party1.partyType);
             done();
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('creates a temporary identity', async (done) => {
+        try {
+
+            // DTOs
+            const identityDTO = new IdentityDTO(PartyType.Individual.name, 'DATE_OF_BIRTH', '2015-07-31', 'John', 'Doe', undefined);
+
+            // Create new temp identity for invitation code
+            const tempIdentity = await IdentityModel.createTempIdentityForInvitationCode(identityDTO);
+
+            // Verify
+            expect(tempIdentity).not.toBeNull();
+            expect(tempIdentity.defaultInd).toBe(true);
+            expect(tempIdentity.identityType).toBe(IdentityType.InvitationCode.name);
+            expect(tempIdentity.identityTypeEnum()).toBe(IdentityType.InvitationCode);
+            expect(tempIdentity.party).not.toBeNull();
+            expect(tempIdentity.profile).not.toBeNull();
+            expect(tempIdentity.profile.name).not.toBeNull();
+            expect(tempIdentity.profile.sharedSecrets.length).toBe(1);
+
+            // console.log(JSON.stringify(tempIdentity));
+            done();
+
         } catch (e) {
             fail('Because ' + e);
             done();
