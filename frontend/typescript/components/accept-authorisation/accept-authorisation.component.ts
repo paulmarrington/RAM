@@ -6,6 +6,7 @@ import {RAMRestService} from '../../services/ram-rest.service';
 import {
     IRelationship,
     IRelationshipType,
+    IRelationshipAttributeName,
     IName
 } from '../../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
@@ -19,11 +20,12 @@ import Rx from 'rxjs/Rx';
 export class AcceptAuthorisationComponent implements OnInit {
 
     public code: string;
-
     public idValue: string;
 
     public relationship$: Rx.Observable<IRelationship>;
     public relationshipType$: Rx.Observable<IRelationshipType>;
+
+    public delegateManageAuthorisationAllowedIndAttribute: IRelationshipAttributeName;
 
     constructor(private routeParams: RouteParams,
         private router: Router,
@@ -37,6 +39,13 @@ export class AcceptAuthorisationComponent implements OnInit {
         this.relationship$ = this.rest.viewPendingRelationshipByInvitationCode(this.code);
         this.relationship$.subscribe((relationship) => {
             this.relationshipType$ = this.rest.viewRelationshipTypeByHref(relationship.relationshipType.href);
+            for (let attribute of relationship.attributes) {
+                console.log('FOUND: ' + attribute.attributeName.value.code);
+                if (attribute.attributeName.value.code === 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND') {
+                    console.log('MATCHED: ' + attribute.attributeName.value.code);
+                    this.delegateManageAuthorisationAllowedIndAttribute = attribute;
+                }
+            }
         }, (err) => {
             if (err.status === 404) {
                 this.gotoRelationshipsPage();
