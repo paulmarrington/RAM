@@ -84,6 +84,10 @@ PartySchema.method('toDTO', async function () {
     );
 });
 
+/**
+ * Creates a relationship to a temporary identity (InvitationCode) until the invitiation has been accepted, whereby
+ * the relationship will be transferred to the authorised identity.
+ */
 /* tslint:disable:max-func-body-length */
 PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
 
