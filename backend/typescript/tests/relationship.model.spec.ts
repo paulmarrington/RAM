@@ -251,14 +251,13 @@ describe('RAM Relationship', () => {
             done();
         }
     });
-    
+
     it('stores email when notifying delegate', async (done) => {
         try {
 
             const email = 'test@example.com';
             await relationship1.notifyDelegate(email);
 
-            const retrievedInstance = await RelationshipModel.findByIdentifier(relationship1.id);
             const retrievedDelegateIdentity = await IdentityModel.findByIdValue(delegateIdentity1.idValue);
 
             expect(retrievedDelegateIdentity.invitationCodeTemporaryEmailAddress).toBe(email);
