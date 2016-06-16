@@ -37,10 +37,10 @@ describe('RAM Identity', () => {
     let identity1:IIdentity;
 
     beforeEach(async (done) => {
+
         Seeder.verbose(false);
 
         Promise.resolve(null)
-            .then()
             .then(Seeder.resetDataInMongo)
             .then(Seeder.loadReference)
             .then(async () => {
@@ -79,9 +79,10 @@ describe('RAM Identity', () => {
                 }
 
             })
-            .then(()=> {
+            .then(() => {
                 done();
             });
+
     });
 
     it('finds by id value', async (done) => {
