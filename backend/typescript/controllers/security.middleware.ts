@@ -66,6 +66,14 @@ class Security {
         };
     }
 
+    public getAuthenticatedIdentityIdValue(res:Response):string {
+        return res.locals[Headers.IdentityIdValue];
+    }
+
+    public getAuthenticatedIdentity(res:Response):IIdentity {
+        return res.locals[Headers.Identity];
+    }
+
     public isAuthenticated(req:Request, res:Response, next:() => void) {
         const idValue = res.locals[Headers.IdentityIdValue];
         if (idValue) {

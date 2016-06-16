@@ -40,6 +40,21 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
+    private acceptByInvitationCode = async (req:Request, res:Response) => {
+        const schema = {
+            'invitationCode': {
+                notEmpty: true,
+                errorMessage: 'Invitation Code is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
+            .then((model) => model.acceptPendingInvitation(security.getAuthenticatedIdentity(res)))
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
     private rejectByInvitationCode = async (req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
@@ -137,6 +152,10 @@ export class RelationshipController {
         router.get('/v1/relationship/invitationCode/:invitationCode',
             security.isAuthenticated,
             this.findPendingByInvitationCodeInDateRange);
+
+        router.post('/v1/relationship/invitationCode/:invitationCode/accept',
+            security.isAuthenticated,
+            this.acceptByInvitationCode);
 
         router.post('/v1/relationship/invitationCode/:invitationCode/reject',
             security.isAuthenticated,
