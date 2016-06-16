@@ -98,3 +98,34 @@ export interface IRelationshipAttribute {
     value: string;
     attributeName: IHrefValue<IRelationshipAttributeName>;
 }
+
+export interface ICreateIdentityDTO {
+    rawIdValue:string;
+    partyType:string;
+    givenName:string;
+    familyName:string;
+    unstructuredName:string;
+    sharedSecretTypeCode:string;
+    sharedSecretValue:string;
+    identityType:string;
+    agencyScheme:string;
+    agencyToken:string;
+    linkIdScheme:string;
+    linkIdConsumer:string;
+    publicIdentifierScheme:string;
+    profileProvider:string;
+}
+
+export class IAttributeDTO {
+    code:string;
+    value:string;
+}
+
+export class IRelationshipAddDTO {
+    relationshipTypeCode:string;
+    subjectIdValue:string;
+    delegate:ICreateIdentityDTO;
+    startTimestamp:Date;
+    endTimestamp:Date;
+    attributes:IAttributeDTO[];
+}
