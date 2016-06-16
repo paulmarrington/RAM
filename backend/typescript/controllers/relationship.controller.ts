@@ -1,6 +1,9 @@
 import {Router, Request, Response} from 'express';
+import {security} from './security.middleware';
 import {sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult} from './helpers';
 import {IRelationshipModel} from '../models/relationship.model';
+import {RelationshipAddDTO, IdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
+import {PartyModel} from '../models/party.model';
 
 // todo add data security
 export class RelationshipController {
@@ -33,6 +36,21 @@ export class RelationshipController {
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
             .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
+    private rejectByInvitationCode = async (req:Request, res:Response) => {
+        const schema = {
+            'invitationCode': {
+                notEmpty: true,
+                errorMessage: 'Invitation Code is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
+            .then((model) => model.rejectPendingInvitation())
+            .then((model) => Promise.resolve({}))
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
@@ -81,10 +99,58 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
+    private create = async (req:Request, res:Response) => {
+        const schema = {}; // TODO when DTO is confirmed with front end
+        validateReqSchema(req, schema)
+            .then((req:Request) => {
+                return PartyModel.findByIdentityIdValue(req.body.subject);
+            })
+            .then((subjectParty) => {
+                return subjectParty.addRelationship(
+                    new RelationshipAddDTO(
+                        req.body.relationshipType,
+                        req.body.subject,
+                        new IdentityDTO(
+                            req.body.delegate.partyTypeCode,
+                            req.body.delegate.sharedSecret.code,
+                            req.body.delegate.sharedSecret.value,
+                            req.body.delegate.givenName,
+                            req.body.delegate.familyName,
+                            req.body.delegate.unstructuredName
+                        ),
+                        new Date(req.body.startTimestamp),
+                        new Date(req.body.endTimestamp),
+                        AttributeDTO.build(req.body.attributes)
+                    ));
+            })
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
     public assignRoutes = (router:Router) => {
-        router.get('/v1/relationship/:identifier', this.findByIdentifier);
-        router.get('/v1/relationship/invitationCode/:invitationCode', this.findPendingByInvitationCodeInDateRange);
-        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id', this.listBySubjectOrDelegate);
+
+        router.get('/v1/relationship/:identifier',
+            security.isAuthenticated,
+            this.findByIdentifier);
+
+        router.get('/v1/relationship/invitationCode/:invitationCode',
+            security.isAuthenticated,
+            this.findPendingByInvitationCodeInDateRange);
+
+        router.post('/v1/relationship/invitationCode/:invitationCode/reject',
+            security.isAuthenticated,
+            this.rejectByInvitationCode);
+
+        router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id',
+            security.isAuthenticated,
+            this.listBySubjectOrDelegate);
+
+        router.post('/v1/relationship',
+            security.isAuthenticated,
+            this.create);
+
         return router;
+
     };
 }

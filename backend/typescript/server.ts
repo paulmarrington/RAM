@@ -4,10 +4,10 @@ import * as loggerMorgan from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as methodOverride from 'method-override';
-import * as cApi from '../../commons/RamAPI';
 import * as mongoose from 'mongoose';
 import {conf} from './bootstrap';
 import {logStream, logger} from './logger';
+import * as cApi from '../../commons/RamAPI';
 // import {continueOnlyIfJWTisValid} from './security'
 import expressValidator = require('express-validator');
 
@@ -76,36 +76,38 @@ if (conf.devMode) {
 
 // setup route handlers (dev) .........................................................................................
 
-// setup route handlers (production) ..................................................................................
-
 server.use('/api/reset',
     new ResetController().assignRoutes(express.Router()));
+
+// setup route handlers (production) ..................................................................................
+
 server.use('/api/',
-    new IdentityController(IdentityModel).assignRoutes(express.Router()));
+    new RelationshipTypeController(RelationshipTypeModel)
+        .assignRoutes(express.Router()));
+
 server.use('/api/',
-    new PartyController(PartyModel).assignRoutes(express.Router()));
-//server.use('/api/',
-//    new RelationshipController(RelationshipModel, PartyModel).assignRoutes(express.Router()));
+    new RelationshipAttributeNameController(RelationshipAttributeNameModel)
+        .assignRoutes(express.Router()));
+
 server.use('/api/',
-    new RelationshipTypeController(RelationshipTypeModel).assignRoutes(express.Router()));
+    new IdentityController(IdentityModel)
+        .assignRoutes(express.Router()));
+
 server.use('/api/',
-    new RelationshipAttributeNameController(RelationshipAttributeNameModel).assignRoutes(express.Router()));
+    new PartyController(PartyModel)
+        .assignRoutes(express.Router()));
+
 server.use('/api/',
-    new RelationshipController(RelationshipModel).assignRoutes(express.Router()));
+    new RelationshipController(RelationshipModel)
+        .assignRoutes(express.Router()));
+
+// setup error handlers ...............................................................................................
 
 // catch 404 and forward to error handler
 server.use((req: express.Request, res: express.Response) => {
     const err = new cApi.ErrorResponse('Request Not Found');
     res.send(err);
 });
-
-// server.use((ramResponse: cApi.IResponse, req: express.Request, res: express.Response, next: express.NextFunction) => {
-//     if (ramResponse.isError) {
-//         res.send(ramResponse); // Todo: More specific error handling
-//     } else {
-//         res.send(ramResponse);
-//     }
-// });
 
 // start server .......................................................................................................
 

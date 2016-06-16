@@ -4,7 +4,7 @@ import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
 import {IRelationshipType} from './relationshipType.model';
 import {IRelationshipAttribute, RelationshipAttributeModel} from './relationshipAttribute.model';
-import {IdentityModel} from './identity.model';
+import {IdentityModel, IdentityType, IdentityInvitationCodeStatus} from './identity.model';
 import {
     HrefValue,
     Relationship as DTO,
@@ -29,11 +29,11 @@ const MAX_PAGE_SIZE = 10;
 
 export class RelationshipStatus extends RAMEnum {
 
+    public static Active = new RelationshipStatus('ACTIVE');
+    public static Cancelled = new RelationshipStatus('CANCELLED');
+    public static Deleted = new RelationshipStatus('DELETED');
     public static Invalid = new RelationshipStatus('INVALID');
     public static Pending = new RelationshipStatus('PENDING');
-    public static Active = new RelationshipStatus('ACTIVE');
-    public static Deleted = new RelationshipStatus('DELETED');
-    public static Cancelled = new RelationshipStatus('CANCELLED');
 
     protected static AllValues = [
         RelationshipStatus.Active,
@@ -43,7 +43,7 @@ export class RelationshipStatus extends RAMEnum {
         RelationshipStatus.Pending
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -123,11 +123,12 @@ export interface IRelationship extends IRAMObject {
     statusEnum(): RelationshipStatus;
     toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
     toDTO():Promise<DTO>;
+    rejectPendingInvitation():void;
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
-    findByIdentifier:(id:String) => Promise<IRelationship>;
-    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => Promise<IRelationship>;
+    findByIdentifier:(id:string) => Promise<IRelationship>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
     search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IRelationship>>;
 }
@@ -164,9 +165,26 @@ RelationshipSchema.method('toDTO', async function () {
     );
 });
 
+RelationshipSchema.method('rejectPendingInvitation', async function () {
+    if (this.statusEnum() === RelationshipStatus.Pending) {
+        this.status = RelationshipStatus.Invalid.name;
+        await this.save();
+        const identities = await IdentityModel.listByPartyId(this.delegate.id);
+        for (let identity of identities) {
+            if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
+                identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending) {
+                identity.invitationCodeStatus = IdentityInvitationCodeStatus.Rejected.name;
+                await identity.save();
+            }
+        }
+    } else {
+        throw new Error('Unable to reject a non-pending relationship');
+    }
+});
+
 // static methods .....................................................................................................
 
-RelationshipSchema.static('findByIdentifier', (id:String) => {
+RelationshipSchema.static('findByIdentifier', (id:string) => {
     // TODO migrate from _id to another id
     return this.RelationshipModel
         .findOne({
@@ -183,7 +201,7 @@ RelationshipSchema.static('findByIdentifier', (id:String) => {
         .exec();
 });
 
-RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invitationCode:String, date:Date) => {
+RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async (invitationCode:string, date:Date) => {
     const identity = await IdentityModel.findPendingByInvitationCodeInDateRange(invitationCode, date);
     if (identity) {
         const delegate = identity.party;
@@ -212,7 +230,9 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
                 .when(subjectIdentityIdValue, 'subject', () => PartyModel.findByIdentityIdValue(subjectIdentityIdValue))
                 .when(delegateIdentityIdValue, 'delegate', () => PartyModel.findByIdentityIdValue(delegateIdentityIdValue))
                 .build());
-            const count = await this.RelationshipModel.count(query).exec();
+            const count = await this.RelationshipModel
+                .count(query)
+                .exec();
             const list = await this.RelationshipModel
                 .find(query)
                 .deepPopulate([
@@ -233,6 +253,7 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
         }
     });
 });
+
 // concrete model .....................................................................................................
 
 export const RelationshipModel = mongoose.model(

@@ -54,11 +54,11 @@ export class RAMEnum {
         return this.AllValues as T[];
     }
 
-    public static valueStrings<T extends RAMEnum>():String[] {
+    public static valueStrings<T extends RAMEnum>():string[] {
         return this.AllValues.map((value:T) => value.name);
     }
 
-    public static valueOf<T extends RAMEnum>(name:String):T {
+    public static valueOf<T extends RAMEnum>(name:string):T {
         for (let type of this.AllValues) {
             if ((type as T).name === name) {
                 return type as T;
@@ -67,7 +67,7 @@ export class RAMEnum {
         return null;
     }
 
-    constructor(public name:String) {
+    constructor(public name:string) {
     }
 }
 

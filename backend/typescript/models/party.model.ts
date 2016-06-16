@@ -4,8 +4,13 @@ import {IIdentity, IdentityModel} from './identity.model';
 import {
     HrefValue,
     Party as DTO,
-    Identity as IdentityDTO
+    Identity as IdentityDTO,
+    RelationshipAddDTO
 } from '../../../commons/RamAPI';
+import {RelationshipModel, RelationshipStatus, IRelationship} from './relationship.model';
+import {RelationshipTypeModel} from './relationshipType.model';
+import {RelationshipAttributeModel, IRelationshipAttribute} from './relationshipAttribute.model';
+import {RelationshipAttributeNameModel} from './relationshipAttributeName.model';
 
 // enums, utilities, helpers ..........................................................................................
 
@@ -19,7 +24,7 @@ export class PartyType extends RAMEnum {
         PartyType.Individual,
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -38,15 +43,16 @@ const PartySchema = RAMSchema({
 // interfaces .........................................................................................................
 
 export interface IParty extends IRAMObject {
-    partyType: string;
-    partyTypeEnum(): PartyType;
-    toHrefValue(includeValue:boolean): Promise<HrefValue<DTO>>;
-    toDTO(): Promise<DTO>;
+    partyType:string;
+    partyTypeEnum():PartyType;
+    toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
+    toDTO():Promise<DTO>;
+    addRelationship(dto:RelationshipAddDTO):Promise<IRelationship>;
 }
 
 /* tslint:disable:no-empty-interfaces */
 export interface IPartyModel extends mongoose.Model<IParty> {
-    findByIdentityIdValue: (idValue:String) => Promise<IParty>;
+    findByIdentityIdValue:(idValue:string) => Promise<IParty>;
 }
 
 // instance methods ...................................................................................................
@@ -78,9 +84,49 @@ PartySchema.method('toDTO', async function () {
     );
 });
 
+/**
+ * Creates a relationship to a temporary identity (InvitationCode) until the invitiation has been accepted, whereby
+ * the relationship will be transferred to the authorised identity.
+ */
+/* tslint:disable:max-func-body-length */
+PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
+
+    // lookups
+    const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipTypeCode, new Date());
+    const subject = await IdentityModel.findByIdValue(dto.subjectIdValue);
+
+    // create the temp identity for the invitation code
+    const identity = await IdentityModel.createTempIdentityForInvitationCode(dto.delegate);
+
+    const attributes:IRelationshipAttribute[] = [];
+
+    for (let attr of dto.attributes) {
+        attributes.push(await RelationshipAttributeModel.create({
+            value: true,
+            attributeName: await RelationshipAttributeNameModel.findByCodeInDateRange(attr.code, new Date())
+        }));
+    }
+
+    // create the relationship
+    const relationship = await RelationshipModel.create({
+        relationshipType: relationshipType,
+        subject: subject.party,
+        subjectNickName: subject.profile.name, // TODO - confirm this
+        delegate: identity.party,
+        delegateNickName: identity.profile.name, // TODO - confirm this
+        startTimestamp: dto.startTimestamp,
+        endTimestamp: dto.endTimestamp,
+        status: RelationshipStatus.Pending.name,
+        attributes: attributes
+    });
+
+    return relationship;
+
+});
+
 // static methods .....................................................................................................
 
-PartySchema.static('findByIdentityIdValue', async (idValue:String) => {
+PartySchema.static('findByIdentityIdValue', async(idValue:string) => {
     const identity = await IdentityModel.findByIdValue(idValue);
     return identity ? identity.party : null;
 });

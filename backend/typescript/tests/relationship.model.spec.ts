@@ -217,4 +217,40 @@ describe('RAM Relationship', () => {
         }
     });
 
+    it('rejects pending invitation', async (done) => {
+        try {
+
+            await relationship1.rejectPendingInvitation();
+
+            const retrievedInstance = await RelationshipModel.findByIdentifier(relationship1.id);
+            const retrievedDelegateIdentity = await IdentityModel.findByIdValue(delegateIdentity1.idValue);
+
+            expect(relationship1.statusEnum()).toBe(RelationshipStatus.Invalid);
+            expect(retrievedInstance.statusEnum()).toBe(relationship1.statusEnum());
+            expect(retrievedDelegateIdentity.invitationCodeStatusEnum()).toBe(IdentityInvitationCodeStatus.Rejected);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('fails reject non-pending invitation', async (done) => {
+        try {
+
+            await relationship1.rejectPendingInvitation();
+            expect(relationship1.statusEnum()).toBe(RelationshipStatus.Invalid);
+
+            await relationship1.rejectPendingInvitation();
+            fail('should not have inserted with null profile');
+
+            done();
+
+        } catch (e) {
+            done();
+        }
+    });
+
 });

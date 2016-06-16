@@ -32,9 +32,15 @@ export class RelationshipTypeController {
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/relationshipType/:code', this.findByCodeIgnoringDateRange);
-        router.get('/v1/relationshipTypes', this.listIgnoringDateRange);
+
+        router.get('/v1/relationshipType/:code',
+            this.findByCodeIgnoringDateRange);
+
+        router.get('/v1/relationshipTypes',
+            this.listIgnoringDateRange);
+
         return router;
+
     };
 
 }

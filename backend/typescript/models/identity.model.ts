@@ -3,13 +3,17 @@ import * as mongooseAutoIncrement from 'mongoose-auto-increment';
 import {conf} from '../bootstrap';
 import * as Hashids from 'hashids';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
-import {IProfile, ProfileModel} from './profile.model';
-import {IParty, PartyModel} from './party.model';
 import {
     HrefValue,
     Identity as DTO,
+    IdentityDTO,
     SearchResult
 } from '../../../commons/RamAPI';
+import {NameModel} from './name.model';
+import {SharedSecretModel} from './sharedSecret.model';
+import {IProfile, ProfileModel, ProfileProvider} from './profile.model';
+import {IParty, PartyModel, PartyType} from './party.model';
+import {SharedSecretTypeModel} from './sharedSecretType.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
@@ -20,10 +24,17 @@ const _ProfileModel = ProfileModel;
 const _PartyModel = PartyModel;
 
 const MAX_PAGE_SIZE = 10;
+const NEW_INVITATION_CODE_EXPIRY_DAYS = 7;
 
 // enums, utilities, helpers ..........................................................................................
 
 const saltedHashids = new Hashids(conf.hashIdsSalt, 6, 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789');
+
+const getNewInvitationCodeExpiry = ():Date => {
+    let date = new Date();
+    date.setDate(date.getDate() + NEW_INVITATION_CODE_EXPIRY_DAYS);
+    return date;
+};
 
 export class IdentityType extends RAMEnum {
 
@@ -56,7 +67,7 @@ export class IdentityType extends RAMEnum {
 
     public buildIdValue:(identity:IIdentity) => String;
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 
@@ -70,13 +81,15 @@ export class IdentityInvitationCodeStatus extends RAMEnum {
 
     public static Claimed = new IdentityInvitationCodeStatus('CLAIMED');
     public static Pending = new IdentityInvitationCodeStatus('PENDING');
+    public static Rejected = new IdentityInvitationCodeStatus('REJECTED');
 
     protected static AllValues = [
         IdentityInvitationCodeStatus.Claimed,
-        IdentityInvitationCodeStatus.Pending
+        IdentityInvitationCodeStatus.Pending,
+        IdentityInvitationCodeStatus.Rejected
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -89,7 +102,7 @@ export class IdentityAgencyScheme extends RAMEnum {
         IdentityAgencyScheme.Medicare
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -102,7 +115,7 @@ export class IdentityPublicIdentifierScheme extends RAMEnum {
         IdentityPublicIdentifierScheme.ABN
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -119,7 +132,7 @@ export class IdentityLinkIdScheme extends RAMEnum {
         IdentityLinkIdScheme.Vanguard
     ];
 
-    constructor(name:String) {
+    constructor(name:string) {
         super(name);
     }
 }
@@ -139,7 +152,7 @@ const IdentitySchema = RAMSchema({
     },
     identityType: {
         type: String,
-        required: [true, 'Type is required'],
+        required: [true, 'Identity Type is required'],
         trim: true,
         enum: IdentityType.valueStrings()
     },
@@ -265,10 +278,11 @@ export interface IIdentity extends IRAMObject {
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
-    findByIdValue:(idValue:String) => Promise<IIdentity>;
-    findPendingByInvitationCodeInDateRange:(invitationCode:String, date:Date) => Promise<IIdentity>;
-    findDefaultByPartyId:(partyId:String) => Promise<IIdentity>;
-    listByPartyId:(partyId:String) => Promise<IIdentity[]>;
+    createTempIdentityForInvitationCode:(dto:IdentityDTO) => Promise<IIdentity>;
+    findByIdValue:(idValue:string) => Promise<IIdentity>;
+    findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IIdentity>;
+    findDefaultByPartyId:(partyId:string) => Promise<IIdentity>;
+    listByPartyId:(partyId:string) => Promise<IIdentity[]>;
     search:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
 }
 
@@ -323,7 +337,7 @@ IdentitySchema.method('toDTO', async function () {
 
 // static methods .....................................................................................................
 
-IdentitySchema.static('findByIdValue', (idValue:String) => {
+IdentitySchema.static('findByIdValue', (idValue:string) => {
     return this.IdentityModel
         .findOne({
             idValue: idValue
@@ -336,7 +350,7 @@ IdentitySchema.static('findByIdValue', (idValue:String) => {
         .exec();
 });
 
-IdentitySchema.static('findPendingByInvitationCodeInDateRange', (invitationCode:String, date:Date) => {
+IdentitySchema.static('findPendingByInvitationCodeInDateRange', (invitationCode:string, date:Date) => {
     return this.IdentityModel
         .findOne({
             rawIdValue: invitationCode,
@@ -352,7 +366,7 @@ IdentitySchema.static('findPendingByInvitationCodeInDateRange', (invitationCode:
         .exec();
 });
 
-IdentitySchema.static('findDefaultByPartyId', (partyId:String) => {
+IdentitySchema.static('findDefaultByPartyId', (partyId:string) => {
     return this.IdentityModel
         .findOne({
             'party': partyId,
@@ -367,7 +381,7 @@ IdentitySchema.static('findDefaultByPartyId', (partyId:String) => {
         .exec();
 });
 
-IdentitySchema.static('listByPartyId', (partyId:String) => {
+IdentitySchema.static('listByPartyId', (partyId:string) => {
     return this.IdentityModel
         .find({
             'party': partyId
@@ -405,6 +419,52 @@ IdentitySchema.static('search', (page:number, reqPageSize:number) => {
         }
     });
 });
+
+/**
+ * Creates an InvitationCode identity required when creating a new relationship. This identity is temporary and will
+ * only be associated with the relationship until the relationship is accepted, whereby the relationship will be
+ * transferred to the authorised identity.
+ */
+IdentitySchema.static('createTempIdentityForInvitationCode',
+    /* tslint:disable:max-func-body-length */
+    async (dto:IdentityDTO):Promise<IIdentity> => {
+        const partyType = PartyType.valueOf(dto.partyTypeCode);
+
+        const name = await NameModel.create({
+            givenName: dto.givenName,
+            familyName: dto.familyName,
+            unstructuredName: dto.unstructuredName
+        });
+
+        const sharedSecretType = await SharedSecretTypeModel.findByCodeInDateRange(dto.sharedSecretTypeCode, new Date());
+
+        const sharedSecret = await SharedSecretModel.create({
+            value: dto.sharedSecretValue,
+            sharedSecretType: sharedSecretType
+        });
+
+        const profile = await ProfileModel.create({
+            provider: ProfileProvider.Temp.name,
+            name: name,
+            sharedSecrets: [sharedSecret]
+        });
+
+        const party = await PartyModel.create({
+            partyType: partyType.name,
+            name: name
+        });
+
+        const identity = await this.IdentityModel.create({
+            identityType: IdentityType.InvitationCode.name,
+            defaultInd: true,
+            invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
+            invitationCodeExpiryTimestamp: getNewInvitationCodeExpiry(),
+            profile: profile,
+            party: party
+        });
+
+        return identity;
+    });
 
 // concrete model .....................................................................................................
 

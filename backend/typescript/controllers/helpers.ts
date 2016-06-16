@@ -71,6 +71,7 @@ type ValidationError = {
     message: string;
 }
 
+/* tslint:disable:max-func-body-length */
 export function sendError<T>(res: Response) {
     'use strict';
     return (error: string | Error | ValidationError | string[]) => {
@@ -93,6 +94,7 @@ export function sendError<T>(res: Response) {
             case 'Error':
                 res.status(500);
                 res.json(new ErrorResponse((error as Error).message));
+                logger.error((error as Error).stack);
                 break;
             default:
                 res.status(500);

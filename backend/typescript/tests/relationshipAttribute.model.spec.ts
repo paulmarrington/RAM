@@ -139,4 +139,43 @@ describe('RAM Relationship Attribute', () => {
         }
     });
 
+    it('inserts with valid values', async (done) => {
+        try {
+
+            const value = 'true';
+            const attributeName = Seeder.delegateManageAuthorisationAllowedInd_attributeName;
+
+            const instance = await RelationshipAttributeModel.create({
+                value: value,
+                attributeName: attributeName
+            });
+
+            expect(instance).not.toBeNull();
+            expect(instance.id).not.toBeNull();
+            expect(instance.value).toBe(value);
+            expect(instance.attributeName.id).toBe(attributeName.id);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('fails insert with null attribute name', async (done) => {
+        try {
+            await RelationshipAttributeModel.create({
+                value: 'true',
+                attributeName: null
+            });
+            fail('should not have inserted with null attribute name');
+            done();
+        } catch (e) {
+            expect(e.name).toBe('ValidationError');
+            expect(e.errors.attributeName).not.toBeNull();
+            done();
+        }
+    });
+
 });

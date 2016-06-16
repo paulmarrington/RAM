@@ -32,9 +32,15 @@ export class RelationshipAttributeNameController {
     };
 
     public assignRoutes = (router:Router) => {
-        router.get('/v1/relationshipAttributeName/:code', this.findByCodeIgnoringDateRange);
-        router.get('/v1/relationshipAttributeNames', this.listIgnoringDateRange);
+
+        router.get('/v1/relationshipAttributeName/:code',
+            this.findByCodeIgnoringDateRange);
+
+        router.get('/v1/relationshipAttributeNames',
+            this.listIgnoringDateRange);
+
         return router;
+
     };
 
 }
