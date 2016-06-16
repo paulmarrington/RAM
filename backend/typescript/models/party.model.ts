@@ -91,6 +91,8 @@ PartySchema.method('toDTO', async function () {
 /* tslint:disable:max-func-body-length */
 PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
 
+    // TODO improve handling of lookups that return null outside of the date range
+
     // lookups
     const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipTypeCode, new Date());
     const subjectIdentity = await IdentityModel.findByIdValue(dto.subjectIdValue);

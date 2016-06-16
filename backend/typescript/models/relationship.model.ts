@@ -4,7 +4,7 @@ import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
 import {IRelationshipType} from './relationshipType.model';
 import {IRelationshipAttribute, RelationshipAttributeModel} from './relationshipAttribute.model';
-import {IdentityModel, IdentityType, IdentityInvitationCodeStatus} from './identity.model';
+import {IdentityModel, IIdentity, IdentityType, IdentityInvitationCodeStatus} from './identity.model';
 import {
     HrefValue,
     Relationship as DTO,
@@ -123,6 +123,7 @@ export interface IRelationship extends IRAMObject {
     statusEnum(): RelationshipStatus;
     toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
     toDTO():Promise<DTO>;
+    acceptPendingInvitation(acceptingDelegateIdentity:IIdentity):Promise<IRelationship>;
     rejectPendingInvitation():void;
 }
 
@@ -165,10 +166,48 @@ RelationshipSchema.method('toDTO', async function () {
     );
 });
 
-RelationshipSchema.method('rejectPendingInvitation', async function () {
+RelationshipSchema.method('acceptPendingInvitation', async function (acceptingDelegateIdentity:IIdentity) {
+
     if (this.statusEnum() === RelationshipStatus.Pending) {
+
+        // TODO need to match identity details, validate identity and credentials strengths (not spec'ed out yet)
+
+        // mark claimed with timestamp on the temporary delegate identity
+        const identities = await IdentityModel.listByPartyId(this.delegate.id);
+        for (let identity of identities) {
+            if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
+                identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending) {
+                identity.invitationCodeStatus = IdentityInvitationCodeStatus.Claimed.name;
+                identity.invitationCodeClaimedTimestamp = new Date();
+                await identity.save();
+            }
+        }
+
+        // mark relationship as active
+        // point relationship to the accepting delegate identity
+        this.status = RelationshipStatus.Active.name;
+        this.delegate = acceptingDelegateIdentity.party;
+        await this.save();
+
+        // TODO notify relevant parties
+
+        return Promise.resolve(this);
+
+    } else {
+        throw new Error('Unable to accept a non-pending relationship');
+    }
+});
+
+RelationshipSchema.method('rejectPendingInvitation', async function () {
+
+    if (this.statusEnum() === RelationshipStatus.Pending) {
+
+        // mark relationship as invalid
         this.status = RelationshipStatus.Invalid.name;
         await this.save();
+
+        // as relationship doesn't have a pointer to the identity, this rejects all invitation identities
+        // associated with the temporary delegate (there should only be one)
         const identities = await IdentityModel.listByPartyId(this.delegate.id);
         for (let identity of identities) {
             if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
@@ -177,9 +216,13 @@ RelationshipSchema.method('rejectPendingInvitation', async function () {
                 await identity.save();
             }
         }
+
+        // TODO notify relevant parties
+
     } else {
         throw new Error('Unable to reject a non-pending relationship');
     }
+
 });
 
 // static methods .....................................................................................................
