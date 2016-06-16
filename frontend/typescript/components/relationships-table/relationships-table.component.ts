@@ -97,11 +97,17 @@ export class RelationshipsTableComponent implements OnInit {
     }
 
     private refreshContents(relIds: string[]) {
-        this._relIds = relIds;
+        if (!relIds.length) {
+            // THe first time through we need to load relationships for
+            // the real identity.
+            this._relIds = [this.routeParams.get('identityValue')];
+        } else {
+            this._relIds = relIds;
+        }
+        const identityValue = this._relIds.slice(-1)[0];
         this._isLoading = true;
-        const identityValue = this.routeParams.get('identityValue');
         const response = this.rest.getRelationshipTableData(
-        identityValue, this._delegate, relIds, this._filters$.value,
+        identityValue, this._delegate, this._filters$.value,
         this._pageNo, this._pageSize)
             .do(() => {
                 this._isLoading = false;
@@ -114,8 +120,8 @@ export class RelationshipsTableComponent implements OnInit {
         return response;
     }
 
-    public navigateTo(relId: string[]) {
-        this.nav.navigateToRel(relId);
+    public navigateTo(relId: string) {
+        this.nav.navigateToRel([relId]);
     }
 
     public viewRelationship(relId: string) {

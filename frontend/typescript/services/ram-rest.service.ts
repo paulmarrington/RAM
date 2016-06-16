@@ -47,7 +47,7 @@ export class RAMRestService {
 
     constructor(private http: Http) {}
 
-    public getRelationshipTableData(identityValue: string, isDelegate: boolean, relPathIds: string[],
+    public getRelationshipTableData(identityValue: string, isDelegate: boolean,
         filters: RelationshipTableReq, pageNo: number, pageSize: number
     ): Observable<IRelationshipTableRes> {
         const relType = (isDelegate ? 'subject' : 'delegate');
