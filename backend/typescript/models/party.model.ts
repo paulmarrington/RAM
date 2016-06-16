@@ -101,10 +101,13 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
     const attributes:IRelationshipAttribute[] = [];
 
     for (let attr of dto.attributes) {
-        attributes.push(await RelationshipAttributeModel.create({
-            value: true,
-            attributeName: await RelationshipAttributeNameModel.findByCodeInDateRange(attr.code, new Date())
-        }));
+        const attributeName = await RelationshipAttributeNameModel.findByCodeInDateRange(attr.code, new Date());
+        if (attributeName) {
+            attributes.push(await RelationshipAttributeModel.create({
+                value: true,
+                attributeName: attributeName
+            }));
+        }
     }
 
     // create the relationship
