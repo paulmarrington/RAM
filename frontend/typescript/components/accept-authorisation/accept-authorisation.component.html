@@ -1,24 +1,57 @@
 <div class="col-lg-9 col-md-9 col-sm-8">
     <div class="page-header">
         <div class="row">
-            <h2 class="col-sm-12 col-md-7 col-lg-8 col-xs-12">Accept Authorisation Request</h2>
+            <h2 class="col-sm-12 col-md-7 col-lg-8 col-xs-12">Authorisation Request</h2>
         </div>
     </div>
 
-    <form class="form-horizontal">
-        <div class="form-group">
-            <div class="col-lg-8">
-                <input type="text" class="form-control" placeholder="Authorisation code ...">
-            </div>
-            <div class="col-lg-2">
-                <a class="btn btn-primary col-lg-12" (click)="activateCode()">Activate</a>
-            </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <h4>Subject</h4>
         </div>
-    </form>
+        <div class="col-lg-9">
+            <h4>{{displayName((relationship| async)?.subject?.value?.identities)}}</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <h4>Delegate</h4>
+        </div>
+        <div class="col-lg-9">
+            <h4>{{displayName((relationship | async)?.delegate?.value?.identities)}}</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <h4>Start time</h4>
+        </div>
+        <div class="col-lg-3">
+            <h4>{{(relationship | async)?.startTimestamp}}</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <h4>End time</h4>
+        </div>
+        <div class="col-lg-3">
+            <h4>{{(relationship | async)?.endTimestamp || 'Not specified'}}</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <h4>Relationship Type</h4>
+        </div>
+        <div class="col-lg-3">
+            <h4>{{(relationship | async)?.relationshipType?.href}}</h4>
+        </div>
+    </div>
 
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
-    <a class="btn btn-primary col-md-3 align-center"> Go to relationships → </a>
+    <a class="btn btn-default col-md-3 pull-left"> ← Go to relationships</a>
+    <a class="btn btn-primary col-md-3 pull-right"> Accept → </a>
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
     <div class="padding-btn-20"></div>

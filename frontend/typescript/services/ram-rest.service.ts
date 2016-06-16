@@ -34,7 +34,7 @@ export class RAMRestService {
     }
     public acceptPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
         return this.http
-            .get(`/api/v1/relationship/invitationCode/${invitationCode}`)
+            .post(`/v1/relationship/invitationCode/${invitationCode}/accept`,'')
             .map(this.extractData);
     }
 
