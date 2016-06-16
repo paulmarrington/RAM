@@ -643,6 +643,25 @@
 					"response": []
 				},
 				{
+					"name": "Notify delegate (jEVYNX)",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/notifyDelegate",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\"\n}"
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Reject By Invitation Code (jEVYNX)",
 					"request": {
 						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/reject",
@@ -670,25 +689,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"relationshipType\": \"CUSTOM_REPRESENTATIVE\",\n  \"subject\": \"PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1\",\n  \"delegate\": {\n    \"partyType\": \"INDIVIDUAL\",\n    \"givenName\": \"a\",\n    \"familyName\": \"b\",\n    \"unstructuredName\": \"\",\n    \"sharedSecret\": {\n      \"code\": \"DATE_OF_BIRTH\",\n      \"value\": \"2016-06-15\"\n    }\n  },\n  \"startTimestamp\": \"2016-06-15T03:49:06.682Z\",\n  \"endTimestamp\": \"2017-06-15T03:49:06.682Z\",\n  \"attributes\": [\n    {\n      \"code\": \"PERMISSION_CUSTOMISATION_ALLOWED_IND\",\n      \"value\": \"true\"\n    }\n  ]\n}"
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Notify delegate (jEVYNX)",
-					"request": {
-						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/notifyDelegate",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"test@example.com\"\n}"
 						}
 					},
 					"response": []
