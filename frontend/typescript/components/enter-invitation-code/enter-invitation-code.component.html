@@ -4,25 +4,21 @@
             <h2 class="col-sm-12 col-md-7 col-lg-8 col-xs-12">Enter Invitation Code</h2>
         </div>
     </div>
-    
-    <p class="lead">
-        <form class="form-horizontal">
-            <fieldset>
-                <div class="form-group">
-                    <div class="col-lg-8">
-                        <input type="text" class="form-control" placeholder="Authorisation code ...">
-                    </div>
-                    <div class="col-lg-2">
-                        <a class="btn btn-primary col-lg-12">Activate</a>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
-    </p>    
+
+    <form class="form-horizontal">
+        <div class="form-group">
+            <div class="col-lg-8">
+                <input type="text" class="form-control" placeholder="Authorisation code ...">
+            </div>
+            <div class="col-lg-2">
+                <a class="btn btn-primary col-lg-12" (click)="activateCode()">Activate</a>
+            </div>
+        </div>
+    </form>
 
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
-    <a class="btn btn-primary col-md-3 pull-right"> Back to relationships → </a>
+    <a class="btn btn-primary col-md-3 align-center"> Go to relationships → </a>
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
     <div class="padding-btn-20"></div>

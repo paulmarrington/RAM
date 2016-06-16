@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
-    RelationshipTableReq,
-    IRelationshipTableRes
-} from '../../../commons/RamAPI';
-
+    IIdentity,
+    IRelationship
+} from '../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
 import {Response, Http} from '@angular/http';
 
@@ -13,17 +12,8 @@ export class RAMRestService {
     constructor(private http: Http) {
     }
 
-    public getRelationshipTableData(identityResolver: string, identityValue: string, isDelegate: boolean, relPathIds: string[],
-        filters: RelationshipTableReq, pageNo: number, pageSize: number
-    ): Rx.Observable<IRelationshipTableRes> {
-        const url = `/api/v1/relationship/table/${isDelegate ? 'delegate' : 'subject'}`
-            +
-            `/${identityValue}/${identityResolver}/page/${pageNo}/size/${pageSize}`;
-        return this.http.get(url).map(this.extractData).publishReplay().refCount();
-    }
-
     // A call external to RAM to get organisation name from ABN
-    public getOrganisationNameFromABN(abn:string) {
+    public getOrganisationNameFromABN(abn: string) {
         // This is temporary until we can talk to the server
         // How about mocking framework?
         return Promise.resolve('The End of Time Pty Limited');
@@ -34,7 +24,25 @@ export class RAMRestService {
             throw new Error('Status code is:' + res.status);
         }
         const body = res.json();
-        return body.data || {};
+        return body || {};
+    }
+
+    public getIdentity(identityValue: string): Rx.Observable<IIdentity> {
+        return this.http
+            .get(`/api/v1/identity/${identityValue}`)
+            .map(this.extractData);
+    }
+    public acceptPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
+        return this.http
+            .post(`/v1/relationship/invitationCode/${invitationCode}/accept`,'')
+            .map(this.extractData);
+    }
+
+    public viewPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
+        return this.http
+            .get(`/api/v1/relationship/invitationCode/${invitationCode}`)
+            .map(this.extractData);
     }
 
 }
+
