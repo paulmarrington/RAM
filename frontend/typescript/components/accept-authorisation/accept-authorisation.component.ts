@@ -21,7 +21,7 @@ export class AcceptAuthorisationComponent implements OnInit {
 
     public idValue: string;
 
-    public relationship: Rx.Observable<IRelationship>;
+    public relationship$: Rx.Observable<IRelationship>;
 
     constructor(private routeParams: RouteParams,
         private router: Router,
@@ -32,7 +32,7 @@ export class AcceptAuthorisationComponent implements OnInit {
     public ngOnInit() {
         this.code = this.routeParams.get('invitationCode');
         this.idValue = this.routeParams.get('idValue');
-        this.relationship = this.rest.viewPendingRelationshipByInvitationCode(this.code);
+        this.relationship$ = this.rest.viewPendingRelationshipByInvitationCode(this.code);
     }
 
     public acceptAuthorisation = () => {

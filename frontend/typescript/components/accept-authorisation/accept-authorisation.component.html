@@ -10,7 +10,7 @@
             <h4>Subject</h4>
         </div>
         <div class="col-lg-9">
-            <h4>{{displayName((relationship| async)?.subject?.value?.identities)}}</h4>
+            <h4>{{displayName((relationship$| async)?.subject?.value?.identities)}}</h4>
         </div>
     </div>
     <div class="row">
@@ -18,7 +18,7 @@
             <h4>Delegate</h4>
         </div>
         <div class="col-lg-9">
-            <h4>{{displayName((relationship | async)?.delegate?.value?.identities)}}</h4>
+            <h4>{{displayName((relationship$ | async)?.delegate?.value?.identities)}}</h4>
         </div>
     </div>
 
@@ -27,7 +27,7 @@
             <h4>Start time</h4>
         </div>
         <div class="col-lg-3">
-            <h4>{{(relationship | async)?.startTimestamp}}</h4>
+            <h4>{{(relationship$ | async)?.startTimestamp}}</h4>
         </div>
     </div>
     <div class="row">
@@ -35,7 +35,7 @@
             <h4>End time</h4>
         </div>
         <div class="col-lg-3">
-            <h4>{{(relationship | async)?.endTimestamp || 'Not specified'}}</h4>
+            <h4>{{(relationship$ | async)?.endTimestamp || 'Not specified'}}</h4>
         </div>
     </div>
 
@@ -44,7 +44,7 @@
             <h4>Relationship Type</h4>
         </div>
         <div class="col-lg-3">
-            <h4>{{(relationship | async)?.relationshipType?.href}}</h4>
+            <h4>{{(relationship$ | async)?.relationshipType?.href}}</h4>
         </div>
     </div>
 
