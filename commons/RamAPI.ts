@@ -1,5 +1,6 @@
 // system domain ......................................................................................................
 
+import {ICreateIdentityDTO, IAttributeDTO, IRelationshipAddDTO} from './RamAPI2';
 export enum RAMMessageType {
     Error = 1,
     Info = 2,
@@ -225,7 +226,7 @@ export class RelationshipAttribute {
     }
 }
 
-export class CreateIdentityDTO {
+export class CreateIdentityDTO implements ICreateIdentityDTO {
     constructor(public rawIdValue:string,
                 public partyType:string,
                 public givenName:string,
@@ -243,7 +244,7 @@ export class CreateIdentityDTO {
     }
 }
 
-export class AttributeDTO {
+export class AttributeDTO implements IAttributeDTO {
     constructor(public code:string,
                 public value:string) {
     }
@@ -257,7 +258,7 @@ export class AttributeDTO {
     }
 }
 
-export class RelationshipAddDTO {
+export class RelationshipAddDTO implements IRelationshipAddDTO {
     constructor(public relationshipTypeCode:string,
                 public subjectIdValue:string,
                 public delegate:CreateIdentityDTO,
@@ -266,6 +267,7 @@ export class RelationshipAddDTO {
                 public attributes:AttributeDTO[]) {
     }
 }
+
 
 // old deprecated .....................................................................................................
 
