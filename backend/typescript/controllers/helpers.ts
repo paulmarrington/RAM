@@ -90,7 +90,7 @@ export function sendError<T>(res: Response) {
                 res.json(new ErrorResponse(
                     _.values<string>(_.mapValues((error as ValidationError).errors, (v) => v.message))
                 ));
-                logger.error((error as Error).stack);
+                logger.error((error as ValidationError).stack);
                 break;
             case 'Error':
                 res.status(500);
