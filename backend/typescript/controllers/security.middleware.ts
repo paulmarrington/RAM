@@ -4,13 +4,13 @@ import {Request, Response} from 'express';
 import {Headers} from './headers';
 import {conf} from '../bootstrap';
 import {ErrorResponse} from '../../../commons/RamAPI';
+import {CreateIdentityDTO} from '../../../commons/RamAPI';
 import {IIdentity, IdentityModel} from '../models/identity.model';
 
 class Security {
 
     public prepareRequest():(req:Request, res:Response, next:() => void) => void {
         return (req:Request, res:Response, next:() => void) => {
-            console.log('..... RUNNING SECURITY MIDDLEWAREE!!!!');
             if (conf.devMode) {
                 this.prepareRequestForDevelopment(req, res, next);
             } else {
@@ -21,6 +21,7 @@ class Security {
 
     private prepareRequestForDevelopment(req:Request, res:Response, next:() => void) {
         const idValue = res.locals[Headers.IdentityIdValue];
+        console.log('Processing id:', idValue);
         if (!idValue) {
             next();
         } else {
@@ -39,9 +40,36 @@ class Security {
         }
     }
 
+    private createIdentityIfNotFound(req:Request, res:Response) {
+        return (identity?:IIdentity) => {
+            if (identity) {
+                return Promise.resolve(identity);
+            } else {
+                const dto = new CreateIdentityDTO(
+                    req.headers[Headers.PartyType],
+                    req.headers[Headers.GivenName],
+                    req.headers[Headers.FamilyName],
+                    req.headers[Headers.UnstructuredName],
+                    req.headers[Headers.DOB] /*wrong*/,
+                    req.headers[Headers.DOB],
+                    req.headers[Headers.IdentityType],
+                    req.headers[Headers.AgencyScheme],
+                    req.headers[Headers.AgencyToken],
+                    req.headers[Headers.LinkIdScheme],
+                    req.headers[Headers.LinkIdConsumer],
+                    req.headers[Headers.PublicIdentifierScheme],
+                    req.headers[Headers.ProfileProvider]
+                );
+                console.log('ABOUT TO CREATE=', dto);
+                return IdentityModel.createFromDTO(dto);
+            }
+        };
+    }
+
     private resolveWithIdentity(req:Request, res:Response, next:() => void) {
         return (identity?:IIdentity) => {
             logger.info('Identity context:', (identity ? colors.magenta(identity.idValue) : colors.red('[not found]')));
+            console.log('IDENTITY=', identity);
             if (identity) {
                 for (let key of Object.keys(req.headers)) {
                     const keyUpper = key.toUpperCase();

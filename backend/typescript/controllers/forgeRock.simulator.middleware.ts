@@ -9,9 +9,13 @@ class ForgeRockSimulator {
     public prepareRequest():(req:Request, res:Response, next:() => void) => void {
         const self = this;
         return (req:Request, res:Response, next:() => void) => {
-            const authTokenEncoded = req.cookies[Headers.AuthToken];
-            if (authTokenEncoded) {
-                const authToken = new Buffer(authTokenEncoded, 'base64').toString('ascii');
+            const credentialsFromAuthenticationSimulator = req.body.credentials;
+            const authTokenEncodedFromCookie = req.cookies[Headers.AuthToken];
+            if (credentialsFromAuthenticationSimulator) {
+                IdentityModel.findByIdValue(credentialsFromAuthenticationSimulator)
+                    .then(self.resolve(res, next), self.reject(res, next));
+            } else if (authTokenEncodedFromCookie) {
+                const authToken = new Buffer(authTokenEncodedFromCookie, 'base64').toString('ascii');
                 const idValue = self.getIdentityIdValueFromAuthToken(authToken);
                 IdentityModel.findByIdValue(idValue)
                     .then(self.resolve(res, next), self.reject(res, next));

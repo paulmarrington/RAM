@@ -6,13 +6,13 @@ import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {
     HrefValue,
     Identity as DTO,
-    IdentityDTO,
+    CreateIdentityDTO,
     SearchResult
 } from '../../../commons/RamAPI';
 import {NameModel} from './name.model';
 import {SharedSecretModel} from './sharedSecret.model';
-import {IProfile, ProfileModel, ProfileProvider} from './profile.model';
-import {IParty, PartyModel, PartyType} from './party.model';
+import {IProfile, ProfileModel} from './profile.model';
+import {IParty, PartyModel} from './party.model';
 import {SharedSecretTypeModel} from './sharedSecretType.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
@@ -201,14 +201,6 @@ const IdentitySchema = RAMSchema({
         type: String,
         trim: true
     },
-    publicIdentifierScheme: {
-        type: String,
-        trim: true,
-        required: [function () {
-            return this.identityType === IdentityType.PublicIdentifier.name;
-        }, 'Public Identifier Scheme is required'],
-        enum: IdentityPublicIdentifierScheme.valueStrings()
-    },
     linkIdScheme: {
         type: String,
         trim: true,
@@ -220,6 +212,14 @@ const IdentitySchema = RAMSchema({
     linkIdConsumer: {
         type: String,
         trim: true
+    },
+    publicIdentifierScheme: {
+        type: String,
+        trim: true,
+        required: [function () {
+            return this.identityType === IdentityType.PublicIdentifier.name;
+        }, 'Public Identifier Scheme is required'],
+        enum: IdentityPublicIdentifierScheme.valueStrings()
     },
     profile: {
         type: mongoose.Schema.Types.ObjectId,
@@ -263,9 +263,9 @@ export interface IIdentity extends IRAMObject {
     invitationCodeExpiryTimestamp:Date;
     invitationCodeClaimedTimestamp:Date;
     invitationCodeTemporaryEmailAddress:string;
-    publicIdentifierScheme:string;
     linkIdScheme:string;
     linkIdConsumer:string;
+    publicIdentifierScheme:string;
     profile:IProfile;
     party:IParty;
     identityTypeEnum():IdentityType;
@@ -278,7 +278,7 @@ export interface IIdentity extends IRAMObject {
 }
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
-    createTempIdentityForInvitationCode:(dto:IdentityDTO) => Promise<IIdentity>;
+    createFromDTO:(dto:CreateIdentityDTO) => Promise<IIdentity>;
     findByIdValue:(idValue:string) => Promise<IIdentity>;
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IIdentity>;
     findDefaultByPartyId:(partyId:string) => Promise<IIdentity>;
@@ -425,10 +425,8 @@ IdentitySchema.static('search', (page:number, reqPageSize:number) => {
  * only be associated with the relationship until the relationship is accepted, whereby the relationship will be
  * transferred to the authorised identity.
  */
-IdentitySchema.static('createTempIdentityForInvitationCode',
-    /* tslint:disable:max-func-body-length */
-    async (dto:IdentityDTO):Promise<IIdentity> => {
-        const partyType = PartyType.valueOf(dto.partyTypeCode);
+/* tslint:disable:max-func-body-length */
+IdentitySchema.static('createFromDTO', async (dto:CreateIdentityDTO):Promise<IIdentity> => {
 
         const name = await NameModel.create({
             givenName: dto.givenName,
@@ -436,34 +434,41 @@ IdentitySchema.static('createTempIdentityForInvitationCode',
             unstructuredName: dto.unstructuredName
         });
 
-        const sharedSecretType = await SharedSecretTypeModel.findByCodeInDateRange(dto.sharedSecretTypeCode, new Date());
-
         const sharedSecret = await SharedSecretModel.create({
             value: dto.sharedSecretValue,
-            sharedSecretType: sharedSecretType
+            sharedSecretType: await SharedSecretTypeModel.findByCodeInDateRange(dto.sharedSecretTypeCode, new Date())
         });
 
         const profile = await ProfileModel.create({
-            provider: ProfileProvider.Temp.name,
+            provider: dto.profileProvider,
             name: name,
             sharedSecrets: [sharedSecret]
         });
 
         const party = await PartyModel.create({
-            partyType: partyType.name,
+            partyType: dto.partyTypeCode,
             name: name
         });
 
         const identity = await this.IdentityModel.create({
-            identityType: IdentityType.InvitationCode.name,
+            identityType: dto.identityType,
             defaultInd: true,
-            invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
-            invitationCodeExpiryTimestamp: getNewInvitationCodeExpiry(),
+            agencyScheme: dto.agencyScheme,
+            agencyToken: dto.agencyToken,
+            invitationCodeStatus: dto.identityType === IdentityType.InvitationCode.name ?
+                IdentityInvitationCodeStatus.Pending.name : null,
+            invitationCodeExpiryTimestamp: dto.identityType === IdentityType.InvitationCode.name ?
+                getNewInvitationCodeExpiry() : null,
+            invitationCodeClaimedTimestamp: null,
+            publicIdentifierScheme: dto.publicIdentifierScheme,
+            linkIdScheme: dto.linkIdScheme,
+            linkIdConsumer: dto.linkIdConsumer,
             profile: profile,
             party: party
         });
 
         return identity;
+
     });
 
 // concrete model .....................................................................................................

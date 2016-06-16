@@ -2,8 +2,10 @@ import {Router, Request, Response} from 'express';
 import {security} from './security.middleware';
 import {sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult} from './helpers';
 import {IRelationshipModel} from '../models/relationship.model';
-import {RelationshipAddDTO, IdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
+import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
 import {PartyModel} from '../models/party.model';
+import {ProfileProvider} from '../models/profile.model';
+import {IdentityType} from '../models/identity.model';
 
 // todo add data security
 export class RelationshipController {
@@ -125,13 +127,20 @@ export class RelationshipController {
                     new RelationshipAddDTO(
                         req.body.relationshipType,
                         req.body.subject,
-                        new IdentityDTO(
+                        new CreateIdentityDTO(
                             req.body.delegate.partyTypeCode,
-                            req.body.delegate.sharedSecret.code,
-                            req.body.delegate.sharedSecret.value,
                             req.body.delegate.givenName,
                             req.body.delegate.familyName,
-                            req.body.delegate.unstructuredName
+                            req.body.delegate.unstructuredName,
+                            req.body.delegate.sharedSecret.code,
+                            req.body.delegate.sharedSecret.value,
+                            IdentityType.InvitationCode.name,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            ProfileProvider.Temp.name
                         ),
                         new Date(req.body.startTimestamp),
                         new Date(req.body.endTimestamp),

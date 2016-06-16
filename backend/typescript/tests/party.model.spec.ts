@@ -22,7 +22,8 @@ import {
 } from '../models/party.model';
 import {
     RelationshipAddDTO,
-    IdentityDTO, AttributeDTO
+    CreateIdentityDTO,
+    AttributeDTO
 } from '../../../commons/RamAPI';
 import {RelationshipStatus} from '../models/relationship.model';
 
@@ -101,19 +102,26 @@ describe('RAM Party', () => {
 
     it('can add relationship', async(done) => {
         try {
+
             const instance = await PartyModel.findByIdentityIdValue(identity1.idValue);
 
             const relationshipAddDTO = new RelationshipAddDTO(
                 Seeder.custom_delegate_relationshipType.code,
                 identity1.idValue,
-                new IdentityDTO(
+                new CreateIdentityDTO(
                     PartyType.Individual.name,
-                    Seeder.dob_sharedSecretType.code,
-                    '2015-12-31',
                     'John',
                     'Doe',
-                    undefined
-                ),
+                    undefined,
+                    Seeder.dob_sharedSecretType.code,
+                    '2015-12-31',
+                    IdentityType.InvitationCode.name,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    ProfileProvider.Temp.name),
                 new Date(),
                 new Date(),
                 [
@@ -130,10 +138,14 @@ describe('RAM Party', () => {
             expect(newRelationship.subjectNickName).not.toBeNull();
             expect(newRelationship.startTimestamp).not.toBeNull();
             expect(newRelationship.endTimestamp).not.toBeNull();
+
             done();
+
         } catch (e) {
             fail('Because ' + e);
             done();
         }
+
     });
+
 });

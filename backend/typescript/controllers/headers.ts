@@ -7,6 +7,7 @@ export class Headers {
 
     public static Identity = `${Headers.Prefix}-Identity`;
     public static IdentityIdValue = `${Headers.Prefix}-Identity-IdValue`;
+    public static IdentityType = `${Headers.Prefix}-IdentityType`;
 
     public static PartyType = `${Headers.Prefix}-PartyType`;
 
@@ -16,8 +17,11 @@ export class Headers {
     public static DOB = `${Headers.Prefix}-DOB`;
 
     public static ProfileProvider = `${Headers.Prefix}-ProfileProvider`;
-    public static LinkIdScheme = `${Headers.Prefix}-LinkIdScheme`;
+
     public static AgencyScheme = `${Headers.Prefix}-AgencyScheme`;
+    public static AgencyToken = `${Headers.Prefix}-AgencyToken`;
+    public static LinkIdScheme = `${Headers.Prefix}-LinkIdScheme`;
+    public static LinkIdConsumer = `${Headers.Prefix}-LinkIdConsumer`;
     public static PublicIdentifierScheme = `${Headers.Prefix}-PublicIdentifierScheme`;
 
 }

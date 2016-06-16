@@ -125,7 +125,7 @@ export class Seeder {
     public static jpty_and_jm_relationship:IRelationship;
     public static jpty_and_rs_relationship:IRelationship;
     public static j_and_f_relationship:IRelationship;
-    
+
     public static log(msg:String) {
         if(Seeder.verboseMode) {
             console.log(msg);

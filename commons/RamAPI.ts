@@ -225,13 +225,20 @@ export class RelationshipAttribute {
     }
 }
 
-export class IdentityDTO {
+export class CreateIdentityDTO {
     constructor(public partyTypeCode:string,
-                public sharedSecretTypeCode:string,
-                public sharedSecretValue:string,
                 public givenName:string,
                 public familyName:string,
-                public unstructuredName:string) {
+                public unstructuredName:string,
+                public sharedSecretTypeCode:string,
+                public sharedSecretValue:string,
+                public identityType:string,
+                public agencyScheme:string,
+                public agencyToken:string,
+                public linkIdScheme:string,
+                public linkIdConsumer:string,
+                public publicIdentifierScheme:string,
+                public profileProvider:string) {
     }
 }
 
@@ -252,7 +259,7 @@ export class AttributeDTO {
 export class RelationshipAddDTO {
     constructor(public relationshipTypeCode:string,
                 public subjectIdValue:string,
-                public delegate:IdentityDTO,
+                public delegate:CreateIdentityDTO,
                 public startTimestamp:Date,
                 public endTimestamp:Date,
                 public attributes:AttributeDTO[]) {
