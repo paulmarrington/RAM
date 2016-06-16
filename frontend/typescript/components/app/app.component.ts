@@ -7,7 +7,7 @@ import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RelationshipsComponent} from '../relationships/relationships.component';
 import {AddRelationshipComponent} from '../add-relationship/add-relationship.component';
 import {AddRelationshipCompleteComponent} from '../add-relationship-complete/add-relationship-complete.component';
-import {AcceptRelationshipCodeComponent} from '../accept-relationship-code/accept-relationship-code.component';
+import {EnterInvitationCodeComponent} from '../enter-invitation-code/enter-invitation-code.component';
 
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {provide} from '@angular/core';
@@ -51,7 +51,7 @@ import {RamComponent} from '../ram/ram.component';
     }, {
         path: '/relationships/accept',
         name: 'AcceptRelationshipCodeComponent',
-        component: AcceptRelationshipCodeComponent
+        component: EnterInvitationCodeComponent
     }
 ])
 export class AppComponent {
