@@ -38,8 +38,12 @@ export class AcceptAuthorisationComponent implements OnInit {
         this.relationship$.subscribe((relationship) => {
             this.relationshipType$ = this.rest.viewRelationshipTypeByHref(relationship.relationshipType.href);
         }, (err) => {
-            // todo
-            alert(JSON.stringify(err, null, 4));
+            if (err.status === 404) {
+                this.gotoRelationshipsPage();
+            } else {
+                // todo
+                alert(JSON.stringify(err, null, 4));
+            }
         });
     }
 
