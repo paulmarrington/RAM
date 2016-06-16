@@ -67,7 +67,7 @@ export class RelationshipController {
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
             .then((model) => model ? model.rejectPendingInvitation() : null)
-            .then((model) => Promise.resolve({}))
+            .then((model) => model ? Promise.resolve({}) : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
