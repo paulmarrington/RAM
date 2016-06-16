@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMRestService} from '../../services/ram-rest.service';
-// import * as _ from 'lodash';
 
 @Component({
     selector: 'nav-crumb',
@@ -15,5 +14,7 @@ export class NavCrumbComponent {
     public navigateTo(relId: string[]) {
         this.nav.navigateToRel(relId);
     }
+
+    public get currentIdentity() { return this.nav.currentIdentityName; }
 
 }
