@@ -34,7 +34,7 @@ export class PartyType extends RAMEnum {
 const PartySchema = RAMSchema({
     partyType: {
         type: String,
-        required: [true, 'Type is required'],
+        required: [true, 'Party Type is required'],
         trim: true,
         enum: PartyType.valueStrings()
     }
