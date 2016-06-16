@@ -136,7 +136,7 @@ export class RelationshipController {
 
         router.get('/v1/relationship/invitationCode/:invitationCode',
             security.isAuthenticated,
-            this.findPendingByInvitationCodeInDateRange);
+        this.findPendingByInvitationCodeInDateRange);
 
         router.post('/v1/relationship/invitationCode/:invitationCode/reject',
             security.isAuthenticated,
