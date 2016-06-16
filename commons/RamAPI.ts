@@ -240,7 +240,7 @@ export class AttributeDTO {
                 public value:string) {
     }
 
-    public static build(data:AttributeDTO[]):AttributeDTO[] {
+    public static build(data:[{code:string, value:string}]):AttributeDTO[] {
         const attributes:AttributeDTO[] = [];
         for (let attribute of data) {
             attributes.push(new AttributeDTO(attribute.code, attribute.value));
