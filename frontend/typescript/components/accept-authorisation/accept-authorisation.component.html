@@ -34,7 +34,7 @@
         <div class="col-lg-3">
             <h4>End time</h4>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-9">
             <h4>{{(relationship$ | async)?.endTimestamp || 'Not specified'}}</h4>
         </div>
     </div>
@@ -43,8 +43,19 @@
         <div class="col-lg-3">
             <h4>Relationship Type</h4>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-9">
             <h4>{{(relationshipType$ | async)?.shortDecodeText}}</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3">
+            <h4>Manage Authorisation</h4>
+        </div>
+        <div class="col-lg-9">
+            <h4>{{delegateManageAuthorisationAllowedIndAttribute?.value ?
+                'Yes, you can manage authorisations on behalf of the subject.' :
+                'No, you cannot manage authorisations on behalf of the subject.'}}</h4>
         </div>
     </div>
 
