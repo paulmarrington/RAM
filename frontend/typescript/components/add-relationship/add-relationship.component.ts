@@ -12,7 +12,6 @@ import {
     IName
 } from '../../../../commons/RamAPI2';
 
-
 @Component({
     selector: 'add-relationship',
     templateUrl: 'add-relationship.component.html',
@@ -23,7 +22,7 @@ import {
         DeclarationComponent,
         RepresentativeDetailsComponent
     ],
-    providers: [ROUTER_PROVIDERS, RAMIdentityService]
+    providers: [ROUTER_PROVIDERS]
 })
 export class AddRelationshipComponent {
     public idValue: string;

@@ -1,7 +1,6 @@
 import {OnInit, Component} from '@angular/core';
 import {FORM_DIRECTIVES, DatePipe} from '@angular/common';
 import {Router, ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
-import {RAMIdentityService} from '../../services/ram-identity.service';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {
     IRelationship,
@@ -15,7 +14,7 @@ import Rx from 'rxjs/Rx';
     selector: 'accept-authorisation',
     templateUrl: 'accept-authorisation.component.html',
     directives: [FORM_DIRECTIVES],
-    providers: [ROUTER_PROVIDERS, RAMIdentityService]
+    providers: [ROUTER_PROVIDERS]
 })
 export class AcceptAuthorisationComponent implements OnInit {
 

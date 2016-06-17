@@ -9,6 +9,7 @@ import {AddRelationshipComponent} from '../add-relationship/add-relationship.com
 import {AddRelationshipCompleteComponent} from '../add-relationship-complete/add-relationship-complete.component';
 import {AcceptAuthorisationComponent} from '../accept-authorisation/accept-authorisation.component';
 import {EnterInvitationCodeComponent} from '../enter-invitation-code/enter-invitation-code.component';
+import {RAMIdentityService} from '../../services/ram-identity.service';
 
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {provide} from '@angular/core';
@@ -29,6 +30,7 @@ import {RamComponent} from '../ram/ram.component';
         provide(LocationStrategy, { useClass: HashLocationStrategy }),
         RAMRestService,
         RAMNavService,
+        RAMIdentityService,
         RAMConstantsService,
         IdentityService,
         ErrorService
@@ -38,7 +40,7 @@ import {RamComponent} from '../ram/ram.component';
     { path: '/', name: 'Ram', component: RamComponent, useAsDefault: true },
 
     {
-        path: '/relationships/:identityValue',
+        path: '/relationships/:idValue',
         name: 'Relationships',
         component: RelationshipsComponent
     }, {
