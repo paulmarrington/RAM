@@ -5,29 +5,23 @@ import {ROUTER_DIRECTIVES, RouteParams, Router} from '@angular/router-deprecated
 @Component({
     selector: 'enter-invitation-code',
     templateUrl: 'enter-invitation-code.component.html',
-    directives: [FORM_DIRECTIVES,ROUTER_DIRECTIVES]
+    directives: [FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })
 export class EnterInvitationCodeComponent implements OnInit {
 
     public form: ControlGroup;
 
-    public code: string;
-
     public idValue: string;
-
-    public data: { relationshipCode: string } = { relationshipCode: '' };
 
     constructor(private _fb: FormBuilder, private router: Router,
         private routeParams: RouteParams) {
     }
 
     public ngOnInit() {
-        this.code = this.routeParams.get('invitationCode');
         this.idValue = this.routeParams.get('idValue');
 
         this.form = this._fb.group({
-            'relationshipCode': [this.data.relationshipCode,
-                Validators.compose([Validators.required])]
+            'relationshipCode': ['', Validators.compose([Validators.required])]
         });
 
     }
@@ -35,7 +29,7 @@ export class EnterInvitationCodeComponent implements OnInit {
     public activateCode() {
         this.router.navigate(['AcceptAuthorisationComponent', {
             idValue: this.idValue,
-            invitationCode: this.data.relationshipCode
+            invitationCode: this.form.controls['relationshipCode'].value
         }]);
     }
 
