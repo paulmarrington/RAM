@@ -144,13 +144,13 @@ export class RelationshipController {
         const schema = {}; // TODO when DTO is confirmed with front end
         validateReqSchema(req, schema)
             .then((req:Request) => {
-                return PartyModel.findByIdentityIdValue(req.body.subject);
+                return PartyModel.findByIdentityIdValue(req.body.subjectIdValue);
             })
             .then((subjectParty) => {
                 return subjectParty.addRelationship(
                     new RelationshipAddDTO(
                         req.body.relationshipType,
-                        req.body.subject,
+                        req.body.subjectIdValue,
                         new CreateIdentityDTO(
                             undefined,
                             req.body.delegate.partyType,

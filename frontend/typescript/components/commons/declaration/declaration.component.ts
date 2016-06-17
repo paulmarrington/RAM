@@ -13,11 +13,10 @@ export class DeclarationComponent implements OnInit {
 
     @Input('data') public data: DeclarationComponentData;
 
-    @Input('authoriseEvent') public authoriseEvent: () => void = () => { return; };
-
     @Output('dataChange') public dataChanges = new EventEmitter<DeclarationComponentData>();
 
     @Output('isValid') public isValid = new EventEmitter<boolean>();
+    @Output('createRelationshipEvent') public createRelationshipEvent = new EventEmitter<boolean>();
 
     public form: ControlGroup;
 
@@ -33,6 +32,10 @@ export class DeclarationComponent implements OnInit {
             this.dataChanges.emit(v);
             this.isValid.emit(this.form.valid);
         });
+    }
+
+    public createRelationship() {
+        this.createRelationshipEvent.emit(true);
     }
 
 }

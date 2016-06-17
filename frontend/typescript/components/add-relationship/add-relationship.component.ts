@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Input, EventEmitter, Component} from '@angular/core';
 import {AccessPeriodComponent, AccessPeriodComponentData} from '../commons/access-period/access-period.component';
 import {AuthorisationPermissionsComponent} from '../commons/authorisation-permissions/authorisation-permissions.component';
 import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from '../commons/authorisation-type/authorisation-type.component';
@@ -7,9 +7,11 @@ import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
 '../commons/representative-details/representative-details.component';
 import {ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
 import {RAMIdentityService} from '../../services/ram-identity.service';
+import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
-    IName
+    IName,
+    ICreateIdentityDTO
 } from '../../../../commons/RamAPI2';
 
 
@@ -31,6 +33,8 @@ export class AddRelationshipComponent {
     public identityDisplayName$: Rx.Observable<IName>;
 
     public accessPeriodValidationErrors = {};
+
+    //@Input('createRelationshipEvent') public createRelationshipEvent = new EventEmitter<boolean>();
 
     public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
@@ -57,7 +61,8 @@ export class AddRelationshipComponent {
     };
 
     constructor(private routeParams: RouteParams,
-        private identityService: RAMIdentityService) {
+        private identityService: RAMIdentityService,
+                private rest: RAMRestService) {
     }
 
     public ngOnInit() {
@@ -71,8 +76,58 @@ export class AddRelationshipComponent {
         return JSON.stringify(v, null, 2);
     }
 
-    public submit() {
-        console.dir(this.newRelationship);
+    /* tslint:disable:max-func-body-length */
+    public submit = () => {
+
+        let delegate: ICreateIdentityDTO;
+
+        if (this.newRelationship.representativeDetails.individual) {
+            delegate = {
+                partyType: 'INDIVIDUAL',
+                givenName: this.newRelationship.representativeDetails.individual.givenName,
+                familyName: this.newRelationship.representativeDetails.individual.familyName,
+                sharedSecretTypeCode: 'DATE_OF_BIRTH', // TODO: set to date of birth code
+                sharedSecretValue: this.newRelationship.representativeDetails.individual.dob.toString() /* TODO check format of date */,
+                identityType: 'INVITATION_CODE',
+                agencyScheme: undefined,
+                agencyToken: undefined,
+                linkIdScheme: undefined,
+                linkIdConsumer: undefined,
+                publicIdentifierScheme: undefined,
+                profileProvider: 'TEMP' /*TODO need to verify what provider to use for temp identities */,
+            };
+        } else {
+            /* TODO handle organisation delegate */
+            alert('NOT YET IMPLEMENTED!');
+            //delegate = {
+            //    partyType: 'ABN',
+            //    unstructuredName: '' ,
+            //    identityType: 'PUBLIC_IDENTIFIER',
+            //    publicIdentifierScheme: 'ABN',
+            //    agencyToken: this.newRelationship.representativeDetails.organisation.abn // // TODO: where does the ABN value go?
+            //};
+        }
+
+        const relationship:IRelationshipAddDTO = {
+            relationshipTypeCode: this.newRelationship.authType.authType,
+            subjectIdValue: this.idValue /* TODO subject identity idValue */,
+            delegate: delegate,
+            startTimestamp: this.newRelationship.accessPeriod.startDate,
+            endTimestamp: this.newRelationship.accessPeriod.endDate,
+            attributes: [] /* TODO setting the attributes */
+        };
+
+        console.log(this.rest);
+        this.rest.createRelationship(relationship).subscribe((relationship) => {
+            console.log(relationship);
+            //this.router.navigate(['AddRelationshipCompleteComponent', {
+            //    idValue: this.idValue,
+            //    invitationCode: relationship.code
+            //}]);
+        }, (err) => {
+            alert(err); // todo
+        });
+
     }
 }
 
