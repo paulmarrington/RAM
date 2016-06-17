@@ -23,7 +23,9 @@ export class AddRelationshipCompleteComponent implements OnInit {
 
     public idValue: string;
 
-    public identityDisplayName$: Rx.Observable<IName>;
+    public displayName: string;
+
+    // public identityDisplayName$: Rx.Observable<IName>;
 
     constructor(private _fb: FormBuilder, private _routeParams: RouteParams,
         private _identityService: RAMIdentityService) {
@@ -32,7 +34,9 @@ export class AddRelationshipCompleteComponent implements OnInit {
     public ngOnInit() {
         this.code = this._routeParams.get('invitationCode');
         this.idValue = this._routeParams.get('idValue');
-        this.identityDisplayName$ = this._identityService.getDefaultName(this.idValue).map(this.displayName);
+        this.displayName = this._routeParams.get('displayName');
+
+        // this.identityDisplayName$ = this._identityService.getDefaultName(this.idValue).map(this.displayName);
 
         this.form = this._fb.group({
             'email': ['', Validators.compose([RAMNgValidators.validateEmailFormat])],
@@ -41,9 +45,4 @@ export class AddRelationshipCompleteComponent implements OnInit {
 
     }
 
-    public displayName(name: IName): string {
-        if (name) {
-            return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
-        }
-    }
 }
