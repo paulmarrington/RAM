@@ -82,12 +82,13 @@ export class AddRelationshipComponent {
         let delegate: ICreateIdentityDTO;
 
         if (this.newRelationship.representativeDetails.individual) {
+            const dob = this.newRelationship.representativeDetails.individual.dob;
             delegate = {
                 partyType: 'INDIVIDUAL',
                 givenName: this.newRelationship.representativeDetails.individual.givenName,
                 familyName: this.newRelationship.representativeDetails.individual.familyName,
                 sharedSecretTypeCode: 'DATE_OF_BIRTH', // TODO: set to date of birth code
-                sharedSecretValue: this.newRelationship.representativeDetails.individual.dob.toString() /* TODO check format of date */,
+                sharedSecretValue: dob ? dob.toString() : null /* TODO check format of date */,
                 identityType: 'INVITATION_CODE',
                 agencyScheme: undefined,
                 agencyToken: undefined,
@@ -109,7 +110,7 @@ export class AddRelationshipComponent {
         }
 
         const relationship:IRelationshipAddDTO = {
-            relationshipTypeCode: this.newRelationship.authType.authType,
+            relationshipType: this.newRelationship.authType.authType,
             subjectIdValue: this.idValue /* TODO subject identity idValue */,
             delegate: delegate,
             startTimestamp: this.newRelationship.accessPeriod.startDate,
