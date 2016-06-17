@@ -1,37 +1,49 @@
 import {RAMNgValidators} from '../../commons/ram-ng-validators';
 import {OnInit, Component} from '@angular/core';
 import {Validators, ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
-import {ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
+import {ROUTER_DIRECTIVES, RouteParams} from '@angular/router-deprecated';
+import {RAMIdentityService} from '../../services/ram-identity.service';
+import Rx from 'rxjs/Rx';
+import {
+    IName
+} from '../../../../commons/RamAPI2';
 
 @Component({
     selector: 'add-relationship-complete',
     templateUrl: 'add-relationship-complete.component.html',
-    directives: [FORM_DIRECTIVES],
-    providers: [ROUTER_PROVIDERS]
+    directives: [ROUTER_DIRECTIVES, FORM_DIRECTIVES],
+    providers: []
 })
+
 export class AddRelationshipCompleteComponent implements OnInit {
 
     public form: ControlGroup;
-
-    public data: { email?: String, udn?: String } = { email: 'test1', udn: 'test2' };
 
     public code: string;
 
     public idValue: string;
 
-    constructor(private _fb: FormBuilder, private routeParams: RouteParams) {
+    public identityDisplayName$: Rx.Observable<IName>;
+
+    constructor(private _fb: FormBuilder, private _routeParams: RouteParams,
+        private _identityService: RAMIdentityService) {
     }
 
     public ngOnInit() {
-                this.code = this.routeParams.get('invitationCode');
-        this.idValue = this.routeParams.get('idValue');
+        this.code = this._routeParams.get('invitationCode');
+        this.idValue = this._routeParams.get('idValue');
+        this.identityDisplayName$ = this._identityService.getDefaultName(this.idValue).map(this.displayName);
 
         this.form = this._fb.group({
-            'email': [this.data.email,
-                Validators.compose([RAMNgValidators.validateEmailFormat])],
-            'udn': [this.data.udn,
-                Validators.compose([RAMNgValidators.validateUDNFormat])]
+            'email': ['', Validators.compose([RAMNgValidators.validateEmailFormat])],
+            'udn': ['', Validators.compose([RAMNgValidators.validateUDNFormat])]
         });
 
+    }
+
+    public displayName(name: IName): string {
+        if (name) {
+            return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
+        }
     }
 }

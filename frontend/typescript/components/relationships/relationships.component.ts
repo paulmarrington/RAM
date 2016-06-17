@@ -40,4 +40,10 @@ export class RelationshipsComponent {
         });
     }
 
+    public displayName(name: IName): string {
+        if (name) {
+            return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
+        }
+    }
+
 }

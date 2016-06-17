@@ -10,15 +10,15 @@
         <h3><strong>Option 1</strong></h3>
     </div>
     <p class="lead">
-        <h4><strong>Bob Smith</strong> must accept this authorisation before it is active. Instructions are included in a document
-            for you to <a href="">open a print friendly version (50kb)</a> and provide to Bob.</h4>
+        <h4><strong>{{identityDisplayName$|async}}</strong> must accept this authorisation before it is active. Instructions are included in a document
+            for you to <a href="">open a print friendly version </a> and provide to {{identityDisplayName$|async}}.</h4>
     </p>
 
     <div class="page-header">
         <h3><strong>Option 2</strong></h3>
     </div>
     <p class="lead">
-        <h4>Enter an email address to send the instructions to <strong>Bob Smith</strong>:</h4>
+        <h4>Enter an email address to send the instructions to <strong>{{identityDisplayName$|async}}</strong>:</h4>
         <form class="form-horizontal">
             <fieldset>
                 <div class="form-group">
@@ -38,7 +38,7 @@
         <h3><strong>Option 3</strong></h3>
     </div>
     <p class="lead">
-        <h4>Provide <strong>Bob Smith</strong>’s Authenticator App's Unique Device Name (UDN):</h4>
+        <h4>Provide <strong>{{identityDisplayName$|async}}</strong>’s Authenticator App's Unique Device Name (UDN):</h4>
         <form class="form-horizontal">
             <fieldset>
                 <div class="form-group">
@@ -58,17 +58,17 @@
 
     <hr/>
     <p>
-        <h4>The authorisation code <strong>CDE345</strong> is included in the instructions and will expire in 7 days.</h4>
-        <h4>You will be notified when <strong>Bob Smith</strong> has completed the authorisation.</h4>
+        <h4>The authorisation code <strong>{{code}}</strong> is included in the instructions and will expire in 7 days.</h4>
+        <h4>You will be notified when <strong>{{identityDisplayName$|async}}</strong> has completed the authorisation.</h4>
         <h4>To access these instructions again refer to the <strong>Authorisations</strong> page and select <strong>Edit</strong>            for this user.</h4>
     </p>
 
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
-    <a class="btn btn-primary col-md-3 pull-right"> Go to relationships → </a>
+    <a class="btn btn-default col-md-3 pull-right"  
+    [routerLink]="['/Relationships',{idValue:idValue}]"> Go to relationships → </a>
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
     <div class="padding-btn-20"></div>
-
 
 </div>

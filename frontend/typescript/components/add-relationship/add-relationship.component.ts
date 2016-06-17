@@ -33,8 +33,6 @@ export class AddRelationshipComponent {
 
     public accessPeriodValidationErrors = {};
 
-    //@Input('createRelationshipEvent') public createRelationshipEvent = new EventEmitter<boolean>();
-
     public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
             startDate: null,
@@ -46,7 +44,7 @@ export class AddRelationshipComponent {
         },
         representativeDetails: {
             individual: {
-                givenName: '',
+                 givenName: '',
                 familyName: null,
                 dob: null
             },
@@ -69,11 +67,6 @@ export class AddRelationshipComponent {
         // TODO fetch name
         //this.identityDisplayName$ = this.identityService
         //    .getDefaultName(this.idValue);
-    }
-
-    public dumpObject(v: Object) {
-        // creates formatted JSON - display in <pre> tag
-        return JSON.stringify(v, null, 2);
     }
 
     /* tslint:disable:max-func-body-length */

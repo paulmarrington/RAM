@@ -47,7 +47,8 @@
                         <td>{{relationshipLabel(row.rel)}}</td>
                         <td class="hidden-xs ">{{row.access}}</td>
                         <td class="hidden-xs ">{{row.status}}</td>
-                        <td *ngIf="!delegate"><a class="btn btn-primary btn-sm" (click)="navigateTo(row.relId)">act as →</a></td>
+                        <td *ngIf="!delegate && row.status=='ACTIVE'"><a class="btn btn-primary btn-sm"
+                        (click)="navigateTo(row.relId)">act as →</a></td>
                         <td *ngIf="delegate"><a class="btn btn-primary btn-sm" (click)="viewRelationship(row.relId)">View</a></td>
                     </tr>
                 </tbody>
