@@ -100,7 +100,7 @@ export class RelationshipsTableComponent implements OnInit {
         if (!relIds.length) {
             // THe first time through we need to load relationships for
             // the real identity.
-            this._relIds = [this.routeParams.get('identityValue')];
+            this._relIds = [this.routeParams.get('idValue')];
         } else {
             this._relIds = relIds;
         }
