@@ -1,11 +1,11 @@
-import {Input, EventEmitter, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {AccessPeriodComponent, AccessPeriodComponentData} from '../commons/access-period/access-period.component';
 import {AuthorisationPermissionsComponent} from '../commons/authorisation-permissions/authorisation-permissions.component';
 import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from '../commons/authorisation-type/authorisation-type.component';
 import {DeclarationComponent, DeclarationComponentData} from '../commons/declaration/declaration.component';
 import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
 '../commons/representative-details/representative-details.component';
-import {ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
+import {Router, RouteParams} from '@angular/router-deprecated';
 import {RAMIdentityService} from '../../services/ram-identity.service';
 import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
@@ -25,7 +25,7 @@ import {
         DeclarationComponent,
         RepresentativeDetailsComponent
     ],
-    providers: [ROUTER_PROVIDERS, RAMIdentityService]
+    providers: [RAMIdentityService]
 })
 export class AddRelationshipComponent {
     public idValue: string;
@@ -60,9 +60,10 @@ export class AddRelationshipComponent {
         }
     };
 
-    constructor(private routeParams: RouteParams,
-        private identityService: RAMIdentityService,
-                private rest: RAMRestService) {
+    constructor(private routeParams:RouteParams,
+                private router:Router,
+                private identityService:RAMIdentityService,
+                private rest:RAMRestService) {
     }
 
     public ngOnInit() {
@@ -120,13 +121,20 @@ export class AddRelationshipComponent {
 
         console.log(this.rest);
         this.rest.createRelationship(relationship).subscribe((relationship) => {
-            console.log(relationship);
-            //this.router.navigate(['AddRelationshipCompleteComponent', {
-            //    idValue: this.idValue,
-            //    invitationCode: relationship.code
-            //}]);
+            //console.log(JSON.stringify(relationship, null, 4));
+            this.rest.getIdentity(relationship.delegate.value.identities[0].href).subscribe((identity) => {
+                //console.log(JSON.stringify(identity, null, 4));
+                this.router.navigate(['AddRelationshipCompleteComponent', {
+                    idValue: this.idValue,
+                    invitationCode: identity.rawIdValue
+                }]);
+            }, (err) => {
+                // TODO
+                alert(JSON.stringify(err, null, 2));
+            });
         }, (err) => {
-            alert(err); // todo
+            // TODO
+            alert(JSON.stringify(err, null, 2));
         });
 
     }
