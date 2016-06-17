@@ -5,7 +5,7 @@ import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from '../com
 import {DeclarationComponent, DeclarationComponentData} from '../commons/declaration/declaration.component';
 import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
 '../commons/representative-details/representative-details.component';
-import {ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
+import {RouteParams} from '@angular/router-deprecated';
 import {RAMIdentityService} from '../../services/ram-identity.service';
 import Rx from 'rxjs/Rx';
 import {
@@ -21,8 +21,7 @@ import {
         AuthorisationTypeComponent,
         DeclarationComponent,
         RepresentativeDetailsComponent
-    ],
-    providers: [ROUTER_PROVIDERS]
+    ]
 })
 export class AddRelationshipComponent {
     public idValue: string;
