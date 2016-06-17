@@ -35,7 +35,7 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public getIdentity(href: string): Rx.Observable<IIdentity> {
+    public getIdentityByHref(href: string): Rx.Observable<IIdentity> {
         return this.http
             .get(href)
             .map(this.extractData);
