@@ -29,7 +29,7 @@
             <button class="col-xs-6 col-sm-3 btn btn-default">&#8592; Back</button>
             <button class=" col-xs-6 col-sm-3 col-sm-offset-6 btn btn-primary"
                 [disabled]='!(form.controls["accepted"].valid && isAuthorizedBtnEnabled)'
-                (click)="authoriseEvent"
+                (click)="callAuthoriseEvent()"
             >Authorise →</button>
         </form>
     </div>
