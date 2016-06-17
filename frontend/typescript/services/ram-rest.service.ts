@@ -35,12 +35,6 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public getIdentity(href: string): Rx.Observable<IIdentity> {
-        return this.http
-            .get(href)
-            .map(this.extractData);
-    }
-
     public viewRelationshipTypeByCode(code: string): Rx.Observable<IRelationshipType> {
         return this.http
             .get(`/api/v1/relationshipType/${code}`)

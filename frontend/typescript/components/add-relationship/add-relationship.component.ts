@@ -68,11 +68,6 @@ export class AddRelationshipComponent {
         //    .getDefaultName(this.idValue);
     }
 
-    public dumpObject(v: Object) {
-        // creates formatted JSON - display in <pre> tag
-        return JSON.stringify(v, null, 2);
-    }
-
     /* tslint:disable:max-func-body-length */
     public submit = () => {
 
