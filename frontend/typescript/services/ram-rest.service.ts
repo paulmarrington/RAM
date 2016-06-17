@@ -15,6 +15,7 @@ export class RAMRestService {
     constructor(private http: Http) {
     }
 
+    // TODO remove temporary api
     // A call external to RAM to get organisation name from ABN
     public getOrganisationNameFromABN(abn: string) {
         // This is temporary until we can talk to the server
@@ -30,19 +31,19 @@ export class RAMRestService {
         return body || {};
     }
 
-    public getIdentityByValue(identityValue: string): Rx.Observable<IIdentity> {
+    public findIdentityByValue(identityValue: string): Rx.Observable<IIdentity> {
         return this.http
             .get(`/api/v1/identity/${identityValue}`)
             .map(this.extractData);
     }
 
-    public getIdentityByHref(href: string): Rx.Observable<IIdentity> {
+    public findIdentityByHref(href: string): Rx.Observable<IIdentity> {
         return this.http
             .get(href)
             .map(this.extractData);
     }
 
-    public viewRelationshipTypeByCode(code: string): Rx.Observable<IRelationshipType> {
+    public findRelationshipTypeByCode(code: string): Rx.Observable<IRelationshipType> {
         return this.http
             .get(`/api/v1/relationshipType/${code}`)
             .map(this.extractData);
@@ -54,13 +55,13 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public viewRelationshipTypeByHref(href: string): Rx.Observable<IRelationshipType> {
+    public findRelationshipTypeByHref(href: string): Rx.Observable<IRelationshipType> {
         return this.http
             .get(href)
             .map(this.extractData);
     }
 
-    public viewPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
+    public findPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
         return this.http
             .get(`/api/v1/relationship/invitationCode/${invitationCode}`)
             .map(this.extractData);
@@ -93,5 +94,6 @@ export class RAMRestService {
         headers.append('Content-Type', 'application/json');
         return headers;
     }
+
 }
 

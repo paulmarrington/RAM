@@ -38,14 +38,14 @@ export class AcceptAuthorisationComponent implements OnInit {
     public ngOnInit() {
         this.code = this.routeParams.get('invitationCode');
         this.idValue = this.routeParams.get('idValue');
-        this.relationship$ = this.rest.viewPendingRelationshipByInvitationCode(this.code);
+        this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
         this.relationship$.subscribe((relationship) => {
             for (let attribute of relationship.attributes) {
                 if (attribute.attributeName.value.code === 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND') {
                     this.delegateManageAuthorisationAllowedIndAttribute = attribute;
                 }
             }
-            this.relationshipType$ = this.rest.viewRelationshipTypeByHref(relationship.relationshipType.href);
+            this.relationshipType$ = this.rest.findRelationshipTypeByHref(relationship.relationshipType.href);
             this.relationshipType$.subscribe((relationshipType) => {
                     for (let attributeUsage of relationshipType.relationshipAttributeNames) {
                         if (attributeUsage.attributeNameDef.value.code === 'DELEGATE_RELATIONSHIP_TYPE_DECLARATION') {
