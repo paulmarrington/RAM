@@ -15,7 +15,7 @@ import Rx from 'rxjs/Rx';
     selector: 'accept-authorisation',
     templateUrl: 'accept-authorisation.component.html',
     directives: [FORM_DIRECTIVES],
-    providers: [ROUTER_PROVIDERS, RAMIdentityService]
+    providers: [RAMIdentityService]
 })
 export class AcceptAuthorisationComponent implements OnInit {
 
