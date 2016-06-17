@@ -144,33 +144,34 @@ export class RelationshipController {
         const schema = {}; // TODO when DTO is confirmed with front end
         validateReqSchema(req, schema)
             .then((req:Request) => {
-                return PartyModel.findByIdentityIdValue(req.body.subject);
+                return PartyModel.findByIdentityIdValue(req.body.subjectIdValue);
             })
             .then((subjectParty) => {
-                return subjectParty.addRelationship(
-                    new RelationshipAddDTO(
-                        req.body.relationshipType,
-                        req.body.subject,
-                        new CreateIdentityDTO(
-                            undefined,
-                            req.body.delegate.partyType,
-                            req.body.delegate.givenName,
-                            req.body.delegate.familyName,
-                            req.body.delegate.unstructuredName,
-                            req.body.delegate.sharedSecret.code,
-                            req.body.delegate.sharedSecret.value,
-                            IdentityType.InvitationCode.name,
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined,
-                            ProfileProvider.Temp.name
-                        ),
-                        new Date(req.body.startTimestamp),
-                        new Date(req.body.endTimestamp),
-                        AttributeDTO.build(req.body.attributes)
-                    ));
+                const relationshipAddDTO = new RelationshipAddDTO(
+                    req.body.relationshipType,
+                    req.body.subjectIdValue,
+                    new CreateIdentityDTO(
+                        undefined,
+                        req.body.delegate.partyType,
+                        req.body.delegate.givenName,
+                        req.body.delegate.familyName,
+                        req.body.delegate.unstructuredName,
+                        req.body.delegate.sharedSecretTypeCode,
+                        req.body.delegate.sharedSecretValue,
+                        IdentityType.InvitationCode.name,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        ProfileProvider.Temp.name
+                    ),
+                    req.body.startTimestamp ? new Date(req.body.startTimestamp) : undefined,
+                    req.body.endTimestamp ? new Date(req.body.endTimestamp) : undefined,
+                    AttributeDTO.build(req.body.attributes)
+                );
+                // console.log(relationshipAddDTO);
+                return subjectParty.addRelationship(relationshipAddDTO);
             })
             .then((model) => model ? model.toDTO() : null)
             .then(sendResource(res), sendError(res))

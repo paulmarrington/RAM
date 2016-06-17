@@ -113,7 +113,7 @@ export interface ICreateIdentityDTO {
     linkIdScheme?:string;
     linkIdConsumer?:string;
     publicIdentifierScheme?:string;
-    profileProvider:string;
+    profileProvider?:string;
 }
 
 export class IAttributeDTO {
@@ -122,7 +122,7 @@ export class IAttributeDTO {
 }
 
 export class IRelationshipAddDTO {
-    relationshipTypeCode:string;
+    relationshipType:string;
     subjectIdValue:string;
     delegate:ICreateIdentityDTO;
     startTimestamp:Date;

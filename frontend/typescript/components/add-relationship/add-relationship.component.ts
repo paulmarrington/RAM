@@ -5,11 +5,13 @@ import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from '../com
 import {DeclarationComponent, DeclarationComponentData} from '../commons/declaration/declaration.component';
 import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
 '../commons/representative-details/representative-details.component';
-import {RouteParams} from '@angular/router-deprecated';
+import {Router, RouteParams} from '@angular/router-deprecated';
 import {RAMIdentityService} from '../../services/ram-identity.service';
+import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
-    IName
+    IName,
+    ICreateIdentityDTO
 } from '../../../../commons/RamAPI2';
 
 @Component({
@@ -29,6 +31,8 @@ export class AddRelationshipComponent {
     public identityDisplayName$: Rx.Observable<IName>;
 
     public accessPeriodValidationErrors = {};
+
+    //@Input('createRelationshipEvent') public createRelationshipEvent = new EventEmitter<boolean>();
 
     public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
@@ -54,14 +58,16 @@ export class AddRelationshipComponent {
         }
     };
 
-    constructor(private routeParams: RouteParams,
-        private identityService: RAMIdentityService) {
+    constructor(private routeParams:RouteParams,
+                private router:Router,
+                private rest:RAMRestService) {
     }
 
     public ngOnInit() {
         this.idValue = this.routeParams.get('idValue');
-        this.identityDisplayName$ = this.identityService
-            .getDefaultName(this.idValue);
+        // TODO fetch name
+        //this.identityDisplayName$ = this.identityService
+        //    .getDefaultName(this.idValue);
     }
 
     public dumpObject(v: Object) {
@@ -69,8 +75,66 @@ export class AddRelationshipComponent {
         return JSON.stringify(v, null, 2);
     }
 
-    public submit() {
-        console.dir(this.newRelationship);
+    /* tslint:disable:max-func-body-length */
+    public submit = () => {
+
+        let delegate: ICreateIdentityDTO;
+
+        if (this.newRelationship.representativeDetails.individual) {
+            const dob = this.newRelationship.representativeDetails.individual.dob;
+            delegate = {
+                partyType: 'INDIVIDUAL',
+                givenName: this.newRelationship.representativeDetails.individual.givenName,
+                familyName: this.newRelationship.representativeDetails.individual.familyName,
+                sharedSecretTypeCode: 'DATE_OF_BIRTH', // TODO: set to date of birth code
+                sharedSecretValue: dob ? dob.toString() : ' ' /* TODO check format of date, currently sending x for space */,
+                identityType: 'INVITATION_CODE',
+                agencyScheme: undefined,
+                agencyToken: undefined,
+                linkIdScheme: undefined,
+                linkIdConsumer: undefined,
+                publicIdentifierScheme: undefined,
+                profileProvider: undefined,
+            };
+        } else {
+            /* TODO handle organisation delegate */
+            alert('NOT YET IMPLEMENTED!');
+            //delegate = {
+            //    partyType: 'ABN',
+            //    unstructuredName: '' ,
+            //    identityType: 'PUBLIC_IDENTIFIER',
+            //    publicIdentifierScheme: 'ABN',
+            //    agencyToken: this.newRelationship.representativeDetails.organisation.abn // // TODO: where does the ABN value go?
+            //};
+        }
+
+        const relationship:IRelationshipAddDTO = {
+            relationshipType: this.newRelationship.authType.authType,
+            subjectIdValue: this.idValue /* TODO subject identity idValue */,
+            delegate: delegate,
+            startTimestamp: this.newRelationship.accessPeriod.startDate,
+            endTimestamp: this.newRelationship.accessPeriod.endDate,
+            attributes: [] /* TODO setting the attributes */
+        };
+
+        console.log(this.rest);
+        this.rest.createRelationship(relationship).subscribe((relationship) => {
+            //console.log(JSON.stringify(relationship, null, 4));
+            this.rest.getIdentity(relationship.delegate.value.identities[0].href).subscribe((identity) => {
+                //console.log(JSON.stringify(identity, null, 4));
+                this.router.navigate(['AddRelationshipCompleteComponent', {
+                    idValue: this.idValue,
+                    invitationCode: identity.rawIdValue
+                }]);
+            }, (err) => {
+                // TODO
+                alert(JSON.stringify(err, null, 2));
+            });
+        }, (err) => {
+            // TODO
+            alert(JSON.stringify(err, null, 2));
+        });
+
     }
 }
 
