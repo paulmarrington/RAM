@@ -15,7 +15,9 @@
     <access-period [(data)]='newRelationship.accessPeriod' (isValid)='accessPeriodIsValid=$event'>
     </access-period>
     <!--authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions-->
-    <declaration [(data)]='newRelationship.decalaration' (isValid)='declarationIsValid=$event'
+    <declaration [(data)]='newRelationship.decalaration' 
+    [authoriseEvent]='submit'
+    (isValid)='declarationIsValid=$event'
     [isAuthorizedBtnEnabled]='accessPeriodIsValid && authTypeIsValid && representativeIsValid'></declaration>
     <!--{{dumpObject(newRelationship)}}-->
 

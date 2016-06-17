@@ -64,12 +64,12 @@ export class AcceptAuthorisationComponent implements OnInit {
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['Relationships', {identityValue: this.idValue}]);
+        this.router.navigate(['Relationships', { identityValue: this.idValue }]);
     };
 
     /**
      * Todo: Implement displayName as a pipe
-     **/
+     */
     public displayName(name: IName) {
         if (name) {
             return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
