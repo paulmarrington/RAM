@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
     IIdentity,
+    IRelationshipAddDTO,
     IRelationship,
     IRelationshipType
 } from '../../../commons/RamAPI2';
@@ -54,9 +55,14 @@ export class RAMRestService {
 
     public acceptPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
         return this.http
-            .post(`/api/v1/relationship/invitationCode/${invitationCode}/accept`,'')
+            .post(`/api/v1/relationship/invitationCode/${invitationCode}/accept`, '')
             .map(this.extractData);
     }
 
+    public createRelationship(relationship: IRelationshipAddDTO): Rx.Observable<IRelationship> {
+        return this.http
+            .post(`/api/v1/relationship`, JSON.stringify(relationship))
+            .map(this.extractData);
+    }
 }
 
