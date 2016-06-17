@@ -1,11 +1,11 @@
 import {OnInit, Component} from '@angular/core';
 import {Validators, ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
-import {ROUTER_DIRECTIVES, RouteParams, Router} from '@angular/router-deprecated';
+import {RouteParams, Router,ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 
 @Component({
     selector: 'enter-invitation-code',
     templateUrl: 'enter-invitation-code.component.html',
-    directives: [FORM_DIRECTIVES, ROUTER_DIRECTIVES]
+    directives: [FORM_DIRECTIVES,ROUTER_DIRECTIVES]
 })
 export class EnterInvitationCodeComponent implements OnInit {
 
@@ -26,15 +26,15 @@ export class EnterInvitationCodeComponent implements OnInit {
 
     }
 
-    public activateCode() {
+    public activateCode(event: Event) {
+
         this.router.navigate(['AcceptAuthorisationComponent', {
             idValue: this.idValue,
             invitationCode: this.form.controls['relationshipCode'].value
         }]);
-    }
 
-    public goToRelationshipsPage = () => {
-        this.router.navigate(['Relationships', { idValue: this.idValue }]);
-    };
+        event.stopPropagation();
+        return false;
+    }
 
 }

@@ -1,5 +1,5 @@
 import {OnInit, Component} from '@angular/core';
-import {FORM_DIRECTIVES, DatePipe} from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {Router, RouteParams} from '@angular/router-deprecated';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMIdentityService} from '../../services/ram-identity.service';
@@ -14,7 +14,6 @@ import Rx from 'rxjs/Rx';
 @Component({
     selector: 'accept-authorisation',
     templateUrl: 'accept-authorisation.component.html',
-    directives: [FORM_DIRECTIVES],
     providers: []
 })
 
@@ -82,7 +81,7 @@ export class AcceptAuthorisationComponent implements OnInit {
         }
     }
 
-    // TODO: not sure how to set the locale
+    // TODO: not sure how to set the locale, Implement as a pipe
     public displayDate(dateString: string) {
         if (dateString) {
             const date = new Date(dateString);
