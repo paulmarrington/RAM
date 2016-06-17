@@ -32,8 +32,6 @@ export class AddRelationshipComponent {
 
     public accessPeriodValidationErrors = {};
 
-    //@Input('createRelationshipEvent') public createRelationshipEvent = new EventEmitter<boolean>();
-
     public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
             startDate: null,
@@ -45,7 +43,7 @@ export class AddRelationshipComponent {
         },
         representativeDetails: {
             individual: {
-                givenName: '',
+                 givenName: '',
                 familyName: null,
                 dob: null
             },
