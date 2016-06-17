@@ -16,6 +16,7 @@ import Rx from 'rxjs/Rx';
     directives: [FORM_DIRECTIVES],
     providers: [ROUTER_PROVIDERS]
 })
+
 export class AcceptAuthorisationComponent implements OnInit {
 
     public code: string;

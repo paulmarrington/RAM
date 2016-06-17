@@ -100,19 +100,19 @@ export interface IRelationshipAttribute {
 }
 
 export interface ICreateIdentityDTO {
-    rawIdValue:string;
+    rawIdValue?:string;
     partyType:string;
-    givenName:string;
-    familyName:string;
-    unstructuredName:string;
+    givenName?:string;
+    familyName?:string;
+    unstructuredName?:string;
     sharedSecretTypeCode:string;
     sharedSecretValue:string;
     identityType:string;
-    agencyScheme:string;
-    agencyToken:string;
-    linkIdScheme:string;
-    linkIdConsumer:string;
-    publicIdentifierScheme:string;
+    agencyScheme?:string;
+    agencyToken?:string;
+    linkIdScheme?:string;
+    linkIdConsumer?:string;
+    publicIdentifierScheme?:string;
     profileProvider:string;
 }
 
