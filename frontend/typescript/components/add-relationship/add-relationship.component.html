@@ -5,8 +5,6 @@
         </div>
     </div>
 
-    <!--<strong>{{ identityDisplayName$ | async }}</strong>-->
-    
     <representative-details [(data)]='newRelationship.representativeDetails' (isValid)='representativeIsValid=$event'>
     </representative-details>
     <authorisation-type [(data)]='newRelationship.authType' (isValid)='authTypeIsValid=$event'>
@@ -14,8 +12,8 @@
     <access-period [(data)]='newRelationship.accessPeriod' (isValid)='accessPeriodIsValid=$event'>
     </access-period>
     <!--authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions-->
-    <declaration [(data)]='newRelationship.decalaration' 
-    (authoriseEvent)='submit()'
+    <declaration [(data)]='newRelationship.decalaration'
+    (createRelationshipEvent)="submit()"
     (isValid)='declarationIsValid=$event'
     [isAuthorizedBtnEnabled]='accessPeriodIsValid && authTypeIsValid && representativeIsValid'></declaration>
     <!--{{dumpObject(newRelationship)}}-->

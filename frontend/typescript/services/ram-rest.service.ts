@@ -6,7 +6,7 @@ import {
     IRelationshipType
 } from '../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
-import {Response, Http} from '@angular/http';
+import {Response, Http, Headers} from '@angular/http';
 
 @Injectable()
 export class RAMRestService {
@@ -35,6 +35,12 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
+    public getIdentity(href: string): Rx.Observable<IIdentity> {
+        return this.http
+            .get(href)
+            .map(this.extractData);
+    }
+
     public viewRelationshipTypeByCode(code: string): Rx.Observable<IRelationshipType> {
         return this.http
             .get(`/api/v1/relationshipType/${code}`)
@@ -60,8 +66,12 @@ export class RAMRestService {
     }
 
     public createRelationship(relationship: IRelationshipAddDTO): Rx.Observable<IRelationship> {
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
         return this.http
-            .post(`/api/v1/relationship`, JSON.stringify(relationship))
+            .post(`/api/v1/relationship`, JSON.stringify(relationship), {
+                headers: headers
+            })
             .map(this.extractData);
     }
 }

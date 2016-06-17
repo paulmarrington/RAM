@@ -94,7 +94,7 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
     // TODO improve handling of lookups that return null outside of the date range
 
     // lookups
-    const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipTypeCode, new Date());
+    const relationshipType = await RelationshipTypeModel.findByCodeInDateRange(dto.relationshipType, new Date());
     const subjectIdentity = await IdentityModel.findByIdValue(dto.subjectIdValue);
 
     // create the temp identity for the invitation code
