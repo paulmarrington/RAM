@@ -259,7 +259,7 @@ export class AttributeDTO implements IAttributeDTO {
 }
 
 export class RelationshipAddDTO implements IRelationshipAddDTO {
-    constructor(public relationshipTypeCode:string,
+    constructor(public relationshipType:string,
                 public subjectIdValue:string,
                 public delegate:CreateIdentityDTO,
                 public startTimestamp:Date,

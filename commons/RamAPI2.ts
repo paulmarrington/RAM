@@ -122,7 +122,7 @@ export class IAttributeDTO {
 }
 
 export class IRelationshipAddDTO {
-    relationshipTypeCode:string;
+    relationshipType:string;
     subjectIdValue:string;
     delegate:ICreateIdentityDTO;
     startTimestamp:Date;
