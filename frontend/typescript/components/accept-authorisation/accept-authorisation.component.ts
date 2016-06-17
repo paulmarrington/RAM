@@ -64,6 +64,10 @@ export class AcceptAuthorisationComponent implements OnInit {
         });
     }
 
+    public declineAuthorisation = () => {
+        alert('TODO: Decline - Out of Scope');
+    }
+
     public acceptAuthorisation = () => {
         this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {
             this.goToRelationshipsPage();
