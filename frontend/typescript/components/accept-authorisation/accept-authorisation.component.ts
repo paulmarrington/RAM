@@ -65,7 +65,7 @@ export class AcceptAuthorisationComponent implements OnInit {
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['Relationships', { identityValue: this.idValue }]);
+        this.router.navigate(['Relationships', { idValue: this.idValue }]);
     };
 
     /**

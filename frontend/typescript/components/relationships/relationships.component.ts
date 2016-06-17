@@ -22,7 +22,6 @@ export class RelationshipsComponent {
 
     constructor(private routeParams: RouteParams,
         private identityService: RAMIdentityService) {
-
     }
 
     public ngOnInit() {

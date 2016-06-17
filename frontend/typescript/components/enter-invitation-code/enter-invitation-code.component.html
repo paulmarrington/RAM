@@ -5,20 +5,20 @@
         </div>
     </div>
 
-    <form class="form-horizontal">
+    <form class="form-horizontal" [ngFormModel]='form'>
         <div class="form-group">
-            <div class="col-lg-8">
-                <input type="text" class="form-control" placeholder="Authorisation code ...">
+            <div class="col-lg-8" [class.has-error]="!form.controls['relationshipCode'].valid">
+                <input type="text" class="form-control" placeholder="Authorisation code ..." [ngFormControl]='form.controls["relationshipCode"]'>
             </div>
             <div class="col-lg-2">
-                <a class="btn btn-primary col-lg-12" (click)="activateCode()">Activate</a>
+                <button class="btn btn-primary col-lg-12" (click)="activateCode()" [disabled]='!form.valid'>Activate</button>
             </div>
         </div>
     </form>
 
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
-    <a class="btn btn-primary col-md-3 align-center"> Go to relationships → </a>
+    <a class="btn btn-primary col-md-3 align-center" [routerLink]="['/Relationships',{idValue:idValue}]"> Go to relationships → </a>
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
     <div class="padding-btn-20"></div>
