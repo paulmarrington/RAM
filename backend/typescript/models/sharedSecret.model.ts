@@ -16,7 +16,6 @@ const SharedSecretSchema = RAMSchema({
     value: {
         type: String,
         required: [true, 'Value is required'],
-        trim: true,
         set: (value:String) => {
             if (value) {
                 const salt = bcrypt.genSaltSync(10);

@@ -88,7 +88,7 @@ export class AddRelationshipComponent {
                 givenName: this.newRelationship.representativeDetails.individual.givenName,
                 familyName: this.newRelationship.representativeDetails.individual.familyName,
                 sharedSecretTypeCode: 'DATE_OF_BIRTH', // TODO: set to date of birth code
-                sharedSecretValue: dob ? dob.toString() : 'x' /* TODO check format of date, currently sending x for empty */,
+                sharedSecretValue: dob ? dob.toString() : ' ' /* TODO check format of date, currently sending x for space */,
                 identityType: 'INVITATION_CODE',
                 agencyScheme: undefined,
                 agencyToken: undefined,
