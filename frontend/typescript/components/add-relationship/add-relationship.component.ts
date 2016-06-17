@@ -32,6 +32,7 @@ import {
     ]
 })
 export class AddRelationshipComponent {
+
     public idValue: string;
     public manageAuthAttribute: IRelationshipAttributeNameUsage;
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
@@ -84,6 +85,10 @@ export class AddRelationshipComponent {
             this.newRelationship.authorisationManagement.value = this.manageAuthAttribute.defaultValue;
         });
     }
+
+    public back = () => {
+        this.router.navigate(['Relationships', {idValue: this.idValue}]);
+    };
 
     /* tslint:disable:max-func-body-length */
     public submit = () => {

@@ -26,7 +26,8 @@
             <div class="form-group col-md-12" >
                 <label><h4><input type="checkbox" [ngFormControl]='form.controls["accepted"]'> I accept</h4></label>
             </div>
-            <button class="col-xs-6 col-sm-3 btn btn-default">&#8592; Back</button>
+            <button class="col-xs-6 col-sm-3 btn btn-default"
+                    (click)="back()">&#8592; Back</button>
             <button class=" col-xs-6 col-sm-3 col-sm-offset-6 btn btn-primary"
                 [disabled]='!(form.controls["accepted"].valid && isAuthorizedBtnEnabled)'
                 (click)="createRelationship()"
