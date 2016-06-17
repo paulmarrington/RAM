@@ -65,8 +65,9 @@ export class AddRelationshipComponent {
 
     public ngOnInit() {
         this.idValue = this.routeParams.get('idValue');
-        this.identityDisplayName$ = this.identityService
-            .getDefaultName(this.idValue);
+        // TODO fetch name
+        //this.identityDisplayName$ = this.identityService
+        //    .getDefaultName(this.idValue);
     }
 
     public dumpObject(v: Object) {
