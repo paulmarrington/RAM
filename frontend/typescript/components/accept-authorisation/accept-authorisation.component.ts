@@ -30,9 +30,9 @@ export class AcceptAuthorisationComponent implements OnInit {
     public delegateRelationshipTypeDeclarationAttributeUsage: IRelationshipAttributeNameUsage;
 
     constructor(private routeParams: RouteParams,
-        private router: Router,
-        private identityService: RAMIdentityService,
-        private rest: RAMRestService) {
+                private router: Router,
+                private identityService: RAMIdentityService,
+                private rest: RAMRestService) {
     }
 
     public ngOnInit() {
