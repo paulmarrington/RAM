@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {RouteParams} from '@angular/router-deprecated';
+import {RouteParams, Router} from '@angular/router-deprecated';
 import Rx from 'rxjs/Rx';
 import {ControlGroup, Control, FORM_DIRECTIVES,FORM_PROVIDERS} from '@angular/common';
 import {RAMConstantsService} from '../../services/ram-constants.service';
@@ -74,6 +74,7 @@ export class RelationshipsTableComponent implements OnInit {
     constructor(
         private constants: RAMConstantsService,
         private routeParams:RouteParams,
+        private router: Router,
         private nav: RAMNavService,
         private rest: RAMRestService2) {
         this._filters$ = new ControlGroup({
@@ -121,7 +122,7 @@ export class RelationshipsTableComponent implements OnInit {
     }
 
     public navigateTo(relId: string) {
-        this.nav.navigateToRel([relId]);
+        this.router.navigate(['Relationships', { idValue: relId }]);
     }
 
     public viewRelationship(relId: string) {
