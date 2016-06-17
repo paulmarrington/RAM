@@ -2,6 +2,7 @@ import {OnInit, Component} from '@angular/core';
 import {FORM_DIRECTIVES, DatePipe} from '@angular/common';
 import {Router, ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
 import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
     IRelationship,
     IRelationshipType,
