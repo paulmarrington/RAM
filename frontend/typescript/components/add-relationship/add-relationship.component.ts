@@ -136,7 +136,7 @@ export class AddRelationshipComponent {
 
         this.rest.createRelationship(relationship).subscribe((relationship) => {
             //console.log(JSON.stringify(relationship, null, 4));
-            this.rest.getIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
+            this.rest.findIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
                 //console.log(JSON.stringify(identity, null, 4));
                 this.router.navigate(['AddRelationshipCompleteComponent', {
                     idValue: this.idValue,
