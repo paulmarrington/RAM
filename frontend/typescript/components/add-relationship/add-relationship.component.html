@@ -7,17 +7,22 @@
 
     <representative-details [(data)]='newRelationship.representativeDetails' (isValid)='representativeIsValid=$event'>
     </representative-details>
+
     <authorisation-type [(data)]='newRelationship.authType' (isValid)='authTypeIsValid=$event'>
     </authorisation-type>
+
     <access-period [(data)]='newRelationship.accessPeriod' (isValid)='accessPeriodIsValid=$event'>
     </access-period>
-    <authorisation-management [(data)]='newRelationship.authorisationManagement' [attributeNameUsage]='manageAuthAttribute'></authorisation-management>
-    <!--authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions-->
-    <declaration [(data)]='newRelationship.decalaration'
-    (createRelationshipEvent)="submit()"
-    (isValid)='declarationIsValid=$event'
-    [isAuthorizedBtnEnabled]='accessPeriodIsValid && authTypeIsValid && representativeIsValid'></declaration>
-    <!--{{dumpObject(newRelationship)}}-->
 
+    <authorisation-management [(data)]='newRelationship.authorisationManagement' [attributeNameUsage]='manageAuthAttribute'></authorisation-management>
+
+    <!--authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions-->
+
+    <declaration [(data)]='newRelationship.decalaration'
+                 (createRelationshipEvent)="submit()"
+                 (isValid)='declarationIsValid=$event'
+                 [isAuthorizedBtnEnabled]='accessPeriodIsValid && authTypeIsValid && representativeIsValid'></declaration>
+
+    <!--{{dumpObject(newRelationship)}}-->
 
 </div>
