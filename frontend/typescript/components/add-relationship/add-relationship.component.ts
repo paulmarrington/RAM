@@ -111,7 +111,6 @@ export class AddRelationshipComponent {
             attributes: [] /* TODO setting the attributes */
         };
 
-        console.log(this.rest);
         this.rest.createRelationship(relationship).subscribe((relationship) => {
             //console.log(JSON.stringify(relationship, null, 4));
             this.rest.getIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
