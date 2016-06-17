@@ -3,7 +3,7 @@ import {
     IIdentity,
     IRelationshipAddDTO,
     IRelationship,
-    IRelationshipType
+    IRelationshipType, INotifyDelegateDTO
 } from '../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
 import {Response, Http, Headers} from '@angular/http';
@@ -72,14 +72,26 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public createRelationship(relationship: IRelationshipAddDTO): Rx.Observable<IRelationship> {
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+    public notifyDelegateByInvitationCode(invitationCode: string, notification:INotifyDelegateDTO): Rx.Observable<IRelationship> {
         return this.http
-            .post(`/api/v1/relationship`, JSON.stringify(relationship), {
-                headers: headers
+            .post(`/api/v1/relationship/invitationCode/${invitationCode}/notifyDelegate`, JSON.stringify(notification), {
+                headers: this.headersForJson()
             })
             .map(this.extractData);
+    }
+
+    public createRelationship(relationship: IRelationshipAddDTO): Rx.Observable<IRelationship> {
+        return this.http
+            .post(`/api/v1/relationship`, JSON.stringify(relationship), {
+                headers: this.headersForJson()
+            })
+            .map(this.extractData);
+    }
+
+    private headersForJson() {
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        return headers;
     }
 }
 

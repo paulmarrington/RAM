@@ -6,7 +6,6 @@ import {DeclarationComponent, DeclarationComponentData} from '../commons/declara
 import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
 '../commons/representative-details/representative-details.component';
 import {Router, RouteParams} from '@angular/router-deprecated';
-import {RAMIdentityService} from '../../services/ram-identity.service';
 import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
@@ -38,7 +37,7 @@ export class AddRelationshipComponent {
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
     public accessPeriodValidationErrors = {};
 
-    public relationshipTypes$: Rx.Observable<HrefValue<IRelationshipType>[]>;
+    public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
     public identityDisplayName$: Rx.Observable<IName>;
 
     public newRelationship: AddRelationshipComponentData = {
@@ -153,7 +152,7 @@ export class AddRelationshipComponent {
             alert(JSON.stringify(err, null, 2));
         });
 
-    }
+    };
 
     public findRelationshipType(code:string):IHrefValue<IRelationshipType> {
         for(let relationshipType of this.relationshipTypes) {
