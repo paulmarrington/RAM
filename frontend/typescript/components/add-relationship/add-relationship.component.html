@@ -5,9 +5,6 @@
         </div>
     </div>
 
-    {{idValue}}
-    <strong>{{ identityDisplayName$ | async }}</strong>
-
     <representative-details [(data)]='newRelationship.representativeDetails' (isValid)='representativeIsValid=$event'>
     </representative-details>
     <authorisation-type [(data)]='newRelationship.authType' (isValid)='authTypeIsValid=$event'>

@@ -14,7 +14,6 @@ import {
     ICreateIdentityDTO
 } from '../../../../commons/RamAPI2';
 
-
 @Component({
     selector: 'add-relationship',
     templateUrl: 'add-relationship.component.html',
@@ -24,8 +23,7 @@ import {
         AuthorisationTypeComponent,
         DeclarationComponent,
         RepresentativeDetailsComponent
-    ],
-    providers: [RAMIdentityService]
+    ]
 })
 export class AddRelationshipComponent {
     public idValue: string;
@@ -62,7 +60,6 @@ export class AddRelationshipComponent {
 
     constructor(private routeParams:RouteParams,
                 private router:Router,
-                private identityService:RAMIdentityService,
                 private rest:RAMRestService) {
     }
 

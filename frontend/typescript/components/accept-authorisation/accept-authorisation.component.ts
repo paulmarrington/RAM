@@ -1,8 +1,8 @@
 import {OnInit, Component} from '@angular/core';
 import {FORM_DIRECTIVES, DatePipe} from '@angular/common';
-import {Router, ROUTER_PROVIDERS, RouteParams} from '@angular/router-deprecated';
-import {RAMIdentityService} from '../../services/ram-identity.service';
+import {Router, RouteParams} from '@angular/router-deprecated';
 import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
     IRelationship,
     IRelationshipType,
@@ -15,8 +15,9 @@ import Rx from 'rxjs/Rx';
     selector: 'accept-authorisation',
     templateUrl: 'accept-authorisation.component.html',
     directives: [FORM_DIRECTIVES],
-    providers: [RAMIdentityService]
+    providers: []
 })
+
 export class AcceptAuthorisationComponent implements OnInit {
 
     public code: string;
@@ -64,7 +65,7 @@ export class AcceptAuthorisationComponent implements OnInit {
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['Relationships', { identityValue: this.idValue }]);
+        this.router.navigate(['Relationships', { idValue: this.idValue }]);
     };
 
     /**
