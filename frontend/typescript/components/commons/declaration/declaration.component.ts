@@ -19,7 +19,6 @@ export class DeclarationComponent implements OnInit {
 
     @Output('isValid') public isValid = new EventEmitter<boolean>();
 
-
     public form: ControlGroup;
 
     constructor(private _fb: FormBuilder) {
@@ -35,8 +34,6 @@ export class DeclarationComponent implements OnInit {
             this.isValid.emit(this.form.valid);
         });
     }
-
-
 
 }
 
