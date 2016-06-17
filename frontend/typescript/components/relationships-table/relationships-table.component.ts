@@ -1,10 +1,14 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {RouteParams} from '@angular/router-deprecated';
+import {RouteParams, Router} from '@angular/router-deprecated';
 import Rx from 'rxjs/Rx';
 import {ControlGroup, Control, FORM_DIRECTIVES,FORM_PROVIDERS} from '@angular/common';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMRestService2, IRelationshipTableRow} from '../../services/ram-rest2.service';
+import {
+    IRelationshipType
+} from '../../../../commons/RamAPI2';
+import {relationshipTypes} from '../../../../backend/typescript/models/relationship-old.model';
 
 @Component({
     selector: 'ram-relationships-table',
@@ -71,9 +75,12 @@ export class RelationshipsTableComponent implements OnInit {
         return this._filters$;
     }
 
+    @Input() public relationshipTypes: IRelationshipType[];
+
     constructor(
         private constants: RAMConstantsService,
         private routeParams:RouteParams,
+        private router: Router,
         private nav: RAMNavService,
         private rest: RAMRestService2) {
         this._filters$ = new ControlGroup({
@@ -120,11 +127,23 @@ export class RelationshipsTableComponent implements OnInit {
         return response;
     }
 
+    public relationshipLabel = (code: string): string => {
+        if (this.relationshipTypes) {
+            for (let relationshipType of this.relationshipTypes) {
+                if (relationshipType.value.code === code) {
+                    return relationshipType.value.shortDecodeText;
+                }
+            }
+        }
+        return code;
+    };
+
     public navigateTo(relId: string) {
-        this.nav.navigateToRel([relId]);
+        this.router.navigate(['Relationships', { idValue: relId }]);
     }
 
     public viewRelationship(relId: string) {
-        console.log(`Todo: View relationship: ${relId}`);
+        alert('TODO: View Relationship');
+        //console.log(`Todo: View relationship: ${relId}`);
     }
 }

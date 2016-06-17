@@ -35,9 +35,21 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
+    public getIdentityByHref(href: string): Rx.Observable<IIdentity> {
+        return this.http
+            .get(href)
+            .map(this.extractData);
+    }
+
     public viewRelationshipTypeByCode(code: string): Rx.Observable<IRelationshipType> {
         return this.http
             .get(`/api/v1/relationshipType/${code}`)
+            .map(this.extractData);
+    }
+
+    public listRelationshipTypes(): Rx.Observable<IRelationshipType[]> {
+        return this.http
+            .get('/api/v1/relationshipTypes')
             .map(this.extractData);
     }
 
