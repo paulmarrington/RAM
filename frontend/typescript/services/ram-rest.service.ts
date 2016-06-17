@@ -30,7 +30,7 @@ export class RAMRestService {
         return body || {};
     }
 
-    public getIdentity(identityValue: string): Rx.Observable<IIdentity> {
+    public getIdentityByValue(identityValue: string): Rx.Observable<IIdentity> {
         return this.http
             .get(`/api/v1/identity/${identityValue}`)
             .map(this.extractData);
