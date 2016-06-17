@@ -113,7 +113,7 @@ export interface ICreateIdentityDTO {
     linkIdScheme?:string;
     linkIdConsumer?:string;
     publicIdentifierScheme?:string;
-    profileProvider:string;
+    profileProvider?:string;
 }
 
 export class IAttributeDTO {

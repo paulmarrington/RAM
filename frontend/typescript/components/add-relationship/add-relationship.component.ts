@@ -88,14 +88,14 @@ export class AddRelationshipComponent {
                 givenName: this.newRelationship.representativeDetails.individual.givenName,
                 familyName: this.newRelationship.representativeDetails.individual.familyName,
                 sharedSecretTypeCode: 'DATE_OF_BIRTH', // TODO: set to date of birth code
-                sharedSecretValue: dob ? dob.toString() : null /* TODO check format of date */,
+                sharedSecretValue: dob ? dob.toString() : 'x' /* TODO check format of date, currently sending x for empty */,
                 identityType: 'INVITATION_CODE',
                 agencyScheme: undefined,
                 agencyToken: undefined,
                 linkIdScheme: undefined,
                 linkIdConsumer: undefined,
                 publicIdentifierScheme: undefined,
-                profileProvider: 'TEMP' /*TODO need to verify what provider to use for temp identities */,
+                profileProvider: undefined,
             };
         } else {
             /* TODO handle organisation delegate */
