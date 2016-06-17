@@ -13,9 +13,12 @@ export class DeclarationComponent implements OnInit {
 
     @Input('data') public data: DeclarationComponentData;
 
+    @Input('authoriseEvent') public authoriseEvent: () => void = () => { return; };
+
     @Output('dataChange') public dataChanges = new EventEmitter<DeclarationComponentData>();
 
     @Output('isValid') public isValid = new EventEmitter<boolean>();
+
 
     public form: ControlGroup;
 
@@ -32,6 +35,8 @@ export class DeclarationComponent implements OnInit {
             this.isValid.emit(this.form.valid);
         });
     }
+
+
 
 }
 
