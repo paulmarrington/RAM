@@ -11,7 +11,8 @@ import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
     IName,
-    ICreateIdentityDTO
+    ICreateIdentityDTO,
+    IRelationshipAddDTO
 } from '../../../../commons/RamAPI2';
 
 @Component({
