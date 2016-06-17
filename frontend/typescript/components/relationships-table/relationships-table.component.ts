@@ -8,6 +8,7 @@ import {RAMRestService2, IRelationshipTableRow} from '../../services/ram-rest2.s
 import {
     IRelationshipType
 } from '../../../../commons/RamAPI2';
+import {relationshipTypes} from '../../../../backend/typescript/models/relationship-old.model';
 
 @Component({
     selector: 'ram-relationships-table',
@@ -125,6 +126,15 @@ export class RelationshipsTableComponent implements OnInit {
         this._statusOptions$ = response.map(r => r.statusValueOptions);
         return response;
     }
+
+    public relationshipLabel = (code: string): string => {
+        for (let relationshipType of this.relationshipTypes) {
+            if (relationshipType.value.code === code) {
+                return relationshipType.value.shortDecodeText;
+            }
+        }
+        return code;
+    };
 
     public navigateTo(relId: string) {
         this.router.navigate(['Relationships', { idValue: relId }]);

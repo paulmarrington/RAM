@@ -44,7 +44,7 @@
                 <tbody *ngIf="!isLoading">
                     <tr *ngFor="let row of relationshipTableResponse$ | async">
                         <td><a href="">{{row.name}}</a><small class="show" *ngIf="row.abn"> ABN: {{row.abn}}</small></td>
-                        <td>{{row.rel}}</td>
+                        <td>{{relationshipLabel(row.rel)}}</td>
                         <td class="hidden-xs ">{{row.access}}</td>
                         <td class="hidden-xs ">{{row.status}}</td>
                         <td *ngIf="!delegate"><a class="btn btn-primary btn-sm" (click)="navigateTo(row.relId)">act as →</a></td>
