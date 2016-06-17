@@ -18,7 +18,9 @@ export class RAMIdentityService {
             return this.rest
                 .getIdentity(identityValue)
                 .map((identity: IIdentity) => identity.profile.name)
-                .do((profileName) => this._identityCache[identityValue] = profileName);
+                .do((profileName) => this._identityCache[identityValue] = profileName)
+                .publishReplay()
+                .refCount();
         }
     }
 }
