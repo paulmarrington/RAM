@@ -33,7 +33,7 @@ export class RelationshipsComponent {
     public ngOnInit() {
         this.idValue = this.routeParams.get('idValue');
         this.identityDisplayName$ = this.identityService
-            .getDefaultName(this.idValue);
+            .getDefaultName(this.idValue).map(this.displayName);
         this.relationshipTypes$ = this.rest.listRelationshipTypes();
         this.relationshipTypes$.subscribe((relationshipTypes) => {
             this.relationshipTypes = relationshipTypes;
