@@ -6,6 +6,7 @@ import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMRestService2, IRelationshipTableRow} from '../../services/ram-rest2.service';
 import {
+    IHrefValue,
     IRelationshipType
 } from '../../../../commons/RamAPI2';
 import {relationshipTypes} from '../../../../backend/typescript/models/relationship-old.model';
@@ -75,7 +76,7 @@ export class RelationshipsTableComponent implements OnInit {
         return this._filters$;
     }
 
-    @Input() public relationshipTypes: IRelationshipType[];
+    @Input() public relationshipTypes: IHrefValue<IRelationshipType>[];
 
     constructor(
         private constants: RAMConstantsService,
