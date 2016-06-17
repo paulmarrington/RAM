@@ -128,9 +128,11 @@ export class RelationshipsTableComponent implements OnInit {
     }
 
     public relationshipLabel = (code: string): string => {
-        for (let relationshipType of this.relationshipTypes) {
-            if (relationshipType.value.code === code) {
-                return relationshipType.value.shortDecodeText;
+        if (this.relationshipTypes) {
+            for (let relationshipType of this.relationshipTypes) {
+                if (relationshipType.value.code === code) {
+                    return relationshipType.value.shortDecodeText;
+                }
             }
         }
         return code;
