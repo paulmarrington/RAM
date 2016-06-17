@@ -47,6 +47,12 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
+    public listRelationshipTypes(): Rx.Observable<[IRelationshipType]> {
+        return this.http
+            .get('/api/v1/relationshipTypes')
+            .map(this.extractData);
+    }
+
     public viewRelationshipTypeByHref(href: string): Rx.Observable<IRelationshipType> {
         return this.http
             .get(href)
