@@ -5,10 +5,10 @@
                 <div class='btn-toolbar'>
                     <div class="row">
                         <div class="col-sm-12">
-                            <a 
+                            <a
                              [routerLink]="['/AddRelationship',{idValue:idValue}]" class="btn btn-sm btn-primary col-xs-12 col-sm-6">Add a relationship</a>
-                            <a 
-                            [routerLink]="['/EnterInvitationCodeComponent',{idValue:idValue}]" 
+                            <a
+                            [routerLink]="['/EnterInvitationCodeComponent',{idValue:idValue}]"
                             class="btn btn-sm btn-primary col-xs-12 col-sm-6">Accept an invitation</a>
                         </div>
                         <div class="col-md-12 padding-btn-30 visible-xs visible-sm">
@@ -27,7 +27,7 @@
             Find out more about <a href="">managing access</a>.</h4></p>
 
     <div class="ram section">
-        <ram-relationships-table [delegate]="false"></ram-relationships-table>
+        <ram-relationships-table [delegate]="false" [relationshipTypes]="relationshipTypes"></ram-relationships-table>
     </div>
 
     <div class="page-header">

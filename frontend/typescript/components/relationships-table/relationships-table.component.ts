@@ -5,6 +5,9 @@ import {ControlGroup, Control, FORM_DIRECTIVES,FORM_PROVIDERS} from '@angular/co
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMRestService2, IRelationshipTableRow} from '../../services/ram-rest2.service';
+import {
+    IRelationshipType
+} from '../../../../commons/RamAPI2';
 
 @Component({
     selector: 'ram-relationships-table',
@@ -71,6 +74,8 @@ export class RelationshipsTableComponent implements OnInit {
         return this._filters$;
     }
 
+    @Input() public relationshipTypes: IRelationshipType[];
+
     constructor(
         private constants: RAMConstantsService,
         private routeParams:RouteParams,
@@ -126,6 +131,7 @@ export class RelationshipsTableComponent implements OnInit {
     }
 
     public viewRelationship(relId: string) {
-        console.log(`Todo: View relationship: ${relId}`);
+        alert('TODO: View Relationship');
+        //console.log(`Todo: View relationship: ${relId}`);
     }
 }
