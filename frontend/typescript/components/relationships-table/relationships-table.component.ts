@@ -9,7 +9,6 @@ import {
     IHrefValue,
     IRelationshipType
 } from '../../../../commons/RamAPI2';
-import {relationshipTypes} from '../../../../backend/typescript/models/relationship-old.model';
 
 @Component({
     selector: 'ram-relationships-table',
