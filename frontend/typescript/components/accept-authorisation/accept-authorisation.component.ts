@@ -47,7 +47,8 @@ export class AcceptAuthorisationComponent implements OnInit {
             }
         }, (err) => {
             if (err.status === 404) {
-                this.goToRelationshipsPage();
+                alert('Invalid invitation code');
+                this.goToEnterAuthorisationPage();
             } else {
                 // todo
                 alert(JSON.stringify(err, null, 4));
@@ -62,6 +63,10 @@ export class AcceptAuthorisationComponent implements OnInit {
             // todo
             alert(JSON.stringify(err, null, 4));
         });
+    };
+
+    public goToEnterAuthorisationPage = () => {
+        this.router.navigate(['EnterInvitationCodeComponent', { idValue: this.idValue }]);
     };
 
     public goToRelationshipsPage = () => {
