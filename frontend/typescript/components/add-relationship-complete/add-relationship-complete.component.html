@@ -39,7 +39,7 @@
     </div>
     <p class="lead">
         <h4>Provide <strong>{{displayName}}</strong>’s Authenticator App's Unique Device Name (UDN):</h4>
-        <form class="form-horizontal">
+        <form class="form-horizontal" [ngFormModel]='formUdn' (ngSubmit)="onSubmitUdn()">
             <fieldset>
                 <div class="form-group">
                     <label class="col-lg-2 control-label">UDN</label>
@@ -47,10 +47,8 @@
                         <input type="text" class="form-control" placeholder="UDN ...">
                     </div>
                     <div class="col-lg-2">
-                        <a class="btn btn-primary col-lg-12">Submit</a>
+                        <button type="submit" class="btn btn-primary col-lg-12" [disabled]="!formUdn.valid">Sign Up</button>
                     </div>
-
-
                 </div>
             </fieldset>
         </form>

@@ -17,6 +17,7 @@ import {RAMRestService} from '../../services/ram-rest.service';
 export class AddRelationshipCompleteComponent implements OnInit {
 
     public form:ControlGroup;
+    public formUdn:ControlGroup;
 
     public code:string;
 
@@ -38,12 +39,15 @@ export class AddRelationshipCompleteComponent implements OnInit {
         this.form = this._fb.group({
             'email': ['', Validators.compose([Validators.required, RAMNgValidators.validateEmailFormat])]
         });
+        this.formUdn = this._fb.group({
+            'udn': ['']
+        });
+        // 'udn': ['', Validators.compose([Validators.required, RAMNgValidators.validateUDNFormat])]
+    }
 
-        // this.form = this._fb.group({
-        //     'email': ['', Validators.compose([Validators.required, RAMNgValidators.validateEmailFormat])],
-        //     'udn': ['', Validators.compose([RAMNgValidators.validateUDNFormat])]
-        // });
-
+    public onSubmitUdn() {
+        // TODO notify delegate by udn not implemented
+        alert('Not Implemented');
     }
 
     public onSubmitEmail() {
