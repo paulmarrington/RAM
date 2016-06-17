@@ -13,7 +13,7 @@ import {
     IName,
     IAttributeDTO,
     ICreateIdentityDTO,
-    IRelationshipAddDTO, IRelationshipAttributeNameUsage, IRelationshipType
+    IRelationshipAddDTO, IRelationshipAttributeNameUsage, IRelationshipType, IHrefValue
 } from '../../../../commons/RamAPI2';
 import {
     AuthorisationManagementComponent,
@@ -35,12 +35,10 @@ import {
 export class AddRelationshipComponent {
     public idValue: string;
     public manageAuthAttribute: IRelationshipAttributeNameUsage;
-    public relationshipTypes: IRelationshipType[] = [];
-    public identityDisplayName$: Rx.Observable<IName>;
-
+    public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
     public accessPeriodValidationErrors = {};
 
-    public relationshipTypes$: Rx.Observable<IRelationshipType[]>;
+    public relationshipTypes$: Rx.Observable<HrefValue<IRelationshipType>[]>;
     public identityDisplayName$: Rx.Observable<IName>;
 
     public newRelationship: AddRelationshipComponentData = {
@@ -83,7 +81,7 @@ export class AddRelationshipComponent {
 
             // TODO need to change this depending on the type of relationship being created.
             let relationshipType = this.findRelationshipType('UNIVERSAL_REPRESENTATIVE');
-            this.manageAuthAttribute = this.findAttributeNameUsage(relationshipType, "DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND");
+            this.manageAuthAttribute = this.findAttributeNameUsage(relationshipType, 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
             this.newRelationship.authorisationManagement.value = this.manageAuthAttribute.defaultValue;
         });
     }
@@ -157,19 +155,16 @@ export class AddRelationshipComponent {
 
     }
 
-    public findRelationshipType(code:string):IRelationshipType {
+    public findRelationshipType(code:string):IHrefValue<IRelationshipType> {
         for(let relationshipType of this.relationshipTypes) {
             if(relationshipType.value.code === code) {
-                console.log('got type', relationshipType);
                 return relationshipType;
             }
         }
         return null;
     }
 
-    public findAttributeNameUsage(relationshipType:IRelationshipType, code:string) {
-        console.log('here');
-
+    public findAttributeNameUsage(relationshipType:IHrefValue<IRelationshipType>, code:string) {
         for(let attributeName of relationshipType.value.relationshipAttributeNames) {
             if(attributeName.attributeNameDef.value.code === code) {
                 return attributeName;

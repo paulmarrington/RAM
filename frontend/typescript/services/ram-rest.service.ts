@@ -7,6 +7,7 @@ import {
 } from '../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
 import {Response, Http, Headers} from '@angular/http';
+import {HrefValue} from '../../../commons/RamAPI';
 
 @Injectable()
 export class RAMRestService {
@@ -47,7 +48,7 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public listRelationshipTypes(): Rx.Observable<IRelationshipType[]> {
+    public listRelationshipTypes(): Rx.Observable<HrefValue<IRelationshipType>[]> {
         return this.http
             .get('/api/v1/relationshipTypes')
             .map(this.extractData);
