@@ -11,9 +11,14 @@ import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
     IName,
+    IAttributeDTO,
     ICreateIdentityDTO,
-    IRelationshipAddDTO
+    IRelationshipAddDTO, IRelationshipAttributeNameUsage, IRelationshipType
 } from '../../../../commons/RamAPI2';
+import {
+    AuthorisationManagementComponent,
+    AuthorisationManagementComponentData
+} from '../commons/authorisation-management/authorisation-management.component';
 
 @Component({
     selector: 'add-relationship',
@@ -23,15 +28,18 @@ import {
         AuthorisationPermissionsComponent,
         AuthorisationTypeComponent,
         DeclarationComponent,
-        RepresentativeDetailsComponent
+        RepresentativeDetailsComponent,
+        AuthorisationManagementComponent
     ]
 })
 export class AddRelationshipComponent {
     public idValue: string;
-
-    public identityDisplayName$: Rx.Observable<IName>;
-
+    public manageAuthAttribute: IRelationshipAttributeNameUsage;
+    public relationshipTypes: IRelationshipType[] = [];
     public accessPeriodValidationErrors = {};
+
+    public relationshipTypes$: Rx.Observable<IRelationshipType[]>;
+    public identityDisplayName$: Rx.Observable<IName>;
 
     public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
@@ -52,6 +60,9 @@ export class AddRelationshipComponent {
                 abn: ''
             }
         },
+        authorisationManagement: {
+            value: ''
+        },
         decalaration: {
             accepted: false
         }
@@ -64,6 +75,16 @@ export class AddRelationshipComponent {
 
     public ngOnInit() {
         this.idValue = this.routeParams.get('idValue');
+        this.relationshipTypes$ = this.rest.listRelationshipTypes();
+        this.relationshipTypes$.subscribe((relationshipTypes) => {
+            this.relationshipTypes = relationshipTypes;
+
+            // TODO need to change this depending on the type of relationship being created.
+            let relationshipType = this.findRelationshipType('UNIVERSAL_REPRESENTATIVE');
+            this.manageAuthAttribute = this.findAttributeNameUsage(relationshipType, "DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND");
+            this.newRelationship.authorisationManagement.value = this.manageAuthAttribute.defaultValue;
+        });
+
         // TODO fetch name
         //this.identityDisplayName$ = this.identityService
         //    .getDefaultName(this.idValue);
@@ -102,13 +123,20 @@ export class AddRelationshipComponent {
             //};
         }
 
+        const authorisationManagement: IAttributeDTO = {
+            code: 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND',
+            value: this.newRelationship.authorisationManagement.value
+        };
+
         const relationship:IRelationshipAddDTO = {
             relationshipType: this.newRelationship.authType.authType,
             subjectIdValue: this.idValue /* TODO subject identity idValue */,
             delegate: delegate,
             startTimestamp: this.newRelationship.accessPeriod.startDate,
             endTimestamp: this.newRelationship.accessPeriod.endDate,
-            attributes: [] /* TODO setting the attributes */
+            attributes: [
+                authorisationManagement
+            ] /* TODO setting the attributes */
         };
 
         this.rest.createRelationship(relationship).subscribe((relationship) => {
@@ -129,11 +157,32 @@ export class AddRelationshipComponent {
         });
 
     }
+
+    public findRelationshipType(code:string):IRelationshipType {
+        for(let relationshipType of this.relationshipTypes) {
+            if(relationshipType.value.code === code) {
+                console.log('got type', relationshipType);
+                return relationshipType;
+            }
+        }
+        return null;
+    }
+
+    public findAttributeNameUsage(relationshipType:IRelationshipType, code:string) {
+        console.log('here');
+
+        for(let attributeName of relationshipType.value.relationshipAttributeNames) {
+            if(attributeName.attributeNameDef.value.code === code) {
+                return attributeName;
+            }
+        }
+    }
 }
 
 export interface AddRelationshipComponentData {
     accessPeriod: AccessPeriodComponentData;
     authType: AuthorisationTypeComponentData;
     representativeDetails: RepresentativeDetailsComponentData;
+    authorisationManagement: AuthorisationManagementComponentData;
     decalaration: DeclarationComponentData;
 }

@@ -1,0 +1,24 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4><span class="badge square">4</span> Set authorisation management</h4></div>
+    <div class="panel-body">
+        <div class="col-md-10 padding-btn-20">
+            <h4>{{ attributeNameUsage?.attributeNameDef?.value?.shortDecodeText}}</h4>
+            <p>{{ attributeNameUsage?.attributeNameDef?.value?.longDecodeText}}</p>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <div class="radio">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label><h4><input type="radio" name="canManagePermissions" value="true" (click)="setCanManagePermissions('true')">Yes</h4></label>
+                        </div>
+                        <div class="col-md-6">
+                            <label><h4><input type="radio" name="canManagePermissions" value="false" (click)="setCanManagePermissions('false')">No</h4></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

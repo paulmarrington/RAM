@@ -11,6 +11,7 @@
     </authorisation-type>
     <access-period [(data)]='newRelationship.accessPeriod' (isValid)='accessPeriodIsValid=$event'>
     </access-period>
+    <authorisation-management [(data)]='newRelationship.authorisationManagement' [attributeNameUsage]='manageAuthAttribute'></authorisation-management>
     <!--authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions-->
     <declaration [(data)]='newRelationship.decalaration'
     (createRelationshipEvent)="submit()"
