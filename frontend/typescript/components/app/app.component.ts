@@ -50,8 +50,8 @@ import {RamComponent} from '../ram/ram.component';
         name: 'AddRelationshipCompleteComponent',
         component: AddRelationshipCompleteComponent
     }, {
-        path: '/relationships/add/:idValue/:invitationCode/enter',
-        name: 'AcceptRelationshipCodeComponent',
+        path: '/relationships/add/:idValue/enter',
+        name: 'EnterInvitationCodeComponent',
         component: EnterInvitationCodeComponent
     },{
         path: '/relationships/add/:idValue/:invitationCode/accept',
