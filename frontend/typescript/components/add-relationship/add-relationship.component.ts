@@ -36,6 +36,8 @@ export class AddRelationshipComponent {
     public idValue: string;
     public manageAuthAttribute: IRelationshipAttributeNameUsage;
     public relationshipTypes: IRelationshipType[] = [];
+    public identityDisplayName$: Rx.Observable<IName>;
+
     public accessPeriodValidationErrors = {};
 
     public relationshipTypes$: Rx.Observable<IRelationshipType[]>;
@@ -52,7 +54,7 @@ export class AddRelationshipComponent {
         },
         representativeDetails: {
             individual: {
-                 givenName: '',
+                givenName: '',
                 familyName: null,
                 dob: null
             },
@@ -68,9 +70,9 @@ export class AddRelationshipComponent {
         }
     };
 
-    constructor(private routeParams:RouteParams,
-                private router:Router,
-                private rest:RAMRestService) {
+    constructor(private routeParams: RouteParams,
+        private router: Router,
+        private rest: RAMRestService) {
     }
 
     public ngOnInit() {
@@ -84,10 +86,6 @@ export class AddRelationshipComponent {
             this.manageAuthAttribute = this.findAttributeNameUsage(relationshipType, "DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND");
             this.newRelationship.authorisationManagement.value = this.manageAuthAttribute.defaultValue;
         });
-
-        // TODO fetch name
-        //this.identityDisplayName$ = this.identityService
-        //    .getDefaultName(this.idValue);
     }
 
     /* tslint:disable:max-func-body-length */
@@ -145,7 +143,8 @@ export class AddRelationshipComponent {
                 //console.log(JSON.stringify(identity, null, 4));
                 this.router.navigate(['AddRelationshipCompleteComponent', {
                     idValue: this.idValue,
-                    invitationCode: identity.rawIdValue
+                    invitationCode: identity.rawIdValue,
+                    displayName: this.displayName(this.newRelationship.representativeDetails)
                 }]);
             }, (err) => {
                 // TODO
@@ -177,6 +176,15 @@ export class AddRelationshipComponent {
             }
         }
     }
+
+    public displayName(repDetails: RepresentativeDetailsComponentData) {
+        if (repDetails.organisation) {
+            return repDetails.organisation.abn;
+        } else {
+            return repDetails.individual.givenName + ' ' + repDetails.individual.familyName;
+        }
+    }
+
 }
 
 export interface AddRelationshipComponentData {
