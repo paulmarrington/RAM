@@ -34,7 +34,7 @@ export class IndividualRepresentativeDetailsComponent implements OnInit {
 }
 
 export interface IndividualRepresentativeDetailsComponentData {
-    givenName: String;
-    familyName?: String;
+    givenName: string;
+    familyName?: string;
     dob?: Date;
 }

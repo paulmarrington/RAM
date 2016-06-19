@@ -38,5 +38,5 @@ export class AuthorisationTypeComponent implements OnInit {
 }
 
 export interface AuthorisationTypeComponentData {
-    authType: String;
+    authType: string;
 }

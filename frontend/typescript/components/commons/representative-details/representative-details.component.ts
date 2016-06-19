@@ -29,8 +29,10 @@ export class RepresentativeDetailsComponent {
 
     public setChildValidationStatus = (isOrganisation: boolean, isValid: boolean) => {
         if (isOrganisation && this.isOrganisation) {
+            this.data.individual = undefined;
             this.isValid.emit(isValid);
         } else if (!isOrganisation && !this.isOrganisation) {
+            this.data.organisation = undefined;
             this.isValid.emit(isValid);
         }
     }

@@ -182,9 +182,9 @@ export class Identity {
             : null;
     }
 
-    public displayName():string {
-        return (this.profile && this.profile.name) ? this.profile.name.displayName() : null;
-    }
+    // public displayName():string {
+    //     return (this.profile && this.profile.name) ? this.profile.name.displayName() : null;
+    // }
 }
 
 export class Party {

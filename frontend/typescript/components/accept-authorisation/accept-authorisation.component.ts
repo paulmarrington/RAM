@@ -6,7 +6,8 @@ import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
     IRelationship,
     IRelationshipType,
-    IRelationshipAttributeName,
+    IRelationshipAttribute,
+    IRelationshipAttributeNameUsage,
     IName
 } from '../../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
@@ -25,7 +26,8 @@ export class AcceptAuthorisationComponent implements OnInit {
     public relationship$: Rx.Observable<IRelationship>;
     public relationshipType$: Rx.Observable<IRelationshipType>;
 
-    public delegateManageAuthorisationAllowedIndAttribute: IRelationshipAttributeName;
+    public delegateManageAuthorisationAllowedIndAttribute: IRelationshipAttribute;
+    public delegateRelationshipTypeDeclarationAttributeUsage: IRelationshipAttributeNameUsage;
 
     constructor(private routeParams: RouteParams,
         private router: Router,
@@ -38,12 +40,19 @@ export class AcceptAuthorisationComponent implements OnInit {
         this.idValue = this.routeParams.get('idValue');
         this.relationship$ = this.rest.viewPendingRelationshipByInvitationCode(this.code);
         this.relationship$.subscribe((relationship) => {
-            this.relationshipType$ = this.rest.viewRelationshipTypeByHref(relationship.relationshipType.href);
             for (let attribute of relationship.attributes) {
                 if (attribute.attributeName.value.code === 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND') {
                     this.delegateManageAuthorisationAllowedIndAttribute = attribute;
                 }
             }
+            this.relationshipType$ = this.rest.viewRelationshipTypeByHref(relationship.relationshipType.href);
+            this.relationshipType$.subscribe((relationshipType) => {
+                    for (let attributeUsage of relationshipType.relationshipAttributeNames) {
+                        if (attributeUsage.attributeNameDef.value.code === 'DELEGATE_RELATIONSHIP_TYPE_DECLARATION') {
+                            this.delegateRelationshipTypeDeclarationAttributeUsage = attributeUsage;
+                        }
+                    }
+                });
         }, (err) => {
             if (err.status === 404) {
                 alert('Invalid invitation code');

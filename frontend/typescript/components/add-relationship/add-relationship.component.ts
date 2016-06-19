@@ -11,7 +11,8 @@ import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
     IName,
-    ICreateIdentityDTO
+    ICreateIdentityDTO,
+    IRelationshipAddDTO
 } from '../../../../commons/RamAPI2';
 
 @Component({
@@ -43,7 +44,7 @@ export class AddRelationshipComponent {
         },
         representativeDetails: {
             individual: {
-                 givenName: '',
+                givenName: '',
                 familyName: null,
                 dob: null
             },
@@ -56,21 +57,13 @@ export class AddRelationshipComponent {
         }
     };
 
-    constructor(private routeParams:RouteParams,
-                private router:Router,
-                private rest:RAMRestService) {
+    constructor(private routeParams: RouteParams,
+        private router: Router,
+        private rest: RAMRestService) {
     }
 
     public ngOnInit() {
         this.idValue = this.routeParams.get('idValue');
-        // TODO fetch name
-        //this.identityDisplayName$ = this.identityService
-        //    .getDefaultName(this.idValue);
-    }
-
-    public dumpObject(v: Object) {
-        // creates formatted JSON - display in <pre> tag
-        return JSON.stringify(v, null, 2);
     }
 
     /* tslint:disable:max-func-body-length */
@@ -106,7 +99,7 @@ export class AddRelationshipComponent {
             //};
         }
 
-        const relationship:IRelationshipAddDTO = {
+        const relationship: IRelationshipAddDTO = {
             relationshipType: this.newRelationship.authType.authType,
             subjectIdValue: this.idValue /* TODO subject identity idValue */,
             delegate: delegate,
@@ -115,14 +108,14 @@ export class AddRelationshipComponent {
             attributes: [] /* TODO setting the attributes */
         };
 
-        console.log(this.rest);
         this.rest.createRelationship(relationship).subscribe((relationship) => {
             //console.log(JSON.stringify(relationship, null, 4));
-            this.rest.getIdentity(relationship.delegate.value.identities[0].href).subscribe((identity) => {
+            this.rest.getIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
                 //console.log(JSON.stringify(identity, null, 4));
                 this.router.navigate(['AddRelationshipCompleteComponent', {
                     idValue: this.idValue,
-                    invitationCode: identity.rawIdValue
+                    invitationCode: identity.rawIdValue,
+                    displayName: this.displayName(this.newRelationship.representativeDetails)
                 }]);
             }, (err) => {
                 // TODO
@@ -134,6 +127,15 @@ export class AddRelationshipComponent {
         });
 
     }
+
+    public displayName(repDetails: RepresentativeDetailsComponentData) {
+        if (repDetails.organisation) {
+            return repDetails.organisation.abn;
+        } else {
+            return repDetails.individual.givenName + ' ' + repDetails.individual.familyName;
+        }
+    }
+
 }
 
 export interface AddRelationshipComponentData {
