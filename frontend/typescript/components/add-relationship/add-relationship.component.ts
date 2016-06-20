@@ -9,7 +9,6 @@ import {Router, RouteParams} from '@angular/router-deprecated';
 import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
-    IName,
     IAttributeDTO,
     ICreateIdentityDTO,
     IRelationshipAddDTO, IRelationshipAttributeNameUsage, IRelationshipType, IHrefValue
