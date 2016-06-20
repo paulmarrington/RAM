@@ -36,10 +36,7 @@ export class AddRelationshipComponent {
     public idValue: string;
     public manageAuthAttribute: IRelationshipAttributeNameUsage;
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
-    public accessPeriodValidationErrors = {};
-
     public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
-    public identityDisplayName$: Rx.Observable<IName>;
 
     public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
