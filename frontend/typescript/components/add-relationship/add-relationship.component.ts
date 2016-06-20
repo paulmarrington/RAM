@@ -1,10 +1,15 @@
 import {Component} from '@angular/core';
 import {AccessPeriodComponent, AccessPeriodComponentData} from '../commons/access-period/access-period.component';
 import {AuthorisationPermissionsComponent} from '../commons/authorisation-permissions/authorisation-permissions.component';
-import {AuthorisationTypeComponent, AuthorisationTypeComponentData} from '../commons/authorisation-type/authorisation-type.component';
+import {
+    AuthorisationTypeComponent,
+    AuthorisationTypeComponentData
+} from '../commons/authorisation-type/authorisation-type.component';
 import {DeclarationComponent, DeclarationComponentData} from '../commons/declaration/declaration.component';
-import {RepresentativeDetailsComponent, RepresentativeDetailsComponentData} from
-'../commons/representative-details/representative-details.component';
+import {
+    RepresentativeDetailsComponent, RepresentativeDetailsComponentData
+} from
+    '../commons/representative-details/representative-details.component';
 import {Router, RouteParams} from '@angular/router-deprecated';
 import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
@@ -32,12 +37,11 @@ import {
 })
 export class AddRelationshipComponent {
 
-    public idValue: string;
-    public manageAuthAttribute: IRelationshipAttributeNameUsage;
-    public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
-    public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
+    public idValue:string;
+    public manageAuthAttribute:IRelationshipAttributeNameUsage;
+    public relationshipTypes$:Rx.Observable<IHrefValue<IRelationshipType>[]>;
 
-    public newRelationship: AddRelationshipComponentData = {
+    public newRelationship:AddRelationshipComponentData = {
         accessPeriod: {
             startDate: null,
             noEndDate: true,
@@ -64,23 +68,16 @@ export class AddRelationshipComponent {
         }
     };
 
-    constructor(private routeParams: RouteParams,
-        private router: Router,
-        private rest: RAMRestService) {
+    constructor(private routeParams:RouteParams,
+                private router:Router,
+                private rest:RAMRestService) {
     }
 
     public ngOnInit() {
         this.idValue = this.routeParams.get('idValue');
         // TODO implement as service - card #32
         this.relationshipTypes$ = this.rest.listRelationshipTypes();
-        this.relationshipTypes$.subscribe((relationshipTypes) => {
-            this.relationshipTypes = relationshipTypes;
-
-            // TODO need to change this depending on the type of relationship being created.
-            let relationshipType = this.findRelationshipType('UNIVERSAL_REPRESENTATIVE');
-            this.manageAuthAttribute = this.findAttributeNameUsage(relationshipType, 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
-            this.newRelationship.authorisationManagement.value = this.manageAuthAttribute.defaultValue;
-        });
+        this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
     }
 
     public back = () => {
@@ -90,7 +87,7 @@ export class AddRelationshipComponent {
     /* tslint:disable:max-func-body-length */
     public submit = () => {
 
-        let delegate: ICreateIdentityDTO;
+        let delegate:ICreateIdentityDTO;
 
         if (this.newRelationship.representativeDetails.individual) {
             const dob = this.newRelationship.representativeDetails.individual.dob;
@@ -120,7 +117,7 @@ export class AddRelationshipComponent {
             //};
         }
 
-        const authorisationManagement: IAttributeDTO = {
+        const authorisationManagement:IAttributeDTO = {
             code: 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND',
             value: this.newRelationship.authorisationManagement.value
         };
@@ -156,24 +153,20 @@ export class AddRelationshipComponent {
 
     };
 
-    public findRelationshipType(code:string):IHrefValue<IRelationshipType> {
-        for(let relationshipType of this.relationshipTypes) {
-            if(relationshipType.value.code === code) {
-                return relationshipType;
-            }
-        }
-        return null;
+    public resolveManageAuthAttribute(relationshipTypeCode:string, attributeNameCode:string) {
+        this.relationshipTypes$
+            .filter((relationshipTypeHrefValue) => {
+                return relationshipTypeHrefValue.value.code === relationshipTypeCode;
+            })
+            .subscribe(universalRelationshipTypeHrefValue => {
+                let manageAuthAttributes = universalRelationshipTypeHrefValue.value.relationshipAttributeNames.filter((attributeName) => attributeName.attributeNameDef.value.code === attributeNameCode);
+                if (manageAuthAttributes.length == 1) {
+                    this.manageAuthAttribute = manageAuthAttributes[0];
+                }
+            });
     }
 
-    public findAttributeNameUsage(relationshipType:IHrefValue<IRelationshipType>, code:string) {
-        for(let attributeName of relationshipType.value.relationshipAttributeNames) {
-            if(attributeName.attributeNameDef.value.code === code) {
-                return attributeName;
-            }
-        }
-    }
-
-    public displayName(repDetails: RepresentativeDetailsComponentData) {
+    public displayName(repDetails:RepresentativeDetailsComponentData) {
         if (repDetails.organisation) {
             return repDetails.organisation.abn;
         } else {
@@ -184,9 +177,9 @@ export class AddRelationshipComponent {
 }
 
 export interface AddRelationshipComponentData {
-    accessPeriod: AccessPeriodComponentData;
-    authType: AuthorisationTypeComponentData;
-    representativeDetails: RepresentativeDetailsComponentData;
-    authorisationManagement: AuthorisationManagementComponentData;
-    decalaration: DeclarationComponentData;
+    accessPeriod:AccessPeriodComponentData;
+    authType:AuthorisationTypeComponentData;
+    representativeDetails:RepresentativeDetailsComponentData;
+    authorisationManagement:AuthorisationManagementComponentData;
+    decalaration:DeclarationComponentData;
 }
