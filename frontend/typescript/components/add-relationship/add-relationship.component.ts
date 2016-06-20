@@ -159,7 +159,8 @@ export class AddRelationshipComponent {
                 return relationshipTypeHrefValue.value.code === relationshipTypeCode;
             })
             .subscribe(universalRelationshipTypeHrefValue => {
-                let manageAuthAttributes = universalRelationshipTypeHrefValue.value.relationshipAttributeNames.filter((attributeName) => attributeName.attributeNameDef.value.code === attributeNameCode);
+                let manageAuthAttributes = universalRelationshipTypeHrefValue.value.relationshipAttributeNames
+                    .filter((attributeName) => attributeName.attributeNameDef.value.code === attributeNameCode);
                 if (manageAuthAttributes.length === 1) {
                     this.manageAuthAttribute = manageAuthAttributes[0];
                 }
