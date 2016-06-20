@@ -44,7 +44,7 @@
                 <div class="form-group">
                     <label class="col-lg-2 control-label">UDN</label>
                     <div class="col-lg-8">
-                        <input type="text" class="form-control" placeholder="UDN ...">
+                        <input [ngFormControl]="form.find('udn')" class="form-control" type="text" placeholder="UDN ...">
                     </div>
                     <div class="col-lg-2">
                         <button type="submit" class="btn btn-primary col-lg-12" [disabled]="!formUdn.valid">Submit</button>
