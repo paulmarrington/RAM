@@ -48,6 +48,7 @@ export class AddRelationshipCompleteComponent implements OnInit {
     public onSubmitUdn() {
         // TODO notify delegate by udn not implemented
         alert('Not Implemented');
+        return false;
     }
 
     public onSubmitEmail() {
@@ -63,6 +64,7 @@ export class AddRelationshipCompleteComponent implements OnInit {
             // TODO
             alert(JSON.stringify(err, null, 2));
         });
+        return false;
     };
 
     public goToRelationshipsPage = () => {
