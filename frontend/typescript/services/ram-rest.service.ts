@@ -49,10 +49,17 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public listRelationshipTypes(): Rx.Observable<HrefValue<IRelationshipType>[]> {
+    public listRelationshipTypes(): Rx.Observable<HrefValue<IRelationshipType>> {
         return this.http
             .get('/api/v1/relationshipTypes')
-            .flatMap(this.extractData);
+            .flatMap<HrefValue<IRelationshipType>>(this.extractData);
+    }
+
+    // TODO decide how we are going to use lists, re flat map vs map
+    public listRelationshipTypesList(): Rx.Observable<HrefValue<IRelationshipType>[]> {
+        return this.http
+            .get('/api/v1/relationshipTypes')
+            .map(this.extractData);
     }
 
     public findRelationshipTypeByHref(href: string): Rx.Observable<IRelationshipType> {
