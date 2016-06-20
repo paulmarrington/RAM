@@ -72,6 +72,7 @@ export class AddRelationshipComponent {
 
     public ngOnInit() {
         this.idValue = this.routeParams.get('idValue');
+        // TODO implement as service - card #32
         this.relationshipTypes$ = this.rest.listRelationshipTypes();
         this.relationshipTypes$.subscribe((relationshipTypes) => {
             this.relationshipTypes = relationshipTypes;
