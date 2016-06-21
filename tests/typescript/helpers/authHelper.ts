@@ -5,9 +5,7 @@ import {Headers} from '../../../backend/typescript/controllers/headers';
 const rest = new RestCalls(config.host, config.port);
 
 /**
- * Reusable test steps for the Relationship REST API.
- *
- * Use these steps for any tests that need to interact with the authentication REST API.
+ * Reusable test steps for authentication.
  */
 export default class AuthHelper {
     public KNOWN_IDENTITIES = {
