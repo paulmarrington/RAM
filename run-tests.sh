@@ -28,10 +28,6 @@ node_modules/.bin/jspm install -y
 cd ..
 
 ./ram deps:backend
-./ram deps:test
-
-./ram start:backend &
-sleep 30
 
 if ./ram test:backend;
 then
@@ -40,6 +36,14 @@ else
     echo Backend tests failed
     exit 1
 fi
+
+
+./ram deps:test
+
+./ram db:seed
+./ram start:backend &
+sleep 30
+
 
 if ./ram test:api;
 then
