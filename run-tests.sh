@@ -33,5 +33,18 @@ cd ..
 ./ram start:backend &
 sleep 30
 
-./ram test:api
+if ./ram test:backend;
+then
+    echo Backend tests completed successfully
+else
+    echo Backend tests failed
+    exit 1
+fi
 
+if ./ram test:api;
+then
+    echo API tests completed successfully
+else
+    echo API tests failed
+    exit 1
+fi
