@@ -3,31 +3,27 @@
         <h4><span class="badge square">2</span> Set authorisation type</h4>
     </div>
     <div class="panel-body">
-        <h4 class="padding-btn-30">What type of authorisation do you want this representative to have?</h4>
-        <h4>Authorisation type*</h4>
         <div class="form-group">
             <form [ngFormModel]="form">
-                <div class="col-md-6"
-                [class.has-error]="!form.controls['authType'].valid">
-                    <select class="form-control"
-                    [ngFormControl]="form.controls['authType']">
-                        <option value="choose" disabled hidden>
-                            Please Choose...</option>
-                        <option value="UNIVERSAL_REPRESENTATIVE">Universal representative</option>
-                        <!--option value="custom">Custom Representative</option-->
+                <div class="col-md-12" [class.has-error]="!form.controls['authType'].valid">
+                    <h4 class="padding-btn-30">What type of authorisation do you want this representative to have?</h4>
+                    <h4>Authorisation type*</h4>
+                    <select class="form-control" [ngFormControl]="form.controls['authType']">
+                        <option value="choose" disabled hidden>Please Choose...</option>
+                        <option value="UNIVERSAL_REPRESENTATIVE">Universal Representative</option>
+                        <!--option value="CUSTOM_REPRESENTATIVE">Custom Representative</option-->
                     </select>
+                    <dl class="padding-top-10">
+                        <dt *ngIf="form.controls['authType'].value==='UNIVERSAL_REPRESENTATIVE'" >Universal Representative</dt>
+                        <dd *ngIf="form.controls['authType'].value==='UNIVERSAL_REPRESENTATIVE'">The same level of authorisation as an Associate of the organisation (e.g., Owner, Director).<br/>All permissions
+                            will be defaulted to maximum access.</dd>
+                        <dt *ngIf="form.controls['authType'].value==='CUSTOM_REPRESENTATIVE'">Custom Representative</dt>
+                        <dd *ngIf="form.controls['authType'].value==='CUSTOM_REPRESENTATIVE'">Select the representative authorisation type if you want to customise access.<br/> Select which permissions this
+                            representative will have, including restricting access to some services.</dd>
+                    </dl>
                 </div>
             </form>
         </div>
         <div class="clearfix"></div>
-
-        <dl class="padding-top-10">
-            <dt *ngIf="form.controls['authType'].value==='universal'" >Universal representative</dt>
-            <dd *ngIf="form.controls['authType'].value==='universal'">The same level of authorisation as an Associate of the organisation (e.g., Owner, Director).<br/>All permissions
-                will be defaulted to maximum access.</dd>
-            <dt *ngIf="form.controls['authType'].value==='custom'">Custom Representative</dt>
-            <dd *ngIf="form.controls['authType'].value==='custom'">Select the representative authorisation type if you want to customise access.<br/> Select which permissions this
-                representative will have, including restricting access to some services.</dd>
-        </dl>
     </div>
 </div>

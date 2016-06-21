@@ -10,17 +10,43 @@
             <h4><span class="badge square">1</span> Representative details</h4>
         </div>
         <div class="panel-body">
-            <h4>{{displayName((relationship$ | async)?.delegateNickName)}} has been authorised to
-            act on behalf of {{displayName((relationship$ | async)?.subjectNickName)}}.</h4>
+            <!--<h4><b>{{displayName((relationship$ | async)?.delegateNickName)}}</b> has been authorised to-->
+            <!--act on behalf of <b>{{displayName((relationship$ | async)?.subjectNickName)}}</b>.</h4>-->
+            <h4>You have been authorised to act on behalf of <b>{{displayName((relationship$ | async)?.subjectNickName)}}</b>.
+                Check to see if the following details are correct before accepting the authorisation request.</h4>
+            <div class="row">
+                <div class="col-lg-2">
+                    <h4>Given name</h4>
+                </div>
+                <div class="col-lg-10">
+                    <h4>{{(relationship$ | async)?.delegateNickName?.givenName}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <h4>Family name</h4>
+                </div>
+                <div class="col-lg-10">
+                    <h4>{{(relationship$ | async)?.delegateNickName?.familyName}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <h4>Date of Birth</h4>
+                </div>
+                <div class="col-lg-10">
+                    <h4>TODO: Cannot decrypt this per data model</h4>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h4><span class="badge square">2</span> Authorisation Type</h4>
+            <h4><span class="badge square">2</span> Authorisation type</h4>
         </div>
         <div class="panel-body">
-            <h4>You have been setup to be a {{(relationshipType$ | async)?.shortDecodeText}} for this subject.</h4>
+            <h4>You have been setup to be a <b>{{(relationshipType$ | async)?.shortDecodeText}}</b> for this subject.</h4>
         </div>
     </div>
 
@@ -61,9 +87,10 @@
             <h4><span class="badge square">5</span> Authorisation management</h4>
         </div>
         <div class="panel-body">
-            <h4>{{delegateManageAuthorisationAllowedIndAttribute?.value ?
-            'You will be able to manage authorisations for this subject.' :
-            'You will NOT be able to manage authorisations for this subject.'}}</h4>
+            <h4 *ngIf="delegateManageAuthorisationAllowedIndAttribute?.value">
+                You <b>will be able</b> to manage authorisations for this subject.</h4>
+            <h4 *ngIf="!delegateManageAuthorisationAllowedIndAttribute?.value">
+                You <b>will NOT be</b> able to manage authorisations for this subject.</h4>
             {{delegateManageAuthorisationAllowedIndAttribute?.attributeName?.value?.longDecodeText}}
         </div>
     </div>
@@ -73,16 +100,22 @@
             <h4><span class="badge square">6</span> Declaration</h4>
         </div>
         <div class="panel-body">
-            <h4>By accepting to act on behalf of {{displayName((relationship$ | async)?.subjectNickName)}},
+            <h4>By accepting to act on behalf of <b>{{displayName((relationship$ | async)?.subjectNickName)}}</b>,
                 you acknowledge that:</h4>
-            <h4>{{delegateRelationshipTypeDeclarationAttributeUsage?.defaultValue}}</h4>
+            <div>{{delegateRelationshipTypeDeclarationAttributeUsage?.defaultValue}}</div>
+            <h4><input #acceptChk type="checkbox" (change)="setAccept(acceptChk.value)">I accept</h4>
         </div>
     </div>
 
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
     <a class="btn btn-default col-md-3 pull-left" (click)="goToRelationshipsPage()"> ← Go to relationships</a>
-    <a class="btn btn-primary col-md-3 pull-right" (click)="acceptAuthorisation()"> Accept → </a>
+    <div class="pull-right">
+        <button class="btn pull-left" (click)="declineAuthorisation()"> Decline </button>
+        &nbsp;
+        <button class="btn btn-primary pull-left" (click)="acceptAuthorisation()"
+           [disabled]='(!accept)'> Accept → </button>
+    </div>
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
     <div class="padding-btn-20"></div>

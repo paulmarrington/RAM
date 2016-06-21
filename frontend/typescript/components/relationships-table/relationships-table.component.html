@@ -12,7 +12,7 @@
                             <h5>Access Level</h5></th>
                         <th class="hidden-xs">
                             <h5>Status</h5></th>
-                        <th></th>
+                        <th class="col-md-2"></th>
                     </tr>
 
                     <tr>
@@ -44,12 +44,12 @@
                 <tbody *ngIf="!isLoading">
                     <tr *ngFor="let row of relationshipTableResponse$ | async">
                         <td><a href="">{{row.name}}</a><small class="show" *ngIf="row.abn"> ABN: {{row.abn}}</small></td>
-                        <td>{{relationshipLabel(row.rel)}}</td>
+                        <td>{{relationshipLabel(row.rel) || async}}</td>
                         <td class="hidden-xs ">{{row.access}}</td>
                         <td class="hidden-xs ">{{row.status}}</td>
                         <td *ngIf="!delegate && row.status=='ACTIVE'"><a class="btn btn-primary btn-sm"
-                        (click)="navigateTo(row.relId)">act as →</a></td>
-                        <td *ngIf="delegate"><a class="btn btn-primary btn-sm" (click)="viewRelationship(row.relId)">View</a></td>
+                        (click)="navigateTo(row.relId)">Act as →</a></td>
+                        <td *ngIf="delegate"><a class="btn btn-primary btn-sm" (click)="viewRelationship(row.relId)">View →</a></td>
                     </tr>
                 </tbody>
                 <tbody *ngIf="isLoading">
@@ -62,35 +62,35 @@
         </form>
     </div>
 </div>
-<div class="row" *ngIf="!isLoading">
-    <div class="col-md-8">
-        <div class="text-md-left text-xs-center">
-            <nav>
-                <ul class="pagination">
-                    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-                    <li [class.active]="pageNumber == 1"><a href="#">1 </a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="pull-md-right text-xs-center">
-            <div class="btn-group pagination" data-toggle="buttons">
-                <label class="btn btn-primary" *ngFor="let pSizeValue of pageSizeOptions" [class.active]="pSizeValue == pageSize">
-                    <input type="radio" autocomplete="off" (ngModelChange)="setPageSize(pSizeValue)" name="{{pSizeValue}}"> {{pSizeValue}}
-                </label>
-            </div>
-        </div>
-    </div>
-    <!--<div class="btn-group">
-        <label class="btn btn-primary" [(ngModel)]="pageSize" btnRadio="5" uncheckable>5</label>
-        <label class="btn btn-primary" [(ngModel)]="pageSize" btnRadio="10" uncheckable>10</label>
-        <label class="btn btn-primary" [(ngModel)]="pageSize" btnRadio="25" uncheckable>25</label>
-        <label class="btn btn-primary" [(ngModel)]="pageSize" btnRadio="100" uncheckable>100</label>
-    </div>-->
-    <!--{{getDiagnostic()}}-->
 
-</div>
+<!--<div class="row" *ngIf="!isLoading">-->
+    <!--<div class="col-md-8">-->
+        <!--<div class="text-md-left text-xs-center">-->
+            <!--<nav>-->
+                <!--<ul class="pagination">-->
+                    <!--<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>-->
+                    <!--<li [class.active]="pageNumber == 1"><a href="#">1 </a></li>-->
+                    <!--<li><a href="#">2</a></li>-->
+                    <!--<li><a href="#">3</a></li>-->
+                    <!--<li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>-->
+                <!--</ul>-->
+            <!--</nav>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="col-md-4">-->
+        <!--<div class="pull-md-right text-xs-center">-->
+            <!--<div class="btn-group pagination" data-toggle="buttons">-->
+                <!--<label class="btn btn-primary" *ngFor="let pSizeValue of pageSizeOptions" [class.active]="pSizeValue == pageSize">-->
+                    <!--<input type="radio" autocomplete="off" (ngModelChange)="setPageSize(pSizeValue)" name="{{pSizeValue}}"> {{pSizeValue}}-->
+                <!--</label>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;<div class="btn-group">-->
+        <!--<label class="btn btn-primary" [(ngModel)]="pageSize" btnRadio="5" uncheckable>5</label>-->
+        <!--<label class="btn btn-primary" [(ngModel)]="pageSize" btnRadio="10" uncheckable>10</label>-->
+        <!--<label class="btn btn-primary" [(ngModel)]="pageSize" btnRadio="25" uncheckable>25</label>-->
+        <!--<label class="btn btn-primary" [(ngModel)]="pageSize" btnRadio="100" uncheckable>100</label>-->
+    <!--</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;{{getDiagnostic()}}&ndash;&gt;-->
+<!--</div>-->

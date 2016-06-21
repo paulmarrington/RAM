@@ -116,16 +116,20 @@ export interface ICreateIdentityDTO {
     profileProvider?:string;
 }
 
-export class IAttributeDTO {
+export interface IAttributeDTO {
     code:string;
     value:string;
 }
 
-export class IRelationshipAddDTO {
+export interface IRelationshipAddDTO {
     relationshipType:string;
     subjectIdValue:string;
     delegate:ICreateIdentityDTO;
     startTimestamp:Date;
     endTimestamp:Date;
     attributes:IAttributeDTO[];
+}
+
+export interface INotifyDelegateDTO {
+    email:string;
 }

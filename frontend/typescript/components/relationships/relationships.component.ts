@@ -7,7 +7,7 @@ import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
     IName,
-    IRelationshipType
+    IRelationshipType, IHrefValue
 } from '../../../../commons/RamAPI2';
 
 @Component({
@@ -18,29 +18,27 @@ import {
 
 export class RelationshipsComponent {
 
-    public idValue: string;
+    public idValue:string;
 
-    public identityDisplayName$: Rx.Observable<IName>;
-    public relationshipTypes$: Rx.Observable<IRelationshipType[]>;
+    public identityDisplayName$:Rx.Observable<IName>;
 
-    public relationshipTypes: IRelationshipType[] = [];
+    public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
 
-    constructor(private routeParams: RouteParams,
-                private identityService: RAMIdentityService,
-                private rest: RAMRestService) {
+    constructor(private routeParams:RouteParams,
+                private identityService:RAMIdentityService,
+                private rest:RAMRestService) {
     }
 
     public ngOnInit() {
         this.idValue = this.routeParams.get('idValue');
         this.identityDisplayName$ = this.identityService
             .getDefaultName(this.idValue).map(this.displayName);
-        this.relationshipTypes$ = this.rest.listRelationshipTypes();
-        this.relationshipTypes$.subscribe((relationshipTypes) => {
+        this.rest.listRelationshipTypes().subscribe((relationshipTypes) => {
             this.relationshipTypes = relationshipTypes;
         });
     }
 
-    public displayName(name: IName): string {
+    public displayName(name:IName):string {
         if (name) {
             return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
         }
