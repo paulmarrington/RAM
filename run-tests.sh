@@ -2,7 +2,7 @@
 set -ev
 
 PWD=$(pwd)
-export RAM_CONF=$PWD/backend/conf/conf.js
+export RAM_CONF=$PWD/backend/conf/conf-localhost.js
 
 cd frontend
 npm install
