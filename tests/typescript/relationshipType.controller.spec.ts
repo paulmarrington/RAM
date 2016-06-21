@@ -1,8 +1,10 @@
 import RelationshipTypeHelper from './helpers/relationshipTypeHelper';
 import InitializationHelper from './helpers/initializationHelper';
+import AuthHelper from './helpers/authHelper';
 
 const relationshipTypeHelper = new RelationshipTypeHelper();
 const initializationHelper = new InitializationHelper();
+const authHelper = new AuthHelper();
 
 /* tslint:disable:max-func-body-length */
 describe('RelationshipType API', () => {
@@ -10,6 +12,7 @@ describe('RelationshipType API', () => {
     beforeAll(async(done) => {
         try {
             await initializationHelper.loadData();
+            await authHelper.logIn(authHelper.KNOWN_IDENTITIES['jenscatering_identity_1']);
         } catch (e) {
             fail(e);
         }
