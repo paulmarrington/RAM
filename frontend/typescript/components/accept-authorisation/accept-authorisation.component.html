@@ -103,7 +103,7 @@
             <h4>By accepting to act on behalf of <b>{{displayName((relationship$ | async)?.subjectNickName)}}</b>,
                 you acknowledge that:</h4>
             <div>{{delegateRelationshipTypeDeclarationAttributeUsage?.defaultValue}}</div>
-            <h4><input #acceptChk type="checkbox" (change)="setAccept(acceptChk.value)">I accept</h4>
+            <h4><input type="checkbox"[(ngModel)]="accept"> I accept</h4>
         </div>
     </div>
 
