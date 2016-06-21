@@ -25,14 +25,13 @@ node_modules/.bin/jspm -v
 node_modules/.bin/jspm cc
 node_modules/.bin/jspm install -y
 
-cd ../backend
-npm install
-node_modules/.bin/typings install
-gulp ts:compile
-gulp serve &
-sleep 15
+cd ..
 
-cd ../tests
-npm install
-node_modules/.bin/typings install
-gulp test
+./ram deps:backend
+./ram deps:test
+
+./ram start:backend &
+sleep 30
+
+./ram test:api
+
