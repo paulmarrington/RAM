@@ -1,6 +1,5 @@
 import {RestCalls} from '../support/rest';
 import {config} from '../bootstrap';
-import {Headers} from '../../../backend/typescript/controllers/headers';
 
 const rest = new RestCalls(config.host, config.port);
 
@@ -14,7 +13,7 @@ export default class AuthHelper {
     };
 
     public logIn = (identity:string) => {
-        rest.setHeader(Headers.IdentityIdValue, identity);
+        rest.setHeader('X-RAM-Identity-IdValue', identity);
 
         // return rest.promisify(rest.post(`/v1/simulators/authenticator/authenticate`, {credentials: identity})).then(response => {
         //     return response;

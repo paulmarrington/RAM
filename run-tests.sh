@@ -34,4 +34,5 @@ sleep 15
 
 cd ../tests
 npm install
+node_modules/.bin/typings install
 gulp test
