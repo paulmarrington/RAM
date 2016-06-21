@@ -39,7 +39,7 @@ export class AddRelationshipComponent {
 
     public idValue:string;
     public manageAuthAttribute:IRelationshipAttributeNameUsage;
-    public relationshipTypes$:Rx.Observable<IHrefValue<IRelationshipType>>;
+    public relationshipTypes$:Rx.Observable<IHrefValue<IRelationshipType>[]>;
 
     public newRelationship:AddRelationshipComponentData = {
         accessPeriod: {
@@ -155,11 +155,14 @@ export class AddRelationshipComponent {
 
     public resolveManageAuthAttribute(relationshipTypeCode:string, attributeNameCode:string) {
         this.relationshipTypes$
-            .filter((relationshipTypeHrefValue) => {
-                return relationshipTypeHrefValue.value.code === relationshipTypeCode;
-            })
-            .subscribe(universalRelationshipTypeHrefValue => {
-                let manageAuthAttributes = universalRelationshipTypeHrefValue.value.relationshipAttributeNames
+            .subscribe(relationshipTypeHrefValues => {
+                // find the relationship type
+                const relationshipTypeHrefValue = relationshipTypeHrefValues.filter((relationshipTypeHrefValue) => {
+                    return relationshipTypeHrefValue.value.code === relationshipTypeCode;
+                });
+
+                // find the attribute name
+                let manageAuthAttributes = relationshipTypeHrefValue[0].value.relationshipAttributeNames
                     .filter((attributeName) => attributeName.attributeNameDef.value.code === attributeNameCode);
                 if (manageAuthAttributes.length === 1) {
                     this.manageAuthAttribute = manageAuthAttributes[0];

@@ -33,7 +33,7 @@ export class RelationshipsComponent {
         this.idValue = this.routeParams.get('idValue');
         this.identityDisplayName$ = this.identityService
             .getDefaultName(this.idValue).map(this.displayName);
-        this.rest.listRelationshipTypesList().subscribe((relationshipTypes) => {
+        this.rest.listRelationshipTypes().subscribe((relationshipTypes) => {
             this.relationshipTypes = relationshipTypes;
         });
     }
