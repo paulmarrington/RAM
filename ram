@@ -282,6 +282,20 @@ case "$1" in
     echo ""
     ;;
 
+  'merge:origin')
+    echo ""
+    echo "Merging from origin ..."
+    echo ""
+    if [ -z "$2" ]; then
+      echo "Branch not specified!"
+    else
+      echo "Branch: $2"
+      git fetch
+      git merge $2
+    fi
+    echo ""
+    ;;
+
   *)
 
 # USAGE
