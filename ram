@@ -111,6 +111,18 @@ case "$1" in
     echo ""
     ;;
 
+  'feature:merge:origin')
+    echo ""
+    featureName=$(git name-rev --name-only HEAD)
+    if [ $featureName ] && [ $featureName == feature/* ]; then
+        echo "Merging from develop to '$featureName' ..."
+        #git merge "origin/develop" $featureName
+    else
+        echo "Run this from the feature branch"
+    fi
+    echo ""
+    ;;
+
 # START
 
   'start:frontend')
@@ -284,20 +296,6 @@ case "$1" in
     echo ""
     ;;
 
-  'merge:origin')
-    echo ""
-    echo "Merging from origin ..."
-    echo ""
-    if [ -z "$2" ]; then
-      echo "Branch not specified!"
-    else
-      echo "Branch: $2"
-      git fetch
-      git merge $2
-    fi
-    echo ""
-    ;;
-
   *)
 
 # USAGE
@@ -318,6 +316,7 @@ case "$1" in
     echo "$(tput setaf 3)    feature:start                        $(tput sgr0)      Creates local and remote feature branch"
     echo "$(tput setaf 3)    feature:checkout                     $(tput sgr0)      Fetches then checks out remote feature branch"
     echo "$(tput setaf 3)    feature:cancel                       $(tput sgr0)      Deletes local and remote feature branch"
+    echo "$(tput setaf 3)    feature:merge:origin                 $(tput sgr0)      Merges origin/develop to current local feature branch"
     echo ""
     echo "$(tput setaf 3)    lint:frontend                        $(tput sgr0)      Runs lint on frontend"
     echo "$(tput setaf 3)    lint:backend                         $(tput sgr0)      Runs lint on backend"
