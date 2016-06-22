@@ -116,6 +116,7 @@ case "$1" in
     featureName=$(git name-rev --name-only HEAD)
     if [ $featureName ] && [[ $featureName == feature/* ]]; then
         echo "Merging from develop to '$featureName' ..."
+        git fetch --prune
         git merge "origin/develop" $featureName
     else
         echo "Run this from the feature branch"
