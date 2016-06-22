@@ -128,7 +128,7 @@ case "$1" in
     echo ""
     featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
     if [ $featureName ] && [[ $featureName == feature/* ]]; then
-        echo "Merging from develop to '$featureName' ..."
+        echo "Merging from origin/develop to '$featureName' ..."
         git fetch --prune
         git merge "origin/develop" $featureName
     else
