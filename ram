@@ -86,7 +86,7 @@ case "$1" in
     else
         echo ""
         git fetch --prune
-        git checkout origin/"feature/$2"
+        git checkout -b "feature/$2" origin/"feature/$2"
     fi
     echo ""
     ;;
