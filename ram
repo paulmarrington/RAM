@@ -9,6 +9,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #  git
 #  npm
 
+#  test commit on develop
+
 export PATH=./node_modules/.bin:../node_modules/.bin:$PATH
 
 function echo_and_run {
