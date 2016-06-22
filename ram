@@ -114,7 +114,7 @@ case "$1" in
   'feature:merge:origin')
     echo ""
     featureName=$(git name-rev --name-only HEAD)
-    if [ $featureName ] && [ $featureName == feature/* ]; then
+    if [ $featureName ] && [[ $featureName == feature/* ]]; then
         echo "Merging from develop to '$featureName' ..."
         #git merge "origin/develop" $featureName
     else
