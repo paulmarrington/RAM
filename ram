@@ -8,6 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #  brew
 #  git
 #  npm
+# (TESTING: push to test-1)
 
 #  test commit 3 on develop
 
@@ -93,20 +94,33 @@ case "$1" in
     echo ""
     ;;
 
+  'feature:finish')
+    echo ""
+    featureName=$(git name-rev --name-only HEAD)
+    if [ $featureName ] && [[ $featureName == feature/* ]]; then
+        echo "Finishing feature '$featureName' ..."
+        git push
+        open "http://https://github.com/atogov/RAM/pulls"
+    else
+        echo "Run this from the feature branch"
+    fi
+    echo ""
+    ;;
+
   'feature:cancel')
     echo ""
-    echo "Cancelling a feature ..."
-    if [ -z "$2" ]; then
-        echo "Please specify a feature name"
-    else
+    featureName=$(git name-rev --name-only HEAD)
+    if [ $featureName ] && [[ $featureName == feature/* ]]; then
         echo ""
         read -p "This will delete the branch '$2' on local and origin. Confirm (y/n): " confirm
         if [ $confirm ] && [ $confirm == "y" ]; then
             echo ""
             echo_and_run git checkout develop
-            echo_and_run git branch -d "feature/$2"
-            echo_and_run git push origin ":feature/$2"
+            echo_and_run git branch -d "$featureName"
+            echo_and_run git push origin ":$featureName"
         fi
+    else
+        echo "Run this from the feature branch"
     fi
     echo ""
     ;;
@@ -316,6 +330,7 @@ case "$1" in
     echo ""
     echo "$(tput setaf 3)    feature:start                        $(tput sgr0)      Creates local and remote feature branch"
     echo "$(tput setaf 3)    feature:checkout                     $(tput sgr0)      Fetches then checks out remote feature branch"
+    echo "$(tput setaf 3)    feature:finish                       $(tput sgr0)      Opens Github to manually submit pull request"
     echo "$(tput setaf 3)    feature:cancel                       $(tput sgr0)      Deletes local and remote feature branch"
     echo "$(tput setaf 3)    feature:merge:origin                 $(tput sgr0)      Merges origin/develop to current local feature branch"
     echo ""
