@@ -71,8 +71,9 @@ case "$1" in
     if [ -z "$2" ]; then
         echo "Please specify a feature name"
     else
-        echo_and_run git checkout -b "feature/$2"
-        echo_and_run git push -u origin "feature/$2":"feature/$2"
+        echo ""
+        git checkout -b "feature/$2"
+        git push -u origin "feature/$2":"feature/$2"
     fi
     echo ""
     ;;
@@ -83,8 +84,9 @@ case "$1" in
     if [ -z "$2" ]; then
         echo "Please specify a feature name"
     else
-        echo_and_run git fetch
-        echo_and_run git checkout origin/"feature/$2"
+        echo ""
+        git fetch
+        git checkout origin/"feature/$2"
     fi
     echo ""
     ;;
@@ -95,8 +97,10 @@ case "$1" in
     if [ -z "$2" ]; then
         echo "Please specify a feature name"
     else
+        echo ""
         read -p "This will delete the branch '$2' on local and origin. Confirm (y/n): " confirm
         if [ $confirm ] && [ $confirm == "y" ]; then
+            echo ""
             echo_and_run git checkout develop
             echo_and_run git branch -d "feature/$2"
             echo_and_run git push origin ":feature/$2"
