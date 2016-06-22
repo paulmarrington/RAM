@@ -15,6 +15,7 @@
  
 # Useful resources:
  1. [Development Environment](docs/environment.md)
+ 1. [Git Usage](docs/git-usage.md)
  1. [Postman Collections](docs/postman.md)
 
 ## Development Environment Installation
