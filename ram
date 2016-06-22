@@ -4,13 +4,17 @@ app="RAM"
 me="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-
 # prerequisites:
 #  brew
 #  git
 #  npm
 
 export PATH=./node_modules/.bin:../node_modules/.bin:$PATH
+
+function echo_and_run {
+  echo "$" "$@"
+  eval $(printf '%q ' "$@") < /dev/tty
+}
 
 case "$1" in
 
@@ -56,6 +60,48 @@ case "$1" in
     echo "Downloading test dependencies ..."
     cd tests
     npm install && typings install
+    echo ""
+    ;;
+
+# FOR DEVELOPMENT
+
+  'feature:start')
+    echo ""
+    echo "Starting a new feature ..."
+    if [ -z "$2" ]; then
+        echo "Please specify a feature name"
+    else
+        echo_and_run git checkout -b "feature/$2"
+        echo_and_run git push -u origin "feature/$2":"feature/$2"
+    fi
+    echo ""
+    ;;
+
+  'feature:checkout')
+    echo ""
+    echo "Continuing an existing feature ..."
+    if [ -z "$2" ]; then
+        echo "Please specify a feature name"
+    else
+        echo_and_run git fetch
+        echo_and_run git checkout origin/"feature/$2"
+    fi
+    echo ""
+    ;;
+
+  'feature:cancel')
+    echo ""
+    echo "Cancelling a feature ..."
+    if [ -z "$2" ]; then
+        echo "Please specify a feature name"
+    else
+        read -p "This will delete the branch '$2' on local and origin. Confirm (y/n): " confirm
+        if [ $confirm ] && [ $confirm == "y" ]; then
+            echo_and_run git checkout develop
+            echo_and_run git branch -d "feature/$2"
+            echo_and_run git push origin ":feature/$2"
+        fi
+    fi
     echo ""
     ;;
 
@@ -248,6 +294,10 @@ case "$1" in
     echo "$(tput setaf 3)    deps:frontend                        $(tput sgr0)      Download frontend dependencies"
     echo "$(tput setaf 3)    deps:backend                         $(tput sgr0)      Download backend dependencies"
     echo "$(tput setaf 3)    deps:test                            $(tput sgr0)      Download api test dependencies"
+    echo ""
+    echo "$(tput setaf 3)    feature:start                        $(tput sgr0)      Creates local and remote feature branch"
+    echo "$(tput setaf 3)    feature:checkout                     $(tput sgr0)      Fetches then checks out remote feature branch"
+    echo "$(tput setaf 3)    feature:cancel                       $(tput sgr0)      Deletes local and remote feature branch"
     echo ""
     echo "$(tput setaf 3)    lint:frontend                        $(tput sgr0)      Runs lint on frontend"
     echo "$(tput setaf 3)    lint:backend                         $(tput sgr0)      Runs lint on backend"
