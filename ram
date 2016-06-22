@@ -4,13 +4,20 @@ app="RAM"
 me="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-
 # prerequisites:
 #  brew
 #  git
 #  npm
+# (TESTING: push to test-1)
+
+#  test commit 5 on develop
 
 export PATH=./node_modules/.bin:../node_modules/.bin:$PATH
+
+function echo_and_run {
+  echo "$" "$@"
+  eval $(printf '%q ' "$@") < /dev/tty
+}
 
 case "$1" in
 
@@ -56,6 +63,77 @@ case "$1" in
     echo "Downloading test dependencies ..."
     cd tests
     npm install && typings install
+    echo ""
+    ;;
+
+# FOR DEVELOPMENT
+
+  'feature:start')
+    echo ""
+    echo "Starting a new feature ..."
+    if [ -z "$2" ]; then
+        echo "Please specify a feature name"
+    else
+        echo ""
+        git checkout -b "feature/$2"
+        git push -u origin "feature/$2":"feature/$2"
+    fi
+    echo ""
+    ;;
+
+  'feature:checkout')
+    echo ""
+    echo "Continuing an existing feature ..."
+    if [ -z "$2" ]; then
+        echo "Please specify a feature name"
+    else
+        echo ""
+        git fetch --prune
+        git checkout -b "feature/$2" origin/"feature/$2"
+    fi
+    echo ""
+    ;;
+
+  'feature:finish')
+    echo ""
+    featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+    if [ $featureName ] && [[ $featureName == feature/* ]]; then
+        echo "Finishing feature '$featureName' ..."
+        git push
+        open "http://https://github.com/atogov/RAM/pulls"
+    else
+        echo "Run this from the feature branch"
+    fi
+    echo ""
+    ;;
+
+  'feature:cancel')
+    echo ""
+    featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+    if [ $featureName ] && [[ $featureName == feature/* ]]; then
+        read -p "This will delete the branch '$featureName' on local and origin. Confirm (y/n): " confirm
+        if [ $confirm ] && [ $confirm == "y" ]; then
+            echo ""
+            echo_and_run git checkout develop
+            echo_and_run git branch -D "$featureName"
+            echo_and_run git push origin ":$featureName"
+        fi
+    else
+        echo "Run this from the feature branch"
+    fi
+    echo ""
+    ;;
+
+  'feature:merge:origin')
+    echo ""
+    featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+    if [ $featureName ] && [[ $featureName == feature/* ]]; then
+        echo "Merging from origin/develop to '$featureName' ..."
+        git fetch --prune
+        git merge "origin/develop" $featureName
+    else
+        echo "Run this from the feature branch"
+    fi
     echo ""
     ;;
 
@@ -248,6 +326,12 @@ case "$1" in
     echo "$(tput setaf 3)    deps:frontend                        $(tput sgr0)      Download frontend dependencies"
     echo "$(tput setaf 3)    deps:backend                         $(tput sgr0)      Download backend dependencies"
     echo "$(tput setaf 3)    deps:test                            $(tput sgr0)      Download api test dependencies"
+    echo ""
+    echo "$(tput setaf 3)    feature:start                        $(tput sgr0)      Creates local and remote feature branch"
+    echo "$(tput setaf 3)    feature:checkout                     $(tput sgr0)      Fetches then checks out remote feature branch"
+    echo "$(tput setaf 3)    feature:finish                       $(tput sgr0)      Opens Github to manually submit pull request"
+    echo "$(tput setaf 3)    feature:cancel                       $(tput sgr0)      Deletes local and remote feature branch"
+    echo "$(tput setaf 3)    feature:merge:origin                 $(tput sgr0)      Merges origin/develop to current local feature branch"
     echo ""
     echo "$(tput setaf 3)    lint:frontend                        $(tput sgr0)      Runs lint on frontend"
     echo "$(tput setaf 3)    lint:backend                         $(tput sgr0)      Runs lint on backend"
