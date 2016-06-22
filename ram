@@ -111,12 +111,11 @@ case "$1" in
     echo ""
     featureName=$(git name-rev --name-only HEAD)
     if [ $featureName ] && [[ $featureName == feature/* ]]; then
-        echo ""
         read -p "This will delete the branch '$featureName' on local and origin. Confirm (y/n): " confirm
         if [ $confirm ] && [ $confirm == "y" ]; then
             echo ""
             echo_and_run git checkout develop
-            echo_and_run git branch -d "$featureName"
+            echo_and_run git branch -D "$featureName"
             echo_and_run git push origin ":$featureName"
         fi
     else
