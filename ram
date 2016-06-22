@@ -85,7 +85,7 @@ case "$1" in
         echo "Please specify a feature name"
     else
         echo ""
-        git fetch
+        git fetch --prune
         git checkout origin/"feature/$2"
     fi
     echo ""
