@@ -96,7 +96,7 @@ case "$1" in
 
   'feature:finish')
     echo ""
-    featureName=$(git name-rev --name-only HEAD)
+    featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
     if [ $featureName ] && [[ $featureName == feature/* ]]; then
         echo "Finishing feature '$featureName' ..."
         git push
@@ -109,7 +109,7 @@ case "$1" in
 
   'feature:cancel')
     echo ""
-    featureName=$(git name-rev --name-only HEAD)
+    featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
     if [ $featureName ] && [[ $featureName == feature/* ]]; then
         read -p "This will delete the branch '$featureName' on local and origin. Confirm (y/n): " confirm
         if [ $confirm ] && [ $confirm == "y" ]; then
@@ -126,7 +126,7 @@ case "$1" in
 
   'feature:merge:origin')
     echo ""
-    featureName=$(git name-rev --name-only HEAD)
+    featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
     if [ $featureName ] && [[ $featureName == feature/* ]]; then
         echo "Merging from develop to '$featureName' ..."
         git fetch --prune
