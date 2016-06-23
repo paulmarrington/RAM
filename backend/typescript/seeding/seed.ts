@@ -89,6 +89,7 @@ export class Seeder {
     public static full_accessLevel = 'Full access';
     public static accessLevels = [Seeder.full_accessLevel, 'Limited access', 'No access'];
 
+    public static associate_delegate_relationshipType:IRelationshipType;
     public static universal_delegate_relationshipType:IRelationshipType;
     public static custom_delegate_relationshipType:IRelationshipType;
 
@@ -262,7 +263,7 @@ export class Seeder {
     }
 
     public static async createRelationshipModel(values:IRelationship) {
-        Seeder.log(`- ${Seeder.custom_delegate_relationshipType.code}`.magenta);
+        Seeder.log(`- ${values.relationshipType.code}`.magenta);
         if (values.attributes) {
             for (let attribute of values.attributes) {
                 const truncatedValue = truncateString(attribute.value);
@@ -477,6 +478,30 @@ export class Seeder {
         try {
 
             Seeder.log('\nInserting Relationship Types:\n'.underline);
+
+            Seeder.associate_delegate_relationshipType = await Seeder.createRelationshipTypeModel({
+                code: 'ASSOCIATE',
+                shortDecodeText: 'Associate',
+                longDecodeText: 'Associate',
+                startDate: now
+            } as any, [
+                {attribute: Seeder.permissionCustomisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
+                {attribute: Seeder.delegateManageAuthorisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
+                {attribute: Seeder.delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                    defaultValue: 'Markdown for Delegate Universal Representative Declaration'},
+                {attribute: Seeder.subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                    defaultValue: 'Markdown for Subject Universal Representative Declaration'},
+                {attribute: Seeder.asic_abn_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.wgea_activate_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptindustry_aba_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.abr_abr_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptindustry_ats_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.depthscentrelink_ppl_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptimm_skillselect_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptemp_wageconnect_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel}
+            ]);
 
             Seeder.universal_delegate_relationshipType = await Seeder.createRelationshipTypeModel({
                 code: 'UNIVERSAL_REPRESENTATIVE',
@@ -707,7 +732,7 @@ export class Seeder {
             } else {
 
                 Seeder.jpty_and_jm_relationship = await Seeder.createRelationshipModel({
-                    relationshipType: Seeder.custom_delegate_relationshipType,
+                    relationshipType: Seeder.associate_delegate_relationshipType,
                     subject: Seeder.jenscatering_party,
                     subjectNickName: Seeder.jenscatering_name,
                     delegate: Seeder.jennifermaxims_party,
