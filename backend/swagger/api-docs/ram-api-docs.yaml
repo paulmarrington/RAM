@@ -198,6 +198,8 @@ paths:
             type: array
             items:
               $ref: '#/definitions/RelationshipTypeResourceReference'
+        500:
+          $ref: '#/responses/500'
 
   /relationshipType/{code}:
     get:
@@ -235,8 +237,10 @@ paths:
         - name: RelationshipType
           in: body
           description: |
-            Information about the new relationship type to be created. The code in path must be identical to the code in the request body.
-            If the code doesn't exist in the backend, a new resource will be created otherwise an existing resource with the same code gets updated.
+            Information about the RelationshipType to be created or updated.
+            The code in path must be identical to the code in the request body. If the code doesn't
+            exist in the backend, a new resource will be created otherwise an existing resource with
+            the same code gets updated.
           required: true
           schema:
             $ref: '#/definitions/RelationshipType'
@@ -300,9 +304,10 @@ paths:
         - name: RelationshipAttributeName
           in: body
           description: |
-            Information about the relationship attribute name to be created or updated. The code in path must be identical
-            to the code in the request body. If the code doesn't exist in the backend, a new resource will be
-            created otherwise an existing resource with the same code gets updated.
+            Information about the RelationshipAttributeName to be created or updated.
+            The code in path must be identical to the code in the request body. If the code doesn't
+            exist in the backend, a new resource will be created otherwise an existing resource with
+            the same code gets updated.
           required: true
           schema:
             $ref: '#/definitions/RelationshipAttributeName'
