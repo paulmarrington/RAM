@@ -28,17 +28,80 @@ paths:
   # Business End Points
   # -------------------------------------------------------------------------------------------------------------------
 
+  # Parties ...........................................................................................................
+
+  /parties/identities/{idType}/{idValue}:
+    get:
+      summary: Get party using identity
+      operationId: GetParty
+      tags:
+        - Business - Party
+      parameters:
+        - $ref: "#/parameters/idType"
+        - $ref: "#/parameters/idValue"
+        - name: fields
+          in: query
+          required: false
+          type: array
+          collectionFormat: multi
+          description: |
+            The fields to be retrieved. Each field is in the format of:
+            'requestedRoleAttribute.name=:attr-name, :attr-name...'.
+            Possible values are TBD.
+          items:
+            type: string
+      responses:
+        200:
+          description: The updated party returned
+          schema:
+            $ref: "#/definitions/PartyResourceReference"
+        400:
+          $ref: '#/responses/400'
+        500:
+          $ref: '#/responses/500'
+
+  /parties/invitationCode/{invitationCode}:
+    get:
+      tags:
+        - Business - Identity
+      parameters:
+        - name: invitationCode
+          type: string
+          in: path
+          required: true
+      summary: Find party by invitation code
+      description: |
+        This service may be use to find a party with the specified invitation code (sub type of identity) and update details of that invitation
+        code to signal it has been accepted, rejected, etc.
+        If the supplied invitation code details are correct, the status & claimedtimestamp propertie are update.
+        The link id for the logged on user is populated into the identity property (together with profile info).
+        This identity is used to find a Party record for the logged on user.
+        if one is found the Relationship attached to the Party that contains the InvitationCode
+        is transfered to the Party identified by the logged on user's Party
+        if one isn't found the Identity for the logged on user is attached to the Party that
+        owns the InvitationCode, and thus now the logged on user has a Party record.
+      responses:
+        200:
+          description: The party returned
+          schema:
+            $ref: "#/definitions/PartyResourceReference"
+        400:
+          $ref: '#/responses/400'
+        500:
+          $ref: '#/responses/500'
+
   # Relationships .....................................................................................................
 
   /parties/identities/{idType}/{idValue}/relationships/{relType}:
     get:
+      tags:
+        - Business - Relationship
       summary: List Relationships
       description: |
         This resource represents a collection of relationships for a given party for a specified list of
         relationship types. The other party attached to each relationship is also returned. It is optionally possible
         to filter the request to return just those relationships where a party is either the Subject or Delegate on
         that relationship.
-
         Note - this defintion needs more work, particularly the filters.
       parameters:
         - $ref: "#/parameters/idType"
@@ -83,8 +146,6 @@ paths:
           required: false
           type: string
           enum: ['ascending','descending']
-      tags:
-        - Relationship
       responses:
         200:
           description: A relationship document
@@ -97,6 +158,8 @@ paths:
 
   /parties/identities/{subjectIdType}/{subjectIdValue}/relationships/{relType}/parties/identities/{delegateIdType}/{delegateIdValue}/{startTimestamp}:
     get:
+      tags:
+        - Business - Relationship
       summary: Get Relationship
       description: |
         This resource identifies a single instance of a relationship.
@@ -110,8 +173,6 @@ paths:
         - $ref: "#/parameters/delegateIdValue"
         - $ref: "#/parameters/relType"
         - $ref: "#/parameters/startTimestamp"
-      tags:
-        - Relationship
       responses:
         200:
           description: A relationship document
@@ -122,6 +183,8 @@ paths:
         500:
           $ref: '#/responses/500'
     delete:
+      tags:
+        - Business - Relationship
       summary: DeleteRelationship
       description: |
         This resource identifies a single instance of a relationship.
@@ -132,8 +195,6 @@ paths:
         - $ref: "#/parameters/delegateIdValue"
         - $ref: "#/parameters/relType"
         - $ref: "#/parameters/startTimestamp"
-      tags:
-        - Relationship
       responses:
         200:
           description: A relationship document
@@ -144,6 +205,8 @@ paths:
         500:
           $ref: '#/responses/500'
     put:
+      tags:
+        - Business - Relationship
       summary: Create/ UpdateRelationship
       description: |
         This resource identifies a single instance of a relationship.
@@ -175,8 +238,6 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/RelationshipRequest'
-      tags:
-        - Relationship
       responses:
         200:
           description: A relationship document
@@ -196,7 +257,7 @@ paths:
   /relationshipTypes:
     get:
       tags:
-        - RelationshipType
+        - Reference - RelationshipType
       operationId: RelationshipType.listIgnoringDateRange
       summary: List Relationship Type resources
       description: List Relationship Type resources
@@ -212,7 +273,7 @@ paths:
   /relationshipType/{code}:
     get:
       tags:
-        - RelationshipType
+        - Reference - RelationshipType
       operationId: RelationshipType.findByCodeIgnoringDateRange
       parameters:
         - name: code
@@ -234,7 +295,7 @@ paths:
           $ref: '#/responses/500'
     put:
       tags:
-        - RelationshipType
+        - Reference - RelationshipType
       operationId: RelationshipType.insertOrUpdate
       parameters:
         - name: code
@@ -270,7 +331,7 @@ paths:
   /relationshipAttributeNames:
     get:
       tags:
-        - RelationshipAttributeName
+        - Reference - RelationshipAttributeName
       operationId: RelationshipAttributeName.listIgnoringDateRange
       summary: List RelationshipAttributeName resources
       description: List RelationshipAttributeName resources
@@ -284,7 +345,7 @@ paths:
   /relationshipAttributeName/{code}:
     get:
       tags:
-        - RelationshipAttributeName
+        - Reference - RelationshipAttributeName
       operationId: RelationshipAttributeName.findByCodeIgnoringDateRange
       summary: Get RelationshipAttributeName
       description: Get RelationshipAttributeName
@@ -304,7 +365,7 @@ paths:
           $ref: '#/responses/500'
     put:
       tags:
-        - RelationshipAttributeName
+        - Reference - RelationshipAttributeName
       summary: Create or Update RelationshipAttributeName
       description: Create or Update RelationshipAttributeName
       parameters:
@@ -327,68 +388,6 @@ paths:
           $ref: '#/responses/400'
         500:
           schema:
-          $ref: '#/responses/500'
-
-  # Parties ...........................................................................................................
-
-  /parties/identities/{idType}/{idValue}:
-    get:
-      summary: Get party using identity
-      operationId: GetParty
-      tags:
-        - Party
-      parameters:
-        - $ref: "#/parameters/idType"
-        - $ref: "#/parameters/idValue"
-        - name: fields
-          in: query
-          required: false
-          type: array
-          collectionFormat: multi
-          description: |
-            The fields to be retrieved. Each field is in the format of:
-            'requestedRoleAttribute.name=:attr-name, :attr-name...'.
-            Possible values are TBD.
-          items:
-            type: string
-      responses:
-        200:
-          description: The updated party returned
-          schema:
-            $ref: "#/definitions/PartyResourceReference"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-
-  /parties/invitationCode/{invitationCode}:
-    get:
-      tags:
-        - Identity
-      parameters:
-        - name: invitationCode
-          type: string
-          in: path
-          required: true
-      summary: Find party by invitation code
-      description: |
-        This service may be use to find a party with the specified invitation code (sub type of identity) and update details of that invitation
-        code to signal it has been accepted, rejected, etc.
-        If the supplied invitation code details are correct, the status & claimedtimestamp propertie are update.
-        The link id for the logged on user is populated into the identity property (together with profile info).
-        This identity is used to find a Party record for the logged on user.
-        if one is found the Relationship attached to the Party that contains the InvitationCode
-        is transfered to the Party identified by the logged on user's Party
-        if one isn't found the Identity for the logged on user is attached to the Party that
-        owns the InvitationCode, and thus now the logged on user has a Party record.
-      responses:
-        200:
-          description: The party returned
-          schema:
-            $ref: "#/definitions/PartyResourceReference"
-        400:
-          $ref: '#/responses/400'
-        500:
           $ref: '#/responses/500'
 
 # ---------------------------------------------------------------------------------------------------------------------
