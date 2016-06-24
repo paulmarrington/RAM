@@ -321,8 +321,9 @@ paths:
         - name: RelationshipAttributeName
           in: body
           description: |
-            Information about the new relationship to be created. The code in path must be identical to the code in the request body.
-            If the code doesn't exist in the backend, a new resource will be created otherwise an existing resource with the same code gets updated.
+            Information about the new relationship attribute name to be created. The code in path must be identical
+            to the code in the request body. If the code doesn't exist in the backend, a new resource will be
+            created otherwise an existing resource with the same code gets updated.
           required: true
           schema:
             $ref: '#/definitions/RelationshipAttributeName'
@@ -330,6 +331,11 @@ paths:
         200:
           schema:
             $ref: '#/definitions/RelationshipAttributeName'
+        400:
+          $ref: '#/responses/400'
+        500:
+          schema:
+          $ref: '#/responses/500'
 
   # Role Types ........................................................................................................
 
