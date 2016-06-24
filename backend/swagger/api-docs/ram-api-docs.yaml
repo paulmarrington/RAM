@@ -708,7 +708,7 @@ definitions:
 
   RelationshipTypeDetails:
     type: object
-    required: ["RelationshipAttributeNames","voluntaryInd"]
+    required: ["voluntaryInd","relationshipAttributeNames"]
     properties:
       voluntaryInd:
         type: boolean
@@ -718,13 +718,6 @@ definitions:
         description: Relationship attributes that may be used with this resource
         items:
           $ref: '#/definitions/RelationshipAttributeNameUsage'
-
-  RelationshipTypeRequest:
-    allOf:
-    - $ref: '#/definitions/RelationshipTypeBusinessIdentifier'
-    - $ref: '#/definitions/RelationshipTypeDetails'
-    type: object
-    required: ["code","voluntaryInd"]
 
   RelationshipTypeResourceReference:
     type: object
@@ -736,17 +729,6 @@ definitions:
         description: URI that uniquely identifies this RelationshipType
       value:
         $ref: '#/definitions/RelationshipType'
-
-  RelationshipTypeListResponse:
-    allOf:
-    - $ref: '#/definitions/IListResponse'
-    type: object
-    required: ['totalRecordsMatched','relationshipTypes']
-    properties:
-      relationshipTypes:
-        type: array
-        items:
-          $ref: '#/definitions/RelationshipTypeResourceReference'
 
   # Relationship Attribute Name Usage .................................................................................
 
