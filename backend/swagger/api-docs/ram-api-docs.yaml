@@ -306,6 +306,12 @@ paths:
             $ref: '#/definitions/RelationshipAttributeName'
         400:
           $ref: '#/responses/400'
+        404:
+          schema:
+          $ref: '#/responses/404'
+        500:
+          schema:
+          $ref: '#/responses/500'
     put:
       tags:
         - RelationshipAttributeName
@@ -993,6 +999,8 @@ definitions:
         type: string
         description: Value assigned to this attribute
 
+  # Relationship Attribute Name .......................................................................................
+
   RelationshipAttributeName:
     allOf:
       - $ref: '#/definitions/ICodeDecode'
@@ -1005,7 +1013,7 @@ definitions:
     properties:
       name:
         type: string
-        description: This is the short code value by which Relationship Types may be known
+        description: This is the short code value by which Relationship Attribute Names may be known
 
   RelationshipAttributeNameDetails:
     type: object
@@ -1022,42 +1030,27 @@ definitions:
       category:
         description: An optional category or grouping for additional meta data (eg a permission in Administrative Services)
         type: string
+      purposeText:
+        description: An optional purpose text to indicate how this attribute is meant to be used
+        type: string
       permittedValues:
-        description: what are the accepted values
+        description: An array of the accepted values
         type: array
         items:
           type: string
 
-  RelationshipAttributeNameRequest:
-    allOf:
-    - $ref: '#/definitions/RelationshipAttributeNameBusinessIdentifier'
-    - $ref: '#/definitions/RelationshipAttributeNameDetails'
-    type: object
-    required: ["name"]
-
   RelationshipAttributeNameResourceReference:
     type: object
-    description: A reference to a Resource
+    description: A reference to a RelationshipAttributeName Resource
     required: ["href"]
     properties:
       href:
         type: string
-        description: URL that uniquely identifying this RelationshipAttributeName
+        description: URL that uniquely identifies this RelationshipAttributeName
       value:
         description: The content of this field is optional, it is the same content for a get request on the href
         schema:
           $ref: '#/definitions/RelationshipAttributeName'
-
-  RelationshipAttributeNameListResponse:
-    allOf:
-    - $ref: '#/definitions/IListResponse'
-    type: object
-    required: ['totalRecordsMatched','RelationshipAttributeNames']
-    properties:
-      RelationshipAttributeNames:
-        type: array
-        items:
-          $ref: '#/definitions/RelationshipAttributeNameResourceReference'
 
   # Role Attribute ....................................................................................................
 
@@ -1284,6 +1277,7 @@ definitions:
         description: HTTP status code
       alert:
         $ref: '#/definitions/Alert'
+
   Alert:
     type: object
     required: ["alertType","messages"]

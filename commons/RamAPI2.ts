@@ -54,7 +54,6 @@ export interface IRelationshipAttributeNameUsage {
 }
 
 export interface IRelationshipAttributeName extends ICodeDecode {
-    name: string;
     domain: string;
     classifier: string;
     category: string;
