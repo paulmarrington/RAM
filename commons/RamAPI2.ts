@@ -1,3 +1,16 @@
+export interface ICodeDecode {
+    code: string;
+    shortDecodeText: string;
+    longDecodeText: string;
+    startTimestamp: string;
+    endTimestamp: string;
+}
+
+export interface IHrefValue<T> {
+    href: string;
+    value?: T;
+}
+
 interface IParty {
     partyType: string;
     identities: Array<IHrefValue<IIdentity>>;
@@ -28,15 +41,6 @@ export interface RelationshipSearchDTO {
     list: Array<IHrefValue<IRelationship>>;
 }
 
-
-export interface ICodeDecode {
-    code: string;
-    shortDecodeText: string;
-    longDecodeText: string;
-    startTimestamp: string;
-    endTimestamp: string;
-}
-
 export interface IRelationshipType extends ICodeDecode {
     voluntaryInd: boolean;
     relationshipAttributeNames: IRelationshipAttributeNameUsage[];
@@ -47,11 +51,6 @@ export interface IRelationshipAttributeNameUsage {
     defaultValue: string;
     attributeNameDef: IHrefValue<IRelationshipAttributeName>;
 
-}
-
-export interface IHrefValue<T> {
-    href: string;
-    value?: T;
 }
 
 export interface IRelationshipAttributeName extends ICodeDecode {
