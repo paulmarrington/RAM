@@ -409,8 +409,6 @@ definitions:
     type: object
     required: ["roles","identities"]
 
-  # Parties don't have business identifiers!!
-
   PartyDetails:
     type: object
     required: ["roles","identities"]
@@ -458,59 +456,62 @@ definitions:
 
   # Profile ...........................................................................................................
 
-  #not yet standardised
-  ProfileProvider:
-    description: |
-      Profile Provider. TBD
-    type: object
-    required: ["code","shortDecodeText","longDecodeText","startTimestamp"]
-    properties:
-      code:
-        type: string
-        enum: ['self-asserted','mygov','vanguard','auth-app']
-      shortDecodeText:
-        type: string
-      longDecodeText:
-        type: string
-      startTimestamp:
-        type: string
-        description: timestamp in ISO format
-        format: date-time
-      endTimestamp:
-        type: string
-        description: date in ISO format
-        format: date
-
-  #not yet standardised
   Profile:
-    description: |
-      A profile is a collection of detail about the party
-      A myGov profile consists of Name and Date of Birth
-      The CSP may or may not supply the profile.  Not all identities will be supplied by the CSP.  Some profiles may be self asserted.
     type: object
+    description: |
+      A profile is a collection of detail about the party. A myGov profile consists of Name and Date of Birth. The
+      CSP may or may not supply the profile.  Not all identities will be supplied by the CSP. Some profiles may
+      be self asserted.
     required: ["provider","name"]
     properties:
       provider:
-        $ref: '#/definitions/ProfileProvider'
+        type: string
+        description: The provider of the profile
+        enum: ['ABR','AUTHENTICATOR_APP','MY_GOV','SELF_ASSERTED','VANGUARD','TEMP']
       name:
         $ref: '#/definitions/Name'
+      sharedSecrets:
+        type: array
+        items:
+          $ref: '#/definitions/SharedSecret'
 
   # Name ..............................................................................................................
 
-  #not yet standardised
   Name:
     type: object
-    description: Name of a party. Either givenName and familyName are provider or unstructuredName is provided.
+    description: Name of a party of profile for either an individual or organisation
     properties:
       givenName:
         type: string
-        description: Used for individual entities
+        description: The given name of an individual
       familyName:
         type: string
-        description: Used for individual entities
+        description: The family name of an individual
       unstructuredName:
         type: string
-        description: Used for non-individual entities
+        description: The unstructured name of an organisation
+
+  # Shared Secret .....................................................................................................
+
+  SharedSecret:
+    type: object
+    description: A Shared Secret is a record of sensitive information pertaining to an identity
+    properties:
+      value:
+        type: string
+        description: Hashed Value
+      sharedSecretType:
+        $ref: '#/definitions/SharedSecretType'
+
+  SharedSecretType:
+    allOf:
+      - $ref: '#/definitions/ICodeDecode'
+    type: object
+    description: The type of a Shared Secret
+    properties:
+      domain:
+        type: string
+        description: The domain the shared secrety type is for
 
   # Identity ..........................................................................................................
 
@@ -679,8 +680,7 @@ definitions:
     allOf:
     - $ref: '#/definitions/IRAMObject'
     type: object
-    description: |
-      A Relationship Attribute is a way of recording some "facts" about a Relationship
+    description: A Relationship Attribute is a way of recording some "facts" about a Relationship
     required: ["name","value"]
     properties:
       name:
