@@ -416,24 +416,14 @@ definitions:
 
   PartyDetails:
     type: object
-    required: ["roles","identities"]
+    required: ["partyType","identities"]
     properties:
-      roles:
-        type: array
-        items:
-          $ref: '#/definitions/Role'
+      partyType:
+        type: string
       identities:
         type: array
         items:
           $ref: '#/definitions/IdentityResourceReference'
-
-  PartyRequest:
-    allOf:
-    - $ref: '#/definitions/PartyDetails'
-    # there is no business identifier for a party, it is identified through an Identity
-    description: A Party description to be created.
-    type: object
-    required: ["roles","identities"]
 
   PartyResourceReference:
     description: A reference to a Party
