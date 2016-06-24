@@ -92,21 +92,15 @@ paths:
 
   # Relationships .....................................................................................................
 
-  /parties/identities/{idType}/{idValue}/relationships/{relType}:
+  /relationships/{subjectOrDelegate}/identity/{idValue}:
     get:
       tags:
         - Business - Relationship
-      summary: List Relationships
-      description: |
-        This resource represents a collection of relationships for a given party for a specified list of
-        relationship types. The other party attached to each relationship is also returned. It is optionally possible
-        to filter the request to return just those relationships where a party is either the Subject or Delegate on
-        that relationship.
-        Note - this defintion needs more work, particularly the filters.
+      summary: List Relationships for a subject or delegate
+      description: List Relationships for a subject or delegate
       parameters:
-        - $ref: "#/parameters/idType"
+        - $ref: "#/parameters/subjectOrDelegate"
         - $ref: "#/parameters/idValue"
-        - $ref: "#/parameters/relType"
         - name: filter
           in: query
           description: Filtering parameters - Format TBD
@@ -115,26 +109,6 @@ paths:
           collectionFormat: multi
           items:
             type: string
-        - name: fields
-          in: query
-          collectionFormat: multi
-          description: List of fields to be included in the results - Format TBD
-          required: false
-          type: array
-          items:
-            type: string
-        - name: pageSize
-          in: query
-          description: Page size is used for pagination
-          required: false
-          type: number
-          format: int32
-        - name: pageNumber
-          in: query
-          description: Page number is used for pagination
-          required: false
-          type: number
-          format: int32
         - name: sort
           in: query
           description: Name of the fields to have the results sorted by
@@ -145,10 +119,21 @@ paths:
           description: Can be either ascending or descending Name of the fields to have the results sorted by
           required: false
           type: string
-          enum: ['ascending','descending']
+          enum: ['ASC','DESC']
+        - name: page
+          in: query
+          description: Page used for pagination
+          required: true
+          type: number
+          format: int32
+        - name: pageSize
+          in: query
+          description: Page Size used for pagination
+          required: false
+          type: number
+          format: int32
       responses:
         200:
-          description: A relationship document
           schema:
               $ref: '#/definitions/RelationshipListResponse'
         400:
@@ -919,6 +904,28 @@ definitions:
 
 parameters:
 
+  code:
+    name: code
+    in: path
+    description: The code that identifies a resource
+    required: true
+    type: string
+
+  subjectOrDelegate:
+    name: subjectOrDelegate
+    in: path
+    description: An indicator for "subject" or "delegate"
+    required: true
+    type: string
+    enum: ['subject','delegate']
+
+  idValue:
+    name: idValue
+    in: path
+    description: The unique identity composite id value
+    required: true
+    type: string
+
   delegateIdType:
     name: delegateIdType
     in: path
@@ -945,20 +952,6 @@ parameters:
     required: true
     type: string
     enum: ['PublicIdentifer','authorisationCode','CSPlinkId','OpaqueAgencyToken']
-
-  idValue:
-    name: idValue
-    in: path
-    description: identity value that can be used by identity resolver
-    required: true
-    type: string
-
-  code:
-    name: code
-    in: path
-    description: The code that identifies a resource
-    required: true
-    type: string
 
   delegateIdValue:
     name: delegateIdValue
