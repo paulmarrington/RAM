@@ -130,7 +130,7 @@ paths:
       responses:
         200:
           schema:
-              $ref: '#/definitions/RelationshipListResponse'
+            $ref: '#/definitions/RelationshipListResponse'
         400:
           $ref: '#/responses/400'
         500:
