@@ -1365,6 +1365,16 @@ responses:
     schema:
       $ref: '#/definitions/Error'
 
+  401:
+    description: Unauthorized Error
+    schema:
+      $ref: '#/definitions/Error'
+
+  403:
+    description: Forbidden Error
+    schema:
+      $ref: '#/definitions/Error'
+
   404:
     description: Not Found Error
     schema:
