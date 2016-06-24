@@ -103,7 +103,7 @@ paths:
         - $ref: "#/parameters/idValue"
         - name: filter
           in: query
-          description: Filtering parameters - Format TBD
+          description: Filtering - TODO
           required: false
           type: array
           collectionFormat: multi
@@ -111,15 +111,9 @@ paths:
             type: string
         - name: sort
           in: query
-          description: Name of the fields to have the results sorted by
+          description: Sorting - TODO
           required: false
           type: string
-        - name: sortOrder
-          in: query
-          description: Can be either ascending or descending Name of the fields to have the results sorted by
-          required: false
-          type: string
-          enum: ['ASC','DESC']
         - name: page
           in: query
           description: Page used for pagination
