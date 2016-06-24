@@ -214,6 +214,9 @@ paths:
     get:
       tags:
         - RelationshipType
+      operationId: RelationshipType.listIgnoringDateRange
+      summary: List Relationship Type resources
+      description: List Relationship Type resources
       responses:
         200:
           schema:
@@ -222,48 +225,16 @@ paths:
               $ref: '#/definitions/RelationshipTypeResourceReference'
 
   /relationshipType/{code}:
-    put:
-      parameters:
-        - name: code
-          in: path
-          type: string
-          required: true
-          description: Create or update a relationship type
-
-        - name: RelationshipType
-          in: body
-          description: |
-            Information about the new relationship type to be created. The code in path must be identical to the code in the request body.
-            If the code doesn't exist in the backend, a new resource will be created otherwise an existing resource with the same code gets updated.
-          required: true
-          schema:
-            $ref: '#/definitions/RelationshipType'
-
-      summary: Create/ Update Relationship Type
-      operationId: CreateUpdateRelationshipType
+    get:
       tags:
         - RelationshipType
-      description: |
-        Create or update a new relationship type
-      responses:
-        200:
-          description: The newly created or updated relationship returned back
-          schema:
-            $ref: "#/definitions/RelationshipType"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-    get:
-      operationId: GetRelationshipType
+      operationId: RelationshipType.findByCodeIgnoringDateRange
       parameters:
         - name: code
           in: path
           type: string
           required: true
           description: Relationship type id to be retrieved
-      tags:
-        - RelationshipType
       summary: Get a relationship type by relationship type id
       responses:
         200:
@@ -276,15 +247,46 @@ paths:
           $ref: '#/responses/404'
         500:
           $ref: '#/responses/500'
+    put:
+      tags:
+        - RelationshipType
+      operationId: RelationshipType.insertOrUpdate
+      parameters:
+        - name: code
+          in: path
+          type: string
+          required: true
+          description: Create or update a relationship type
+        - name: RelationshipType
+          in: body
+          description: |
+            Information about the new relationship type to be created. The code in path must be identical to the code in the request body.
+            If the code doesn't exist in the backend, a new resource will be created otherwise an existing resource with the same code gets updated.
+          required: true
+          schema:
+            $ref: '#/definitions/RelationshipType'
+      summary: Create/ Update Relationship Type
+      description: |
+        Create or update a new relationship type
+      responses:
+        200:
+          description: The newly created or updated relationship returned back
+          schema:
+            $ref: "#/definitions/RelationshipType"
+        400:
+          $ref: '#/responses/400'
+        500:
+          $ref: '#/responses/500'
 
   # Relationship Attribute Names ......................................................................................
 
   /relationshipAttributeNames:
     get:
-      summary: List Relationship Attribute Names
       tags:
         - RelationshipAttributeName
-      description: Presents a list of relationship attribute name resources
+      operationId: RelationshipAttributeName.listIgnoringDateRange
+      summary: List RelationshipAttributeName resources
+      description: List RelationshipAttributeName resources
       responses:
         200:
           schema:
@@ -294,10 +296,11 @@ paths:
 
   /relationshipAttributeName/{code}:
     get:
-      summary: Get Relationship Attribute Name
       tags:
         - RelationshipAttributeName
-      description: Returns relationship attribute name
+      operationId: RelationshipAttributeName.findByCodeIgnoringDateRange
+      summary: Get RelationshipAttributeName
+      description: Get RelationshipAttributeName
       parameters:
         - $ref: '#/parameters/code'
       responses:
@@ -313,16 +316,16 @@ paths:
           schema:
           $ref: '#/responses/500'
     put:
-      summary: Create or Update Relationship Attribute Name
       tags:
         - RelationshipAttributeName
-      description: Create or update a relationship attribute name.
+      summary: Create or Update RelationshipAttributeName
+      description: Create or Update RelationshipAttributeName
       parameters:
         - $ref: '#/parameters/code'
         - name: RelationshipAttributeName
           in: body
           description: |
-            Information about the new relationship attribute name to be created. The code in path must be identical
+            Information about the relationship attribute name to be created or updated. The code in path must be identical
             to the code in the request body. If the code doesn't exist in the backend, a new resource will be
             created otherwise an existing resource with the same code gets updated.
           required: true
@@ -341,105 +344,69 @@ paths:
   # Role Types ........................................................................................................
 
   /roleTypes:
-    # post:
-    #   summary: Create role type
-    #   operationId: CreateRoleType
-    #   tags:
-    #     - RoleType
-    #   description: |
-    #     creating a new role type
-    #   responses:
-    #     200:
-    #       description: The newly created role returned back
-    #       schema:
-    #         $ref: "#/definitions/RoleTypeSingleResponse"
-    #     400:
-    #       $ref: '#/responses/400'
-    #     500:
-    #       $ref: '#/responses/500'
     get:
       tags:
         - RoleType
         - Not Required
-      operationId: GetRoleTypes
-      summary: Get role types
-      description: |
-        Returns an array of all role types in RAM.
+      operationId: Role.listIgnoringDateRange
+      summary: Get RoleType resources
+      description: Get RoleType resources
       responses:
         200:
-          description: Array of all role types in RAM
           schema:
             type: array
             items:
-              $ref: '#/definitions/RoleTypeListResponse'
+              $ref: '#/definitions/RoleTypeResourceReference'
         400:
           $ref: '#/responses/400'
         500:
           $ref: '#/responses/500'
 
-  /roleTypes/{code}:
-    delete:
-      operationId: deleteRoleType
-      parameters:
-        - name: code
-          in: path
-          type: string
-          required: true
-          description: Role type code to be deleted
-      tags:
-        - RoleType
-      summary: Delete role type
-      description: |
-        delete a role type
-      responses:
-        200:
-          description: Item deleted successfully
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
+  /roleType/{code}:
     get:
-      operationId: GetRoleType
-      parameters:
-        - name: code
-          in: path
-          type: string
-          required: true
-          description: Role type code to be retrieved
       tags:
         - RoleType
-      summary: Get a role type by role type code
-      description: Get a role type by role type code
+      operationId: RoleType.findByCodeIgnoringDateRange
+      summary: Get RoleType
+      description: Get RoleType
+      parameters:
+        - $ref: '#/parameters/code'
       responses:
         200:
-          description: Role types in RAM
           schema:
-            $ref: '#/definitions/RoleTypeSingleResponse'
+            $ref: '#/definitions/RoleType'
         400:
           $ref: '#/responses/400'
+        404:
+          schema:
+          $ref: '#/responses/404'
         500:
+          schema:
           $ref: '#/responses/500'
     put:
-      parameters:
-        - name: code
-          in: path
-          type: string
-          required: true
-          description: Role type code to be updated
-      operationId: UpdateRoleType
-      summary: Create/ Update Role Type
       tags:
         - RoleType
-      description: |
-        Updating a role type
+      summary: Create or Update RoleType
+      description: Create or Update RoleType
+      parameters:
+        - $ref: '#/parameters/code'
+        - name: RoleType
+          in: body
+          description: |
+            Information about the role type to be created or updated. The code in path must be identical
+            to the code in the request body. If the code doesn't exist in the backend, a new resource will be
+            created otherwise an existing resource with the same code gets updated.
+          required: true
+          schema:
+            $ref: '#/definitions/RoleType'
       responses:
         200:
-          description: The created/ updated role type returned back
           schema:
-            $ref: "#/definitions/RoleTypeSingleResponse"
+            $ref: '#/definitions/RoleType'
         400:
           $ref: '#/responses/400'
         500:
+          schema:
           $ref: '#/responses/500'
 
   # Parties ...........................................................................................................
