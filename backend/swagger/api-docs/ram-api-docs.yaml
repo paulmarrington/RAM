@@ -386,6 +386,7 @@ paths:
     put:
       tags:
         - RoleType
+      operationId: RoleType.insertOrUpdate
       summary: Create or Update RoleType
       description: Create or Update RoleType
       parameters:
