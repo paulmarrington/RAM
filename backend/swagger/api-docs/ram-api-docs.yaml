@@ -183,31 +183,6 @@ paths:
         500:
           $ref: '#/responses/500'
 
-  /parties/identities/{idType}/{idValue}/relationships:
-    post:
-      summary: Create Relationship
-      parameters:
-        - $ref: "#/parameters/idType"
-        - $ref: "#/parameters/idValue"
-        - name: relationship
-          in: body
-          description: Information about the new relationship to be created
-          required: true
-          schema:
-            $ref: '#/definitions/RelationshipRequest'
-      tags:
-        - Relationship
-        - Not Required
-      responses:
-        200:
-          description: A relationship document
-          schema:
-              $ref: '#/definitions/RelationshipListResponse'
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-
   # Relationship Types ................................................................................................
 
   /relationshipTypes:
@@ -341,104 +316,7 @@ paths:
           schema:
           $ref: '#/responses/500'
 
-  # Role Types ........................................................................................................
-
-  /roleTypes:
-    get:
-      tags:
-        - RoleType
-        - Not Required
-      operationId: Role.listIgnoringDateRange
-      summary: Get RoleType resources
-      description: Get RoleType resources
-      responses:
-        200:
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/RoleTypeResourceReference'
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-
-  /roleType/{code}:
-    get:
-      tags:
-        - RoleType
-      operationId: RoleType.findByCodeIgnoringDateRange
-      summary: Get RoleType
-      description: Get RoleType
-      parameters:
-        - $ref: '#/parameters/code'
-      responses:
-        200:
-          schema:
-            $ref: '#/definitions/RoleType'
-        400:
-          $ref: '#/responses/400'
-        404:
-          schema:
-          $ref: '#/responses/404'
-        500:
-          schema:
-          $ref: '#/responses/500'
-    put:
-      tags:
-        - RoleType
-      operationId: RoleType.insertOrUpdate
-      summary: Create or Update RoleType
-      description: Create or Update RoleType
-      parameters:
-        - $ref: '#/parameters/code'
-        - name: RoleType
-          in: body
-          description: |
-            Information about the role type to be created or updated. The code in path must be identical
-            to the code in the request body. If the code doesn't exist in the backend, a new resource will be
-            created otherwise an existing resource with the same code gets updated.
-          required: true
-          schema:
-            $ref: '#/definitions/RoleType'
-      responses:
-        200:
-          schema:
-            $ref: '#/definitions/RoleType'
-        400:
-          $ref: '#/responses/400'
-        500:
-          schema:
-          $ref: '#/responses/500'
-
   # Parties ...........................................................................................................
-
-  /parties:
-    post:
-      summary: Create a party
-      description: |
-         Generally parties will be created as a side effect of creating a relationship.
-         It is possible that a party may be created independantly of a relationship,
-         e.g. in order to create role properties in preparation of creating relationships.
-
-      operationId: CreateParty
-      tags:
-        - Party
-        - Not Sure
-      parameters:
-        - name: Party
-          in: body
-          required: true
-          schema:
-            $ref: "#/definitions/PartyRequest"
-      responses:
-        200:
-          description: The updated party returned
-          schema:
-            $ref: "#/definitions/PartyResourceReference"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
 
   /parties/identities/{idType}/{idValue}:
     get:
@@ -460,68 +338,6 @@ paths:
             Possible values are TBD.
           items:
             type: string
-      responses:
-        200:
-          description: The updated party returned
-          schema:
-            $ref: "#/definitions/PartyResourceReference"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-    put:
-      summary: Update party identity
-      operationId: UpdateIdentity
-      tags:
-        - Identity
-        - Problem
-      parameters:
-        - $ref: "#/parameters/idType"
-        - $ref: "#/parameters/idValue"
-        - name: Identity
-          in: body
-          required: true
-          schema:
-            $ref: "#/definitions/IdentityRequest"
-          description: |
-            Required information to update a Party.
-      responses:
-        200:
-          description: The updated party returned
-          schema:
-            $ref: "#/definitions/PartyResourceReference"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-    delete:
-      summary: Delete party using identity
-      operationId: DeleteParty
-      tags:
-        - Party
-      parameters:
-        - $ref: "#/parameters/idType"
-        - $ref: "#/parameters/idValue"
-      responses:
-        200:
-          description: The party deleted successfully
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-
-  /parties/identities/{idType}/{idValue}/roles:
-    post:
-      parameters:
-        - $ref: "#/parameters/idType"
-        - $ref: "#/parameters/idValue"
-      summary: Add a role to a party. Party is identified by identity.
-      description: |
-         As yet, ther is no identified need for Read or List of Roles as roles are returned from a get
-         against a party (document).
-      operationId: AddPartyRole
-      tags:
-        - PartyRole
       responses:
         200:
           description: The updated party returned
@@ -562,80 +378,6 @@ paths:
         500:
           $ref: '#/responses/500'
 
-  /parties/identities/{idType}/{idValue}/identity:
-    post:
-      parameters:
-        - $ref: "#/parameters/idType"
-        - $ref: "#/parameters/idValue"
-      summary: Add an identity to a party. Party is identified by identity.
-      operationId: AddIdentity
-      description: |
-        In general RAM doesn't create Identity(s) (that is done by the credential service provider, etc),
-        but it does create a record of that Identity in its database.  The exception to this is
-        RAM creates InvitationCode(s).  There is no service to create InvitationCode(s) as InvitationCode(s)
-        cannot exist independantly of Relationship(s), therefore their creation is a side effect of
-        creating a Relationship to an unidentified party.
-      tags:
-        - Party
-        - Not Required
-      responses:
-        200:
-          description: The updated party returned
-          schema:
-            $ref: "#/definitions/PartyResourceReference"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-
-  /parties/identities/{idType}/{idValue}/roles/{code}:
-    put:
-      operationId: CreateUpdatePartyRole
-      summary: Create/ Update Role Attributes for a role attached to a party. Party is identified by identity.
-      tags:
-        - PartyRole
-      parameters:
-        - $ref: "#/parameters/idType"
-        - $ref: "#/parameters/idValue"
-        - name: code
-          in: path
-          type: string
-          required: true
-          description: |
-            Role name of which, it s attributes to be updated
-      responses:
-        200:
-          description: The updated party returned back
-          schema:
-            $ref: "#/definitions/PartyResourceReference"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-
-    delete:
-      operationId: DeletePartyRole
-      parameters:
-        - $ref: "#/parameters/idType"
-        - $ref: "#/parameters/idValue"
-        - name: code
-          in: path
-          type: string
-          required: true
-          description: Role name to be removed from a party
-      tags:
-        - PartyRole
-      summary: Remove a role from a party
-      responses:
-        200:
-          description: The updated party returned back
-          schema:
-            $ref: "#/definitions/PartiesListResponse"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Models
 # ---------------------------------------------------------------------------------------------------------------------
@@ -654,7 +396,7 @@ definitions:
   #   - an href to the resource
   #   - a value property which may be null or contains the actual resource
   # * <entity>ListResponse - which is composed of:
-  #   - IListResponse - total count + page size
+  #   - SearchResultResponse - total count + page size
   #   - a collection of the <entity>ResourceReference
 
   # Party .............................................................................................................
@@ -703,12 +445,12 @@ definitions:
 
   PartiesListResponse:
     allOf:
-    - $ref: '#/definitions/IListResponse'
+    - $ref: '#/definitions/SearchResultResponse'
     description: A collection of references to parties
     type: object
-    required: ["parties"]
+    required: ["list"]
     properties:
-      parties:
+      list:
         type: array
         items:
           $ref: '#/definitions/PartyResourceReference'
@@ -832,15 +574,11 @@ definitions:
 
   IdentityListResponse:
     allOf:
-    - $ref: '#/definitions/IListResponse'
+    - $ref: '#/definitions/SearchResultResponse'
     type: object
-    required: ["parties","identitys"]
+    required: ["list"]
     properties:
-      parties:
-        type: array
-        items:
-          $ref: '#/definitions/Party'
-      identitys:
+      list:
         type: array
         items:
           $ref: '#/definitions/IdentityResourceReference'
@@ -925,36 +663,14 @@ definitions:
 
   RelationshipListResponse:
     allOf:
-    - $ref: '#/definitions/IListResponse'
+    - $ref: '#/definitions/SearchResultResponse'
     type: object
-    required: ["parties","relationships"]
+    required: ["list"]
     properties:
-      parties:
-        type: array
-        items:
-          $ref: '#/definitions/Party'
-      relationships:
+      list:
         type: array
         items:
           $ref: '#/definitions/RelationshipResourceReference'
-
-  # Role ..............................................................................................................
-
-  # not standardised
-  RoleAttribute:
-    allOf:
-    - $ref: '#/definitions/IRAMObject'
-    type: object
-    description: |
-      A Role Attribute is a way of recording some "facts" about a Role
-    required: ["name","value"]
-    properties:
-      name:
-        type: string
-        description: Name of an attribute definition
-      value:
-        type: string
-        description: Value assigned to this attribute
 
   # Relationship Attribute ............................................................................................
 
@@ -1027,66 +743,6 @@ definitions:
         schema:
           $ref: '#/definitions/RelationshipAttributeName'
 
-  # Role Attribute ....................................................................................................
-
-  # not standardised
-  RoleAttributeName:
-    allOf:
-    - $ref: '#/definitions/ICodeDecode'
-    description: |
-      A Role Attribute Name defines: what are the permitted set of Role Attribute and meta-data about those attributes.
-    type: object
-    required: ["name","mandatory","defaultValue"]
-    properties:
-      name:
-        type: string
-        description: Relationship attribute name. The rest to TBD.
-      mandatory:
-        type: boolean
-        description: should a value to be provided for this attribute
-      defaultValue:
-        type: string
-        description: The default value for this attribute
-      permittedValues:
-        description: what are the accepted values
-        type: array
-        items:
-          type: string
-
-  # Role Type .........................................................................................................
-
-  # not standardised
-  RoleType:
-    allOf:
-      - $ref: '#/definitions/ICodeDecode'
-      - type: object
-        description: |
-            Role Types are the list of possbile roles that can be recorded about a party
-        required: ["RoleAttributeNames"]
-        properties:
-          RoleAttributeNames:
-            type: array
-            description: Role attributes
-            minItems: 1
-            items:
-              $ref: '#/definitions/RoleAttributeName'
-
-  RoleTypeSingleResponse:
-    allOf:
-    - $ref: '#/definitions/RoleType'
-    type: object
-
-  RoleTypeListResponse:
-    allOf:
-    - $ref: '#/definitions/IListResponse'
-    type: object
-    required: ["roleTypes"]
-    properties:
-      roleTypes:
-        type: array
-        items:
-          $ref: '#/definitions/RoleType'
-
   # Relationship Type .................................................................................................
 
   RelationshipType:
@@ -1155,39 +811,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/RelationshipTypeResourceReference'
-
-  # Role ..............................................................................................................
-
-  # not standardised
-  Role:
-    type: object
-    required: ["roleTypeURI","attributeValues","sharing"]
-    properties:
-      roleTypeURI:
-        type: string
-        description: Pointing to role type URI
-      attributeValues:
-        type: array
-        items:
-          $ref: '#/definitions/RoleAttribute'
-        description: Role attributes
-        minItems: 1
-      sharing:
-        type: array
-        description: Agencies which can see existance of this role.
-        items:
-          $ref: '#/definitions/LegislativeProgram'
-
-  # Legislative Program ...............................................................................................
-
-  # not standardised
-  LegislativeProgram:
-    allOf:
-      - $ref: '#/definitions/ICodeDecode'
-      - type: object
-        description: |
-          A LegislativeProgram represents some course-grained grouping of functionality offered by government to citizens.
-          Due to "Machinary of Government" changes these LegislativePrograms are moved between agencies. Generally, LegislativePrograms survive these moves, just in a newly named agency.
 
   # Base ..............................................................................................................
 
@@ -1263,18 +886,18 @@ definitions:
             items:
                 type: string
 
-  IListResponse:
+  SearchResultResponse:
     type: object
     description: |
-      This abstract object just adds common properties to a <entity>ListResponse object
-    required: [totalRecordsMatched, pageSize]
+      This abstract object just adds common properties to a <entity>SearchResultResponse object
+    required: [totalCount, pageSize]
     properties:
-      totalRecordsMatched:
-        description: Total number of records matched for this query.
+      totalCount:
+        description: Total number of records matched for this query
         type: integer
         format: int32
       pageSize:
-        description: The pageSize of the used by the server when populating the list.  The server may choose a different pageSize to the one requested by the consumer.
+        description: Page Size for the results, which the server may ignore for performance reasons
         type: integer
         format: int32
 
