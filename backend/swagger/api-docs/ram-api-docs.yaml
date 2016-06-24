@@ -1269,7 +1269,7 @@ definitions:
 
   Error:
     type: object
-    required: ["status","alert"]
+    required: ["alert"]
     properties:
       status:
         type: integer
