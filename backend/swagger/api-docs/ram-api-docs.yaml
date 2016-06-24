@@ -313,9 +313,10 @@ paths:
           schema:
           $ref: '#/responses/500'
     put:
+      summary: Create or Update Relationship Attribute Name
       tags:
         - RelationshipAttributeName
-      description: Create or update a relationship attribute name resource.
+      description: Create or update a relationship attribute name.
       parameters:
         - $ref: '#/parameters/code'
         - name: RelationshipAttributeName
