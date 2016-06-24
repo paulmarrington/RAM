@@ -136,95 +136,79 @@ paths:
         500:
           $ref: '#/responses/500'
 
-  /parties/identities/{subjectIdType}/{subjectIdValue}/relationships/{relType}/parties/identities/{delegateIdType}/{delegateIdValue}/{startTimestamp}:
+  /relationship/{id}:
     get:
       tags:
         - Business - Relationship
-      summary: Get Relationship
-      description: |
-        This resource identifies a single instance of a relationship.
-        A get of this resource may be used to confirm the existence  of a relationship between the subject and delegate parties.
-        The result of a get will be to return details about that relationship including relationship attributes.
-        This call returns error if it can't uniquely identify the resource.
+      operationId: Relationship.findByIdentifier
+      summary: Get Relationship by identifier
+      description: Get Relationship by identifier
       parameters:
-        - $ref: "#/parameters/subjectIdType"
-        - $ref: "#/parameters/subjectIdValue"
-        - $ref: "#/parameters/delegateIdType"
-        - $ref: "#/parameters/delegateIdValue"
-        - $ref: "#/parameters/relType"
-        - $ref: "#/parameters/startTimestamp"
+        - name: id
+          type: string
+          in: path
+          required: true
       responses:
         200:
-          description: A relationship document
           schema:
-              $ref: '#/definitions/RelationshipResourceReference'
+            $ref: '#/definitions/Relationship'
         400:
           $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
         500:
           $ref: '#/responses/500'
     delete:
       tags:
         - Business - Relationship
-      summary: DeleteRelationship
-      description: |
-        This resource identifies a single instance of a relationship.
+      operationId: Relationship.deleteByIdentifier
+      summary: Delete Relationship by Identifier
+      description: Delete Relationship by Identifier
       parameters:
-        - $ref: "#/parameters/subjectIdType"
-        - $ref: "#/parameters/subjectIdValue"
-        - $ref: "#/parameters/delegateIdType"
-        - $ref: "#/parameters/delegateIdValue"
-        - $ref: "#/parameters/relType"
-        - $ref: "#/parameters/startTimestamp"
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          schema:
+            $ref: '#/definitions/Relationship'
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /relationship:
+    post:
+      tags:
+        - Business - Relationship
+      summary: Create Relationship
+      description: Create Relationship
+      parameters:
+        - name: relationship
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateRelationship'
       responses:
         200:
           description: A relationship document
           schema:
-              $ref: '#/definitions/RelationshipResourceReference'
+              $ref: '#/definitions/Relationship'
         400:
           $ref: '#/responses/400'
         500:
           $ref: '#/responses/500'
-    put:
-      tags:
-        - Business - Relationship
-      summary: Create/ UpdateRelationship
-      description: |
-        This resource identifies a single instance of a relationship.
-
-        When creating a relationship -
-          one of the parties may be unknown.  The consumer may
-          specify the Identity.type to be an invitationCode and leave out the identity.idValue .../parties/InvitationCode//relationships....
-
-          In this case RAM will create the the Party and associate the newly created Party to the newly created Relationship.  It will
-          return a hypermedia link to this newly created Party.  This newly created party will be identified by a newly generated Invitation Code.
-
-          One or both of the parties to a new relationship may not yet exist in RAM.  RAM will create these parties as a side effect to creating
-          the relationship - as long as the the logged on user has the authority.  This authority may be because either: they are the party that
-          needs to be created (as identified by the authentication process), or they are some trusted party (e.g. agency staff).
-
-          Just like the unknown party, the new party(s) are created and a hypermedia reference return to it along with the new relationship.
-
-        Note, an Identity in the put/ posted payload may contain a profile which may contain a name, etc. which will result init being updated.
-      parameters:
-        - $ref: "#/parameters/subjectIdType"
-        - $ref: "#/parameters/subjectIdValue"
-        - $ref: "#/parameters/delegateIdType"
-        - $ref: "#/parameters/delegateIdValue"
-        - $ref: "#/parameters/relType"
-        - $ref: "#/parameters/startTimestamp"
-        - name: relationship
-          in: body
-          description: Updated relationship attribute
-          required: true
-          schema:
-            $ref: '#/definitions/RelationshipRequest'
       responses:
         200:
-          description: A relationship document
           schema:
-              $ref: '#/definitions/RelationshipListResponse'
+            $ref: '#/definitions/Relationship'
         400:
           $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
         500:
           $ref: '#/responses/500'
 
@@ -641,12 +625,51 @@ definitions:
         description: Indicates where in the lifecycle of relationships; this one is up to.
         enum: ['invalid','pending','active','deleted','cancelled']
 
-  RelationshipRequest:
-    allOf:
-    - $ref: '#/definitions/RelationshipBusinessIdentifier'
-    - $ref: '#/definitions/RelationshipDetails'
+  CreateRelationship:
     type: object
-    required: ["relationshipTypeURI","subjectPartyRef","delegatePartyRef","startTimestamp","attributes"]
+    properties:
+      rawIdValue:
+        type: string
+        description: The identity raw id value
+      partyType:
+        type: string
+        description: The Party Type
+      givenName:
+        type: string
+        description: The given name
+      familyName:
+        type: string
+        description: The family name
+      unstructuredName:
+        type: string
+        description: The unstructured name
+      sharedSecretTypeCode:
+        type: string
+        description: The shared secret code
+      sharedSecretValue:
+        type: string
+        description: The schared secret value
+      identityType:
+        type: string
+        description: The identity type
+      agencyScheme:
+        type: string
+        description: The agency scheme
+      agencyToken:
+        type: string
+        description: The agency token
+      linkIdScheme:
+        type: string
+        description: The link id scheme
+      linkIdConsumer:
+        type: string
+        description: The link id consumer
+      publicIdentifierScheme:
+        type: string
+        description: The public identifier scheme
+      profileProvider:
+        type: string
+        description: The profile provider
 
   RelationshipResourceReference:
     type: object
