@@ -1271,10 +1271,6 @@ definitions:
     type: object
     required: ["alert"]
     properties:
-      status:
-        type: integer
-        format: int32
-        description: HTTP status code
       alert:
         $ref: '#/definitions/Alert'
 
