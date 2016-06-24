@@ -690,6 +690,84 @@ definitions:
         type: string
         description: Value assigned to this attribute
 
+  # Relationship Type .................................................................................................
+
+  RelationshipType:
+    allOf:
+      - $ref: '#/definitions/ICodeDecode'
+      - $ref: '#/definitions/RelationshipTypeBusinessIdentifier'
+      - $ref: '#/definitions/RelationshipTypeDetails'
+
+  RelationshipTypeBusinessIdentifier:
+    type: object
+    required: ["code"]
+    properties:
+      code:
+        type: string
+        description: This is the short code value by which Relationship Types may be known
+
+  RelationshipTypeDetails:
+    type: object
+    required: ["RelationshipAttributeNames","voluntaryInd"]
+    properties:
+      voluntaryInd:
+        type: boolean
+        description: Does the Subject Party get a say whether the delegate may have this relationship?
+      relationshipAttributeNames:
+        type: array
+        description: Relationship attributes that may be used with this resource
+        items:
+          $ref: '#/definitions/RelationshipAttributeNameUsage'
+
+  RelationshipTypeRequest:
+    allOf:
+    - $ref: '#/definitions/RelationshipTypeBusinessIdentifier'
+    - $ref: '#/definitions/RelationshipTypeDetails'
+    type: object
+    required: ["code","voluntaryInd"]
+
+  RelationshipTypeResourceReference:
+    type: object
+    description: A reference to a Resource
+    required: ["href"]
+    properties:
+      href:
+        type: string
+        description: URI that uniquely identifies this RelationshipType
+      value:
+        $ref: '#/definitions/RelationshipType'
+
+  RelationshipTypeListResponse:
+    allOf:
+    - $ref: '#/definitions/IListResponse'
+    type: object
+    required: ['totalRecordsMatched','relationshipTypes']
+    properties:
+      relationshipTypes:
+        type: array
+        items:
+          $ref: '#/definitions/RelationshipTypeResourceReference'
+
+  # Relationship Attribute Name Usage .................................................................................
+
+  RelationshipAttributeNameUsage:
+    allOf:
+      - $ref: '#/definitions/RelationshipAttributeNameUsageDetails'
+
+  RelationshipAttributeNameUsageDetails:
+    type: object
+    required: ["mandatory","defaultValue"]
+    properties:
+      mandatory:
+        description: Indicator of whether the attribute is mandatory or not
+        type: boolean
+      defaultValue:
+        description: The default value of the attribute
+        type: string
+      attributeNameDef:
+        description: The attribute name
+        $ref: '#/definitions/RelationshipAttributeNameResourceReference'
+
   # Relationship Attribute Name .......................................................................................
 
   RelationshipAttributeName:
@@ -742,75 +820,6 @@ definitions:
         description: The content of this field is optional, it is the same content for a get request on the href
         schema:
           $ref: '#/definitions/RelationshipAttributeName'
-
-  # Relationship Type .................................................................................................
-
-  RelationshipType:
-    allOf:
-      - $ref: '#/definitions/ICodeDecode'
-      - $ref: '#/definitions/RelationshipTypeBusinessIdentifier'
-      - $ref: '#/definitions/RelationshipTypeDetails'
-
-  RelationshipTypeBusinessIdentifier:
-    type: object
-    required: ["code"]
-    properties:
-      code:
-        type: string
-        description: This is the short code value by which Relationship Types may be known
-
-  RelationshipTypeDetails:
-    type: object
-    required: ["RelationshipAttributeNames","voluntaryInd"]
-    properties:
-      voluntaryInd:
-        type: boolean
-        description: Does the Subject Party get a say whether the delegate may have this relationship?
-      relationshipAttributeNames:
-        type: array
-        description: Relationship attributes that may be used with this resource
-        items:
-          type: object
-          properties:
-            mandatory:
-              type: boolean
-              description: should a value to be provided for this attribute
-            defaultValue:
-              type: string
-              description: The default value for this attribute
-            attributeName:
-              type: object
-              schema:
-                $ref: '#/definitions/RelationshipAttributeNameResourceReference'
-
-  RelationshipTypeRequest:
-    allOf:
-    - $ref: '#/definitions/RelationshipTypeBusinessIdentifier'
-    - $ref: '#/definitions/RelationshipTypeDetails'
-    type: object
-    required: ["code","voluntaryInd"]
-
-  RelationshipTypeResourceReference:
-    type: object
-    description: A reference to a Resource
-    required: ["href"]
-    properties:
-      href:
-        type: string
-        description: URI that uniquely identifies this RelationshipType
-      value:
-        $ref: '#/definitions/RelationshipType'
-
-  RelationshipTypeListResponse:
-    allOf:
-    - $ref: '#/definitions/IListResponse'
-    type: object
-    required: ['totalRecordsMatched','relationshipTypes']
-    properties:
-      relationshipTypes:
-        type: array
-        items:
-          $ref: '#/definitions/RelationshipTypeResourceReference'
 
   # Base ..............................................................................................................
 
@@ -866,6 +875,21 @@ definitions:
         description: This is the timestamp at which this reference data item ceased being able to be used (but may continue to exist on existing records)
         format: date-time
 
+  SearchResultResponse:
+    type: object
+    description: |
+      This abstract object just adds common properties to a <entity>SearchResultResponse object
+    required: [totalCount, pageSize]
+    properties:
+      totalCount:
+        description: Total number of records matched for this query
+        type: integer
+        format: int32
+      pageSize:
+        description: Page Size for the results, which the server may ignore for performance reasons
+        type: integer
+        format: int32
+
   Error:
     type: object
     required: ["alert"]
@@ -885,21 +909,6 @@ definitions:
             description: Array of string presenting one or more messages
             items:
                 type: string
-
-  SearchResultResponse:
-    type: object
-    description: |
-      This abstract object just adds common properties to a <entity>SearchResultResponse object
-    required: [totalCount, pageSize]
-    properties:
-      totalCount:
-        description: Total number of records matched for this query
-        type: integer
-        format: int32
-      pageSize:
-        description: Page Size for the results, which the server may ignore for performance reasons
-        type: integer
-        format: int32
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Parameters
