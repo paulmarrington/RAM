@@ -404,50 +404,9 @@ definitions:
   #   - SearchResultResponse - total count + page size
   #   - a collection of the <entity>ResourceReference
 
-  # Party .............................................................................................................
-
-  Party:
-    allOf:
-    - $ref: '#/definitions/IRAMObject'
-    - $ref: '#/definitions/PartyDetails'
-    description: A Party is the concept that participates in Relationships.
-    type: object
-    required: ["roles","identities"]
-
-  PartyDetails:
-    type: object
-    required: ["partyType","identities"]
-    properties:
-      partyType:
-        type: string
-      identities:
-        type: array
-        items:
-          $ref: '#/definitions/IdentityResourceReference'
-
-  PartyResourceReference:
-    description: A reference to a Party
-    type: object
-    required: ["href","value"]
-    properties:
-      href:
-        type: string
-        description: URI that uniquely identifies this Party
-      value:
-          $ref: '#/definitions/Party'
-
-  PartiesListResponse:
-    allOf:
-    - $ref: '#/definitions/SearchResultResponse'
-    description: A collection of references to parties
-    type: object
-    required: ["list"]
-    properties:
-      list:
-        type: array
-        items:
-          $ref: '#/definitions/PartyResourceReference'
-        minItems: 1
+  # -------------------------------------------------------------------------------------------------------------------
+  # Business Models
+  # -------------------------------------------------------------------------------------------------------------------
 
   # Profile ...........................................................................................................
 
@@ -508,54 +467,121 @@ definitions:
         type: string
         description: The domain the shared secrety type is for
 
+  # Party .............................................................................................................
+
+  Party:
+    allOf:
+    - $ref: '#/definitions/IRAMObject'
+    - $ref: '#/definitions/PartyDetails'
+    description: A Party is the concept that participates in Relationships.
+    type: object
+    required: ["roles","identities"]
+
+  PartyDetails:
+    type: object
+    required: ["partyType","identities"]
+    properties:
+      partyType:
+        type: string
+      identities:
+        type: array
+        items:
+          $ref: '#/definitions/IdentityResourceReference'
+
+  PartyResourceReference:
+    description: A reference to a Party
+    type: object
+    required: ["href","value"]
+    properties:
+      href:
+        type: string
+        description: URI that uniquely identifies this Party
+      value:
+          $ref: '#/definitions/Party'
+
+  PartiesListResponse:
+    allOf:
+    - $ref: '#/definitions/SearchResultResponse'
+    description: A collection of references to parties
+    type: object
+    required: ["list"]
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/PartyResourceReference'
+        minItems: 1
+
   # Identity ..........................................................................................................
 
   Identity:
     allOf:
-    - $ref: '#/definitions/IdentityBusinessIdentifier'
-    - $ref: '#/definitions/IdentityDetails'
-    - $ref: '#/definitions/IRAMObject'
+      - $ref: '#/definitions/IRAMObject'
+      - $ref: '#/definitions/IdentityBusinessIdentifier'
+      - $ref: '#/definitions/IdentityDetails'
     type: object
     description: |
       Parties have at least one, and possibly many identities.  There will be just one default identity.
-
       Identities consist of a profile which conists of a Name & maybe recorded "shared secret".
-
       It is the name from the default identity that will be used when it is not possible  to use the
       authentication details to refer to a Party, e.g. when displaying a list of related parties.
     required: ["idType","idValue","defaultIndictor", "profile"]
 
   IdentityBusinessIdentifier:
     type: object
-    discriminator: idType
-    required: ["idType","idValue"]
+    required: ["idValue","rawIdValue","identityType"]
     properties:
-      idType:
-        type: string
-        description: |
-           The discriminator property which indicates what kind if identifier this identity has
-        enum: ['PublicIdentifer','authorisationCode','CSPlinkId','OpaqueAgencyToken']
       idValue:
-        description: identity value that can be used by identity resolver.  It is the actual identifier value, i.e. the 11 digit ABN, or the meaningless big unique number given by myGov.
-        # we need to have a conversation does the idValue contain the "scheme" as a prefix (if there is a scheme).
+        description: The identity value (as a composite of the type, scheme, raw id value)
         type: string
+      rawIdValue:
+        description: The raw identity value
+        type: string
+      identityType:
+        type: string
+        description: The identity type
+        enum: ['AGENCY_PROVIDED_TOKEN','INVITATION_CODE','LINK_ID','PUBLIC_IDENTIFIER']
 
   IdentityDetails:
     type: object
-    required: ["defaultIndictor", "profile"]
+    required: ["defaultInd","profile","party"]
     properties:
-      defaultIndictor:
+      defaultInd:
         type: boolean
-        description: This flag is used to identify which of the multiple possible identities a party has should be used as the default one to display on the UI
+        description: The default indicator
+      agencyScheme:
+        type: string
+        description: The agency scheme
+      agencyToken:
+        type: string
+        description: The agency token
+      invitationCodeStatus:
+        type: string
+        description: The invitation code status
+        enum: ['CLAIMED','PENDING','REJECTED']
+      invitationCodeExpiryTimestamp:
+        type: string
+        description: The invitation code expiry timestamp
+      invitationCodeClaimedTimestamp:
+        type: string
+        description: The invitation code claimed timestamp
+      invitationCodeTemporaryEmailAddress:
+        type: string
+        description: The invitation code temporary email address
+      publicIdentifierScheme:
+        type: string
+        description: The public identifier scheme
+      linkIdScheme:
+        type: string
+        description: The link id scheme
+      linkIdConsumer:
+        type: string
+        description: The link id consumer
       profile:
         $ref: '#/definitions/Profile'
-
-  IdentityRequest:
-    allOf:
-    - $ref: '#/definitions/IdentityBusinessIdentifier'
-    - $ref: '#/definitions/IdentityDetails'
-    type: object
-    required: ["defaultIndictor","profile"]
+      party:
+        # todo resource reference or direct party?
+        $ref: '#/definitions/Party'
 
   IdentityResourceReference:
     type: object
@@ -567,17 +593,6 @@ definitions:
         description: URI that uniquely identifies this Identity
       value:
         $ref: '#/definitions/Identity'
-
-  IdentityListResponse:
-    allOf:
-    - $ref: '#/definitions/SearchResultResponse'
-    type: object
-    required: ["list"]
-    properties:
-      list:
-        type: array
-        items:
-          $ref: '#/definitions/IdentityResourceReference'
 
   # Relationship ......................................................................................................
 
@@ -670,7 +685,6 @@ definitions:
 
   # Relationship Attribute ............................................................................................
 
-  # not standardised
   RelationshipAttribute:
     allOf:
     - $ref: '#/definitions/IRAMObject'
@@ -681,9 +695,12 @@ definitions:
       name:
         type: string
         description: Name of an attribute definition
-      value:
-        type: string
-        description: Value assigned to this attribute
+      attributeName:
+        $ref: '#/definitions/RelationshipAttributeNameResourceReference'
+
+  # -------------------------------------------------------------------------------------------------------------------
+  # Reference Models
+  # -------------------------------------------------------------------------------------------------------------------
 
   # Relationship Type .................................................................................................
 
@@ -798,7 +815,9 @@ definitions:
         schema:
           $ref: '#/definitions/RelationshipAttributeName'
 
-  # Base ..............................................................................................................
+  # -------------------------------------------------------------------------------------------------------------------
+  # Base and System Models
+  # -------------------------------------------------------------------------------------------------------------------
 
   Resource:
     type: object
