@@ -1,6 +1,8 @@
 import {Router, Request, Response} from 'express';
 import {security} from './security.middleware';
-import {sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult} from './helpers';
+import {
+    sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult, REGULAR_CHARS
+} from './helpers';
 import {IRelationshipModel} from '../models/relationship.model';
 import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
 import {PartyModel} from '../models/party.model';
@@ -141,8 +143,88 @@ export class RelationshipController {
     };
 
     private create = async(req:Request, res:Response) => {
-        const schema = {}; // TODO when DTO is confirmed with front end
-        validateReqSchema(req, schema)
+        // TODO support other party types - currently only INDIVIDUAL is supported here
+        // TODO how much of this validation should be in the data layer?
+        // TODO decide how to handle dates - should they include time? or should server just use 12am AEST
+        const schemaB2I = {
+            'relationshipType': {
+                in: 'body',
+                notEmpty: true,
+                errorMessage: 'Relationship type is not valid'
+            },
+            'subjectIdValue': {
+                in: 'body',
+                notEmpty: true,
+                errorMessage: 'Subject is not valid'
+            },
+            'startTimestamp': {
+                in: 'body',
+                notEmpty: true,
+                isDate: {
+                    errorMessage: 'Start timestamp is not valid'
+                },
+                errorMessage: 'Start timestamp is not valid'
+            },
+            'endTimestamp': {
+                in: 'body',
+                optional: true,
+                isDate: {
+                    errorMessage: 'End timestamp is not valid'
+                },
+                errorMessage: 'End timestamp is not valid'
+            },
+            'delegate.partyType': {
+                in: 'body',
+                matches: {
+                    options: ['^(INDIVIDUAL)$'],
+                    errorMessage: 'Delegate Party Type is not valid'
+                }
+            },
+            'delegate.givenName': {
+                in: 'body',
+                notEmpty: true,
+                isLength: {
+                    options: [{min: 1, max: 200}],
+                    errorMessage: 'Delegate Given Name must be between 1 and 200 chars long'
+                },
+                matches: {
+                    options: [REGULAR_CHARS],
+                    errorMessage: 'Delegate Given Name contains illegal characters'
+                },
+                errorMessage: 'Delegate Given Name is not valid'
+            },
+            'delegate.familyName': {
+                in: 'body',
+                optional: true,
+                isLength: {
+                    options: [{min: 0, max: 200}],
+                    errorMessage: 'Delegate Family Name must be between 0 and 200 chars long'
+                },
+                matches: {
+                    options: [REGULAR_CHARS],
+                    errorMessage: 'Delegate Family Name contains illegal characters'
+                },
+                errorMessage: 'Delegate Family Name is not valid'
+            },
+            'delegate.sharedSecretTypeCode': {
+                in: 'body',
+                notEmpty: true,
+                matches: {
+                    options: ['^(DATE_OF_BIRTH)$'],
+                    errorMessage: 'Delegate Shared Secret Type Code is not valid'
+                }
+            },
+            'delegate.sharedSecretValue': {
+                in: 'body',
+                notEmpty: true,
+                isDate: {
+                    errorMessage: 'Delegate Shared Secret Value is not valid'
+                },
+                errorMessage: 'Delegate Shared Secret Value is not valid'
+            }
+        };
+
+        validateReqSchema(req, schemaB2I)
             .then((req:Request) => {
                 return PartyModel.findByIdentityIdValue(req.body.subjectIdValue);
             })
@@ -170,7 +252,6 @@ export class RelationshipController {
                     req.body.endTimestamp ? new Date(req.body.endTimestamp) : undefined,
                     AttributeDTO.build(req.body.attributes)
                 );
-                // console.log(relationshipAddDTO);
                 return subjectParty.addRelationship(relationshipAddDTO);
             })
             .then((model) => model ? model.toDTO() : null)
