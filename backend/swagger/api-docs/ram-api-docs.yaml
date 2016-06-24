@@ -96,6 +96,7 @@ paths:
     get:
       tags:
         - Business - Relationship
+      operationId: Relationship.listBySubjectOrDelegate
       summary: List Relationships for a subject or delegate
       description: List Relationships for a subject or delegate
       parameters:
