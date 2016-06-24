@@ -166,12 +166,7 @@ export class RelationshipController {
                 errorMessage: 'Start timestamp is not valid'
             },
             'endTimestamp': {
-                in: 'body',
-                optional: true,
-                isDate: {
-                    errorMessage: 'End timestamp is not valid'
-                },
-                errorMessage: 'End timestamp is not valid'
+                in: 'body'
             },
             'delegate.partyType': {
                 in: 'body',
@@ -215,12 +210,7 @@ export class RelationshipController {
                 }
             },
             'delegate.sharedSecretValue': {
-                in: 'body',
-                notEmpty: true,
-                isDate: {
-                    errorMessage: 'Delegate Shared Secret Value is not valid'
-                },
-                errorMessage: 'Delegate Shared Secret Value is not valid'
+                in: 'body'
             }
         };
 
@@ -267,7 +257,7 @@ export class RelationshipController {
 
         router.get('/v1/relationship/invitationCode/:invitationCode',
             security.isAuthenticated,
-        this.findPendingByInvitationCodeInDateRange);
+            this.findPendingByInvitationCodeInDateRange);
 
         router.post('/v1/relationship/invitationCode/:invitationCode/accept',
             security.isAuthenticated,
