@@ -1229,21 +1229,22 @@ definitions:
 
   IRAMObject:
     type: object
-    required: ['lastUpdatedTimestamp','lastUpdatedBy','deleteInd','resourceVersion']
+    required: ['createdAt','updatedAt','deleteInd','resourceVersion']
     properties:
-      lastUpdatedTimestamp:
-        description: This is timestamp when this resource was first created/ subsequently updated.  Will be used for optimistic concurrency control.
+      createdAt:
+        description: A timestamp when this resource was first created.
         type: string
         format: date-time
-      lastUpdatedBy:
+      updatedAt:
+        description: A timestamp when this resource was last updated.
         type: string
-        description: This is the user (party or agency staff member) who last updated the resource
+        format: date-time
       deleteInd:
         type: boolean
-        description: Has this resource been logically deleted.
+        description: An indicated if this resource has been logically deleted.
       resourceVersion:
         type: number
-        description: The definition of resources may change over time. Business rules may be linked to these version. This is to keep track of that info.
+        description: A schema version.
 
   ICodeDecode:
     type: object
@@ -1253,11 +1254,11 @@ definitions:
         description: A human friendly mneumonic for this reference data concept
         type: string
       shortDecodeText:
-        description: This is a short label for the this item of reference data
+        description: This is a short label for this item of reference data
         type: string
       longDecodeText:
         type: string
-        description:  This is a long label for the this item of reference data
+        description:  This is a long label for this item of reference data
       startTimestamp:
         type: string
         description: This is the timestamp at which this reference data item may start being used
