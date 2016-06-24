@@ -1229,7 +1229,7 @@ definitions:
 
   IRAMObject:
     type: object
-    required: ['lastUpdatedTimestamp','lastUpdatedBy','deletedIndicator','resourceVersionNumber']
+    required: ['lastUpdatedTimestamp','lastUpdatedBy','deleteInd','resourceVersion']
     properties:
       lastUpdatedTimestamp:
         description: This is timestamp when this resource was first created/ subsequently updated.  Will be used for optimistic concurrency control.
@@ -1238,10 +1238,10 @@ definitions:
       lastUpdatedBy:
         type: string
         description: This is the user (party or agency staff member) who last updated the resource
-      deletedIndicator:
+      deleteInd:
         type: boolean
         description: Has this resource been logically deleted.
-      resourceVersionNumber:
+      resourceVersion:
         type: number
         description: The definition of resources may change over time. Business rules may be linked to these version. This is to keep track of that info.
 
