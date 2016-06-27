@@ -207,8 +207,6 @@ paths:
             $ref: '#/definitions/Relationship'
         400:
           $ref: '#/responses/400'
-        404:
-          $ref: '#/responses/404'
         500:
           $ref: '#/responses/500'
 
