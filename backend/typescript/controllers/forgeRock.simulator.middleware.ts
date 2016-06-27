@@ -11,15 +11,13 @@ class ForgeRockSimulator {
         const self = this;
         return (req:Request, res:Response, next:() => void) => {
             const credentialsFromAuthenticationSimulator = req.body.credentials;
-
             const idValueFromCookie = SecurityHelper.getIdentityIdValueFromCookies(req);
-
             if (credentialsFromAuthenticationSimulator) {
-                // Log in from development only login form
+                // log in from development only login form
                 IdentityModel.findByIdValue(credentialsFromAuthenticationSimulator)
                     .then(self.resolve(req, res, next), self.reject(res, next));
             } else if (idValueFromCookie) {
-                // Log in from cookie
+                // log in from cookie
                 IdentityModel.findByIdValue(idValueFromCookie)
                     .then(self.resolve(req, res, next), self.reject(res, next));
             } else {
@@ -57,10 +55,6 @@ class ForgeRockSimulator {
             res.status(401);
             res.send({});
         };
-    }
-
-    private getIdentityIdValueFromAuthToken(authToken:string):string {
-        return authToken;
     }
 
 }
