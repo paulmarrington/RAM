@@ -248,6 +248,11 @@ paths:
       description: Notifies the delegate of a Relationship by invitation code
       parameters:
         - $ref: "#/parameters/invitationCode"
+        - name: relationship
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotifyRelationshipDelegate'
       responses:
         200:
           schema:
@@ -791,6 +796,13 @@ definitions:
       profileProvider:
         type: string
         description: The profile provider
+
+  NotifyRelationshipDelegate:
+    type: object
+    properties:
+      email:
+        type: string
+        description: The email of the delegate
 
   RelationshipResourceReference:
     type: object
