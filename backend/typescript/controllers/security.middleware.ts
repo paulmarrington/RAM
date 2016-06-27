@@ -11,7 +11,7 @@ class Security {
 
     public prepareRequest():(req:Request, res:Response, next:() => void) => void {
         return (req:Request, res:Response, next:() => void) => {
-            const idValue = req.get(Headers.IdentityIdValue) || res.locals[Headers.IdentityIdValue];
+            const idValue = this.getIdValue(req, res);
             if (idValue) {
                 // id supplied, try to lookup and if not found create a new identity before carrying on
                 IdentityModel.findByIdValue(idValue)
@@ -23,6 +23,29 @@ class Security {
                     .then(this.prepareResponseLocals(req, res, next), this.reject(res, next));
             }
         };
+    }
+
+    /**
+     * Attempts to provide an Identity Value by looking in the following:
+     *  header,
+     *  locals,
+     *  cookie
+     */
+    private getIdValue(req:Request, res:Response):string {
+        // if the header contains identity the return that
+        if(req.get(Headers.IdentityIdValue)) {
+            console.log('found header', req.get(Headers.IdentityIdValue));
+           return req.get(Headers.IdentityIdValue);
+        }
+
+        // check locals
+        if(res.locals[Headers.IdentityIdValue]) {
+            console.log('found local', res.locals[Headers.IdentityIdValue]);
+            return res.locals[Headers.IdentityIdValue]
+        }
+
+        // check cookie - case insensitive match
+        return SecurityHelper.getIdentityIdValueFromCookies(req);
     }
 
     /* tslint:disable:max-func-body-length */
@@ -64,10 +87,14 @@ class Security {
             logger.info('Identity context:', (identity ? colors.magenta(identity.idValue) : colors.red('[not found]')));
             if (identity) {
                 for (let key of Object.keys(req.headers)) {
-                    const keyUpper = key.toUpperCase();
-                    if (keyUpper.startsWith(Headers.Prefix)) {
+
+                    // headers should be lowercase, but lets make sure
+                    const keyLower = key.toLowerCase();
+
+                    // if it's an application header, copy it to locals
+                    if (keyLower.startsWith(Headers.Prefix)) {
                         const value = req.get(key);
-                        res.locals[keyUpper] = value;
+                        res.locals[keyLower] = value;
                     }
                 }
                 res.locals[Headers.Identity] = identity;
@@ -77,7 +104,7 @@ class Security {
                 res.locals[Headers.FamilyName] = identity.profile.name.familyName;
                 res.locals[Headers.UnstructuredName] = identity.profile.name.unstructuredName;
                 for (let sharedSecret of identity.profile.sharedSecrets) {
-                    res.locals[`${Headers.Prefix}-${sharedSecret.sharedSecretType.code}`] = sharedSecret.value;
+                    res.locals[`${Headers.Prefix}-${sharedSecret.sharedSecretType.code}`.toLowerCase()] = sharedSecret.value;
                 }
             }
             next();
@@ -109,6 +136,34 @@ class Security {
             res.status(401);
             res.send(new ErrorResponse('Not authenticated.'));
         }
+    }
+}
+
+export class SecurityHelper {
+    
+    static getIdentityIdValueFromCookies(req:Request):string {
+        // find cookie regardless of case
+        for (let key of Object.keys(req.cookies)) {
+
+            const keyLower = key.toLowerCase();
+
+            if (keyLower === Headers.AuthToken) {
+                // get encoded auth token
+                const authTokenEncodedFromCookie = req.cookies[key];
+                
+                if(authTokenEncodedFromCookie) {
+                    // decode auth token
+                    const authToken = new Buffer(authTokenEncodedFromCookie, 'base64').toString('ascii');
+                    // get idValue from auth token
+                    return this.getIdentityIdValueFromAuthToken(authToken);
+                }
+            }
+        }
+        return null;
+    }
+
+    static getIdentityIdValueFromAuthToken(authToken:string):string {
+        return authToken;
     }
 }
 

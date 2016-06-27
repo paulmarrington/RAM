@@ -2,6 +2,7 @@ import {logger} from '../logger';
 import * as colors from 'colors';
 import {Request, Response} from 'express';
 import {Headers} from './headers';
+import {SecurityHelper} from './security.middleware';
 import {IIdentity, IdentityModel} from '../models/identity.model';
 
 class ForgeRockSimulator {
@@ -10,14 +11,16 @@ class ForgeRockSimulator {
         const self = this;
         return (req:Request, res:Response, next:() => void) => {
             const credentialsFromAuthenticationSimulator = req.body.credentials;
-            const authTokenEncodedFromCookie = req.cookies[Headers.AuthToken];
+
+            const idValueFromCookie = SecurityHelper.getIdentityIdValueFromCookies(req);
+
             if (credentialsFromAuthenticationSimulator) {
+                // Log in from development only login form
                 IdentityModel.findByIdValue(credentialsFromAuthenticationSimulator)
                     .then(self.resolve(req, res, next), self.reject(res, next));
-            } else if (authTokenEncodedFromCookie) {
-                const authToken = new Buffer(authTokenEncodedFromCookie, 'base64').toString('ascii');
-                const idValue = self.getIdentityIdValueFromAuthToken(authToken);
-                IdentityModel.findByIdValue(idValue)
+            } else if (idValueFromCookie) {
+                // Log in from cookie
+                IdentityModel.findByIdValue(idValueFromCookie)
                     .then(self.resolve(req, res, next), self.reject(res, next));
             } else {
                 next();
