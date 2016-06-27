@@ -32,6 +32,7 @@ class Security {
      *  cookie
      */
     private getIdValue(req:Request, res:Response):string {
+
         // if the header contains identity the return that
         if(req.get(Headers.IdentityIdValue)) {
             console.log('found header', req.get(Headers.IdentityIdValue));
@@ -41,11 +42,12 @@ class Security {
         // check locals
         if(res.locals[Headers.IdentityIdValue]) {
             console.log('found local', res.locals[Headers.IdentityIdValue]);
-            return res.locals[Headers.IdentityIdValue]
+            return res.locals[Headers.IdentityIdValue];
         }
 
         // check cookie - case insensitive match
         return SecurityHelper.getIdentityIdValueFromCookies(req);
+
     }
 
     /* tslint:disable:max-func-body-length */
@@ -140,8 +142,9 @@ class Security {
 }
 
 export class SecurityHelper {
-    
-    static getIdentityIdValueFromCookies(req:Request):string {
+
+    public static getIdentityIdValueFromCookies(req:Request):string {
+
         // find cookie regardless of case
         for (let key of Object.keys(req.cookies)) {
 
@@ -150,7 +153,7 @@ export class SecurityHelper {
             if (keyLower === Headers.AuthToken) {
                 // get encoded auth token
                 const authTokenEncodedFromCookie = req.cookies[key];
-                
+
                 if(authTokenEncodedFromCookie) {
                     // decode auth token
                     const authToken = new Buffer(authTokenEncodedFromCookie, 'base64').toString('ascii');
@@ -159,12 +162,15 @@ export class SecurityHelper {
                 }
             }
         }
+
         return null;
+
     }
 
-    static getIdentityIdValueFromAuthToken(authToken:string):string {
+    private static getIdentityIdValueFromAuthToken(authToken:string):string {
         return authToken;
     }
+
 }
 
 export const security = new Security();
