@@ -74,7 +74,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private notifyDelegate = async(req:Request, res:Response) => {
+    private notifyDelegateByInvitationCode = async(req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -269,7 +269,7 @@ export class RelationshipController {
 
         router.post('/v1/relationship/invitationCode/:invitationCode/notifyDelegate',
             security.isAuthenticated,
-            this.notifyDelegate);
+            this.notifyDelegateByInvitationCode);
 
         router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id',
             security.isAuthenticated,
