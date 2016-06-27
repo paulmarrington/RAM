@@ -28,6 +28,69 @@ paths:
   # Business End Points
   # -------------------------------------------------------------------------------------------------------------------
 
+  # Identities ........................................................................................................
+
+  /identity/me:
+    get:
+      tags:
+        - Business - Identity
+      operationId: Identity.findMe
+      summary: Get the logged in identity
+      description: Get the logged in identity
+      responses:
+        200:
+          description: The identity returned
+          schema:
+            $ref: "#/definitions/Identity"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+
+  /identity/{idValue}:
+    get:
+      tags:
+        - Business - Identity
+      operationId: Identity.findMe
+      summary: Get the identity by its id value
+      description: Get the identity by its id value
+      parameters:
+        - $ref: "#/parameters/idValue"
+      responses:
+        200:
+          description: The identity returned
+          schema:
+            $ref: "#/definitions/Identity"
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /identity/invitationCode/{invitationCode}:
+    get:
+      tags:
+        - Business - Identity
+      operationId: Identity.findMe
+      summary: Get the identity by its invitation code
+      description: Get the identity by its invitation code
+      parameters:
+        - $ref: "#/parameters/invitationCode"
+      responses:
+        200:
+          description: The identity returned
+          schema:
+            $ref: "#/definitions/Identity"
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
   # Parties ...........................................................................................................
 
   /party/identity/me:
@@ -54,8 +117,8 @@ paths:
       tags:
         - Business - Party
       operationId: Party.findByIdentityIdValue
-      summary: Get the party by its identity
-      description: Get the party by its identity
+      summary: Get the party by its identity id value
+      description: Get the party by its identity id value
       parameters:
         - $ref: "#/parameters/idValue"
       responses:
@@ -919,6 +982,13 @@ parameters:
     name: idValue
     in: path
     description: The unique identity composite id value
+    required: true
+    type: string
+
+  invitationCode:
+    name: invitationCode
+    in: path
+    description: The unique identity invitation code
     required: true
     type: string
 
