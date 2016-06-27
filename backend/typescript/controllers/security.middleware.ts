@@ -64,10 +64,14 @@ class Security {
             logger.info('Identity context:', (identity ? colors.magenta(identity.idValue) : colors.red('[not found]')));
             if (identity) {
                 for (let key of Object.keys(req.headers)) {
-                    const keyUpper = key.toUpperCase();
-                    if (keyUpper.startsWith(Headers.Prefix)) {
+
+                    // headers should be lowercase, but lets make sure
+                    const keyLower = key.toLowerCase();
+
+                    // if it's an application header, copy it to locals
+                    if (keyLower.startsWith(Headers.Prefix)) {
                         const value = req.get(key);
-                        res.locals[keyUpper] = value;
+                        res.locals[keyLower] = value;
                     }
                 }
                 res.locals[Headers.Identity] = identity;
@@ -77,7 +81,7 @@ class Security {
                 res.locals[Headers.FamilyName] = identity.profile.name.familyName;
                 res.locals[Headers.UnstructuredName] = identity.profile.name.unstructuredName;
                 for (let sharedSecret of identity.profile.sharedSecrets) {
-                    res.locals[`${Headers.Prefix}-${sharedSecret.sharedSecretType.code}`] = sharedSecret.value;
+                    res.locals[`${Headers.Prefix}-${sharedSecret.sharedSecretType.code}`.toLowerCase()] = sharedSecret.value;
                 }
             }
             next();
