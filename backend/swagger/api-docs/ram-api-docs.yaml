@@ -135,50 +135,6 @@ paths:
 
   # Relationships .....................................................................................................
 
-  /relationships/{subjectOrDelegate}/identity/{idValue}:
-    get:
-      tags:
-        - Business - Relationship
-      operationId: Relationship.listBySubjectOrDelegate
-      summary: List Relationships for a subject or delegate
-      description: List Relationships for a subject or delegate
-      parameters:
-        - $ref: "#/parameters/subjectOrDelegate"
-        - $ref: "#/parameters/idValue"
-        - name: filter
-          in: query
-          description: Filtering - TODO
-          required: false
-          type: array
-          collectionFormat: multi
-          items:
-            type: string
-        - name: sort
-          in: query
-          description: Sorting - TODO
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page used for pagination
-          required: true
-          type: number
-          format: int32
-        - name: pageSize
-          in: query
-          description: Page Size used for pagination
-          required: false
-          type: number
-          format: int32
-      responses:
-        200:
-          schema:
-            $ref: '#/definitions/RelationshipListResponse'
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-
   /relationship/{id}:
     get:
       tags:
@@ -220,6 +176,130 @@ paths:
           $ref: '#/responses/400'
         404:
           $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /relationship/invitationCode/{invitationCode}:
+    get:
+      tags:
+        - Business - Relationship
+      operationId: Relationship.findPendingByInvitationCodeInDateRange
+      summary: Get pending Relationship by invitation code
+      description: Get pending Relationship by invitation code
+      parameters:
+        - $ref: "#/parameters/invitationCode"
+      responses:
+        200:
+          schema:
+            $ref: '#/definitions/Relationship'
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /relationship/invitationCode/{invitationCode}/accept:
+    post:
+      tags:
+        - Business - Relationship
+      operationId: Relationship.acceptByInvitationCode
+      summary: Accepts a pending Relationship by invitation code
+      description: Accepts a pending Relationship by invitation code
+      parameters:
+        - $ref: "#/parameters/invitationCode"
+      responses:
+        200:
+          schema:
+            $ref: '#/definitions/Relationship'
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /relationship/invitationCode/{invitationCode}/reject:
+    post:
+      tags:
+        - Business - Relationship
+      operationId: Relationship.rejectByInvitationCode
+      summary: Rejects a pending Relationship by invitation code
+      description: Rejects a pending Relationship by invitation code
+      parameters:
+        - $ref: "#/parameters/invitationCode"
+      responses:
+        200:
+          schema:
+            $ref: '#/definitions/Relationship'
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /relationship/invitationCode/{invitationCode}/notifyDelegate:
+    post:
+      tags:
+        - Business - Relationship
+      operationId: Relationship.notifyDelegate
+      summary: Notifies the delegate of a Relationship by invitation code
+      description: Notifies the delegate of a Relationship by invitation code
+      parameters:
+        - $ref: "#/parameters/invitationCode"
+      responses:
+        200:
+          schema:
+            $ref: '#/definitions/Relationship'
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /relationships/{subjectOrDelegate}/identity/{idValue}:
+    get:
+      tags:
+        - Business - Relationship
+      operationId: Relationship.listBySubjectOrDelegate
+      summary: List Relationships for a subject or delegate
+      description: List Relationships for a subject or delegate
+      parameters:
+        - $ref: "#/parameters/subjectOrDelegate"
+        - $ref: "#/parameters/idValue"
+        - name: filter
+          in: query
+          description: Filtering - TODO
+          required: false
+          type: array
+          collectionFormat: multi
+          items:
+            type: string
+        - name: sort
+          in: query
+          description: Sorting - TODO
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page used for pagination
+          required: true
+          type: number
+          format: int32
+        - name: pageSize
+          in: query
+          description: Page Size used for pagination
+          required: false
+          type: number
+          format: int32
+      responses:
+        200:
+          schema:
+            $ref: '#/definitions/RelationshipListResponse'
+        400:
+          $ref: '#/responses/400'
         500:
           $ref: '#/responses/500'
 
