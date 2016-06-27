@@ -66,6 +66,20 @@ case "$1" in
     echo ""
     ;;
 
+  'deps:clean')
+    echo ""
+    echo "Cleaning node modules ..."
+    rm -rf backend/node_modules/*
+    rm -rf frontend/node_modules/*
+    rm -rf tests/node_modules/*
+    echo ""
+    echo "Cleaning typings ..."
+    rm -rf backend/typings/*
+    rm -rf frontend/typings/*
+    rm -rf tests/typings/*
+    echo ""
+    ;;
+
 # FOR DEVELOPMENT
 
   'feature:start')

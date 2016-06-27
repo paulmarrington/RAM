@@ -1,28 +1,27 @@
 export class Headers {
 
-    public static Prefix = `X-RAM`;
+    public static Prefix = `x-ram`;
 
-    public static AuthToken = `${Headers.Prefix}-Auth-Token`;
-    public static AuthTokenDecoded = `${Headers.Prefix}-Auth-Token-Decoded`;
+    public static AuthToken = `${Headers.Prefix}-auth-token`;
+    public static AuthTokenDecoded = `${Headers.Prefix}-auth-token-decoded`;
 
-    public static Identity = `${Headers.Prefix}-Identity`;
-    public static IdentityIdValue = `${Headers.Prefix}-Identity-IdValue`;
-    public static IdentityRawIdValue = `${Headers.Prefix}-Identity-RawIdValue`;
-    public static IdentityType = `${Headers.Prefix}-IdentityType`;
+    public static Identity = `${Headers.Prefix}-identity`;
+    public static IdentityIdValue = `${Headers.Prefix}-identity-idvalue`;
+    public static IdentityRawIdValue = `${Headers.Prefix}-identity-rawidvalue`;
+    public static IdentityType = `${Headers.Prefix}-identitytype`;
 
-    public static PartyType = `${Headers.Prefix}-PartyType`;
+    public static PartyType = `${Headers.Prefix}-partytype`;
 
-    public static GivenName = `${Headers.Prefix}-GivenName`;
-    public static FamilyName = `${Headers.Prefix}-FamilyName`;
-    public static UnstructuredName = `${Headers.Prefix}-UnstructuredName`;
-    public static DOB = `${Headers.Prefix}-DOB`;
+    public static GivenName = `${Headers.Prefix}-givenname`;
+    public static FamilyName = `${Headers.Prefix}-familyname`;
+    public static UnstructuredName = `${Headers.Prefix}-unstructuredname`;
+    public static DOB = `${Headers.Prefix}-dob`;
 
-    public static ProfileProvider = `${Headers.Prefix}-ProfileProvider`;
+    public static ProfileProvider = `${Headers.Prefix}-profileprovider`;
 
-    public static AgencyScheme = `${Headers.Prefix}-AgencyScheme`;
-    public static AgencyToken = `${Headers.Prefix}-AgencyToken`;
-    public static LinkIdScheme = `${Headers.Prefix}-LinkIdScheme`;
-    public static LinkIdConsumer = `${Headers.Prefix}-LinkIdConsumer`;
-    public static PublicIdentifierScheme = `${Headers.Prefix}-PublicIdentifierScheme`;
-
+    public static AgencyScheme = `${Headers.Prefix}-agencyscheme`;
+    public static AgencyToken = `${Headers.Prefix}-agencytoken`;
+    public static LinkIdScheme = `${Headers.Prefix}-linkidscheme`;
+    public static LinkIdConsumer = `${Headers.Prefix}-linkidconsumer`;
+    public static PublicIdentifierScheme = `${Headers.Prefix}-publicidentifierscheme`;
 }
