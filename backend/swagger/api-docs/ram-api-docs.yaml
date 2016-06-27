@@ -30,63 +30,43 @@ paths:
 
   # Parties ...........................................................................................................
 
-  /parties/identities/{idType}/{idValue}:
+  /party/identity/me:
     get:
-      summary: Get party using identity
-      operationId: GetParty
       tags:
         - Business - Party
-      parameters:
-        - $ref: "#/parameters/idType"
-        - $ref: "#/parameters/idValue"
-        - name: fields
-          in: query
-          required: false
-          type: array
-          collectionFormat: multi
-          description: |
-            The fields to be retrieved. Each field is in the format of:
-            'requestedRoleAttribute.name=:attr-name, :attr-name...'.
-            Possible values are TBD.
-          items:
-            type: string
-      responses:
-        200:
-          description: The updated party returned
-          schema:
-            $ref: "#/definitions/PartyResourceReference"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
-
-  /parties/invitationCode/{invitationCode}:
-    get:
-      tags:
-        - Business - Identity
-      parameters:
-        - name: invitationCode
-          type: string
-          in: path
-          required: true
-      summary: Find party by invitation code
-      description: |
-        This service may be use to find a party with the specified invitation code (sub type of identity) and update details of that invitation
-        code to signal it has been accepted, rejected, etc.
-        If the supplied invitation code details are correct, the status & claimedtimestamp propertie are update.
-        The link id for the logged on user is populated into the identity property (together with profile info).
-        This identity is used to find a Party record for the logged on user.
-        if one is found the Relationship attached to the Party that contains the InvitationCode
-        is transfered to the Party identified by the logged on user's Party
-        if one isn't found the Identity for the logged on user is attached to the Party that
-        owns the InvitationCode, and thus now the logged on user has a Party record.
+      operationId: Party.findMe
+      summary: Get the party of the logged in identity
+      description: Get the party of the logged in identity
       responses:
         200:
           description: The party returned
           schema:
-            $ref: "#/definitions/PartyResourceReference"
+            $ref: "#/definitions/Party"
         400:
           $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+
+  /party/identity/{idValue}:
+    get:
+      tags:
+        - Business - Party
+      operationId: Party.findByIdentityIdValue
+      summary: Get the party by its identity
+      description: Get the party by its identity
+      parameters:
+        - $ref: "#/parameters/idValue"
+      responses:
+        200:
+          description: The updated party returned
+          schema:
+            $ref: "#/definitions/Party"
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
         500:
           $ref: '#/responses/500'
 
