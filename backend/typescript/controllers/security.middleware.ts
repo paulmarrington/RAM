@@ -11,7 +11,7 @@ class Security {
 
     public prepareRequest():(req:Request, res:Response, next:() => void) => void {
         return (req:Request, res:Response, next:() => void) => {
-            const idValue = req.get(Headers.IdentityIdValue) || res.locals[Headers.IdentityIdValue];
+            const idValue = this.getIdValue(req, res);
             if (idValue) {
                 // id supplied, try to lookup and if not found create a new identity before carrying on
                 IdentityModel.findByIdValue(idValue)
@@ -23,6 +23,29 @@ class Security {
                     .then(this.prepareResponseLocals(req, res, next), this.reject(res, next));
             }
         };
+    }
+
+    /**
+     * Attempts to provide an Identity Value by looking in the following:
+     *  header,
+     *  locals,
+     *  cookie
+     */
+    private getIdValue(req:Request, res:Response):string {
+        // if the header contains identity the return that
+        if(req.get(Headers.IdentityIdValue)) {
+            console.log('found header', req.get(Headers.IdentityIdValue));
+           return req.get(Headers.IdentityIdValue);
+        }
+
+        // check locals
+        if(res.locals[Headers.IdentityIdValue]) {
+            console.log('found local', res.locals[Headers.IdentityIdValue]);
+            return res.locals[Headers.IdentityIdValue]
+        }
+
+        // check cookie - case insensitive match
+        return SecurityHelper.getIdentityIdValueFromCookies(req);
     }
 
     /* tslint:disable:max-func-body-length */
@@ -113,6 +136,34 @@ class Security {
             res.status(401);
             res.send(new ErrorResponse('Not authenticated.'));
         }
+    }
+}
+
+export class SecurityHelper {
+    
+    static getIdentityIdValueFromCookies(req:Request):string {
+        // find cookie regardless of case
+        for (let key of Object.keys(req.cookies)) {
+
+            const keyLower = key.toLowerCase();
+
+            if (keyLower === Headers.AuthToken) {
+                // get encoded auth token
+                const authTokenEncodedFromCookie = req.cookies[key];
+                
+                if(authTokenEncodedFromCookie) {
+                    // decode auth token
+                    const authToken = new Buffer(authTokenEncodedFromCookie, 'base64').toString('ascii');
+                    // get idValue from auth token
+                    return this.getIdentityIdValueFromAuthToken(authToken);
+                }
+            }
+        }
+        return null;
+    }
+
+    static getIdentityIdValueFromAuthToken(authToken:string):string {
+        return authToken;
     }
 }
 
