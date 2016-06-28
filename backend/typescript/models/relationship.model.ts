@@ -133,7 +133,7 @@ export interface IRelationshipModel extends mongoose.Model<IRelationship> {
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
     search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IRelationship>>;
-    searchDistinctSubjectsByDelegate:(identityIdValue:string, page:number, pageSize:number)
+    searchDistinctSubjectsBySubjectOrDelegateIdentity:(identityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IParty>>;
 }
 
@@ -331,10 +331,10 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
     });
 });
 
-/* tslint:disable:max-func-body-length */
 // todo need to optional filters (term, party type, relationship type, status)
 // todo need to add sorting
-RelationshipSchema.static('searchDistinctSubjectsByDelegate', (identityIdValue:string, page:number, reqPageSize:number) => {
+/* tslint:disable:max-func-body-length */
+RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity', (identityIdValue:string, page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IParty>>(async(resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
