@@ -34,13 +34,13 @@ describe('RAM Relationship', () => {
     let subjectNickName1:IName;
     let subjectProfile1:IProfile;
     let subjectParty1:IParty;
+    let subjectIdentity1:IIdentity;
 
     let delegateNickName1:IName;
     let delegateProfile1:IProfile;
     let delegateParty1:IParty;
-
-    let subjectIdentity1:IIdentity;
     let delegateIdentity1:IIdentity;
+
     let relationship1:IRelationship;
 
     beforeEach((done) => {
@@ -400,6 +400,49 @@ describe('RAM Relationship', () => {
             const relationships = await RelationshipModel.search(null, '__BOGUS__', 1, 10);
             expect(relationships.totalCount).toBe(0);
             expect(relationships.list.length).toBe(0);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('searches distinct subjects with delegate', async (done) => {
+        try {
+
+            // create another relationship to the same parties
+            await RelationshipModel.create({
+                relationshipType: relationshipTypeCustom,
+                subject: subjectParty1,
+                subjectNickName: subjectNickName1,
+                delegate: delegateParty1,
+                delegateNickName: delegateNickName1,
+                startTimestamp: new Date(),
+                status: RelationshipStatus.Pending.name
+            });
+
+            // create another relationship to the same parties (inverted)
+            await RelationshipModel.create({
+                relationshipType: relationshipTypeCustom,
+                subject: delegateParty1,
+                subjectNickName: delegateNickName1,
+                delegate: subjectParty1,
+                delegateNickName: subjectNickName1,
+                startTimestamp: new Date(),
+                status: RelationshipStatus.Pending.name
+            });
+
+            const parties = await RelationshipModel.searchDistinctSubjectsByDelegate(delegateIdentity1.idValue, 1, 10);
+            expect(parties.totalCount).toBe(2);
+            expect(parties.list.length).toBe(2);
+
+            for (let party of parties.list) {
+                if (party.id !== subjectParty1.id && party.id !== delegateParty1.id) {
+                    fail('Party id is not expected');
+                }
+            }
 
             done();
 
