@@ -7,6 +7,8 @@ import {CreateIdentityDTO} from '../../../commons/RamAPI';
 import {IIdentity, IdentityModel} from '../models/identity.model';
 import {DOB_SHARED_SECRET_TYPE_CODE} from '../models/sharedSecretType.model';
 
+// todo determine if we need to base64 decode header values to be spec compliant?
+
 class Security {
 
     public prepareRequest():(req:Request, res:Response, next:() => void) => void {
@@ -36,7 +38,7 @@ class Security {
         // look for id in headers
         if(req.get(Headers.IdentityIdValue)) {
             console.log('found header', req.get(Headers.IdentityIdValue));
-           return req.get(Headers.IdentityIdValue);
+            return req.get(Headers.IdentityIdValue);
         }
 
         // look for id in locals
@@ -98,6 +100,7 @@ class Security {
                         const value = req.get(key);
                         res.locals[keyLower] = value;
                     }
+
                 }
                 res.locals[Headers.Identity] = identity;
                 res.locals[Headers.IdentityIdValue] = identity.idValue;
