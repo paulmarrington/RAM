@@ -363,13 +363,14 @@ paths:
       tags:
         - Reference - RelationshipType
       operationId: RelationshipType.findByCodeIgnoringDateRange
+      summary: Get a relationship type  by its code
+      description: Get a relationship type  by its code
       parameters:
         - name: code
           in: path
           type: string
           required: true
           description: Relationship type id to be retrieved
-      summary: Get a relationship type by relationship type id
       responses:
         200:
           description: Relationship types in RAM
@@ -401,7 +402,7 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/RelationshipType'
-      summary: Create/ Update Relationship Type
+      summary: Create / Update Relationship Type
       description: |
         Create or update a new relationship type
       responses:
@@ -435,8 +436,8 @@ paths:
       tags:
         - Reference - RelationshipAttributeName
       operationId: RelationshipAttributeName.findByCodeIgnoringDateRange
-      summary: Get RelationshipAttributeName
-      description: Get RelationshipAttributeName
+      summary: Get RelationshipAttributeName by its code
+      description: Get RelationshipAttributeName by its code
       parameters:
         - $ref: '#/parameters/code'
       responses:
