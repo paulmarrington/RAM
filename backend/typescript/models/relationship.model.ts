@@ -331,45 +331,50 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
     });
 });
 
-// todo need to optional filters (term, party type, relationship type, status)
-// todo need to add sorting
+/**
+ * Returns a paginated list of distinct subjects for relationships which have a subject or delegate matching the one supplied.
+ *
+ * todo need to optional filters (term, party type, relationship type, status)
+ * todo need to add sorting
+ */
 /* tslint:disable:max-func-body-length */
-RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity', (identityIdValue:string, page:number, reqPageSize:number) => {
-    return new Promise<SearchResult<IParty>>(async(resolve, reject) => {
-        const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
-        try {
-            const party = await PartyModel.findByIdentityIdValue(identityIdValue);
-            const listForCount = await this.RelationshipModel
-                .distinct('subject', {
-                    '$or': [
-                        {subject: party},
-                        {delegate: party}
-                    ]
-                })
-                .exec();
-            const count = listForCount.length;
-            const listOfIds = await this.RelationshipModel
-                .aggregate([
-                    {
-                        '$match': {
-                            '$or': [
-                                {'subject': new mongoose.Types.ObjectId(party.id)},
-                                {'delegate': new mongoose.Types.ObjectId(party.id)}
-                            ]
-                        }
-                    },
-                    { '$group': { '_id': '$subject' } },
-                    { '$skip': (page - 1) * pageSize },
-                    { '$limit': pageSize }
-                ])
-                .exec();
-            const inflatedList = (await PartyModel.populate(listOfIds, {path: '_id'})).map((item) => item._id);
-            resolve(new SearchResult<IParty>(count, pageSize, inflatedList));
-        } catch (e) {
-            reject(e);
-        }
+RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity',
+    (identityIdValue:string, page:number, reqPageSize:number) => {
+        return new Promise<SearchResult<IParty>>(async(resolve, reject) => {
+            const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
+            try {
+                const party = await PartyModel.findByIdentityIdValue(identityIdValue);
+                const listForCount = await this.RelationshipModel
+                    .distinct('subject', {
+                        '$or': [
+                            {subject: party},
+                            {delegate: party}
+                        ]
+                    })
+                    .exec();
+                const count = listForCount.length;
+                const listOfIds = await this.RelationshipModel
+                    .aggregate([
+                        {
+                            '$match': {
+                                '$or': [
+                                    {'subject': new mongoose.Types.ObjectId(party.id)},
+                                    {'delegate': new mongoose.Types.ObjectId(party.id)}
+                                ]
+                            }
+                        },
+                        {'$group': {'_id': '$subject'}},
+                        {'$skip': (page - 1) * pageSize},
+                        {'$limit': pageSize}
+                    ])
+                    .exec();
+                const inflatedList = (await PartyModel.populate(listOfIds, {path: '_id'})).map((item) => item._id);
+                resolve(new SearchResult<IParty>(count, pageSize, inflatedList));
+            } catch (e) {
+                reject(e);
+            }
+        });
     });
-});
 
 // concrete model .....................................................................................................
 
