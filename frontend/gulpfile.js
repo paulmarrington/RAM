@@ -56,7 +56,7 @@ gulp.task("copy:systemJsConf", ["copy:jspm"], function () {
 });
 
 gulp.task("copy:jspm", function () {
-    return gulp.src(["jspm_packages/{**,./}/**"], { base: "./" })
+    return gulp.src(["jspm_packages/{**,./}/**"], { read: false ,base: "./" })
         .pipe(gulp.dest("dist/"));
 });
 
@@ -138,7 +138,7 @@ gulp.task("serve", ["copy:images", "scss:watch", "ts:watch", "html:watch", "data
             baseDir: "./dist/",
             middleware: [proxy(proxyOptions)]
         },
-        online: true
+        online: false
     });
 
     return gulp.watch([

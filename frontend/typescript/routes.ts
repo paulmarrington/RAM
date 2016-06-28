@@ -1,0 +1,34 @@
+import {RouterConfig, provideRouter} from '@angular/router';
+
+import {RelationshipsComponent} from './components/relationships/relationships.component';
+import {AddRelationshipComponent} from './components/add-relationship/add-relationship.component';
+import {AddRelationshipCompleteComponent} from './components/add-relationship-complete/add-relationship-complete.component';
+import {AcceptAuthorisationComponent} from './components/accept-authorisation/accept-authorisation.component';
+import {EnterInvitationCodeComponent} from './components/enter-invitation-code/enter-invitation-code.component';
+import {RamComponent} from './components/ram/ram.component';
+
+export const routes: RouterConfig = [
+  {
+    path: '',
+    component: RamComponent,
+  }, {
+    path: 'relationships/:idValue',
+    component: RelationshipsComponent
+  }, {
+    path: 'relationships/add/:idValue',
+    component: AddRelationshipComponent
+  }, {
+    path: 'relationships/add/:idValue/:invitationCode/:displayName/complete',
+    component: AddRelationshipCompleteComponent
+  }, {
+    path: 'relationships/add/:idValue/enter',
+    component: EnterInvitationCodeComponent
+  }, {
+    path: 'relationships/add/:idValue/:invitationCode/accept',
+    component: AcceptAuthorisationComponent
+  }
+];
+
+export const APP_ROUTER_PROVIDERS = [
+  provideRouter(routes)
+];

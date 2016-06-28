@@ -1,11 +1,12 @@
 import {RAMNgValidators} from '../../commons/ram-ng-validators';
 import {OnInit, Component} from '@angular/core';
 import {Validators, ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
-import {ROUTER_DIRECTIVES, RouteParams, Router} from '@angular/router-deprecated';
+import {ROUTER_DIRECTIVES, ActivatedRoute, Router} from '@angular/router';
 import {
     INotifyDelegateDTO
 } from '../../../../commons/RamAPI2';
 import {RAMRestService} from '../../services/ram-rest.service';
+import Rx from 'rxjs/Rx';
 
 @Component({
     selector: 'add-relationship-complete',
@@ -16,25 +17,29 @@ import {RAMRestService} from '../../services/ram-rest.service';
 
 export class AddRelationshipCompleteComponent implements OnInit {
 
-    public form:ControlGroup;
-    public formUdn:ControlGroup;
+    public form: ControlGroup;
+    public formUdn: ControlGroup;
 
-    public code:string;
+    public code: string;
 
-    public idValue:string;
+    public idValue: string;
 
-    public displayName:string;
+    public displayName: string;
 
-    constructor(private _fb:FormBuilder,
-                private _routeParams:RouteParams,
-                private router:Router,
-                private rest:RAMRestService) {
+    private rteParamSub: Rx.Subscription;
+
+    constructor(private _fb: FormBuilder,
+        private route: ActivatedRoute,
+        private router: Router,
+        private rest: RAMRestService) {
     }
 
     public ngOnInit() {
-        this.code = this._routeParams.get('invitationCode');
-        this.idValue = this._routeParams.get('idValue');
-        this.displayName = this._routeParams.get('displayName');
+        this.rteParamSub = this.route.params.subscribe(params => {
+            this.code = this.route['invitationCode'];
+            this.idValue = this.route['idValue'];
+            this.displayName = this.route['displayName'];
+        });
 
         this.form = this._fb.group({
             'email': ['', Validators.compose([Validators.required, RAMNgValidators.validateEmailFormat])]
@@ -44,6 +49,9 @@ export class AddRelationshipCompleteComponent implements OnInit {
         });
         // 'udn': ['', Validators.compose([Validators.required, RAMNgValidators.validateUDNFormat])]
     }
+    public ngOnDestroy() {
+        this.rteParamSub.unsubscribe();
+    }
 
     public onSubmitUdn() {
         // TODO notify delegate by udn not implemented
@@ -52,7 +60,7 @@ export class AddRelationshipCompleteComponent implements OnInit {
     }
 
     public onSubmitEmail() {
-        const notifyDelegateDTO:INotifyDelegateDTO = {
+        const notifyDelegateDTO: INotifyDelegateDTO = {
             email: this.form.value.email
         };
 
@@ -68,6 +76,6 @@ export class AddRelationshipCompleteComponent implements OnInit {
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['Relationships', {idValue: this.idValue}]);
+        this.router.navigate(['Relationships', { idValue: this.idValue }]);
     }
 }

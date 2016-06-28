@@ -19,16 +19,15 @@ import {ErrorService} from '../error/error.service';
 export class IdentityComponent {
     public me: Identity;
 
-    constructor (private identityService: IdentityService, private errorService: ErrorService) {
+    constructor(private identityService: IdentityService, private errorService: ErrorService) {
     }
 
     public ngOnInit() {
         this.identityService.getMe()
-            .subscribe(
-                identity => {
-                    this.me = identity;
-                },
-                error => this.errorService.handleError(error)
+            .subscribe(identity => {
+                this.me = identity;
+            },
+            error => this.errorService.handleError(error)
             );
     }
 
