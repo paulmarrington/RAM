@@ -26,7 +26,7 @@ import {RamComponent} from '../ram/ram.component';
     providers: [
         HTTP_PROVIDERS,
         ROUTER_PROVIDERS,
-        provide(LocationStrategy, {useClass: HashLocationStrategy}),
+        provide(LocationStrategy, { useClass: HashLocationStrategy }),
         RAMRestService,
         RAMNavService,
         RAMIdentityService,
@@ -36,33 +36,25 @@ import {RamComponent} from '../ram/ram.component';
     ]
 })
 @RouteConfig([
-    {
-        path: '/',
-        name: 'Ram',
-        component: RamComponent,
-        useAsDefault: true
-    },
+    { path: '/', name: 'Ram', component: RamComponent, useAsDefault: true },
+
     {
         path: '/relationships/:idValue',
         name: 'Relationships',
         component: RelationshipsComponent
-    },
-    {
+    }, {
         path: '/relationships/add/:idValue',
         name: 'AddRelationship',
         component: AddRelationshipComponent
-    },
-    {
+    }, {
         path: '/relationships/add/:idValue/:invitationCode/:displayName/complete',
         name: 'AddRelationshipCompleteComponent',
         component: AddRelationshipCompleteComponent
-    },
-    {
+    }, {
         path: '/relationships/add/:idValue/enter',
         name: 'EnterInvitationCodeComponent',
         component: EnterInvitationCodeComponent
-    },
-    {
+    },{
         path: '/relationships/add/:idValue/:invitationCode/accept',
         name: 'AcceptAuthorisationComponent',
         component: AcceptAuthorisationComponent
