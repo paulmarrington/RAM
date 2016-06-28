@@ -363,7 +363,7 @@ paths:
       tags:
         - Reference - RelationshipType
       operationId: RelationshipType.findByCodeIgnoringDateRange
-      summary: Get a relationship type  by its code
+      summary: Get a relationship type by its code
       description: Get a relationship type  by its code
       parameters:
         - name: code
