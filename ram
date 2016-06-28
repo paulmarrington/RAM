@@ -250,7 +250,7 @@ case "$1" in
 
   'db:seed')
     echo ""
-    echo "Seeding database"
+    echo "Seeding database with $DEFAULT_CONF"
     echo ""
     cd backend
     RAM_CONF=$DEFAULT_CONF gulp seed
