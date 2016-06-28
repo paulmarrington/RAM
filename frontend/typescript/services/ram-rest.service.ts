@@ -31,6 +31,12 @@ export class RAMRestService {
         return body || {};
     }
 
+    public findMyIdentity(): Rx.Observable<IIdentity> {
+        return this.http
+            .get(`/api/v1/identity/me`)
+            .map(this.extractData);
+    }
+
     public findIdentityByValue(identityValue: string): Rx.Observable<IIdentity> {
         return this.http
             .get(`/api/v1/identity/${identityValue}`)
