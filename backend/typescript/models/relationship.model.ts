@@ -332,6 +332,8 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
 });
 
 /* tslint:disable:max-func-body-length */
+// todo need to optional filters (term, party type, relationship type, status)
+// todo need to add sorting
 RelationshipSchema.static('searchDistinctSubjectsByDelegate', (identityIdValue:string, page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IParty>>(async(resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
