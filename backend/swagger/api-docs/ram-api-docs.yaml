@@ -267,9 +267,9 @@ paths:
     get:
       tags:
         - Business - Relationship
-      operationId: Relationship.listBySubjectOrDelegate
-      summary: List Relationships for a subject or delegate
-      description: List Relationships for a subject or delegate
+      operationId: Relationship.searchBySubjectOrDelegate
+      summary: Search Relationships for a subject or delegate
+      description: Search Relationships for a subject or delegate
       parameters:
         - $ref: "#/parameters/subjectOrDelegate"
         - $ref: "#/parameters/idValue"

@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "fc81fba5-46c4-5e70-525b-4f36d8557946",
+		"_postman_id": "b0937ed2-808b-0a03-1f83-59d3c489139d",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -587,6 +587,33 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "List distinct subjects",
+					"request": {
+						"url": "{{host}}/api/v1/relationships/identity/PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1/subjects?page=1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
 					},
 					"response": []
 				},
