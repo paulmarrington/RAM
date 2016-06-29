@@ -307,6 +307,49 @@ paths:
         500:
           $ref: '#/responses/500'
 
+  /relationships/identity/{idValue}/subjects:
+    get:
+      tags:
+        - Business - Relationship
+      operationId: Relationship.searchDistinctSubjectsBySubjectOrDelegateIdentity
+      summary: Search Relationships for an identity and return the distinct subjects
+      description: Search Relationships for an identity and return the distinct subjects
+      parameters:
+        - $ref: "#/parameters/idValue"
+        - name: filter
+          in: query
+          description: Filtering - TODO
+          required: false
+          type: array
+          collectionFormat: multi
+          items:
+            type: string
+        - name: sort
+          in: query
+          description: Sorting - TODO
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page used for pagination
+          required: true
+          type: number
+          format: int32
+        - name: pageSize
+          in: query
+          description: Page Size used for pagination
+          required: false
+          type: number
+          format: int32
+      responses:
+        200:
+          schema:
+            $ref: '#/definitions/PartyListResponse'
+        400:
+          $ref: '#/responses/400'
+        500:
+          $ref: '#/responses/500'
+
   /relationship:
     post:
       tags:
@@ -595,7 +638,7 @@ definitions:
       value:
           $ref: '#/definitions/Party'
 
-  PartiesListResponse:
+  PartyListResponse:
     allOf:
     - $ref: '#/definitions/SearchResultResponse'
     description: A collection of references to parties
