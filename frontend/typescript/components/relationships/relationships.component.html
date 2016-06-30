@@ -24,12 +24,25 @@
         <div class="col-md-12">
 
             <div *ngIf="!subjectHrefValue">
+
                 <div *ngFor="let subjectHrefValue of (subjectsResponse$ | async)?.list"
                      class="relationship-subject-heading clickable"
                      (click)="expandSubject(subjectHrefValue)">
                     <h4>{{displayNameForParty(subjectHrefValue.value)}}</h4>
                 </div>
-                <div class="todo">Pagination goes here for the list of SUBJECTS</div>
+
+                <br/><br/><br/>
+                <div class="todo">This pagination is for subjects (not connected</div>
+                <nav>
+                    <ul class="pagination">
+                        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                        <li [class.active]="pageNumber == 1"><a href="#">1 </a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                    </ul>
+                </nav>
+
             </div>
 
             <div *ngIf="subjectHrefValue">
@@ -67,7 +80,17 @@
                     </tbody>
                 </table>
 
-                <div class="todo">Pagination goes here for the list of RELATIONSHIPS</div>
+                <br/><br/><br/>
+                <div class="todo">This pagination is for relationships (not connected</div>
+                <nav>
+                    <ul class="pagination">
+                        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                        <li [class.active]="pageNumber == 1"><a href="#">1 </a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                    </ul>
+                </nav>
 
                 <br/>
 
