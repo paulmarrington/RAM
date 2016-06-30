@@ -131,6 +131,19 @@ export class RelationshipsComponent {
         }
     };
 
+    public mockNavigateToJMFoodPackaging = () => {
+        if (this.subjectHrefValue) {
+            const identityHrefValues = this.subjectHrefValue.value.identities;
+            for (let identityHrefValue of identityHrefValues) {
+                identityHrefValue.value.profile.name.unstructuredName = 'J&M Food Packaging Pty Ltd';
+                console.log(identityHrefValue.value.profile.name.unstructuredName);
+            }
+            const oldSubjectHrefValue = this.subjectHrefValue;
+            this.backToListing();
+            this.expandSubject(oldSubjectHrefValue);
+        }
+    };
+
     public get isLoading() {
         return this._isLoading;
     }

@@ -3,6 +3,10 @@ import * as colors from 'colors';
 import {conf} from '../bootstrap';
 import {doResetDataInMongo} from '../resetDataInMongo';
 
+import {BobSmithIdentitySeeder} from './seed-bobsmith-identity';
+import {JenniferMaximIdentitySeeder} from './seed-jennifermaxim-identity';
+import {JensCateringIdentitySeeder} from './seed-jenscatering-identity';
+
 import {
     IRelationshipAttributeName,
     RelationshipAttributeNameModel,
@@ -99,6 +103,11 @@ export class Seeder {
     public static jenscatering_profile:IProfile;
     public static jenscatering_party:IParty;
     public static jenscatering_identity_1:IIdentity;
+
+    public static cateringbakery_name:IName;
+    public static cateringbakery_profile:IProfile;
+    public static cateringbakery_party:IParty;
+    public static cateringbakery_identity_1:IIdentity;
 
     public static jennifermaxims_name:IName;
     public static jennifermaxims_dob:ISharedSecret;
@@ -939,9 +948,9 @@ export class Seeder {
 
     public static loadMock() {
         return Promise.resolve(null)
-            .then(Seeder.loadSample_jensCateringPtyLtd_identity)
-            .then(Seeder.loadSample_jenniferMaxim_identity)
-            .then(Seeder.loadSample_bobsmith_identity)
+            .then(JensCateringIdentitySeeder.load)
+            .then(JenniferMaximIdentitySeeder.load)
+            .then(BobSmithIdentitySeeder.load)
             .then(Seeder.loadSample_jensCateringPtyLtd_jenniferMaxim_relationship)
             .then(Seeder.loadSample_jensCateringPtyLtd_robertsmith_invitationCode)
             .then(Seeder.loadSample_jensCateringPtyLtd_fredjohnson_invitationCode);
