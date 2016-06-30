@@ -91,23 +91,36 @@ export class RelationshipsComponent {
         return providerNames.join(',');
     }
 
-    public getOtherParty = (relationship:IRelationship) => {
+    public getOtherPartyHrefValue = (relationship:IRelationship) => {
         if (this.subjectHrefValue) {
             if (relationship.subject.href === this.subjectHrefValue.href) {
-                return relationship.delegate.value;
+                return relationship.delegate;
             } else {
-                return relationship.subject.value;
+                return relationship.subject;
+            }
+        }
+        return null;
+    };
+
+    public getOtherParty = (relationship:IRelationship) => {
+        const party = this.getOtherPartyHrefValue(relationship);
+        return party ? party.value : null;
+    };
+
+    public getRelationshipType = (relationship:IRelationship) => {
+        let relationshipTypeHrefString = relationship.relationshipType.href;
+        for (let aRelationshipTypeHrefValue of this.relationshipTypes) {
+            if (aRelationshipTypeHrefValue.href === relationshipTypeHrefString) {
+                return aRelationshipTypeHrefValue.value;
             }
         }
         return null;
     };
 
     public getRelationshipTypeLabel = (relationship:IRelationship) => {
-        let relationshipTypeHrefString = relationship.relationshipType.href;
-        for (let aRelationshipTypeHref of this.relationshipTypes) {
-            if (aRelationshipTypeHref.href === relationshipTypeHrefString) {
-                return aRelationshipTypeHref.value.shortDecodeText;
-            }
+        let relationshipType = this.getRelationshipType(relationship);
+        if (relationshipType) {
+            return relationshipType.shortDecodeText;
         }
         return '';
     };
@@ -129,6 +142,12 @@ export class RelationshipsComponent {
                 this._isLoading = false;
             });
         }
+    };
+
+    // todo not sure what the drill down conditional logic is, for now assume UNIVERSAL
+    public isDrillDownPossible = (relationship:IRelationship) => {
+        let relationshipType = this.getRelationshipType(relationship);
+        return relationshipType && relationshipType.code === 'UNIVERSAL_REPRESENTATIVE';
     };
 
     public get isLoading() {
