@@ -63,7 +63,9 @@
                     <tbody *ngIf="!isLoading">
                         <tr *ngFor="let relationshipHrefValue of (relationshipsResponse$ | async)?.list">
                             <td *ngIf="!isDrillDownPossible(relationshipHrefValue.value)">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</td>
-                            <td *ngIf="isDrillDownPossible(relationshipHrefValue.value)" (click)="expandSubject(getOtherPartyHrefValue(relationshipHrefValue.value))">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</td>
+                            <td *ngIf="isDrillDownPossible(relationshipHrefValue.value)">
+                                <a (click)="expandSubject(getOtherPartyHrefValue(relationshipHrefValue.value))">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</a>
+                            </td>
                             <td>{{commaSeparatedListOfProviderNames(getOtherParty(relationshipHrefValue.value))}}</td>
                             <td class="hidden-xs ">{{getRelationshipTypeLabel(relationshipHrefValue.value)}}</td>
                             <td class="hidden-xs ">{{relationshipHrefValue.value.status}}</td>
