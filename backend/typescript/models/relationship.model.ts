@@ -409,7 +409,7 @@ RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity',
                         {'$limit': pageSize}
                     ])
                     .exec();
-                const inflatedList = (await PartyModel.populate(listOfIds, {path: '_id'})).map((item) => item._id);
+                const inflatedList = (await PartyModel.populate(listOfIds, {path: '_id'})).map((item:{_id:string}) => item._id);
                 resolve(new SearchResult<IParty>(count, pageSize, inflatedList));
             } catch (e) {
                 reject(e);
