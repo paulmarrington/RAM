@@ -55,6 +55,9 @@ import {BobSmithIdentitySeeder} from './seed-bobsmith-identity';
 import {CakeryBakeryIdentitySeeder} from './seed-cakerybakery-identity';
 import {CakeryBakeryRelationshipsSeeder} from './seed-cakerybakery-relationships';
 
+import {JMFoodPackagingIdentitySeeder} from './seed-jmfoodpackaging-identity';
+import {JMFoodPackagingRelationshipsSeeder} from './seed-jmfoodpackaging-relationships';
+
 import {JenniferMaximIdentitySeeder} from './seed-jennifermaxim-identity';
 
 import {JensCateringIdentitySeeder} from './seed-jenscatering-identity';
@@ -98,44 +101,59 @@ export class Seeder {
 
     public static dob_sharedSecretType:ISharedSecretType;
 
-    public static jenscatering_name:IName;
-    public static jenscatering_profile:IProfile;
-    public static jenscatering_party:IParty;
-    public static jenscatering_identity_1:IIdentity;
-
-    public static cakerybakery_name:IName;
-    public static cakerybakery_profile:IProfile;
-    public static cakerybakery_party:IParty;
-    public static cakerybakery_identity_1:IIdentity;
-
-    public static jennifermaxims_name:IName;
-    public static jennifermaxims_dob:ISharedSecret;
-    public static jennifermaxims_profile:IProfile;
-    public static jennifermaxims_party:IParty;
-    public static jennifermaxims_identity_1:IIdentity;
-
+    // individual identity
     public static bobsmith_name:IName;
     public static bobsmith_dob:ISharedSecret;
     public static bobsmith_profile:IProfile;
     public static bobsmith_party:IParty;
     public static bobsmith_identity_1:IIdentity;
 
+    // ABN identity
+    public static cakerybakery_name:IName;
+    public static cakerybakery_profile:IProfile;
+    public static cakerybakery_party:IParty;
+    public static cakerybakery_identity_1:IIdentity;
+
+    // ABN identity
+    public static jenscatering_name:IName;
+    public static jenscatering_profile:IProfile;
+    public static jenscatering_party:IParty;
+    public static jenscatering_identity_1:IIdentity;
+
+    // individual identity
+    public static jmfoodpackaging_name:IName;
+    public static jmfoodpackaging_dob:ISharedSecret;
+    public static jmfoodpackaging_profile:IProfile;
+    public static jmfoodpackaging_party:IParty;
+    public static jmfoodpackaging_identity_1:IIdentity;
+
+    // individual identity
+    public static jennifermaxims_name:IName;
+    public static jennifermaxims_dob:ISharedSecret;
+    public static jennifermaxims_profile:IProfile;
+    public static jennifermaxims_party:IParty;
+    public static jennifermaxims_identity_1:IIdentity;
+
+    // invitation identity
     public static robertsmith_name:IName;
     public static robertsmith_dob:ISharedSecret;
     public static robertsmith_profile:IProfile;
     public static robertsmith_party:IParty;
     public static robertsmith_identity_1:IIdentity;
 
+    // invitation identity
     public static fredjohnson_name:IName;
     public static fredjohnson_dob:ISharedSecret;
     public static fredjohnson_profile:IProfile;
     public static fredjohnson_party:IParty;
     public static fredjohnson_identity_1:IIdentity;
 
+    // relationships
     public static cakerybakery_and_jennifermaxim_relationship:IRelationship;
     public static jenscatering_and_jennifermaxim_relationship:IRelationship;
     public static jenscatering_and_robertsmith_relationship:IRelationship;
     public static jennifermaxim_and_fredjohnson_relationship:IRelationship;
+    public static jmfoodpackaging_and_jenscatering_relationship:IRelationship;
 
     public static log(msg:String) {
         if(Seeder.verboseMode) {
@@ -609,11 +627,13 @@ export class Seeder {
             .then(BobSmithIdentitySeeder.load)
             .then(CakeryBakeryIdentitySeeder.load)
             .then(JenniferMaximIdentitySeeder.load)
+            .then(JMFoodPackagingIdentitySeeder.load)
             .then(JensCateringIdentitySeeder.load)
 
             // relationships
             .then(CakeryBakeryRelationshipsSeeder.load)
-            .then(JensCateringRelationshipsSeeder.load);
+            .then(JensCateringRelationshipsSeeder.load)
+            .then(JMFoodPackagingRelationshipsSeeder.load);
 
     }
 
