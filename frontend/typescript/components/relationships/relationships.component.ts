@@ -27,6 +27,7 @@ export class RelationshipsComponent {
     public subjectsResponse$:Rx.Observable<ISearchResult<IHrefValue<IParty>[]>>;
 
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
+    public subject: IParty;
 
     private _isLoading = false; // set to true when you want the UI indicate something is getting loaded.
 
@@ -70,6 +71,14 @@ export class RelationshipsComponent {
         }
         return '';
     }
+
+    public backToListing = () => {
+        this.subject = null;
+    };
+
+    public expandSubject = (subject:IParty) => {
+        this.subject = subject;
+    };
 
     public get isLoading() {
         return this._isLoading;

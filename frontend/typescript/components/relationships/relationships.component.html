@@ -22,10 +22,17 @@
     <div class="row">
         <div class="col-md-12">
 
-            <div *ngFor="let subjectHrefValue of (subjectsResponse$ | async)?.list">
-                <h4>{{displayNameForSubject(subjectHrefValue.value)}}</h4>
+            <div *ngIf="!subject">
+                <div *ngFor="let subjectHrefValue of (subjectsResponse$ | async)?.list">
+                    <h4 (click)="expandSubject(subjectHrefValue.value)">{{displayNameForSubject(subjectHrefValue.value)}}</h4>
+                </div>
+                <div>Pagination goes here for the list of subjects</div>
             </div>
 
+            <div *ngIf="subject">
+                <p (click)="backToListing()"><b>Back to listing</b></p>
+                <h4>Subject in focus = {{displayNameForSubject(subject)}}</h4>
+            </div>
 
 <!--
             <form [ngFormModel]="filters$">
@@ -58,6 +65,12 @@
 -->
         </div>
     </div>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <hr/>
 
     <br/>
     <br/>

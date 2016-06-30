@@ -52,6 +52,12 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
+    public searchRelationshipsByIdentity(idValue:string, page:number):Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>> {
+        return this.http
+            .get(`/api/v1/relationships/identity/${idValue}?page=${page}`)
+            .map(this.extractData);
+    }
+
     public searchDistinctSubjectsBySubjectOrDelegateIdentity(idValue:string,
                                                              page:number):Rx.Observable<ISearchResult<IHrefValue<IParty>[]>> {
         return this.http
