@@ -23,31 +23,19 @@
 
         <div class="col-md-12">
 
-            <div *ngIf="!subjectHrefValue" class="section">
-                <table class="table table-hover">
-                    <thead>
-                        <tr *ngFor="let subjectHrefValue of (subjectsResponse$ | async)?.list">
-                            <th>
-                                <h4 (click)="expandSubject(subjectHrefValue)">{{displayNameForParty(subjectHrefValue.value)}}</h4>
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
+            <div *ngIf="!subjectHrefValue">
+                <div *ngFor="let subjectHrefValue of (subjectsResponse$ | async)?.list"
+                     class="relationship-subject-heading clickable"
+                     (click)="expandSubject(subjectHrefValue)">
+                    <h4>{{displayNameForParty(subjectHrefValue.value)}}</h4>
+                </div>
                 <div>Pagination goes here for the list of SUBJECTS</div>
             </div>
 
             <div *ngIf="subjectHrefValue">
 
-                <div class="section">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <h4>{{displayNameForParty(subjectHrefValue.value)}}</h4>
-                                </th>
-                            </tr>
-                        </thead>
-                    </table>
+                <div class="relationship-subject-heading">
+                    <h4>{{displayNameForParty(subjectHrefValue.value)}}</h4>
                 </div>
 
                 <table class="table table-hover">
@@ -64,11 +52,11 @@
                         <tr *ngFor="let relationshipHrefValue of (relationshipsResponse$ | async)?.list">
                             <td *ngIf="!isDrillDownPossible(relationshipHrefValue.value)">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</td>
                             <td *ngIf="isDrillDownPossible(relationshipHrefValue.value)">
-                                <a (click)="expandSubject(getOtherPartyHrefValue(relationshipHrefValue.value))">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</a>
+                                <a (click)="expandSubject(getOtherPartyHrefValue(relationshipHrefValue.value))" class="clickable">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</a>
                             </td>
                             <td>{{commaSeparatedListOfProviderNames(getOtherParty(relationshipHrefValue.value))}}</td>
-                            <td class="hidden-xs ">{{getRelationshipTypeLabel(relationshipHrefValue.value)}}</td>
-                            <td class="hidden-xs ">{{relationshipHrefValue.value.status}}</td>
+                            <td class="hidden-xs">{{getRelationshipTypeLabel(relationshipHrefValue.value)}}</td>
+                            <td class="hidden-xs">{{relationshipHrefValue.value.status}}</td>
                             <td></td>
                         </tr>
                     </tbody>
