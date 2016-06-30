@@ -32,10 +32,6 @@
             <div *ngIf="subject">
                 <p (click)="backToListing()"><b>Back to listing</b></p>
                 <h4>Subject in focus = {{displayNameForSubject(subject)}}</h4>
-            </div>
-
-<!--
-            <form [ngFormModel]="filters$">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -47,7 +43,7 @@
                         </tr>
                     </thead>
                     <tbody *ngIf="!isLoading">
-                        <tr *ngFor="let row of subjectResponse$ | async">
+                        <tr *ngFor="let relationshipHrefValue of (relationshipsResponse$ | async)?.list">
                             <td>TODO Name</td>
                             <td>TODO Login Type</td>
                             <td class="hidden-xs ">TODO Authorisation</td>
@@ -61,8 +57,8 @@
                         </tr>
                     </tbody>
                 </table>
-            </form>
--->
+            </div>
+
         </div>
     </div>
 

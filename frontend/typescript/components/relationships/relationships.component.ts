@@ -9,6 +9,7 @@ import {
     ISearchResult,
     IName,
     IParty,
+    IRelationship,
     IRelationshipType,
     IHrefValue
 } from '../../../../commons/RamAPI2';
@@ -25,6 +26,7 @@ export class RelationshipsComponent {
 
     public identityDisplayName$:Rx.Observable<IName>;
     public subjectsResponse$:Rx.Observable<ISearchResult<IHrefValue<IParty>[]>>;
+    public relationshipsResponse$:Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>>;
 
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
     public subject: IParty;
@@ -37,17 +39,21 @@ export class RelationshipsComponent {
     }
 
     public ngOnInit() {
+        this._isLoading = true;
         this.idValue = this.routeParams.get('idValue');
-        this.identityDisplayName$ = this.identityService
-            .getDefaultName(this.idValue).map(this.displayName);
+        this.identityDisplayName$ = this.identityService.getDefaultName(this.idValue).map(this.displayName);
         this.subjectsResponse$ = this.rest.searchDistinctSubjectsBySubjectOrDelegateIdentity(this.idValue, 1);
         this.subjectsResponse$.subscribe((searchResult) => {
-            console.log('SEARCH RESULT!!!!');
-            console.log('totalCount = ' + searchResult.totalCount);
-            console.log('pageSize = ' + searchResult.pageSize);
+            this._isLoading = false;
+        }, (err) => {
+            alert(JSON.stringify(err, null, 4));
+            this._isLoading = false;
         });
         this.rest.listRelationshipTypes().subscribe((relationshipTypes) => {
             this.relationshipTypes = relationshipTypes;
+        }, (err) => {
+            alert(JSON.stringify(err, null, 4));
+            this._isLoading = false;
         });
     }
 
@@ -77,7 +83,18 @@ export class RelationshipsComponent {
     };
 
     public expandSubject = (subject:IParty) => {
+        this._isLoading = true;
         this.subject = subject;
+        if (subject.identities.length > 0) {
+            const idValue = subject.identities[0].value.idValue;
+            this.relationshipsResponse$ = this.rest.searchRelationshipsByIdentity(idValue, 1);
+            this.relationshipsResponse$.subscribe(() => {
+                this._isLoading = false;
+            }, (err) => {
+                alert(JSON.stringify(err, null, 4));
+                this._isLoading = false;
+            });
+        }
     };
 
     public get isLoading() {
