@@ -409,6 +409,38 @@ describe('RAM Relationship', () => {
         }
     });
 
+    it('searches with delegate as party', async (done) => {
+        try {
+
+            const relationships = await RelationshipModel.searchByIdentity(delegateIdentity1.idValue, 1, 10);
+            expect(relationships.totalCount).toBe(1);
+            expect(relationships.list.length).toBe(1);
+            expect(relationships.list[0].id).toBe(relationship1.id);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('searches with subject as party', async (done) => {
+        try {
+
+            const relationships = await RelationshipModel.searchByIdentity(subjectIdentity1.idValue, 1, 10);
+            expect(relationships.totalCount).toBe(1);
+            expect(relationships.list.length).toBe(1);
+            expect(relationships.list[0].id).toBe(relationship1.id);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
     it('searches distinct subjects with delegate', async (done) => {
         try {
 

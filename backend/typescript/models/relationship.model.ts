@@ -133,6 +133,7 @@ export interface IRelationshipModel extends mongoose.Model<IRelationship> {
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
     search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IRelationship>>;
+    searchByIdentity:(identityIdValue:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
     searchDistinctSubjectsBySubjectOrDelegateIdentity:(identityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IParty>>;
 }
@@ -299,6 +300,7 @@ RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async(invita
     return null;
 });
 
+// todo this search might no longer be useful from SS2
 RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
@@ -312,6 +314,45 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
                 .exec();
             const list = await this.RelationshipModel
                 .find(query)
+                .deepPopulate([
+                    'relationshipType',
+                    'subject',
+                    'subjectNickName',
+                    'delegate',
+                    'delegateNickName',
+                    'attributes.attributeName'
+                ])
+                .skip((page - 1) * pageSize)
+                .limit(pageSize)
+                .sort({name: 1})
+                .exec();
+            resolve(new SearchResult<IRelationship>(count, pageSize, list));
+        } catch (e) {
+            reject(e);
+        }
+    });
+});
+
+RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:number, reqPageSize:number) => {
+    return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
+        const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
+        try {
+            const party = await PartyModel.findByIdentityIdValue(identityIdValue);
+            const count = await this.RelationshipModel
+                .count({
+                    '$or': [
+                        {subject: party},
+                        {delegate: party}
+                    ]
+                })
+                .exec();
+            const list = await this.RelationshipModel
+                .find({
+                    '$or': [
+                        {subject: party},
+                        {delegate: party}
+                    ]
+                })
                 .deepPopulate([
                     'relationshipType',
                     'subject',

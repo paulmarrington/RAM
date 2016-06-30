@@ -99,6 +99,7 @@ export class RelationshipController {
     };
 
     /* tslint:disable:max-func-body-length */
+    // todo this search might no longer be useful from SS2
     private searchBySubjectOrDelegate = async (req:Request, res:Response) => {
         const schema = {
             'subject_or_delegate': {
@@ -134,6 +135,40 @@ export class RelationshipController {
             .then((req:Request) => this.relationshipModel.search(
                 req.params.subject_or_delegate === 'subject' ? req.params.identity_id : null,
                 req.params.subject_or_delegate === 'delegate' ? req.params.identity_id : null,
+                req.query.page,
+                req.query.pageSize)
+            )
+            .then((results) => (results.map((model) => model.toHrefValue(true))))
+            .then(sendSearchResult(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
+    /* tslint:disable:max-func-body-length */
+    private searchByIdentity = async (req:Request, res:Response) => {
+        const schema = {
+            'identity_id': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Identity Id is not valid'
+            },
+            'page': {
+                in: 'query',
+                notEmpty: true,
+                isNumeric: {
+                    errorMessage: 'Page is not valid'
+                }
+            },
+            'pageSize': {
+                in: 'query',
+                optional: true,
+                isNumeric: {
+                    errorMessage: 'Page Size is not valid'
+                }
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.searchByIdentity(
+                req.params.identity_id,
                 req.query.page,
                 req.query.pageSize)
             )
@@ -313,6 +348,10 @@ export class RelationshipController {
         router.get('/v1/relationships/identity/:identity_id/subjects',
             security.isAuthenticated,
             this.searchDistinctSubjectsBySubjectOrDelegateIdentity);
+
+        router.get('/v1/relationships/identity/:identity_id',
+            security.isAuthenticated,
+            this.searchByIdentity);
 
         router.post('/v1/relationship',
             security.isAuthenticated,
