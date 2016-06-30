@@ -22,7 +22,7 @@ export class JensCateringRelationshipsSeeder {
 
             } else {
 
-                Seeder.jpty_and_jm_relationship = await Seeder.createRelationshipModel({
+                Seeder.jenscatering_and_jennifermaxim_relationship = await Seeder.createRelationshipModel({
                     relationshipType: Seeder.associate_delegate_relationshipType,
                     subject: Seeder.jenscatering_party,
                     subjectNickName: Seeder.jenscatering_name,
@@ -104,7 +104,7 @@ export class JensCateringRelationshipsSeeder {
 
                 Seeder.log('');
 
-                Seeder.jpty_and_rs_relationship = await Seeder.createRelationshipModel({
+                Seeder.jenscatering_and_robertsmith_relationship = await Seeder.createRelationshipModel({
                     relationshipType: Seeder.custom_delegate_relationshipType,
                     subject: Seeder.jenscatering_party,
                     subjectNickName: Seeder.jenscatering_name,
@@ -184,7 +184,7 @@ export class JensCateringRelationshipsSeeder {
 
                 Seeder.log('');
 
-                Seeder.j_and_f_relationship = await Seeder.createRelationshipModel({
+                Seeder.jennifermaxim_and_fredjohnson_relationship = await Seeder.createRelationshipModel({
                     relationshipType: Seeder.custom_delegate_relationshipType,
                     subject: Seeder.jenscatering_party,
                     subjectNickName: Seeder.jenscatering_name,

@@ -53,6 +53,7 @@ import {
 import {BobSmithIdentitySeeder} from './seed-bobsmith-identity';
 
 import {CakeryBakeryIdentitySeeder} from './seed-cakerybakery-identity';
+import {CakeryBakeryRelationshipsSeeder} from './seed-cakerybakery-relationships';
 
 import {JenniferMaximIdentitySeeder} from './seed-jennifermaxim-identity';
 
@@ -131,9 +132,10 @@ export class Seeder {
     public static fredjohnson_party:IParty;
     public static fredjohnson_identity_1:IIdentity;
 
-    public static jpty_and_jm_relationship:IRelationship;
-    public static jpty_and_rs_relationship:IRelationship;
-    public static j_and_f_relationship:IRelationship;
+    public static cakerybakery_and_jennifermaxim_relationship:IRelationship;
+    public static jenscatering_and_jennifermaxim_relationship:IRelationship;
+    public static jenscatering_and_robertsmith_relationship:IRelationship;
+    public static jennifermaxim_and_fredjohnson_relationship:IRelationship;
 
     public static log(msg:String) {
         if(Seeder.verboseMode) {
@@ -600,12 +602,19 @@ export class Seeder {
     }
 
     public static loadMock() {
+
         return Promise.resolve(null)
+
+            // identities
             .then(BobSmithIdentitySeeder.load)
             .then(CakeryBakeryIdentitySeeder.load)
             .then(JenniferMaximIdentitySeeder.load)
             .then(JensCateringIdentitySeeder.load)
+
+            // relationships
+            .then(CakeryBakeryRelationshipsSeeder.load)
             .then(JensCateringRelationshipsSeeder.load);
+
     }
 
 }
