@@ -28,8 +28,9 @@ export class RelationshipsComponent {
     public subjectsResponse$:Rx.Observable<ISearchResult<IHrefValue<IParty>[]>>;
     public relationshipsResponse$:Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>>;
 
+    // todo rename to relationshipTypeHrefs
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
-    public subject: IParty;
+    public subjectHrefValue: IHrefValue<IParty>;
 
     private _isLoading = false; // set to true when you want the UI indicate something is getting loaded.
 
@@ -64,7 +65,7 @@ export class RelationshipsComponent {
         return '';
     }
 
-    public displayNameForSubject(subject:IParty):string {
+    public displayNameForParty(subject:IParty):string {
         if (subject && subject.identities && subject.identities.length > 0) {
             for (const identityHrefValue of subject.identities) {
                 const identity = identityHrefValue.value;
@@ -78,15 +79,48 @@ export class RelationshipsComponent {
         return '';
     }
 
-    public backToListing = () => {
-        this.subject = null;
+    public commaSeparatedListOfProviderNames(subject:IParty):string {
+        let providerNames: string[] = [];
+        if (subject) {
+            if (subject && subject.identities && subject.identities.length > 0) {
+                for (const identityHrefValue of subject.identities) {
+                    providerNames.push(identityHrefValue.value.profile.provider);
+                }
+            }
+        }
+        return providerNames.join(',');
+    }
+
+    public getOtherParty = (relationship:IRelationship) => {
+        if (this.subjectHrefValue) {
+            if (relationship.subject.href === this.subjectHrefValue.href) {
+                return relationship.delegate.value;
+            } else {
+                return relationship.subject.value;
+            }
+        }
+        return null;
     };
 
-    public expandSubject = (subject:IParty) => {
+    public getRelationshipTypeLabel = (relationship:IRelationship) => {
+        let relationshipTypeHrefString = relationship.relationshipType.href;
+        for (let aRelationshipTypeHref of this.relationshipTypes) {
+            if (aRelationshipTypeHref.href === relationshipTypeHrefString) {
+                return aRelationshipTypeHref.value.shortDecodeText;
+            }
+        }
+        return '';
+    };
+
+    public backToListing = () => {
+        this.subjectHrefValue = null;
+    };
+
+    public expandSubject = (subjectHrefValue:IHrefValue<IParty>) => {
         this._isLoading = true;
-        this.subject = subject;
-        if (subject.identities.length > 0) {
-            const idValue = subject.identities[0].value.idValue;
+        this.subjectHrefValue = subjectHrefValue;
+        if (subjectHrefValue.value.identities.length > 0) {
+            const idValue = subjectHrefValue.value.identities[0].value.idValue;
             this.relationshipsResponse$ = this.rest.searchRelationshipsByIdentity(idValue, 1);
             this.relationshipsResponse$.subscribe(() => {
                 this._isLoading = false;
