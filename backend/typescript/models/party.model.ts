@@ -79,7 +79,7 @@ PartySchema.method('toDTO', async function () {
         this.partyType,
         await Promise.all<HrefValue<IdentityDTO>>(identities.map(
             async (identity:IIdentity) => {
-                return await identity.toHrefValue(false);
+                return await identity.toHrefValue(true);
             }))
     );
 });

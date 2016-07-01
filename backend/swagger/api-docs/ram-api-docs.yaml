@@ -267,9 +267,9 @@ paths:
     get:
       tags:
         - Business - Relationship
-      operationId: Relationship.listBySubjectOrDelegate
-      summary: List Relationships for a subject or delegate
-      description: List Relationships for a subject or delegate
+      operationId: Relationship.searchBySubjectOrDelegate
+      summary: Search Relationships for a subject or delegate
+      description: Search Relationships for a subject or delegate
       parameters:
         - $ref: "#/parameters/subjectOrDelegate"
         - $ref: "#/parameters/idValue"
@@ -302,6 +302,49 @@ paths:
         200:
           schema:
             $ref: '#/definitions/RelationshipListResponse'
+        400:
+          $ref: '#/responses/400'
+        500:
+          $ref: '#/responses/500'
+
+  /relationships/identity/{idValue}/subjects:
+    get:
+      tags:
+        - Business - Relationship
+      operationId: Relationship.searchDistinctSubjectsBySubjectOrDelegateIdentity
+      summary: Search Relationships for an identity and return the distinct subjects
+      description: Search Relationships for an identity and return the distinct subjects
+      parameters:
+        - $ref: "#/parameters/idValue"
+        - name: filter
+          in: query
+          description: Filtering - TODO
+          required: false
+          type: array
+          collectionFormat: multi
+          items:
+            type: string
+        - name: sort
+          in: query
+          description: Sorting - TODO
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page used for pagination
+          required: true
+          type: number
+          format: int32
+        - name: pageSize
+          in: query
+          description: Page Size used for pagination
+          required: false
+          type: number
+          format: int32
+      responses:
+        200:
+          schema:
+            $ref: '#/definitions/PartyListResponse'
         400:
           $ref: '#/responses/400'
         500:
@@ -363,13 +406,14 @@ paths:
       tags:
         - Reference - RelationshipType
       operationId: RelationshipType.findByCodeIgnoringDateRange
+      summary: Get a relationship type by its code
+      description: Get a relationship type  by its code
       parameters:
         - name: code
           in: path
           type: string
           required: true
           description: Relationship type id to be retrieved
-      summary: Get a relationship type by relationship type id
       responses:
         200:
           description: Relationship types in RAM
@@ -401,7 +445,7 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/RelationshipType'
-      summary: Create/ Update Relationship Type
+      summary: Create / Update Relationship Type
       description: |
         Create or update a new relationship type
       responses:
@@ -435,8 +479,8 @@ paths:
       tags:
         - Reference - RelationshipAttributeName
       operationId: RelationshipAttributeName.findByCodeIgnoringDateRange
-      summary: Get RelationshipAttributeName
-      description: Get RelationshipAttributeName
+      summary: Get RelationshipAttributeName by its code
+      description: Get RelationshipAttributeName by its code
       parameters:
         - $ref: '#/parameters/code'
       responses:
@@ -594,7 +638,7 @@ definitions:
       value:
           $ref: '#/definitions/Party'
 
-  PartiesListResponse:
+  PartyListResponse:
     allOf:
     - $ref: '#/definitions/SearchResultResponse'
     description: A collection of references to parties

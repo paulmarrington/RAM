@@ -1,3 +1,10 @@
+// todo this needs a page index?
+export interface ISearchResult<T> {
+    totalCount: number,
+    pageSize: number,
+    list: T[];
+}
+
 export interface ICodeDecode {
     code: string;
     shortDecodeText: string;
@@ -11,7 +18,7 @@ export interface IHrefValue<T> {
     value?: T;
 }
 
-interface IParty {
+export interface IParty {
     partyType: string;
     identities: Array<IHrefValue<IIdentity>>;
 }

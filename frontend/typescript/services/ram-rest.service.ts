@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import {
+    ISearchResult,
+    IHrefValue,
     IIdentity,
+    IParty,
     IRelationshipAddDTO,
     IRelationship,
-    IRelationshipType, INotifyDelegateDTO
+    IRelationshipType,
+    INotifyDelegateDTO
 } from '../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
 import {Response, Http, Headers} from '@angular/http';
-import {HrefValue} from '../../../commons/RamAPI';
 
 @Injectable()
 export class RAMRestService {
@@ -49,13 +52,26 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
+    public searchRelationshipsByIdentity(idValue:string, page:number):Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>> {
+        return this.http
+            .get(`/api/v1/relationships/identity/${idValue}?page=${page}`)
+            .map(this.extractData);
+    }
+
+    public searchDistinctSubjectsBySubjectOrDelegateIdentity(idValue:string,
+                                                             page:number):Rx.Observable<ISearchResult<IHrefValue<IParty>[]>> {
+        return this.http
+            .get(`/api/v1/relationships/identity/${idValue}/subjects?page=${page}`)
+            .map(this.extractData);
+    }
+
     public findRelationshipTypeByCode(code: string): Rx.Observable<IRelationshipType> {
         return this.http
             .get(`/api/v1/relationshipType/${code}`)
             .map(this.extractData);
     }
 
-    public listRelationshipTypes(): Rx.Observable<HrefValue<IRelationshipType>[]> {
+    public listRelationshipTypes(): Rx.Observable<IHrefValue<IRelationshipType>[]> {
         return this.http
             .get('/api/v1/relationshipTypes')
             .map(this.extractData);
