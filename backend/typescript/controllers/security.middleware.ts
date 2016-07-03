@@ -37,13 +37,13 @@ class Security {
 
         // look for id in headers
         if(req.get(Headers.IdentityIdValue)) {
-            console.log('found header', req.get(Headers.IdentityIdValue));
+            // logger.info('found header', req.get(Headers.IdentityIdValue));
             return req.get(Headers.IdentityIdValue);
         }
 
         // look for id in locals
         if(res.locals[Headers.IdentityIdValue]) {
-            console.log('found local', res.locals[Headers.IdentityIdValue]);
+            // logger.info('found local', res.locals[Headers.IdentityIdValue]);
             return res.locals[Headers.IdentityIdValue];
         }
 
