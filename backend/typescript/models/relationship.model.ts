@@ -333,6 +333,7 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
     });
 });
 
+/* tslint:disable:max-func-body-length */
 RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
