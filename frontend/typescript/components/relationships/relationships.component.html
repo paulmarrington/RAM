@@ -28,8 +28,8 @@
                 <div *ngFor="let subjectHrefValue of (subjectsResponse$ | async)?.list"
                      class="relationship-subject-heading clickable"
                      (click)="expandSubject(subjectHrefValue)">
-                    <h4>{{displayNameForParty(subjectHrefValue.value)}}</h4>
-                    <h5>{{abnLabelForParty(subjectHrefValue.value)}}</h5>
+                    <h4>{{modelHelper.displayNameForParty(subjectHrefValue.value)}}</h4>
+                    <h5>{{modelHelper.abnLabelForParty(subjectHrefValue.value)}}</h5>
                 </div>
 
                 <br/><br/><br/>
@@ -49,7 +49,8 @@
             <div *ngIf="subjectHrefValue">
 
                 <div class="relationship-subject-heading">
-                    <h4>{{displayNameForParty(subjectHrefValue.value)}}</h4>
+                    <h4>{{modelHelper.displayNameForParty(subjectHrefValue.value)}}</h4>
+                    <h5>{{modelHelper.abnLabelForParty(subjectHrefValue.value)}}</h5>
                 </div>
 
                 <table class="table table-hover">
@@ -64,12 +65,12 @@
                     </thead>
                     <tbody *ngIf="!isLoading">
                         <tr *ngFor="let relationshipHrefValue of (relationshipsResponse$ | async)?.list">
-                            <td *ngIf="!isDrillDownPossible(relationshipHrefValue.value)">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</td>
+                            <td *ngIf="!isDrillDownPossible(relationshipHrefValue.value)">{{modelHelper.displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</td>
                             <td *ngIf="isDrillDownPossible(relationshipHrefValue.value)">
-                                <a (click)="expandSubject(getOtherPartyHrefValue(relationshipHrefValue.value))" class="clickable">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</a>
+                                <a (click)="expandSubject(getOtherPartyHrefValue(relationshipHrefValue.value))" class="clickable">{{modelHelper.displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</a>
                             </td>
                             <td>{{commaSeparatedListOfProviderNames(getOtherParty(relationshipHrefValue.value))}}</td>
-                            <td class="hidden-xs">{{getRelationshipTypeLabel(relationshipHrefValue.value)}}</td>
+                            <td class="hidden-xs">{{modelHelper.relationshipTypeLabel(relationshipTypes, relationshipHrefValue.value)}}</td>
                             <td class="hidden-xs">{{relationshipHrefValue.value.status}}</td>
                             <td></td>
                         </tr>

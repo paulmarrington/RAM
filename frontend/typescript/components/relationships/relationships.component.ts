@@ -3,6 +3,7 @@ import {RelationshipsTableComponent} from '../relationships-table/relationships-
 import {RouteParams} from '@angular/router-deprecated';
 import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import Rx from 'rxjs/Rx';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
@@ -36,13 +37,14 @@ export class RelationshipsComponent {
 
     constructor(private routeParams:RouteParams,
                 private identityService:RAMIdentityService,
+                private modelHelper:RAMModelHelper,
                 private rest:RAMRestService) {
     }
 
     public ngOnInit() {
         this._isLoading = true;
         this.idValue = decodeURIComponent(this.routeParams.get('idValue'));
-        this.identityDisplayName$ = this.identityService.getDefaultName(this.idValue).map(this.displayName);
+        this.identityDisplayName$ = this.identityService.getDefaultName(this.idValue).map(this.modelHelper.displayName);
         this.subjectsResponse$ = this.rest.searchDistinctSubjectsBySubjectOrDelegateIdentity(this.idValue, 1);
         this.subjectsResponse$.subscribe((searchResult) => {
             this._isLoading = false;
@@ -56,40 +58,6 @@ export class RelationshipsComponent {
             alert(JSON.stringify(err, null, 4));
             this._isLoading = false;
         });
-    }
-
-    public displayName(name:IName):string {
-        if (name) {
-            return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
-        }
-        return '';
-    }
-
-    public displayNameForParty(party:IParty):string {
-        if (party && party.identities && party.identities.length > 0) {
-            for (const identityHrefValue of party.identities) {
-                const identity = identityHrefValue.value;
-                if (identity.defaultInd) {
-                    const name = identity.profile.name;
-                    return this.displayName(name);
-                }
-            }
-            return this.displayName(party.identities[0].value.profile.name);
-        }
-        return '';
-    }
-
-    public abnLabelForParty(party:IParty):string {
-        if (party && party.identities && party.identities.length > 0) {
-            for (const identityHrefValue of party.identities) {
-                const identity = identityHrefValue.value;
-                if (identity.identityType === 'PUBLIC_IDENTIFIER' && identity.publicIdentifierScheme === 'ABN') {
-                    return 'ABN ' + identity.rawIdValue;
-                }
-            }
-            return null;
-        }
-        return null;
     }
 
     public commaSeparatedListOfProviderNames(subject:IParty):string {
@@ -120,24 +88,6 @@ export class RelationshipsComponent {
         return party ? party.value : null;
     };
 
-    public getRelationshipType = (relationship:IRelationship) => {
-        let relationshipTypeHrefString = relationship.relationshipType.href;
-        for (let aRelationshipTypeHrefValue of this.relationshipTypes) {
-            if (aRelationshipTypeHrefValue.href === relationshipTypeHrefString) {
-                return aRelationshipTypeHrefValue.value;
-            }
-        }
-        return null;
-    };
-
-    public getRelationshipTypeLabel = (relationship:IRelationship) => {
-        let relationshipType = this.getRelationshipType(relationship);
-        if (relationshipType) {
-            return relationshipType.shortDecodeText;
-        }
-        return '';
-    };
-
     public backToListing = () => {
         this.subjectHrefValue = null;
     };
@@ -159,7 +109,7 @@ export class RelationshipsComponent {
 
     // todo not sure what the drill down conditional logic is, for now assume UNIVERSAL
     public isDrillDownPossible = (relationship:IRelationship) => {
-        let relationshipType = this.getRelationshipType(relationship);
+        let relationshipType = this.modelHelper.getRelationshipType(this.relationshipTypes, relationship);
         return relationshipType && relationshipType.code === 'UNIVERSAL_REPRESENTATIVE';
     };
 

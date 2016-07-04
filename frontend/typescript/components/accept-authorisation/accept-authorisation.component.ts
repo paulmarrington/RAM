@@ -1,6 +1,7 @@
 import {OnInit, Component} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Router, RouteParams} from '@angular/router-deprecated';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
@@ -32,6 +33,7 @@ export class AcceptAuthorisationComponent implements OnInit {
     constructor(private routeParams: RouteParams,
                 private router: Router,
                 private identityService: RAMIdentityService,
+                private modelHelper:RAMModelHelper,
                 private rest: RAMRestService) {
     }
 
@@ -84,15 +86,6 @@ export class AcceptAuthorisationComponent implements OnInit {
     public goToRelationshipsPage = () => {
         this.router.navigate(['Relationships', { idValue: this.idValue }]);
     };
-
-    /**
-     * Todo: Implement displayName as a pipe
-     */
-    public displayName(name: IName) {
-        if (name) {
-            return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
-        }
-    }
 
     // TODO: not sure how to set the locale, Implement as a pipe
     public displayDate(dateString: string) {
