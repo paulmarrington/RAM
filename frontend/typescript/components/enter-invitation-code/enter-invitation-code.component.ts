@@ -1,14 +1,14 @@
-import {OnInit, Component,OnDestroy} from '@angular/core';
+import {OnInit, Component, OnDestroy} from '@angular/core';
 import {Validators, ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
-import {ActivatedRoute, Router,ROUTER_DIRECTIVES} from '@angular/router';
+import {ActivatedRoute, Router, ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
 
 @Component({
     selector: 'enter-invitation-code',
     templateUrl: 'enter-invitation-code.component.html',
-    directives: [FORM_DIRECTIVES,ROUTER_DIRECTIVES]
+    directives: [FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })
-export class EnterInvitationCodeComponent implements OnInit,OnDestroy {
+export class EnterInvitationCodeComponent implements OnInit, OnDestroy {
 
     public form: ControlGroup;
 
@@ -22,7 +22,7 @@ export class EnterInvitationCodeComponent implements OnInit,OnDestroy {
 
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
-        this.idValue = params['idValue'];
+            this.idValue = decodeURIComponent(params['idValue']);
         });
 
         this.form = this._fb.group({

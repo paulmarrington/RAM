@@ -7,11 +7,13 @@ import {CreateIdentityDTO} from '../../../commons/RamAPI';
 import {IIdentity, IdentityModel} from '../models/identity.model';
 import {DOB_SHARED_SECRET_TYPE_CODE} from '../models/sharedSecretType.model';
 
+// todo determine if we need to base64 decode header values to be spec compliant?
+
 class Security {
 
     public prepareRequest():(req:Request, res:Response, next:() => void) => void {
         return (req:Request, res:Response, next:() => void) => {
-            const idValue = req.get(Headers.IdentityIdValue) || res.locals[Headers.IdentityIdValue];
+            const idValue = this.getIdValue(req, res);
             if (idValue) {
                 // id supplied, try to lookup and if not found create a new identity before carrying on
                 IdentityModel.findByIdValue(idValue)
@@ -23,6 +25,31 @@ class Security {
                     .then(this.prepareResponseLocals(req, res, next), this.reject(res, next));
             }
         };
+    }
+
+    /**
+     * Attempts to provide an Identity Value by looking in the following:
+     *  header,
+     *  locals,
+     *  cookie
+     */
+    private getIdValue(req:Request, res:Response):string {
+
+        // look for id in headers
+        if(req.get(Headers.IdentityIdValue)) {
+            // logger.info('found header', req.get(Headers.IdentityIdValue));
+            return req.get(Headers.IdentityIdValue);
+        }
+
+        // look for id in locals
+        if(res.locals[Headers.IdentityIdValue]) {
+            // logger.info('found local', res.locals[Headers.IdentityIdValue]);
+            return res.locals[Headers.IdentityIdValue];
+        }
+
+        // look for id in cookies
+        return SecurityHelper.getIdentityIdValueFromCookies(req);
+
     }
 
     /* tslint:disable:max-func-body-length */
@@ -64,11 +91,16 @@ class Security {
             logger.info('Identity context:', (identity ? colors.magenta(identity.idValue) : colors.red('[not found]')));
             if (identity) {
                 for (let key of Object.keys(req.headers)) {
-                    const keyUpper = key.toUpperCase();
-                    if (keyUpper.startsWith(Headers.Prefix)) {
+
+                    // headers should be lowercase, but lets make sure
+                    const keyLower = key.toLowerCase();
+
+                    // if it's an application header, copy it to locals
+                    if (keyLower.startsWith(Headers.Prefix)) {
                         const value = req.get(key);
-                        res.locals[keyUpper] = value;
+                        res.locals[keyLower] = value;
                     }
+
                 }
                 res.locals[Headers.Identity] = identity;
                 res.locals[Headers.IdentityIdValue] = identity.idValue;
@@ -77,7 +109,7 @@ class Security {
                 res.locals[Headers.FamilyName] = identity.profile.name.familyName;
                 res.locals[Headers.UnstructuredName] = identity.profile.name.unstructuredName;
                 for (let sharedSecret of identity.profile.sharedSecrets) {
-                    res.locals[`${Headers.Prefix}-${sharedSecret.sharedSecretType.code}`] = sharedSecret.value;
+                    res.locals[`${Headers.Prefix}-${sharedSecret.sharedSecretType.code}`.toLowerCase()] = sharedSecret.value;
                 }
             }
             next();
@@ -110,6 +142,38 @@ class Security {
             res.send(new ErrorResponse('Not authenticated.'));
         }
     }
+}
+
+export class SecurityHelper {
+
+    public static getIdentityIdValueFromCookies(req:Request):string {
+
+        // find cookie regardless of case
+        for (let key of Object.keys(req.cookies)) {
+
+            const keyLower = key.toLowerCase();
+
+            if (keyLower === Headers.AuthToken) {
+                // get encoded auth token
+                const authTokenEncodedFromCookie = req.cookies[key];
+
+                if(authTokenEncodedFromCookie) {
+                    // decode auth token
+                    const authToken = new Buffer(authTokenEncodedFromCookie, 'base64').toString('ascii');
+                    // get idValue from auth token
+                    return this.getIdentityIdValueFromAuthToken(authToken);
+                }
+            }
+        }
+
+        return null;
+
+    }
+
+    private static getIdentityIdValueFromAuthToken(authToken:string):string {
+        return authToken;
+    }
+
 }
 
 export const security = new Security();

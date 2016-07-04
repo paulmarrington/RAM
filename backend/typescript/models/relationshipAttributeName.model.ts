@@ -104,7 +104,7 @@ RelationshipAttributeNameSchema.method('domainEnum', function () {
 
 RelationshipAttributeNameSchema.method('toHrefValue', async function (includeValue:boolean) {
     return new HrefValue(
-        '/api/v1/relationshipAttributeName/' + this.code,
+        '/api/v1/relationshipAttributeName/' + encodeURIComponent(this.code),
         includeValue ? await this.toDTO() : undefined
     );
 });

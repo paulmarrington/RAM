@@ -38,8 +38,8 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
 
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
-            this.code = params['invitationCode'];
-            this.idValue = params['idValue'];
+            this.code = decodeURIComponent(params['invitationCode']);
+            this.idValue = decodeURIComponent(params['idValue']);
             this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
             this.relationship$.subscribe((relationship) => {
                 for (let attribute of relationship.attributes) {

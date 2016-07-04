@@ -8,13 +8,13 @@ System.config({
   },
 
   map: {
-    "@angular/common": "npm:@angular/common@2.0.0-rc.3",
-    "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.3",
-    "@angular/core": "npm:@angular/core@2.0.0-rc.3",
-    "@angular/http": "npm:@angular/http@2.0.0-rc.3",
-    "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.3",
-    "@angular/platform-browser-dynamic": "npm:@angular/platform-browser-dynamic@2.0.0-rc.3",
-    "@angular/router": "npm:@angular/router@3.0.0-alpha.8",
+    "@angular/common": "npm:@angular/common@2.0.0-rc.4",
+    "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.4",
+    "@angular/core": "npm:@angular/core@2.0.0-rc.4",
+    "@angular/http": "npm:@angular/http@2.0.0-rc.4",
+    "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.4",
+    "@angular/platform-browser-dynamic": "npm:@angular/platform-browser-dynamic@2.0.0-rc.4",
+    "@angular/router": "npm:@angular/router@3.0.0-beta.2",
     "crypto": "github:jspm/nodelibs-crypto@0.1.0",
     "es6-shim": "npm:es6-shim@0.35.1",
     "lodash": "npm:lodash@4.13.1",
@@ -57,43 +57,43 @@ System.config({
     "github:jspm/nodelibs-vm@0.1.0": {
       "vm-browserify": "npm:vm-browserify@0.0.4"
     },
-    "npm:@angular/common@2.0.0-rc.3": {
-      "@angular/core": "npm:@angular/core@2.0.0-rc.3",
+    "npm:@angular/common@2.0.0-rc.4": {
+      "@angular/core": "npm:@angular/core@2.0.0-rc.4",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:@angular/compiler@2.0.0-rc.3": {
-      "@angular/core": "npm:@angular/core@2.0.0-rc.3",
+    "npm:@angular/compiler@2.0.0-rc.4": {
+      "@angular/core": "npm:@angular/core@2.0.0-rc.4",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:@angular/core@2.0.0-rc.3": {
+    "npm:@angular/core@2.0.0-rc.4": {
       "process": "github:jspm/nodelibs-process@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.6",
       "zone.js": "npm:zone.js@0.6.12"
     },
-    "npm:@angular/http@2.0.0-rc.3": {
-      "@angular/core": "npm:@angular/core@2.0.0-rc.3",
-      "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.3",
+    "npm:@angular/http@2.0.0-rc.4": {
+      "@angular/core": "npm:@angular/core@2.0.0-rc.4",
+      "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.4",
       "rxjs": "npm:rxjs@5.0.0-beta.6"
     },
-    "npm:@angular/platform-browser-dynamic@2.0.0-rc.3": {
-      "@angular/common": "npm:@angular/common@2.0.0-rc.3",
-      "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.3",
-      "@angular/core": "npm:@angular/core@2.0.0-rc.3",
-      "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.3",
+    "npm:@angular/platform-browser-dynamic@2.0.0-rc.4": {
+      "@angular/common": "npm:@angular/common@2.0.0-rc.4",
+      "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.4",
+      "@angular/core": "npm:@angular/core@2.0.0-rc.4",
+      "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.4",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:@angular/platform-browser@2.0.0-rc.3": {
-      "@angular/common": "npm:@angular/common@2.0.0-rc.3",
-      "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.3",
-      "@angular/core": "npm:@angular/core@2.0.0-rc.3",
+    "npm:@angular/platform-browser@2.0.0-rc.4": {
+      "@angular/common": "npm:@angular/common@2.0.0-rc.4",
+      "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.4",
+      "@angular/core": "npm:@angular/core@2.0.0-rc.4",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:@angular/router@3.0.0-alpha.8": {
-      "@angular/common": "npm:@angular/common@2.0.0-rc.3",
-      "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.3",
-      "@angular/core": "npm:@angular/core@2.0.0-rc.3",
-      "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.3",
-      "@angular/platform-browser-dynamic": "npm:@angular/platform-browser-dynamic@2.0.0-rc.3",
+    "npm:@angular/router@3.0.0-beta.2": {
+      "@angular/common": "npm:@angular/common@2.0.0-rc.4",
+      "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.4",
+      "@angular/core": "npm:@angular/core@2.0.0-rc.4",
+      "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.4",
+      "@angular/platform-browser-dynamic": "npm:@angular/platform-browser-dynamic@2.0.0-rc.4",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.6"
     },
@@ -260,9 +260,9 @@ System.config({
       "brorand": "npm:brorand@1.0.5"
     },
     "npm:ng2-bootstrap@1.0.17": {
-      "@angular/common": "npm:@angular/common@2.0.0-rc.3",
-      "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.3",
-      "@angular/core": "npm:@angular/core@2.0.0-rc.3",
+      "@angular/common": "npm:@angular/common@2.0.0-rc.4",
+      "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.4",
+      "@angular/core": "npm:@angular/core@2.0.0-rc.4",
       "moment": "npm:moment@2.13.0"
     },
     "npm:parse-asn1@5.0.0": {

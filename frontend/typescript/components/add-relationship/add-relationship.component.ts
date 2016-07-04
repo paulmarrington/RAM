@@ -77,7 +77,7 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
 
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
-            this.idValue = params['idValue'];
+            this.idValue = decodeURIComponent(params['idValue']);
             this.relationshipTypes$ = this.rest.listRelationshipTypes();
             this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
         });

@@ -69,7 +69,7 @@ const RelationshipSchema = RAMSchema({
     delegate: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Party',
-        required: [true, 'Subject is required']
+        required: [true, 'Delegate is required']
     },
     delegateNickName: {
         type: mongoose.Schema.Types.ObjectId,
@@ -133,6 +133,9 @@ export interface IRelationshipModel extends mongoose.Model<IRelationship> {
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
     search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IRelationship>>;
+    searchByIdentity:(identityIdValue:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
+    searchDistinctSubjectsBySubjectOrDelegateIdentity:(identityIdValue:string, page:number, pageSize:number)
+        => Promise<SearchResult<IParty>>;
 }
 
 // instance methods ...................................................................................................
@@ -144,7 +147,7 @@ RelationshipSchema.method('statusEnum', function () {
 RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
     const relationshipId:string = this._id.toString();
     return new HrefValue(
-        `/api/v1/relationship/${relationshipId}`,
+        '/api/v1/relationship/' + encodeURIComponent(relationshipId),
         includeValue ? await this.toDTO() : undefined
     );
 });
@@ -297,6 +300,7 @@ RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async(invita
     return null;
 });
 
+// todo this search might no longer be useful from SS2
 RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
@@ -328,6 +332,91 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
         }
     });
 });
+
+/* tslint:disable:max-func-body-length */
+RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:number, reqPageSize:number) => {
+    return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
+        const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
+        try {
+            const party = await PartyModel.findByIdentityIdValue(identityIdValue);
+            const count = await this.RelationshipModel
+                .count({
+                    '$or': [
+                        {subject: party},
+                        {delegate: party}
+                    ]
+                })
+                .exec();
+            const list = await this.RelationshipModel
+                .find({
+                    '$or': [
+                        {subject: party},
+                        {delegate: party}
+                    ]
+                })
+                .deepPopulate([
+                    'relationshipType',
+                    'subject',
+                    'subjectNickName',
+                    'delegate',
+                    'delegateNickName',
+                    'attributes.attributeName'
+                ])
+                .skip((page - 1) * pageSize)
+                .limit(pageSize)
+                .sort({name: 1})
+                .exec();
+            resolve(new SearchResult<IRelationship>(count, pageSize, list));
+        } catch (e) {
+            reject(e);
+        }
+    });
+});
+
+/**
+ * Returns a paginated list of distinct subjects for relationships which have a subject or delegate matching the one supplied.
+ *
+ * todo need to optional filters (term, party type, relationship type, status)
+ * todo need to add sorting
+ */
+/* tslint:disable:max-func-body-length */
+RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity',
+    (identityIdValue:string, page:number, reqPageSize:number) => {
+        return new Promise<SearchResult<IParty>>(async(resolve, reject) => {
+            const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
+            try {
+                const party = await PartyModel.findByIdentityIdValue(identityIdValue);
+                const listForCount = await this.RelationshipModel
+                    .distinct('subject', {
+                        '$or': [
+                            {subject: party},
+                            {delegate: party}
+                        ]
+                    })
+                    .exec();
+                const count = listForCount.length;
+                const listOfIds = await this.RelationshipModel
+                    .aggregate([
+                        {
+                            '$match': {
+                                '$or': [
+                                    {'subject': new mongoose.Types.ObjectId(party.id)},
+                                    {'delegate': new mongoose.Types.ObjectId(party.id)}
+                                ]
+                            }
+                        },
+                        {'$group': {'_id': '$subject'}},
+                        {'$skip': (page - 1) * pageSize},
+                        {'$limit': pageSize}
+                    ])
+                    .exec();
+                const inflatedList = (await PartyModel.populate(listOfIds, {path: '_id'})).map((item:{_id:string}) => item._id);
+                resolve(new SearchResult<IParty>(count, pageSize, inflatedList));
+            } catch (e) {
+                reject(e);
+            }
+        });
+    });
 
 // concrete model .....................................................................................................
 

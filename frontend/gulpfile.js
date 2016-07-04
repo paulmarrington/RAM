@@ -56,7 +56,7 @@ gulp.task("copy:systemJsConf", ["copy:jspm"], function () {
 });
 
 gulp.task("copy:jspm", function () {
-    return gulp.src(["jspm_packages/{**,./}/**"], { read: false ,base: "./" })
+    return gulp.src(["jspm_packages/{**,./}/**"], {base: "./" })
         .pipe(gulp.dest("dist/"));
 });
 

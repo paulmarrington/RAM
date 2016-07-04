@@ -8,13 +8,12 @@ import {RAMIdentityService} from '../../services/ram-identity.service';
 import 'ng2-bootstrap';
 import {ErrorComponent} from '../error/error.component';
 import {ErrorService} from '../error/error.service';
-import {IdentityComponent} from '../identity/identity.component';
 import {IdentityService} from '../identity/identity.service';
 
 @Component({
     selector: 'ram-app',
     templateUrl: 'app.component.html',
-    directives: [ROUTER_DIRECTIVES, IdentityComponent, ErrorComponent],
+    directives: [ROUTER_DIRECTIVES, ErrorComponent],
     providers: [
         HTTP_PROVIDERS,
         RAMRestService,

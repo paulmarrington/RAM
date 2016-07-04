@@ -2,7 +2,9 @@
 
 app="RAM"
 me="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DEFAULT_CONF=$DIR/backend/conf/conf-localhost.js
 
 # prerequisites:
 #  brew
@@ -63,6 +65,20 @@ case "$1" in
     echo "Downloading test dependencies ..."
     cd tests
     npm install && typings install
+    echo ""
+    ;;
+
+  'deps:clean')
+    echo ""
+    echo "Cleaning node modules ..."
+    rm -rf backend/node_modules/*
+    rm -rf frontend/node_modules/*
+    rm -rf tests/node_modules/*
+    echo ""
+    echo "Cleaning typings ..."
+    rm -rf backend/typings/*
+    rm -rf frontend/typings/*
+    rm -rf tests/typings/*
     echo ""
     ;;
 
@@ -142,6 +158,7 @@ case "$1" in
   'start:frontend')
     echo ""
     echo "Starting frontend"
+    echo ""
     cd frontend
     gulp serve
     echo ""
@@ -149,9 +166,16 @@ case "$1" in
 
   'start:backend')
     echo ""
-    echo "Starting backend"
     cd backend
-    RAM_CONF=$DIR/backend/conf/conf-localhost.js gulp serve
+    if [ -z "$2" ]; then
+      echo "Starting backend with $DEFAULT_CONF"
+      echo ""
+      RAM_CONF=$DEFAULT_CONF gulp serve
+    else
+      echo "Starting backend with $2"
+      echo ""
+      RAM_CONF="$2" gulp serve
+    fi
     echo ""
     ;;
 
@@ -198,13 +222,12 @@ case "$1" in
   #     ./ram test:backend --test relationshipType.model
   'test:backend')
     echo ""
-    echo "Starting tests"
+    echo "Starting backend tests"
     cd backend
-    if [ -z "$3" ]
-      then
-        RAM_CONF=$DIR/backend/conf/conf-test.js gulp test
-      else
-        RAM_CONF=$DIR/backend/conf/conf-test.js gulp test "$2" "$3"
+    if [ -z "$3" ]; then
+      RAM_CONF=$DIR/backend/conf/conf-test.js gulp test
+    else
+      RAM_CONF=$DIR/backend/conf/conf-test.js gulp test "$2" "$3"
     fi
     exit $?
     ;;
@@ -214,13 +237,12 @@ case "$1" in
   #     ./ram test:api --test relationshipType.controller
   'test:api')
     echo ""
-    echo "Starting tests"
+    echo "Starting api tests"
     cd tests
-    if [ -z "$3" ]
-      then
-        gulp test
-      else
-        gulp test "$2" "$3"
+    if [ -z "$3" ]; then
+      gulp test
+    else
+      gulp test "$2" "$3"
     fi
     exit $?
     ;;
@@ -229,10 +251,10 @@ case "$1" in
 
   'db:seed')
     echo ""
-    echo "Seeding database"
+    echo "Seeding database with $DEFAULT_CONF"
     echo ""
     cd backend
-    RAM_CONF=$DIR/backend/conf/conf-localhost.js gulp seed
+    RAM_CONF=$DEFAULT_CONF gulp seed
     echo ""
     ;;
 

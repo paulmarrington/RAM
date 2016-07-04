@@ -46,6 +46,7 @@ export class HrefValue<T> {
     }
 }
 
+// todo this needs a page index?
 export class SearchResult<T> {
     constructor(public totalCount:number, public pageSize:number, public list:T[]) {
     }
