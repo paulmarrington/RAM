@@ -32,9 +32,9 @@ export class AddRelationshipCompleteComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.code = this._routeParams.get('invitationCode');
-        this.idValue = this._routeParams.get('idValue');
-        this.displayName = this._routeParams.get('displayName');
+        this.code = decodeURIComponent(this._routeParams.get('invitationCode'));
+        this.idValue = decodeURIComponent(this._routeParams.get('idValue'));
+        this.displayName = decodeURIComponent(this._routeParams.get('displayName'));
 
         this.form = this._fb.group({
             'email': ['', Validators.compose([Validators.required, RAMNgValidators.validateEmailFormat])]
