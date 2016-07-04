@@ -11,7 +11,7 @@
                 <input type="text" class="form-control" placeholder="Authorisation code ..." [ngFormControl]='form.controls["relationshipCode"]'>
             </div>
             <div class="col-lg-2">
-                <button class="btn btn-primary col-lg-12" (click)="activateCode($event)" 
+                <button class="btn btn-primary col-lg-12" (click)="activateCode($event)"
                 [disabled]='!form.valid'>Activate</button>
             </div>
         </div>
@@ -19,7 +19,7 @@
 
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
-    <a class="btn btn-default col-md-3 align-center" [routerLink]="['/Relationships',{idValue:idValue}]"> ← Go to relationships </a>
+    <a class="btn btn-default col-md-3 align-center" [routerLink]="['/relationships',idValue]"> ← Go to relationships </a>
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
     <div class="padding-btn-20"></div>

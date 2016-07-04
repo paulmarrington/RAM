@@ -105,7 +105,7 @@
 
       // Select user
       $('#user-list li').click(function () {
-        var identity = $(this).data('id');
+        var identity = encodeURIComponent($(this).data('id'));
         log.debug('Logging in with identity ', identity);
         $.post('/api/v1/simulators/authenticator/authenticate', {credentials: identity}, function (data) {
         }).always(function() {
@@ -159,7 +159,7 @@
           });
 
           // update link to open RAM
-          $launchRamLink.attr('href', "/#relationships/" + data[id_value_header])
+          $launchRamLink.attr('href', "/#relationships/" + encodeURIComponent(data[id_value_header]));
         }
         else {
           // not logged in

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {AccessPeriodComponent, AccessPeriodComponentData} from '../commons/access-period/access-period.component';
 import {AuthorisationPermissionsComponent} from '../commons/authorisation-permissions/authorisation-permissions.component';
 import {
@@ -9,8 +9,8 @@ import {DeclarationComponent, DeclarationComponentData} from '../commons/declara
 import {
     RepresentativeDetailsComponent, RepresentativeDetailsComponentData
 } from
-    '../commons/representative-details/representative-details.component';
-import {Router, RouteParams} from '@angular/router-deprecated';
+'../commons/representative-details/representative-details.component';
+import {Router, ActivatedRoute} from '@angular/router';
 import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
@@ -35,13 +35,15 @@ import {
         AuthorisationManagementComponent
     ]
 })
-export class AddRelationshipComponent {
+export class AddRelationshipComponent implements OnInit, OnDestroy {
 
-    public idValue:string;
-    public manageAuthAttribute:IRelationshipAttributeNameUsage;
-    public relationshipTypes$:Rx.Observable<IHrefValue<IRelationshipType>[]>;
+    private rteParamSub: Rx.Subscription;
 
-    public newRelationship:AddRelationshipComponentData = {
+    public idValue: string;
+    public manageAuthAttribute: IRelationshipAttributeNameUsage;
+    public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
+
+    public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
             startDate: null,
             noEndDate: true,
@@ -68,26 +70,31 @@ export class AddRelationshipComponent {
         }
     };
 
-    constructor(private routeParams:RouteParams,
-                private router:Router,
-                private rest:RAMRestService) {
+    constructor(private route: ActivatedRoute,
+        private router: Router,
+        private rest: RAMRestService) {
     }
 
     public ngOnInit() {
-        this.idValue = decodeURIComponent(this.routeParams.get('idValue'));
-        // TODO implement as service - card #32
-        this.relationshipTypes$ = this.rest.listRelationshipTypes();
-        this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
+        this.rteParamSub = this.route.params.subscribe(params => {
+            this.idValue = decodeURIComponent(params['idValue']);
+            this.relationshipTypes$ = this.rest.listRelationshipTypes();
+            this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
+        });
+    }
+
+    public ngOnDestroy() {
+        this.rteParamSub.unsubscribe();
     }
 
     public back = () => {
-        this.router.navigate(['Relationships', {idValue: this.idValue}]);
+        this.router.navigate(['/relationships', encodeURIComponent(this.idValue )]);
     };
 
     /* tslint:disable:max-func-body-length */
     public submit = () => {
 
-        let delegate:ICreateIdentityDTO;
+        let delegate: ICreateIdentityDTO;
 
         if (this.newRelationship.representativeDetails.individual) {
             const dob = this.newRelationship.representativeDetails.individual.dob;
@@ -117,12 +124,12 @@ export class AddRelationshipComponent {
             //};
         }
 
-        const authorisationManagement:IAttributeDTO = {
+        const authorisationManagement: IAttributeDTO = {
             code: 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND',
             value: this.newRelationship.authorisationManagement.value
         };
 
-        const relationship:IRelationshipAddDTO = {
+        const relationship: IRelationshipAddDTO = {
             relationshipType: this.newRelationship.authType.authType,
             subjectIdValue: this.idValue /* TODO subject identity idValue */,
             delegate: delegate,
@@ -137,11 +144,11 @@ export class AddRelationshipComponent {
             //console.log(JSON.stringify(relationship, null, 4));
             this.rest.findIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
                 //console.log(JSON.stringify(identity, null, 4));
-                this.router.navigate(['AddRelationshipCompleteComponent', {
-                    idValue: this.idValue,
-                    invitationCode: identity.rawIdValue,
-                    displayName: this.displayName(this.newRelationship.representativeDetails)
-                }]);
+                this.router.navigate(['/relationships/add/complete',
+                     encodeURIComponent(this.idValue),
+                     identity.rawIdValue,
+                     this.displayName(this.newRelationship.representativeDetails)
+                ]);
             }, (err) => {
                 // TODO
                 alert(JSON.stringify(err, null, 2));
@@ -153,7 +160,7 @@ export class AddRelationshipComponent {
 
     };
 
-    public resolveManageAuthAttribute(relationshipTypeCode:string, attributeNameCode:string) {
+    public resolveManageAuthAttribute(relationshipTypeCode: string, attributeNameCode: string) {
         this.relationshipTypes$
             .subscribe(relationshipTypeHrefValues => {
                 // find the relationship type
@@ -170,7 +177,7 @@ export class AddRelationshipComponent {
             });
     }
 
-    public displayName(repDetails:RepresentativeDetailsComponentData) {
+    public displayName(repDetails: RepresentativeDetailsComponentData) {
         if (repDetails.organisation) {
             return repDetails.organisation.abn;
         } else {
@@ -181,9 +188,9 @@ export class AddRelationshipComponent {
 }
 
 export interface AddRelationshipComponentData {
-    accessPeriod:AccessPeriodComponentData;
-    authType:AuthorisationTypeComponentData;
-    representativeDetails:RepresentativeDetailsComponentData;
-    authorisationManagement:AuthorisationManagementComponentData;
-    decalaration:DeclarationComponentData;
+    accessPeriod: AccessPeriodComponentData;
+    authType: AuthorisationTypeComponentData;
+    representativeDetails: RepresentativeDetailsComponentData;
+    authorisationManagement: AuthorisationManagementComponentData;
+    decalaration: DeclarationComponentData;
 }
