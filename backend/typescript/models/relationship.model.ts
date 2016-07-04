@@ -147,7 +147,7 @@ RelationshipSchema.method('statusEnum', function () {
 RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
     const relationshipId:string = this._id.toString();
     return new HrefValue(
-        `/api/v1/relationship/${relationshipId}`,
+        '/api/v1/relationship/' + encodeURIComponent(relationshipId),
         includeValue ? await this.toDTO() : undefined
     );
 });

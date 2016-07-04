@@ -310,7 +310,7 @@ IdentitySchema.method('linkIdSchemeEnum', function () {
 
 IdentitySchema.method('toHrefValue', async function (includeValue:boolean) {
     return new HrefValue(
-        '/api/v1/identity/' + this.idValue,
+        '/api/v1/identity/' + encodeURIComponent(this.idValue),
         includeValue ? await this.toDTO() : undefined
     );
 });

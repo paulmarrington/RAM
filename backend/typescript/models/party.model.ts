@@ -65,7 +65,7 @@ PartySchema.method('toHrefValue', async function (includeValue:boolean) {
     const defaultIdentity = await IdentityModel.findDefaultByPartyId(this.id);
     if (defaultIdentity) {
         return new HrefValue(
-            '/api/v1/party/identity/' + defaultIdentity.idValue,
+            '/api/v1/party/identity/' + encodeURIComponent(defaultIdentity.idValue),
             includeValue ? await this.toDTO() : undefined
         );
     } else {
