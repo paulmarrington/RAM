@@ -42,6 +42,10 @@ export class EnterInvitationCodeComponent implements OnInit, OnDestroy {
         return false;
     }
 
+    public goToRelationshipsPage = () => {
+        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
+    };
+
     public ngOnDestroy() {
         this.rteParamSub.unsubscribe();
     }

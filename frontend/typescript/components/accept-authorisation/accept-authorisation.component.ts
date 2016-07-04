@@ -84,11 +84,11 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     };
 
     public goToEnterAuthorisationPage = () => {
-        this.router.navigate(['/relationships/add/enter', this.idValue]);
+        this.router.navigate(['/relationships/add/enter', encodeURIComponent(this.idValue)]);
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['/relationships', this.idValue]);
+        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
     };
 
     // TODO: not sure how to set the locale, Implement as a pipe

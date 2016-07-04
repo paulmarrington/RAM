@@ -1,6 +1,6 @@
 import {OnInit, OnDestroy, Component} from '@angular/core';
 import {RelationshipsTableComponent} from '../relationships-table/relationships-table.component';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
@@ -38,6 +38,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
     private rteParamSub: Rx.Subscription;
 
     constructor(private route: ActivatedRoute,
+                private router: Router,
                 private identityService: RAMIdentityService,
                 private modelHelper: RAMModelHelper,
                 private rest: RAMRestService) {
@@ -125,5 +126,13 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
     public get isLoading() {
         return this._isLoading;
     }
+
+    public goToRelationshipsAddPage = () => {
+        this.router.navigate(['/relationships/add', encodeURIComponent(this.idValue)]);
+    };
+
+    public goToRelationshipsAuthorisationPage = () => {
+        this.router.navigate(['/relationships/add/enter', encodeURIComponent(this.idValue)]);
+    };
 
 }
