@@ -105,7 +105,7 @@
 
       // Select user
       $('#user-list li').click(function () {
-        var identity = encodeURIComponent($(this).data('id'));
+        var identity = $(this).data('id');
         log.debug('Logging in with identity ', identity);
         $.post('/api/v1/simulators/authenticator/authenticate', {credentials: identity}, function (data) {
         }).always(function() {
