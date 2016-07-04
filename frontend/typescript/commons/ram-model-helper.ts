@@ -19,17 +19,8 @@ export class RAMModelHelper {
     }
 
     public displayNameForParty(party:IParty):string {
-        if (party && party.identities && party.identities.length > 0) {
-            for (const identityHrefValue of party.identities) {
-                const identity = identityHrefValue.value;
-                if (identity.defaultInd) {
-                    const name = identity.profile.name;
-                    return this.displayName(name);
-                }
-            }
-            return this.displayName(party.identities[0].value.profile.name);
-        }
-        return '';
+        const defaultIdentityHrefValue = this.getDefaultIdentityHrefValue(party);
+        return defaultIdentityHrefValue ? this.displayName(defaultIdentityHrefValue.value.profile.name) : '';
     }
 
     public abnLabelForParty(party:IParty):string {
@@ -45,6 +36,16 @@ export class RAMModelHelper {
         return null;
     }
 
+    public partyTypeLabelForParty(party:IParty):string {
+        const partyType = party.partyType;
+        if (partyType === 'INDIVIDUAL') {
+            return 'Individual';
+        } else {
+            return 'Organisation';
+        }
+        return '';
+    }
+
     public relationshipTypeLabel(relationshipTypes:IHrefValue<IRelationshipType>[], relationship:IRelationship) {
         let relationshipType = this.getRelationshipType(relationshipTypes, relationship);
         if (relationshipType) {
@@ -53,20 +54,16 @@ export class RAMModelHelper {
         return '';
     }
 
-    public getOtherPartyHrefValue(relationship:IRelationship) {
-        if (this.subjectHrefValue) {
-            if (relationship.subject.href === this.subjectHrefValue.href) {
-                return relationship.delegate;
-            } else {
-                return relationship.subject;
+    public getDefaultIdentityHrefValue(party:IParty):string {
+        if (party && party.identities && party.identities.length > 0) {
+            for (const identityHrefValue of party.identities) {
+                const identity = identityHrefValue.value;
+                if (identity.defaultInd) {
+                    return identityHrefValue;
+                }
             }
         }
         return null;
-    };
-
-    public getOtherParty(relationship:IRelationship) {
-        const party = this.getOtherPartyHrefValue(relationship);
-        return party ? party.value : null;
     }
 
     public getRelationshipType(relationshipTypes:IHrefValue<IRelationshipType>[], relationship:IRelationship) {
