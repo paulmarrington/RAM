@@ -1,6 +1,7 @@
 import {OnInit, OnDestroy, Component} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Router, ActivatedRoute} from '@angular/router';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
@@ -31,9 +32,10 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     private rteParamSub: Rx.Subscription;
 
     constructor(private route: ActivatedRoute,
-        private router: Router,
-        private identityService: RAMIdentityService,
-        private rest: RAMRestService) {
+                private router: Router,
+                private identityService: RAMIdentityService,
+                private modelHelper: RAMModelHelper,
+                private rest: RAMRestService) {
     }
 
     public ngOnInit() {
@@ -82,21 +84,12 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     };
 
     public goToEnterAuthorisationPage = () => {
-        this.router.navigate(['/relationships/add/enter', this.idValue ]);
+        this.router.navigate(['/relationships/add/enter', encodeURIComponent(this.idValue)]);
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['/relationships', this.idValue ]);
+        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
     };
-
-    /**
-     * Todo: Implement displayName as a pipe
-     */
-    public displayName(name: IName) {
-        if (name) {
-            return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
-        }
-    }
 
     // TODO: not sure how to set the locale, Implement as a pipe
     public displayDate(dateString: string) {

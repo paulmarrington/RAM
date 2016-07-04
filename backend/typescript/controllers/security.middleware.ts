@@ -154,6 +154,7 @@ export class SecurityHelper {
             const keyLower = key.toLowerCase();
 
             if (keyLower === Headers.AuthToken) {
+
                 // get encoded auth token
                 const authTokenEncodedFromCookie = req.cookies[key];
 
@@ -163,7 +164,9 @@ export class SecurityHelper {
                     // get idValue from auth token
                     return this.getIdentityIdValueFromAuthToken(authToken);
                 }
+
             }
+
         }
 
         return null;

@@ -88,7 +88,7 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
     }
 
     public back = () => {
-        this.router.navigate(['/relationships', encodeURIComponent(this.idValue )]);
+        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
     };
 
     /* tslint:disable:max-func-body-length */

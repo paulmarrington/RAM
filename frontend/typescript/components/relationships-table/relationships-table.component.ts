@@ -142,7 +142,7 @@ export class RelationshipsTableComponent implements OnInit, OnDestroy {
 
     public navigateTo(relId: string) {
         console.log(relId);
-        this.router.navigate(['/relationships',relId ]);
+        this.router.navigate(['/relationships', encodeURIComponent(relId)]);
     }
 
     public viewRelationship(relId: string) {

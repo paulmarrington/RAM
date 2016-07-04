@@ -28,11 +28,14 @@
                 <div *ngFor="let subjectHrefValue of (subjectsResponse$ | async)?.list"
                      class="relationship-subject-heading clickable"
                      (click)="expandSubject(subjectHrefValue)">
-                    <h4>{{displayNameForParty(subjectHrefValue.value)}}</h4>
+                    <h4>{{modelHelper.displayNameForParty(subjectHrefValue.value)}}</h4>
+                    <h5>{{modelHelper.abnLabelForParty(subjectHrefValue.value)}} / {{modelHelper.partyTypeLabelForParty(subjectHrefValue.value)}}</h5>
                 </div>
 
+                <!--todo pagination-->
                 <br/><br/><br/>
                 <div class="todo">This pagination is for subjects (not connected</div>
+
                 <nav>
                     <ul class="pagination">
                         <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
@@ -48,7 +51,8 @@
             <div *ngIf="subjectHrefValue">
 
                 <div class="relationship-subject-heading">
-                    <h4>{{displayNameForParty(subjectHrefValue.value)}}</h4>
+                    <h4>{{modelHelper.displayNameForParty(subjectHrefValue.value)}}</h4>
+                    <h5>{{modelHelper.abnLabelForParty(subjectHrefValue.value)}} / {{modelHelper.partyTypeLabelForParty(subjectHrefValue.value)}}</h5>
                 </div>
 
                 <table class="table table-hover">
@@ -63,12 +67,12 @@
                     </thead>
                     <tbody *ngIf="!isLoading">
                         <tr *ngFor="let relationshipHrefValue of (relationshipsResponse$ | async)?.list">
-                            <td *ngIf="!isDrillDownPossible(relationshipHrefValue.value)">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</td>
+                            <td *ngIf="!isDrillDownPossible(relationshipHrefValue.value)">{{modelHelper.displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</td>
                             <td *ngIf="isDrillDownPossible(relationshipHrefValue.value)">
-                                <a (click)="expandSubject(getOtherPartyHrefValue(relationshipHrefValue.value))" class="clickable">{{displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</a>
+                                <a (click)="expandSubject(getOtherPartyHrefValue(relationshipHrefValue.value))" class="clickable">{{modelHelper.displayNameForParty(getOtherParty(relationshipHrefValue.value))}}</a>
                             </td>
                             <td>{{commaSeparatedListOfProviderNames(getOtherParty(relationshipHrefValue.value))}}</td>
-                            <td class="hidden-xs">{{getRelationshipTypeLabel(relationshipHrefValue.value)}}</td>
+                            <td class="hidden-xs">{{modelHelper.relationshipTypeLabel(relationshipTypes, relationshipHrefValue.value)}}</td>
                             <td class="hidden-xs">{{relationshipHrefValue.value.status}}</td>
                             <td></td>
                         </tr>
@@ -80,8 +84,10 @@
                     </tbody>
                 </table>
 
+                <!--todo pagination-->
                 <br/><br/><br/>
                 <div class="todo">This pagination is for relationships (not connected</div>
+
                 <nav>
                     <ul class="pagination">
                         <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
@@ -125,11 +131,8 @@
                 <div class='btn-toolbar'>
                     <div class="row">
                         <div class="col-sm-12">
-                            <a
-                             [routerLink]="['/relationships/add',idValue]" class="btn btn-sm btn-primary col-xs-12 col-sm-6">Add a relationship</a>
-                            <a
-                            [routerLink]="['/relationships/add/enter',idValue]"
-                            class="btn btn-sm btn-primary col-xs-12 col-sm-6">Accept an invitation</a>
+                            <a (click)="goToRelationshipsAddPage()" class="btn btn-sm btn-primary col-xs-12 col-sm-6">Add a relationship</a>
+                            <a (click)="goToRelationshipsAuthorisationPage()" class="btn btn-sm btn-primary col-xs-12 col-sm-6">Accept an invitation</a>
                         </div>
                         <div class="col-md-12 padding-btn-30 visible-xs visible-sm">
                             <p></p>

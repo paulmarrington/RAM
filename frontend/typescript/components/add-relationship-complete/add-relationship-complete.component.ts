@@ -15,6 +15,7 @@ import Rx from 'rxjs/Rx';
     providers: []
 })
 
+// todo display name shouldn't be sent through in the path, should be obtained from the details associated with the invitation code
 export class AddRelationshipCompleteComponent implements OnInit {
 
     public form: ControlGroup;
@@ -76,6 +77,6 @@ export class AddRelationshipCompleteComponent implements OnInit {
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['/relationships',  this.idValue ]);
+        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
     }
 }
