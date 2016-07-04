@@ -142,8 +142,7 @@ export class RelationshipsTableComponent implements OnInit, OnDestroy {
 
     public navigateTo(relId: string) {
         console.log(relId);
-        // this.router.navigate(['/relationships', {idValue:relId }]);
-        this.router.navigate(['/relationships', 'ab:cd' ]);
+        this.router.navigate(['/relationships',relId ]);
     }
 
     public viewRelationship(relId: string) {

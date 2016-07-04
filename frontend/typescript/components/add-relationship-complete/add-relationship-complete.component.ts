@@ -36,9 +36,9 @@ export class AddRelationshipCompleteComponent implements OnInit {
 
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
-            this.code = decodeURIComponent(this.route['invitationCode']);
-            this.idValue = decodeURIComponent(this.route['idValue']);
-            this.displayName = decodeURIComponent(this.route['displayName']);
+            this.code = decodeURIComponent(params['invitationCode']);
+            this.idValue = params['idValue'];
+            this.displayName = decodeURIComponent(params['displayName']);
         });
 
         this.form = this._fb.group({
@@ -76,6 +76,6 @@ export class AddRelationshipCompleteComponent implements OnInit {
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['Relationships', { idValue: this.idValue }]);
+        this.router.navigate(['/relationships',  this.idValue ]);
     }
 }

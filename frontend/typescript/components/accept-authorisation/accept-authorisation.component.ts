@@ -39,7 +39,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
             this.code = decodeURIComponent(params['invitationCode']);
-            this.idValue = decodeURIComponent(params['idValue']);
+            this.idValue = params['idValue'];
             this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
             this.relationship$.subscribe((relationship) => {
                 for (let attribute of relationship.attributes) {
@@ -82,11 +82,11 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     };
 
     public goToEnterAuthorisationPage = () => {
-        this.router.navigate(['EnterInvitationCodeComponent', { idValue: this.idValue }]);
+        this.router.navigate(['/relationships/add/enter', this.idValue ]);
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['Relationships', { idValue: this.idValue }]);
+        this.router.navigate(['/relationships', this.idValue ]);
     };
 
     /**

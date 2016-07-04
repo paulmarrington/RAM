@@ -18,13 +18,13 @@ export const routes: RouterConfig = [
     path: 'relationships/add/:idValue',
     component: AddRelationshipComponent
   }, {
-    path: 'relationships/add/:idValue/:invitationCode/:displayName/complete',
+    path: 'relationships/add/complete/:idValue/:invitationCode/:displayName',
     component: AddRelationshipCompleteComponent
   }, {
-    path: 'relationships/add/:idValue/enter',
+    path: 'relationships/add/enter/:idValue',
     component: EnterInvitationCodeComponent
   }, {
-    path: 'relationships/add/:idValue/:invitationCode/accept',
+    path: 'relationships/add/accept/:idValue/:invitationCode',
     component: AcceptAuthorisationComponent
   }
 ];

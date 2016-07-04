@@ -88,7 +88,7 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
     }
 
     public back = () => {
-        this.router.navigate(['Relationships', { idValue: this.idValue }]);
+        this.router.navigate(['/relationships', encodeURIComponent(this.idValue )]);
     };
 
     /* tslint:disable:max-func-body-length */
@@ -144,11 +144,11 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
             //console.log(JSON.stringify(relationship, null, 4));
             this.rest.findIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
                 //console.log(JSON.stringify(identity, null, 4));
-                this.router.navigate(['AddRelationshipCompleteComponent', {
-                    idValue: this.idValue,
-                    invitationCode: identity.rawIdValue,
-                    displayName: this.displayName(this.newRelationship.representativeDetails)
-                }]);
+                this.router.navigate(['/relationships/add/complete',
+                     encodeURIComponent(this.idValue),
+                     identity.rawIdValue,
+                     this.displayName(this.newRelationship.representativeDetails)
+                ]);
             }, (err) => {
                 // TODO
                 alert(JSON.stringify(err, null, 2));

@@ -33,10 +33,10 @@ export class EnterInvitationCodeComponent implements OnInit, OnDestroy {
 
     public activateCode(event: Event) {
 
-        this.router.navigate(['AcceptAuthorisationComponent', {
-            idValue: this.idValue,
-            invitationCode: this.form.controls['relationshipCode'].value
-        }]);
+        this.router.navigate(['/relationships/add/accept',
+             this.idValue,
+             this.form.controls['relationshipCode'].value
+        ]);
 
         event.stopPropagation();
         return false;
