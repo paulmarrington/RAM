@@ -36,8 +36,8 @@ export class AcceptAuthorisationComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.code = this.routeParams.get('invitationCode');
-        this.idValue = this.routeParams.get('idValue');
+        this.code = decodeURIComponent(this.routeParams.get('invitationCode'));
+        this.idValue = decodeURIComponent(this.routeParams.get('idValue'));
         this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
         this.relationship$.subscribe((relationship) => {
             for (let attribute of relationship.attributes) {

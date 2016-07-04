@@ -41,7 +41,7 @@ export class RelationshipsComponent {
 
     public ngOnInit() {
         this._isLoading = true;
-        this.idValue = this.routeParams.get('idValue');
+        this.idValue = decodeURIComponent(this.routeParams.get('idValue'));
         this.identityDisplayName$ = this.identityService.getDefaultName(this.idValue).map(this.displayName);
         this.subjectsResponse$ = this.rest.searchDistinctSubjectsBySubjectOrDelegateIdentity(this.idValue, 1);
         this.subjectsResponse$.subscribe((searchResult) => {
