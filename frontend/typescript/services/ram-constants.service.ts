@@ -6,4 +6,3 @@ export class RAMConstantsService {
     public DefaultPageSize = 5;
     public PartyId = '5719bc5d65cae16c197e1ecd';
 }
-

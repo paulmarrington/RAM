@@ -1,6 +1,5 @@
-import {OnInit, Component} from '@angular/core';
+import {OnInit, OnDestroy, Component} from '@angular/core';
 import {DatePipe} from '@angular/common';
-import {Router, RouteParams} from '@angular/router-deprecated';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMIdentityService} from '../../services/ram-identity.service';
@@ -19,7 +18,7 @@ import Rx from 'rxjs/Rx';
     providers: []
 })
 
-export class AcceptAuthorisationComponent implements OnInit {
+export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
 
     public code: string;
     public idValue: string;
@@ -29,41 +28,45 @@ export class AcceptAuthorisationComponent implements OnInit {
 
     public delegateManageAuthorisationAllowedIndAttribute: IRelationshipAttribute;
     public delegateRelationshipTypeDeclarationAttributeUsage: IRelationshipAttributeNameUsage;
+    private rteParamSub: Rx.Subscription;
 
-    constructor(private routeParams: RouteParams,
+    constructor(private route: ActivatedRoute,
                 private router: Router,
                 private identityService: RAMIdentityService,
-                private modelHelper:RAMModelHelper,
+                private modelHelper: RAMModelHelper,
                 private rest: RAMRestService) {
     }
 
     public ngOnInit() {
-        this.code = decodeURIComponent(this.routeParams.get('invitationCode'));
-        this.idValue = decodeURIComponent(this.routeParams.get('idValue'));
-        this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
-        this.relationship$.subscribe((relationship) => {
-            for (let attribute of relationship.attributes) {
-                if (attribute.attributeName.value.code === 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND') {
-                    this.delegateManageAuthorisationAllowedIndAttribute = attribute;
+        this.rteParamSub = this.route.params.subscribe(params => {
+            this.code = decodeURIComponent(params['invitationCode']);
+            this.idValue = params['idValue'];
+            this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
+            this.relationship$.subscribe((relationship) => {
+                for (let attribute of relationship.attributes) {
+                    if (attribute.attributeName.value.code === 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND') {
+                        this.delegateManageAuthorisationAllowedIndAttribute = attribute;
+                    }
                 }
-            }
-            this.relationshipType$ = this.rest.findRelationshipTypeByHref(relationship.relationshipType.href);
-            this.relationshipType$.subscribe((relationshipType) => {
+                this.relationshipType$ = this.rest.findRelationshipTypeByHref(relationship.relationshipType.href);
+                this.relationshipType$.subscribe((relationshipType) => {
                     for (let attributeUsage of relationshipType.relationshipAttributeNames) {
                         if (attributeUsage.attributeNameDef.value.code === 'DELEGATE_RELATIONSHIP_TYPE_DECLARATION') {
                             this.delegateRelationshipTypeDeclarationAttributeUsage = attributeUsage;
                         }
                     }
                 });
-        }, (err) => {
-            if (err.status === 404) {
-                alert('Invalid invitation code');
-                this.goToEnterAuthorisationPage();
-            } else {
-                // todo
-                alert(JSON.stringify(err, null, 4));
-            }
+            }, (err) => {
+                if (err.status === 404) {
+                    alert('Invalid invitation code');
+                    this.goToEnterAuthorisationPage();
+                } else {
+                    // todo
+                    alert(JSON.stringify(err, null, 4));
+                }
+            });
         });
+
     }
 
     public declineAuthorisation = () => {
@@ -80,11 +83,11 @@ export class AcceptAuthorisationComponent implements OnInit {
     };
 
     public goToEnterAuthorisationPage = () => {
-        this.router.navigate(['EnterInvitationCodeComponent', { idValue: this.idValue }]);
+        this.router.navigate(['/relationships/add/enter', this.idValue ]);
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['Relationships', { idValue: this.idValue }]);
+        this.router.navigate(['/relationships', this.idValue ]);
     };
 
     // TODO: not sure how to set the locale, Implement as a pipe
@@ -97,6 +100,10 @@ export class AcceptAuthorisationComponent implements OnInit {
                 datePipe.transform(date, 'yyyy');
         }
         return 'Not specified';
+    }
+
+    public ngOnDestroy() {
+        this.rteParamSub.unsubscribe();
     }
 
 }
