@@ -1,6 +1,6 @@
 import {OnInit, OnDestroy, Component} from '@angular/core';
 import {DatePipe} from '@angular/common';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {Router, ActivatedRoute} from '@angular/router';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
@@ -33,7 +33,6 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private identityService: RAMIdentityService,
-                private modelHelper: RAMModelHelper,
                 private rest: RAMRestService) {
     }
 
@@ -83,11 +82,11 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     };
 
     public goToEnterAuthorisationPage = () => {
-        this.router.navigate(['/relationships/add/enter', this.idValue ]);
+        this.router.navigate(['/relationships/add/enter', this.idValue]);
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['/relationships', this.idValue ]);
+        this.router.navigate(['/relationships', this.idValue]);
     };
 
     // TODO: not sure how to set the locale, Implement as a pipe

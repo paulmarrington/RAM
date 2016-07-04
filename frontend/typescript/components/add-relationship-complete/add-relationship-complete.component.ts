@@ -77,6 +77,6 @@ export class AddRelationshipCompleteComponent implements OnInit {
     };
 
     public goToRelationshipsPage = () => {
-        this.router.navigate(['/relationships',  this.idValue ]);
+        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
     }
 }

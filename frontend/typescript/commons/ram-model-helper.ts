@@ -6,7 +6,7 @@ import {
     IRelationship,
     IRelationshipType,
     IHrefValue
-} from '../../../../commons/RamAPI2';
+} from '../../../commons/RamAPI2';
 
 @Injectable()
 export class RAMModelHelper {

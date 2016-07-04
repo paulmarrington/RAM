@@ -46,8 +46,8 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
     public ngOnInit() {
         this._isLoading = true;
         this.rteParamSub = this.route.params.subscribe(params => {
-            this.idValue = params['idValue'];
-            this.identityDisplayName$ = this.identityService.getDefaultName(this.idValue).map(this.displayName);
+            this.idValue = decodeURIComponent(params['idValue']);
+            this.identityDisplayName$ = this.identityService.getDefaultName(this.idValue).map(this.modelHelper.displayName);
             this.subjectsResponse$ = this.rest.searchDistinctSubjectsBySubjectOrDelegateIdentity(this.idValue, 1);
             this.subjectsResponse$.subscribe((searchResult) => {
                 this._isLoading = false;

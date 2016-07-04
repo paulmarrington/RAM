@@ -16,7 +16,7 @@ export class RamComponent {
     public ngOnInit() {
         this.rest.findMyIdentity().subscribe(identity => {
             const idValue = identity.idValue;
-            this.router.navigate(['/relationships', idValue]);
+            this.router.navigate(['/relationships', encodeURIComponent(idValue)]);
         });
     }
 
