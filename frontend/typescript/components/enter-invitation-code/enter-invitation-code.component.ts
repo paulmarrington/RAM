@@ -18,8 +18,7 @@ export class EnterInvitationCodeComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.idValue = this.routeParams.get('idValue');
-
+        this.idValue = decodeURIComponent(this.routeParams.get('idValue'));
         this.form = this._fb.group({
             'relationshipCode': ['', Validators.compose([Validators.required])]
         });

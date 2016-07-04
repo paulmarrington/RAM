@@ -74,7 +74,7 @@ export class AddRelationshipComponent {
     }
 
     public ngOnInit() {
-        this.idValue = this.routeParams.get('idValue');
+        this.idValue = decodeURIComponent(this.routeParams.get('idValue'));
         // TODO implement as service - card #32
         this.relationshipTypes$ = this.rest.listRelationshipTypes();
         this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
