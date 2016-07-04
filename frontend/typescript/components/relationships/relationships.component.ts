@@ -65,18 +65,31 @@ export class RelationshipsComponent {
         return '';
     }
 
-    public displayNameForParty(subject:IParty):string {
-        if (subject && subject.identities && subject.identities.length > 0) {
-            for (const identityHrefValue of subject.identities) {
+    public displayNameForParty(party:IParty):string {
+        if (party && party.identities && party.identities.length > 0) {
+            for (const identityHrefValue of party.identities) {
                 const identity = identityHrefValue.value;
                 if (identity.defaultInd) {
                     const name = identity.profile.name;
                     return this.displayName(name);
                 }
             }
-            return this.displayName(subject.identities[0].value.profile.name);
+            return this.displayName(party.identities[0].value.profile.name);
         }
         return '';
+    }
+
+    public abnLabelForParty(party:IParty):string {
+        if (party && party.identities && party.identities.length > 0) {
+            for (const identityHrefValue of party.identities) {
+                const identity = identityHrefValue.value;
+                if (identity.identityType === 'PUBLIC_IDENTIFIER' && identity.publicIdentifierScheme === 'ABN') {
+                    return 'ABN ' + identity.rawIdValue;
+                }
+            }
+            return null;
+        }
+        return null;
     }
 
     public commaSeparatedListOfProviderNames(subject:IParty):string {
