@@ -16,6 +16,7 @@ export class DeclarationComponent implements OnInit {
     @Output('dataChange') public dataChanges = new EventEmitter<DeclarationComponentData>();
 
     @Output('isValid') public isValid = new EventEmitter<boolean>();
+    @Output('backEvent') public backEvent = new EventEmitter<boolean>();
     @Output('createRelationshipEvent') public createRelationshipEvent = new EventEmitter<boolean>();
 
     public form: ControlGroup;
@@ -32,6 +33,10 @@ export class DeclarationComponent implements OnInit {
             this.dataChanges.emit(v);
             this.isValid.emit(this.form.valid);
         });
+    }
+
+    public back() {
+        this.backEvent.emit(true);
     }
 
     public createRelationship() {

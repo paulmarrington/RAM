@@ -125,6 +125,8 @@
     });
 
     function updateUser() {
+      var id_value_header = 'x-ram-identity-idvalue';
+
       var effect = 'rubberBand';
       var $userDetail = $('#user-detail');
       var $userList = $('#user-list');
@@ -151,13 +153,13 @@
 
           // highlight logged in user
           $userList.find('li').each(function( index ) {
-            if($(this).data('id') == data['X-RAM-Identity-IdValue']) {
+            if($(this).data('id') == data[id_value_header]) {
               $(this).addClass('active');
             }
           });
 
           // update link to open RAM
-          $launchRamLink.attr('href', "/#relationships/" + data['X-RAM-Identity-IdValue'])
+          $launchRamLink.attr('href', "/#relationships/" + encodeURIComponent(data[id_value_header]));
         }
         else {
           // not logged in

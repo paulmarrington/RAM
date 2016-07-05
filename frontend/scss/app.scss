@@ -225,8 +225,16 @@ color: $color;
   }
 }
 
+.todo {
+  color: #f00;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
 .big-checkbox {
-    width: 30px; 
+    width: 30px;
     height: 30px;
 }
 
@@ -235,4 +243,10 @@ color: $color;
     padding: 10px 15px;
     font-size:15px;
     margin-right: 10px;
+}
+
+.relationship-subject-heading {
+    background: #eee;
+    padding: 10px 15px;
+    margin: 0 0 20px 0;
 }

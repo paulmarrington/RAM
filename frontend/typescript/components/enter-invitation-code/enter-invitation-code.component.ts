@@ -1,24 +1,29 @@
-import {OnInit, Component} from '@angular/core';
+import {OnInit, Component, OnDestroy} from '@angular/core';
 import {Validators, ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
-import {RouteParams, Router,ROUTER_DIRECTIVES} from '@angular/router-deprecated';
+import {ActivatedRoute, Router, ROUTER_DIRECTIVES} from '@angular/router';
+import Rx from 'rxjs/Rx';
 
 @Component({
     selector: 'enter-invitation-code',
     templateUrl: 'enter-invitation-code.component.html',
-    directives: [FORM_DIRECTIVES,ROUTER_DIRECTIVES]
+    directives: [FORM_DIRECTIVES, ROUTER_DIRECTIVES]
 })
-export class EnterInvitationCodeComponent implements OnInit {
+export class EnterInvitationCodeComponent implements OnInit, OnDestroy {
 
     public form: ControlGroup;
 
     public idValue: string;
 
+    private rteParamSub: Rx.Subscription;
+
     constructor(private _fb: FormBuilder, private router: Router,
-        private routeParams: RouteParams) {
+        private route: ActivatedRoute) {
     }
 
     public ngOnInit() {
-        this.idValue = this.routeParams.get('idValue');
+        this.rteParamSub = this.route.params.subscribe(params => {
+            this.idValue = decodeURIComponent(params['idValue']);
+        });
 
         this.form = this._fb.group({
             'relationshipCode': ['', Validators.compose([Validators.required])]
@@ -28,13 +33,21 @@ export class EnterInvitationCodeComponent implements OnInit {
 
     public activateCode(event: Event) {
 
-        this.router.navigate(['AcceptAuthorisationComponent', {
-            idValue: this.idValue,
-            invitationCode: this.form.controls['relationshipCode'].value
-        }]);
+        this.router.navigate(['/relationships/add/accept',
+             encodeURIComponent(this.idValue),
+             this.form.controls['relationshipCode'].value
+        ]);
 
         event.stopPropagation();
         return false;
+    }
+
+    public goToRelationshipsPage = () => {
+        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
+    };
+
+    public ngOnDestroy() {
+        this.rteParamSub.unsubscribe();
     }
 
 }

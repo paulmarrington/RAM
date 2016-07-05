@@ -2,15 +2,24 @@
 
 app="RAM"
 me="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DEFAULT_CONF=$DIR/backend/conf/conf-localhost.js
 
 # prerequisites:
 #  brew
 #  git
 #  npm
+# (TESTING: push to test-1)
+
+#  test commit 5 on develop
 
 export PATH=./node_modules/.bin:../node_modules/.bin:$PATH
+
+function echo_and_run {
+  echo "$" "$@"
+  eval $(printf '%q ' "$@") < /dev/tty
+}
 
 case "$1" in
 
@@ -59,11 +68,97 @@ case "$1" in
     echo ""
     ;;
 
+  'deps:clean')
+    echo ""
+    echo "Cleaning node modules ..."
+    rm -rf backend/node_modules/*
+    rm -rf frontend/node_modules/*
+    rm -rf tests/node_modules/*
+    echo ""
+    echo "Cleaning typings ..."
+    rm -rf backend/typings/*
+    rm -rf frontend/typings/*
+    rm -rf tests/typings/*
+    echo ""
+    ;;
+
+# FOR DEVELOPMENT
+
+  'feature:start')
+    echo ""
+    echo "Starting a new feature ..."
+    if [ -z "$2" ]; then
+        echo "Please specify a feature name"
+    else
+        echo ""
+        git checkout -b "feature/$2"
+        git push -u origin "feature/$2":"feature/$2"
+    fi
+    echo ""
+    ;;
+
+  'feature:checkout')
+    echo ""
+    echo "Continuing an existing feature ..."
+    if [ -z "$2" ]; then
+        echo "Please specify a feature name"
+    else
+        echo ""
+        git fetch --prune
+        git checkout -b "feature/$2" origin/"feature/$2"
+    fi
+    echo ""
+    ;;
+
+  'feature:finish')
+    echo ""
+    featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+    if [ $featureName ] && [[ $featureName == feature/* ]]; then
+        echo "Finishing feature '$featureName' ..."
+        git push
+        open "http://https://github.com/atogov/RAM/pulls"
+    else
+        echo "Run this from the feature branch"
+    fi
+    echo ""
+    ;;
+
+  'feature:cancel')
+    echo ""
+    featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+    if [ $featureName ] && [[ $featureName == feature/* ]]; then
+        read -p "This will delete the branch '$featureName' on local and origin. Confirm (y/n): " confirm
+        if [ $confirm ] && [ $confirm == "y" ]; then
+            echo ""
+            echo_and_run git checkout develop
+            echo_and_run git branch -D "$featureName"
+            echo_and_run git push origin ":$featureName"
+        fi
+    else
+        echo "Run this from the feature branch"
+    fi
+    echo ""
+    ;;
+
+  'feature:merge:origin')
+    echo ""
+    featureName=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+    if [ $featureName ] && [[ $featureName == feature/* ]]; then
+        echo "Merging from origin/develop to '$featureName' ..."
+        git fetch --prune
+        git merge "origin/develop" $featureName
+    else
+        echo "Run this from the feature branch"
+    fi
+    echo ""
+    ;;
+
 # START
 
   'start:frontend')
     echo ""
     echo "Starting frontend"
+    echo ""
     cd frontend
     gulp serve
     echo ""
@@ -71,9 +166,16 @@ case "$1" in
 
   'start:backend')
     echo ""
-    echo "Starting backend"
     cd backend
-    RAM_CONF=$DIR/backend/conf/conf-localhost.js gulp serve
+    if [ -z "$2" ]; then
+      echo "Starting backend with $DEFAULT_CONF"
+      echo ""
+      RAM_CONF=$DEFAULT_CONF gulp serve
+    else
+      echo "Starting backend with $2"
+      echo ""
+      RAM_CONF="$2" gulp serve
+    fi
     echo ""
     ;;
 
@@ -120,15 +222,14 @@ case "$1" in
   #     ./ram test:backend --test relationshipType.model
   'test:backend')
     echo ""
-    echo "Starting tests"
+    echo "Starting backend tests"
     cd backend
-    if [ -z "$3" ]
-      then
-        RAM_CONF=$DIR/backend/conf/conf-test.js gulp test
-      else
-        RAM_CONF=$DIR/backend/conf/conf-test.js gulp test "$2" "$3"
+    if [ -z "$3" ]; then
+      RAM_CONF=$DIR/backend/conf/conf-test.js gulp test
+    else
+      RAM_CONF=$DIR/backend/conf/conf-test.js gulp test "$2" "$3"
     fi
-    echo ""
+    exit $?
     ;;
 
   # run all API tests or, limit to one with --test <test name>
@@ -136,25 +237,24 @@ case "$1" in
   #     ./ram test:api --test relationshipType.controller
   'test:api')
     echo ""
-    echo "Starting tests"
+    echo "Starting api tests"
     cd tests
-    if [ -z "$3" ]
-      then
-        gulp test
-      else
-        gulp test "$2" "$3"
+    if [ -z "$3" ]; then
+      gulp test
+    else
+      gulp test "$2" "$3"
     fi
-    echo ""
+    exit $?
     ;;
 
 # DB
 
   'db:seed')
     echo ""
-    echo "Seeding database"
+    echo "Seeding database with $DEFAULT_CONF"
     echo ""
     cd backend
-    RAM_CONF=$DIR/backend/conf/conf-localhost.js gulp seed
+    RAM_CONF=$DEFAULT_CONF gulp seed
     echo ""
     ;;
 
@@ -244,10 +344,16 @@ case "$1" in
     echo "Commands:"
     echo ""
     echo "$(tput setaf 3)    setup                                $(tput sgr0)      Setups local workstation"
-    echo "$(tput setaf 3)    deps                                 $(tput sgr0)      Download all dependencies"
-    echo "$(tput setaf 3)    deps:frontend                        $(tput sgr0)      Download frontend dependencies"
-    echo "$(tput setaf 3)    deps:backend                         $(tput sgr0)      Download backend dependencies"
-    echo "$(tput setaf 3)    deps:test                            $(tput sgr0)      Download api test dependencies"
+    echo "$(tput setaf 3)    deps                                 $(tput sgr0)      Downloads all dependencies"
+    echo "$(tput setaf 3)    deps:frontend                        $(tput sgr0)      Downloads frontend dependencies"
+    echo "$(tput setaf 3)    deps:backend                         $(tput sgr0)      Downloads backend dependencies"
+    echo "$(tput setaf 3)    deps:test                            $(tput sgr0)      Downloads api test dependencies"
+    echo ""
+    echo "$(tput setaf 3)    feature:start                        $(tput sgr0)      Creates local and remote feature branch"
+    echo "$(tput setaf 3)    feature:checkout                     $(tput sgr0)      Fetches then checks out remote feature branch"
+    echo "$(tput setaf 3)    feature:finish                       $(tput sgr0)      Opens Github to manually submit pull request"
+    echo "$(tput setaf 3)    feature:cancel                       $(tput sgr0)      Deletes local and remote feature branch"
+    echo "$(tput setaf 3)    feature:merge:origin                 $(tput sgr0)      Merges origin/develop to current local feature branch"
     echo ""
     echo "$(tput setaf 3)    lint:frontend                        $(tput sgr0)      Runs lint on frontend"
     echo "$(tput setaf 3)    lint:backend                         $(tput sgr0)      Runs lint on backend"

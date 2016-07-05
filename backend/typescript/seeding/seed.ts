@@ -32,18 +32,15 @@ import {
 
 import {
     IProfile,
-    ProfileModel,
-    ProfileProvider} from '../models/profile.model';
+    ProfileModel} from '../models/profile.model';
 
 import {
     IParty,
-    PartyModel,
-    PartyType} from '../models/party.model';
+    PartyModel} from '../models/party.model';
 
 import {
     IRelationship,
-    RelationshipModel,
-    RelationshipStatus} from '../models/relationship.model';
+    RelationshipModel} from '../models/relationship.model';
 
 import {
     IRelationshipAttribute,
@@ -51,11 +48,20 @@ import {
 
 import {
     IIdentity,
-    IdentityModel,
-    IdentityType,
-    IdentityLinkIdScheme,
-    IdentityPublicIdentifierScheme,
-    IdentityInvitationCodeStatus} from '../models/identity.model';
+    IdentityModel} from '../models/identity.model';
+
+import {BobSmithIdentitySeeder} from './seed-bobsmith-identity';
+
+import {CakeryBakeryIdentitySeeder} from './seed-cakerybakery-identity';
+import {CakeryBakeryRelationshipsSeeder} from './seed-cakerybakery-relationships';
+
+import {JMFoodPackagingIdentitySeeder} from './seed-jmfoodpackaging-identity';
+import {JMFoodPackagingRelationshipsSeeder} from './seed-jmfoodpackaging-relationships';
+
+import {JenniferMaximIdentitySeeder} from './seed-jennifermaxim-identity';
+
+import {JensCateringIdentitySeeder} from './seed-jenscatering-identity';
+import {JensCateringRelationshipsSeeder} from './seed-jenscatering-relationships';
 
 const now = new Date();
 
@@ -89,43 +95,65 @@ export class Seeder {
     public static full_accessLevel = 'Full access';
     public static accessLevels = [Seeder.full_accessLevel, 'Limited access', 'No access'];
 
+    public static associate_delegate_relationshipType:IRelationshipType;
     public static universal_delegate_relationshipType:IRelationshipType;
     public static custom_delegate_relationshipType:IRelationshipType;
 
     public static dob_sharedSecretType:ISharedSecretType;
 
-    public static jenscatering_name:IName;
-    public static jenscatering_profile:IProfile;
-    public static jenscatering_party:IParty;
-    public static jenscatering_identity_1:IIdentity;
-
-    public static jennifermaxims_name:IName;
-    public static jennifermaxims_dob:ISharedSecret;
-    public static jennifermaxims_profile:IProfile;
-    public static jennifermaxims_party:IParty;
-    public static jennifermaxims_identity_1:IIdentity;
-
+    // individual identity
     public static bobsmith_name:IName;
     public static bobsmith_dob:ISharedSecret;
     public static bobsmith_profile:IProfile;
     public static bobsmith_party:IParty;
     public static bobsmith_identity_1:IIdentity;
 
+    // ABN identity
+    public static cakerybakery_name:IName;
+    public static cakerybakery_profile:IProfile;
+    public static cakerybakery_party:IParty;
+    public static cakerybakery_identity_1:IIdentity;
+
+    // ABN identity
+    public static jenscatering_name:IName;
+    public static jenscatering_profile:IProfile;
+    public static jenscatering_party:IParty;
+    public static jenscatering_identity_1:IIdentity;
+
+    // individual identity
+    public static jmfoodpackaging_name:IName;
+    public static jmfoodpackaging_dob:ISharedSecret;
+    public static jmfoodpackaging_profile:IProfile;
+    public static jmfoodpackaging_party:IParty;
+    public static jmfoodpackaging_identity_1:IIdentity;
+
+    // individual identity
+    public static jennifermaxims_name:IName;
+    public static jennifermaxims_dob:ISharedSecret;
+    public static jennifermaxims_profile:IProfile;
+    public static jennifermaxims_party:IParty;
+    public static jennifermaxims_identity_1:IIdentity;
+
+    // invitation identity
     public static robertsmith_name:IName;
     public static robertsmith_dob:ISharedSecret;
     public static robertsmith_profile:IProfile;
     public static robertsmith_party:IParty;
     public static robertsmith_identity_1:IIdentity;
 
+    // invitation identity
     public static fredjohnson_name:IName;
     public static fredjohnson_dob:ISharedSecret;
     public static fredjohnson_profile:IProfile;
     public static fredjohnson_party:IParty;
     public static fredjohnson_identity_1:IIdentity;
 
-    public static jpty_and_jm_relationship:IRelationship;
-    public static jpty_and_rs_relationship:IRelationship;
-    public static j_and_f_relationship:IRelationship;
+    // relationships
+    public static cakerybakery_and_jennifermaxim_relationship:IRelationship;
+    public static jenscatering_and_jennifermaxim_relationship:IRelationship;
+    public static jenscatering_and_robertsmith_relationship:IRelationship;
+    public static jennifermaxim_and_fredjohnson_relationship:IRelationship;
+    public static jmfoodpackaging_and_jenscatering_relationship:IRelationship;
 
     public static log(msg:String) {
         if(Seeder.verboseMode) {
@@ -262,7 +290,7 @@ export class Seeder {
     }
 
     public static async createRelationshipModel(values:IRelationship) {
-        Seeder.log(`- ${Seeder.custom_delegate_relationshipType.code}`.magenta);
+        Seeder.log(`- ${values.relationshipType.code}`.magenta);
         if (values.attributes) {
             for (let attribute of values.attributes) {
                 const truncatedValue = truncateString(attribute.value);
@@ -478,6 +506,30 @@ export class Seeder {
 
             Seeder.log('\nInserting Relationship Types:\n'.underline);
 
+            Seeder.associate_delegate_relationshipType = await Seeder.createRelationshipTypeModel({
+                code: 'ASSOCIATE',
+                shortDecodeText: 'Associate',
+                longDecodeText: 'Associate',
+                startDate: now
+            } as any, [
+                {attribute: Seeder.permissionCustomisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
+                {attribute: Seeder.delegateManageAuthorisationAllowedInd_attributeName, optionalInd: false, defaultValue: 'false'},
+                {attribute: Seeder.delegateRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                    defaultValue: 'Markdown for Delegate Universal Representative Declaration'},
+                {attribute: Seeder.subjectRelationshipTypeDeclaration_attributeName, optionalInd: false,
+                    defaultValue: 'Markdown for Subject Universal Representative Declaration'},
+                {attribute: Seeder.asic_abn_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.wgea_activate_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptindustry_aba_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.abr_abr_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptindustry_ats_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.ntdeptbusiness_avetmiss_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.ntdeptcorpinfoservices_ims_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.depthscentrelink_ppl_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptimm_skillselect_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel},
+                {attribute: Seeder.deptemp_wageconnect_attributeName, optionalInd: false, defaultValue: Seeder.full_accessLevel}
+            ]);
+
             Seeder.universal_delegate_relationshipType = await Seeder.createRelationshipTypeModel({
                 code: 'UNIVERSAL_REPRESENTATIVE',
                 shortDecodeText: 'Universal Representative',
@@ -551,375 +603,12 @@ export class Seeder {
         }
     }
 
-    public static async loadSample_jensCateringPtyLtd_identity() {
-        try {
-
-            Seeder.log('\nInserting Sample Identity - Jen\'s Catering Pty Ltd:\n'.underline);
-
-            if (!conf.devMode) {
-
-                Seeder.log('Skipped in prod mode'.gray);
-
-            } else {
-
-                Seeder.jenscatering_name = await Seeder.createNameModel({
-                    unstructuredName: 'Jen\'s Catering Pty Ltd'
-                } as any);
-
-                Seeder.jenscatering_profile = await Seeder.createProfileModel({
-                    provider: ProfileProvider.ABR.name,
-                    name: Seeder.jenscatering_name,
-                    sharedSecrets: []
-                } as any);
-
-                Seeder.jenscatering_party = await Seeder.createPartyModel({
-                    partyType: PartyType.ABN.name
-                } as any);
-
-                Seeder.log('');
-
-                Seeder.jenscatering_identity_1 = await Seeder.createIdentityModel({
-                    rawIdValue: 'jenscatering_identity_1',
-                    identityType: IdentityType.PublicIdentifier.name,
-                    defaultInd: true,
-                    publicIdentifierScheme: IdentityPublicIdentifierScheme.ABN.name,
-                    profile: Seeder.jenscatering_profile,
-                    party: Seeder.jenscatering_party
-                } as any);
-
-            }
-
-        } catch (e) {
-            Seeder.log('Seeding failed!');
-            Seeder.log(e);
-        }
-    }
-
-    public static async loadSample_jenniferMaxim_identity() {
-        try {
-
-            Seeder.log('\nInserting Sample Identity - Jennifer Maxim:\n'.underline);
-
-            if (!conf.devMode) {
-
-                Seeder.log('Skipped in prod mode'.gray);
-
-            } else {
-
-                Seeder.jennifermaxims_name = await Seeder.createNameModel({
-                    givenName: 'Jennifer',
-                    familyName: 'Maxims'
-                } as any);
-
-                Seeder.jennifermaxims_dob = await Seeder.createSharedSecretModel({
-                    value: '31/01/1990',
-                    sharedSecretType: Seeder.dob_sharedSecretType
-                } as any);
-
-                Seeder.jennifermaxims_profile = await Seeder.createProfileModel({
-                    provider: ProfileProvider.MyGov.name,
-                    name: Seeder.jennifermaxims_name,
-                    sharedSecrets: [Seeder.jennifermaxims_dob]
-                } as any);
-
-                Seeder.jennifermaxims_party = await Seeder.createPartyModel({
-                    partyType: PartyType.Individual.name
-                } as any);
-
-                Seeder.log('');
-
-                Seeder.jennifermaxims_identity_1 = await Seeder.createIdentityModel({
-                    rawIdValue: 'jennifermaxims_identity_1',
-                    identityType: IdentityType.LinkId.name,
-                    defaultInd: true,
-                    linkIdScheme: IdentityLinkIdScheme.MyGov.name,
-                    profile: Seeder.jennifermaxims_profile,
-                    party: Seeder.jennifermaxims_party
-                } as any);
-
-            }
-
-        } catch (e) {
-            Seeder.log('Seeding failed!');
-            Seeder.log(e);
-        }
-    }
-
-    public static async loadSample_bobsmith_identity() {
-        try {
-
-            Seeder.log('\nInserting Sample Identity - Bob Smith:\n'.underline);
-
-            if (!conf.devMode) {
-
-                Seeder.log('Skipped in prod mode'.gray);
-
-            } else {
-
-                Seeder.bobsmith_name = await Seeder.createNameModel({
-                    givenName: 'Bob',
-                    familyName: 'Smith'
-                } as any);
-
-                Seeder.bobsmith_dob = await Seeder.createSharedSecretModel({
-                    value: '01/01/2000',
-                    sharedSecretType: Seeder.dob_sharedSecretType
-                } as any);
-
-                Seeder.bobsmith_profile = await Seeder.createProfileModel({
-                    provider: ProfileProvider.MyGov.name,
-                    name: Seeder.bobsmith_name,
-                    sharedSecrets: [Seeder.bobsmith_dob]
-                } as any);
-
-                Seeder.bobsmith_party = await Seeder.createPartyModel({
-                    partyType: PartyType.Individual.name
-                } as any);
-
-                Seeder.log('');
-
-                Seeder.bobsmith_identity_1 = await Seeder.createIdentityModel({
-                    rawIdValue: 'bobsmith_identity_1',
-                    identityType: IdentityType.LinkId.name,
-                    defaultInd: true,
-                    linkIdScheme: IdentityLinkIdScheme.MyGov.name,
-                    profile: Seeder.bobsmith_profile,
-                    party: Seeder.bobsmith_party
-                } as any);
-
-            }
-
-        } catch (e) {
-            Seeder.log('Seeding failed!');
-            Seeder.log(e);
-        }
-    }
-
-    public static async loadSample_jensCateringPtyLtd_jenniferMaxim_relationship() {
-        try {
-
-            Seeder.log('\nInserting Sample Relationship - Jen\'s Catering Pty Ltd / Jennifer Maxim:\n'.underline);
-
-            if (!conf.devMode) {
-
-                Seeder.log('Skipped in prod mode'.gray);
-
-            } else {
-
-                Seeder.jpty_and_jm_relationship = await Seeder.createRelationshipModel({
-                    relationshipType: Seeder.custom_delegate_relationshipType,
-                    subject: Seeder.jenscatering_party,
-                    subjectNickName: Seeder.jenscatering_name,
-                    delegate: Seeder.jennifermaxims_party,
-                    delegateNickName: Seeder.jennifermaxims_name,
-                    startTimestamp: new Date(),
-                    status: RelationshipStatus.Active.name,
-                    attributes: [
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.permissionCustomisationAllowedInd_attributeName
-                        } as any),
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.delegateManageAuthorisationAllowedInd_attributeName
-                        } as any),
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.delegateRelationshipTypeDeclaration_attributeName
-                        } as any),
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.subjectRelationshipTypeDeclaration_attributeName
-                        } as any)
-                    ]
-                } as any);
-
-                Seeder.log('');
-
-            }
-
-        } catch (e) {
-            Seeder.log('Seeding failed!');
-            Seeder.log(e);
-        }
-    }
-
-    public static async loadSample_jensCateringPtyLtd_robertsmith_invitationCode() {
-        try {
-
-            Seeder.log('\nInserting Sample Invitation Code - Jen\'s Catering Pty Ltd to Robert Smith:\n'.underline);
-
-            if (!conf.devMode) {
-
-                Seeder.log('Skipped in prod mode'.gray);
-
-            } else {
-
-                Seeder.robertsmith_name = await Seeder.createNameModel({
-                    givenName: 'Robert',
-                    familyName: 'Smith'
-                } as any);
-
-                Seeder.robertsmith_dob = await Seeder.createSharedSecretModel({
-                    value: '01/01/2000',
-                    sharedSecretType: Seeder.dob_sharedSecretType
-                } as any);
-
-                Seeder.robertsmith_profile = await Seeder.createProfileModel({
-                    provider: ProfileProvider.MyGov.name,
-                    name: Seeder.robertsmith_name,
-                    sharedSecrets: [Seeder.robertsmith_dob]
-                } as any);
-
-                Seeder.robertsmith_party = await Seeder.createPartyModel({
-                    partyType: PartyType.Individual.name
-                } as any);
-
-                Seeder.log('');
-
-                Seeder.robertsmith_identity_1 = await Seeder.createIdentityModel({
-                    identityType: IdentityType.InvitationCode.name,
-                    defaultInd: true,
-                    invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
-                    invitationCodeExpiryTimestamp: new Date(2055, 1, 1),
-                    profile: Seeder.robertsmith_profile,
-                    party: Seeder.robertsmith_party
-                } as any);
-
-                Seeder.log('');
-
-                Seeder.jpty_and_rs_relationship = await Seeder.createRelationshipModel({
-                    relationshipType: Seeder.custom_delegate_relationshipType,
-                    subject: Seeder.jenscatering_party,
-                    subjectNickName: Seeder.jenscatering_name,
-                    delegate: Seeder.robertsmith_party,
-                    delegateNickName: Seeder.robertsmith_name,
-                    startTimestamp: new Date(),
-                    status: RelationshipStatus.Pending.name,
-                    attributes: [
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.permissionCustomisationAllowedInd_attributeName
-                        } as any),
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.delegateManageAuthorisationAllowedInd_attributeName
-                        } as any),
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.delegateRelationshipTypeDeclaration_attributeName
-                        } as any),
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.subjectRelationshipTypeDeclaration_attributeName
-                        } as any)
-                    ]
-                } as any);
-
-            }
-
-        } catch (e) {
-            Seeder.log('Seeding failed!');
-            Seeder.log(e);
-        }
-    }
-
-    public static async loadSample_jensCateringPtyLtd_fredjohnson_invitationCode() {
-        try {
-
-            Seeder.log('\nInserting Sample Invitation Code - Jen\'s Catering Pty Ltd to Fred Johnson:\n'.underline);
-
-            if (!conf.devMode) {
-
-                Seeder.log('Skipped in prod mode'.gray);
-
-            } else {
-
-                Seeder.fredjohnson_name = await Seeder.createNameModel({
-                    givenName: 'Fred',
-                    familyName: 'Johnson'
-                } as any);
-
-                Seeder.fredjohnson_dob = await Seeder.createSharedSecretModel({
-                    value: '01/01/2000',
-                    sharedSecretType: Seeder.dob_sharedSecretType
-                } as any);
-
-                Seeder.fredjohnson_profile = await Seeder.createProfileModel({
-                    provider: ProfileProvider.Temp.name,
-                    name: Seeder.fredjohnson_name,
-                    sharedSecrets: [Seeder.fredjohnson_dob]
-                } as any);
-
-                Seeder.fredjohnson_party = await Seeder.createPartyModel({
-                    partyType: PartyType.Individual.name
-                } as any);
-
-                Seeder.log('');
-
-                Seeder.fredjohnson_identity_1 = await Seeder.createIdentityModel({
-                    identityType: IdentityType.InvitationCode.name,
-                    defaultInd: true,
-                    invitationCodeStatus: IdentityInvitationCodeStatus.Pending.name,
-                    invitationCodeExpiryTimestamp: new Date(2055, 1, 1),
-                    profile: Seeder.fredjohnson_profile,
-                    party: Seeder.fredjohnson_party
-                } as any);
-
-                Seeder.log('');
-
-                Seeder.j_and_f_relationship = await Seeder.createRelationshipModel({
-                    relationshipType: Seeder.custom_delegate_relationshipType,
-                    subject: Seeder.jenscatering_party,
-                    subjectNickName: Seeder.jenscatering_name,
-                    delegate: Seeder.fredjohnson_party,
-                    delegateNickName: Seeder.fredjohnson_name,
-                    startTimestamp: new Date(),
-                    status: RelationshipStatus.Pending.name,
-                    attributes: [
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.permissionCustomisationAllowedInd_attributeName
-                        } as any),
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.delegateManageAuthorisationAllowedInd_attributeName
-                        } as any),
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.delegateRelationshipTypeDeclaration_attributeName
-                        } as any),
-                        await Seeder.createRelationshipAttributeModel({
-                            value: true,
-                            attributeName: Seeder.subjectRelationshipTypeDeclaration_attributeName
-                        } as any)
-                    ]
-                } as any);
-
-            }
-
-        } catch (e) {
-            Seeder.log('Seeding failed!');
-            Seeder.log(e);
-        }
-    }
-
     public static reload() {
         return Seeder.connectMongo()
             .then(Seeder.resetDataInMongo)
             .then(Seeder.loadReference)
             .then(Seeder.loadMock)
             .then(Seeder.disconnect);
-    }
-
-    public static loadMock() {
-        return Promise.resolve(null)
-            .then(Seeder.loadSample_jensCateringPtyLtd_identity)
-            .then(Seeder.loadSample_jenniferMaxim_identity)
-            .then(Seeder.loadSample_bobsmith_identity)
-            .then(Seeder.loadSample_jensCateringPtyLtd_jenniferMaxim_relationship)
-            .then(Seeder.loadSample_jensCateringPtyLtd_robertsmith_invitationCode)
-            .then(Seeder.loadSample_jensCateringPtyLtd_fredjohnson_invitationCode);
     }
 
     public static loadReference() {
@@ -929,6 +618,25 @@ export class Seeder {
             .then(Seeder.loadRelationshipTypes)
             .then(Seeder.loadSharedSecretTypes);
     }
+
+    public static loadMock() {
+
+        return Promise.resolve(null)
+
+            // identities
+            .then(BobSmithIdentitySeeder.load)
+            .then(CakeryBakeryIdentitySeeder.load)
+            .then(JenniferMaximIdentitySeeder.load)
+            .then(JMFoodPackagingIdentitySeeder.load)
+            .then(JensCateringIdentitySeeder.load)
+
+            // relationships
+            .then(CakeryBakeryRelationshipsSeeder.load)
+            .then(JensCateringRelationshipsSeeder.load)
+            .then(JMFoodPackagingRelationshipsSeeder.load);
+
+    }
+
 }
 
 // rock and roll ......................................................................................................

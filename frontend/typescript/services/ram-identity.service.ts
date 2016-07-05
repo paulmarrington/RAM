@@ -16,7 +16,7 @@ export class RAMIdentityService {
             return Rx.Observable.of(this._identityCache[identityValue]);
         } else {
             return this.rest
-                .getIdentity(identityValue)
+                .findIdentityByValue(identityValue)
                 .map((identity: IIdentity) => identity.profile.name)
                 .do((profileName) => this._identityCache[identityValue] = profileName)
                 .publishReplay()

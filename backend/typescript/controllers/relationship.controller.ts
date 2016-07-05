@@ -1,6 +1,8 @@
 import {Router, Request, Response} from 'express';
 import {security} from './security.middleware';
-import {sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult} from './helpers';
+import {
+    sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult, REGULAR_CHARS
+} from './helpers';
 import {IRelationshipModel} from '../models/relationship.model';
 import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
 import {PartyModel} from '../models/party.model';
@@ -13,7 +15,7 @@ export class RelationshipController {
     constructor(private relationshipModel:IRelationshipModel) {
     }
 
-    private findByIdentifier = async(req:Request, res:Response) => {
+    private findByIdentifier = async (req:Request, res:Response) => {
         const schema = {
             'identifier': {
                 in: 'params',
@@ -28,7 +30,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private findPendingByInvitationCodeInDateRange = async(req:Request, res:Response) => {
+    private findPendingByInvitationCodeInDateRange = async (req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -42,7 +44,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private acceptByInvitationCode = async(req:Request, res:Response) => {
+    private acceptByInvitationCode = async (req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -57,7 +59,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private rejectByInvitationCode = async(req:Request, res:Response) => {
+    private rejectByInvitationCode = async (req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -72,7 +74,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private notifyDelegate = async(req:Request, res:Response) => {
+    private notifyDelegateByInvitationCode = async (req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -97,7 +99,8 @@ export class RelationshipController {
     };
 
     /* tslint:disable:max-func-body-length */
-    private listBySubjectOrDelegate = async(req:Request, res:Response) => {
+    // todo this search might no longer be useful from SS2
+    private searchBySubjectOrDelegate = async (req:Request, res:Response) => {
         const schema = {
             'subject_or_delegate': {
                 in: 'params',
@@ -140,9 +143,148 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private create = async(req:Request, res:Response) => {
-        const schema = {}; // TODO when DTO is confirmed with front end
+    /* tslint:disable:max-func-body-length */
+    private searchByIdentity = async (req:Request, res:Response) => {
+        const schema = {
+            'identity_id': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Identity Id is not valid'
+            },
+            'page': {
+                in: 'query',
+                notEmpty: true,
+                isNumeric: {
+                    errorMessage: 'Page is not valid'
+                }
+            },
+            'pageSize': {
+                in: 'query',
+                optional: true,
+                isNumeric: {
+                    errorMessage: 'Page Size is not valid'
+                }
+            }
+        };
         validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.searchByIdentity(
+                req.params.identity_id,
+                req.query.page,
+                req.query.pageSize)
+            )
+            .then((results) => (results.map((model) => model.toHrefValue(true))))
+            .then(sendSearchResult(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
+    private searchDistinctSubjectsBySubjectOrDelegateIdentity = async (req:Request, res:Response) => {
+        // todo need to optional filters (term, party type, relationship type, status)
+        // todo need to add sorting
+        const schema = {
+            'identity_id': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Identity Id is not valid'
+            },
+            'page': {
+                in: 'query',
+                notEmpty: true,
+                isNumeric: {
+                    errorMessage: 'Page is not valid'
+                }
+            },
+            'pageSize': {
+                in: 'query',
+                optional: true,
+                isNumeric: {
+                    errorMessage: 'Page Size is not valid'
+                }
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.searchDistinctSubjectsBySubjectOrDelegateIdentity(
+                req.params.identity_id,
+                req.query.page,
+                req.query.pageSize)
+            )
+            .then((results) => (results.map((model) => model.toHrefValue(true))))
+            .then(sendSearchResult(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
+    private create = async (req:Request, res:Response) => {
+        // TODO support other party types - currently only INDIVIDUAL is supported here
+        // TODO how much of this validation should be in the data layer?
+        // TODO decide how to handle dates - should they include time? or should server just use 12am AEST
+        const schemaB2I = {
+            'relationshipType': {
+                in: 'body',
+                notEmpty: true,
+                errorMessage: 'Relationship type is not valid'
+            },
+            'subjectIdValue': {
+                in: 'body',
+                notEmpty: true,
+                errorMessage: 'Subject is not valid'
+            },
+            'startTimestamp': {
+                in: 'body',
+                notEmpty: true,
+                isDate: {
+                    errorMessage: 'Start timestamp is not valid'
+                },
+                errorMessage: 'Start timestamp is not valid'
+            },
+            'endTimestamp': {
+                in: 'body'
+            },
+            'delegate.partyType': {
+                in: 'body',
+                matches: {
+                    options: ['^(INDIVIDUAL)$'],
+                    errorMessage: 'Delegate Party Type is not valid'
+                }
+            },
+            'delegate.givenName': {
+                in: 'body',
+                notEmpty: true,
+                isLength: {
+                    options: [{min: 1, max: 200}],
+                    errorMessage: 'Delegate Given Name must be between 1 and 200 chars long'
+                },
+                matches: {
+                    options: [REGULAR_CHARS],
+                    errorMessage: 'Delegate Given Name contains illegal characters'
+                },
+                errorMessage: 'Delegate Given Name is not valid'
+            },
+            'delegate.familyName': {
+                in: 'body',
+                optional: true,
+                isLength: {
+                    options: [{min: 0, max: 200}],
+                    errorMessage: 'Delegate Family Name must be between 0 and 200 chars long'
+                },
+                matches: {
+                    options: [REGULAR_CHARS],
+                    errorMessage: 'Delegate Family Name contains illegal characters'
+                },
+                errorMessage: 'Delegate Family Name is not valid'
+            },
+            'delegate.sharedSecretTypeCode': {
+                in: 'body',
+                notEmpty: true,
+                matches: {
+                    options: ['^(DATE_OF_BIRTH)$'],
+                    errorMessage: 'Delegate Shared Secret Type Code is not valid'
+                }
+            },
+            'delegate.sharedSecretValue': {
+                in: 'body'
+            }
+        };
+
+        validateReqSchema(req, schemaB2I)
             .then((req:Request) => {
                 return PartyModel.findByIdentityIdValue(req.body.subjectIdValue);
             })
@@ -170,7 +312,6 @@ export class RelationshipController {
                     req.body.endTimestamp ? new Date(req.body.endTimestamp) : undefined,
                     AttributeDTO.build(req.body.attributes)
                 );
-                // console.log(relationshipAddDTO);
                 return subjectParty.addRelationship(relationshipAddDTO);
             })
             .then((model) => model ? model.toDTO() : null)
@@ -186,7 +327,7 @@ export class RelationshipController {
 
         router.get('/v1/relationship/invitationCode/:invitationCode',
             security.isAuthenticated,
-        this.findPendingByInvitationCodeInDateRange);
+            this.findPendingByInvitationCodeInDateRange);
 
         router.post('/v1/relationship/invitationCode/:invitationCode/accept',
             security.isAuthenticated,
@@ -198,11 +339,19 @@ export class RelationshipController {
 
         router.post('/v1/relationship/invitationCode/:invitationCode/notifyDelegate',
             security.isAuthenticated,
-            this.notifyDelegate);
+            this.notifyDelegateByInvitationCode);
 
         router.get('/v1/relationships/:subject_or_delegate/identity/:identity_id',
             security.isAuthenticated,
-            this.listBySubjectOrDelegate);
+            this.searchBySubjectOrDelegate);
+
+        router.get('/v1/relationships/identity/:identity_id/subjects',
+            security.isAuthenticated,
+            this.searchDistinctSubjectsBySubjectOrDelegateIdentity);
+
+        router.get('/v1/relationships/identity/:identity_id',
+            security.isAuthenticated,
+            this.searchByIdentity);
 
         router.post('/v1/relationship',
             security.isAuthenticated,

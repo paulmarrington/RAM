@@ -2,7 +2,7 @@
 set -ev
 
 PWD=$(pwd)
-export RAM_CONF=$PWD/backend/conf/conf.js
+export RAM_CONF=$PWD/backend/conf/conf-localhost.js
 
 cd frontend
 npm install
@@ -25,13 +25,30 @@ node_modules/.bin/jspm -v
 node_modules/.bin/jspm cc
 node_modules/.bin/jspm install -y
 
-cd ../backend
-npm install
-node_modules/.bin/typings install
-gulp ts:compile
-gulp serve &
-sleep 15
+cd ..
 
-cd ../tests
-npm install
-gulp test
+./ram deps:backend
+
+if ./ram test:backend;
+then
+    echo Backend tests completed successfully
+else
+    echo Backend tests failed
+    exit 1
+fi
+
+
+./ram deps:test
+
+./ram db:seed
+./ram start:backend &
+sleep 30
+
+
+if ./ram test:api;
+then
+    echo API tests completed successfully
+else
+    echo API tests failed
+    exit 1
+fi

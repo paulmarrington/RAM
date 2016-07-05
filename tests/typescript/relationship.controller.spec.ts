@@ -1,13 +1,13 @@
 import RelationshipHelper from './helpers/relationshipHelper';
 import InitializationHelper from './helpers/initializationHelper';
+import AuthHelper from './helpers/authHelper';
 
 const relationshipHelper = new RelationshipHelper();
 const initializationHelper = new InitializationHelper();
+const authHelper = new AuthHelper();
 
 /* tslint:disable:max-func-body-length */
 describe('Relationship API', () => {
-    const known_identity_jen:string = 'LINK_ID:MY_GOV:jennifermaxims_identity_1';
-    const known_identity_jens_catering:string = 'PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1';
 
     beforeAll(async(done) => {
         try {
@@ -25,8 +25,10 @@ describe('Relationship API', () => {
     it('can list by subject', async(done) => {
 
         try {
+            const identity = authHelper.KNOWN_IDENTITIES['jenscatering_identity_1'];
+            await authHelper.logIn(identity);
 
-            const response = await relationshipHelper.subject(known_identity_jens_catering, 1, 10);
+            const response = await relationshipHelper.subject(identity, 1, 10);
             relationshipHelper.validateRelationshipList(response.body.list);
 
         } catch (e) {
@@ -39,8 +41,10 @@ describe('Relationship API', () => {
     it('can list by delegate', async(done) => {
 
             try {
+                const identity = authHelper.KNOWN_IDENTITIES['jennifermaxims_identity_1'];
+                await authHelper.logIn(identity);
 
-                const response = await relationshipHelper.delegate(known_identity_jen, 1, 10);
+                const response = await relationshipHelper.delegate(identity, 1, 10);
                 relationshipHelper.validateRelationshipList(response.body.list);
 
             } catch (e) {
