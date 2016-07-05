@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {
-    ISearchResult,
     IName,
     IParty,
     IRelationship,
