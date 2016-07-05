@@ -8,8 +8,7 @@ import {
     IRelationship,
     IRelationshipType,
     IRelationshipAttribute,
-    IRelationshipAttributeNameUsage,
-    IName
+    IRelationshipAttributeNameUsage
 } from '../../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
 

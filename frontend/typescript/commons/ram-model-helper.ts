@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
     IName,
     IParty,
+    IIdentity,
     IRelationship,
     IRelationshipType,
     IHrefValue
@@ -18,14 +19,14 @@ export class RAMModelHelper {
     }
 
     public displayNameForParty(party: IParty): string {
-        const defaultIdentityHrefValue = this.getDefaultIdentityHrefValue(party);
-        return defaultIdentityHrefValue ? this.displayName(defaultIdentityHrefValue.value.profile.name) : '';
+        const resource = this.getDefaultIdentityResource(party);
+        return resource ? this.displayName(resource.value.profile.name) : '';
     }
 
     public abnLabelForParty(party: IParty): string {
         if (party && party.identities && party.identities.length > 0) {
-            for (const identityHrefValue of party.identities) {
-                const identity = identityHrefValue.value;
+            for (const resource of party.identities) {
+                const identity = resource.value;
                 if (identity.identityType === 'PUBLIC_IDENTIFIER' && identity.publicIdentifierScheme === 'ABN') {
                     return 'ABN ' + identity.rawIdValue;
                 }
@@ -42,7 +43,6 @@ export class RAMModelHelper {
         } else {
             return 'Organisation';
         }
-        return '';
     }
 
     public relationshipTypeLabel(relationshipTypes: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
@@ -53,23 +53,23 @@ export class RAMModelHelper {
         return '';
     }
 
-    public getDefaultIdentityHrefValue(party: IParty): string {
+    public getDefaultIdentityResource(party: IParty): IHrefValue<IIdentity> {
         if (party && party.identities && party.identities.length > 0) {
-            for (const identityHrefValue of party.identities) {
-                const identity = identityHrefValue.value;
+            for (const resource of party.identities) {
+                const identity = resource.value;
                 if (identity.defaultInd) {
-                    return identityHrefValue;
+                    return resource;
                 }
             }
         }
         return null;
     }
 
-    public getRelationshipType(relationshipTypes: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
+    public getRelationshipType(relationshipTypeResources: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
         let relationshipTypeHrefString = relationship.relationshipType.href;
-        for (let aRelationshipTypeHrefValue of relationshipTypes) {
-            if (aRelationshipTypeHrefValue.href === relationshipTypeHrefString) {
-                return aRelationshipTypeHrefValue.value;
+        for (let resource of relationshipTypeResources) {
+            if (resource.href === relationshipTypeHrefString) {
+                return resource.value;
             }
         }
         return null;
