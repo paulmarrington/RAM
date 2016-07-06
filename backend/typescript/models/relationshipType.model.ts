@@ -60,6 +60,34 @@ export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType
     listInDateRange: (date:Date) => Promise<IRelationshipType[]>;
 }
 
+// instance methods ...................................................................................................
+
+RelationshipTypeSchema.method('toHrefValue', async function (includeValue:boolean) {
+    return new HrefValue(
+        '/api/v1/relationshipType/' + encodeURIComponent(this.code),
+        includeValue ? await this.toDTO() : undefined
+    );
+});
+
+RelationshipTypeSchema.method('toDTO', async function () {
+    return new DTO(
+        this.code,
+        this.shortDecodeText,
+        this.longDecodeText,
+        this.startDate,
+        this.endDate,
+        this.voluntaryInd,
+        await Promise.all<RelationshipAttributeNameUsageDTO>(this.attributeNameUsages.map(
+            async (attributeNameUsage:IRelationshipAttributeNameUsage) => {
+                return new RelationshipAttributeNameUsageDTO(
+                    attributeNameUsage.optionalInd,
+                    attributeNameUsage.defaultValue,
+                    await attributeNameUsage.attributeName.toHrefValue(true)
+                );
+            }))
+    );
+});
+
 // static methods .....................................................................................................
 
 RelationshipTypeSchema.static('findByCodeIgnoringDateRange', (code:String) => {
@@ -108,34 +136,6 @@ RelationshipTypeSchema.static('listInDateRange', (date:Date) => {
         ])
         .sort({name: 1})
         .exec();
-});
-
-// instance methods ...................................................................................................
-
-RelationshipTypeSchema.method('toHrefValue', async function (includeValue:boolean) {
-    return new HrefValue(
-        '/api/v1/relationshipType/' + encodeURIComponent(this.code),
-        includeValue ? await this.toDTO() : undefined
-    );
-});
-
-RelationshipTypeSchema.method('toDTO', async function () {
-    return new DTO(
-        this.code,
-        this.shortDecodeText,
-        this.longDecodeText,
-        this.startDate,
-        this.endDate,
-        this.voluntaryInd,
-        await Promise.all<RelationshipAttributeNameUsageDTO>(this.attributeNameUsages.map(
-            async (attributeNameUsage:IRelationshipAttributeNameUsage) => {
-                return new RelationshipAttributeNameUsageDTO(
-                    attributeNameUsage.optionalInd,
-                    attributeNameUsage.defaultValue,
-                    await attributeNameUsage.attributeName.toHrefValue(true)
-                );
-            }))
-    );
 });
 
 // concrete model .....................................................................................................
