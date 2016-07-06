@@ -20,7 +20,7 @@ const relationshipsToTable = (relationshipSearchDTO: RelationshipSearchDTO, isDe
     const relationshipDTOToTable = (relref: IHrefValue<IRelationship>):IRelationshipTableRow => {
         const rel = relref.value;
         const relationshipType = rel.relationshipType.href.split('/').slice(-1);
-        const relId = rel.subject.href.split('/').slice(-1)[0];
+        const relId = decodeURIComponent(rel.subject.href.split('/').slice(-1)[0]);
         return {
             name:       whatName(rel[relType+'NickName']),
             subName:    '', // TODO: extract ABN when server provides it
