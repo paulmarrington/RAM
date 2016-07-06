@@ -5,11 +5,21 @@ import {
     IIdentity,
     IRelationship,
     IRelationshipType,
+    ILink,
     IHrefValue
 } from '../../../commons/RamAPI2';
 
 @Injectable()
 export class RAMModelHelper {
+
+    public linkByType(type: string, links: ILink[]): ILink {
+        for(let link of links) {
+            if(link.type === type) {
+                return link;
+            }
+        }
+        return null;
+    }
 
     public displayName(name: IName): string {
         if (name) {
@@ -66,9 +76,9 @@ export class RAMModelHelper {
     }
 
     public getRelationshipType(relationshipTypeResources: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
-        let relationshipTypeHrefString = relationship.relationshipType.href;
+        let relationshipTypeHrefString = this.linkByType('self', relationship.relationshipType._links).href;
         for (let resource of relationshipTypeResources) {
-            if (resource.href === relationshipTypeHrefString) {
+            if (this.linkByType('self', resource._links).href === relationshipTypeHrefString) {
                 return resource.value;
             }
         }
