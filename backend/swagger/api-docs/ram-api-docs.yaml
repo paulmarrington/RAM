@@ -583,6 +583,9 @@ definitions:
       unstructuredName:
         type: string
         description: The unstructured name of an organisation
+      _displayName:
+        type: string
+        description: The computed name of the individual or organisation
 
   # Shared Secret .....................................................................................................
 

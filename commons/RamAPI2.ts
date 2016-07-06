@@ -27,6 +27,7 @@ export interface IName {
     givenName?: string;
     familyName?: string;
     unstructuredName?: string;
+    _displayName?: string;
 }
 
 export interface IRelationship {

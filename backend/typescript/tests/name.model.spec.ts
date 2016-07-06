@@ -13,9 +13,10 @@ describe('RAM Name', () => {
 
     it('inserts with given name', async (done) => {
         try {
-            await NameModel.create({
+            const name = await NameModel.create({
                 givenName: 'John'
             });
+            expect(name._displayName).toBe('John');
             done();
         } catch (e) {
             fail('Because ' + e);
@@ -25,10 +26,11 @@ describe('RAM Name', () => {
 
     it('inserts with given and family names', async (done) => {
         try {
-            await NameModel.create({
+            const name = await NameModel.create({
                 givenName: 'John',
                 familyName: 'Smith'
             });
+            expect(name._displayName).toBe('John Smith');
             done();
         } catch (e) {
             fail('Because ' + e);
@@ -38,9 +40,10 @@ describe('RAM Name', () => {
 
     it('inserts with unstructured name', async (done) => {
         try {
-            await NameModel.create({
+            const name = await NameModel.create({
                 unstructuredName: 'John\'s Catering Pty Ltd'
             });
+            expect(name._displayName).toBe('John\'s Catering Pty Ltd');
             done();
         } catch (e) {
             fail('Because ' + e);

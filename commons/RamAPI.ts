@@ -104,7 +104,8 @@ export class RelationshipAttributeName extends ICodeDecode {
 export class Name {
     constructor(public givenName:string,
                 public familyName:string,
-                public unstructuredName:string) {
+                public unstructuredName:string,
+                public _displayName:string) {
     }
 
     public displayName():string {
