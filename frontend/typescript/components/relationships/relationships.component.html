@@ -125,7 +125,7 @@
     <div style="margin-bottom:300px"></div>
     -->
 
-    <page-header [identityObservable]="identity$" tab="MANAGE_AUTHORISATIONS"></page-header>
+    <page-header [identity]="identity$|async" tab="MANAGE_AUTHORISATIONS"></page-header>
 
     <div class="page-header">
         <div class="row">
