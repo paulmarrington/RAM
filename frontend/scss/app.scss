@@ -72,6 +72,7 @@ $pagination-disabled-border:           $brand-primary;
         color: #333;
     }
 }
+
 div.page-header  {
     padding-bottom: 0px;
 }
@@ -81,6 +82,10 @@ div.navbar-header {
         padding-top: 25px;
         padding-left:10px;
     }
+}
+
+.centered {
+  text-align: center;
 }
 
 .padding-top-5 {
@@ -236,6 +241,27 @@ color: $color;
 .big-checkbox {
     width: 30px;
     height: 30px;
+}
+
+#top-nav .row > div {
+    background:url('../images/commonwealth-trans-w-full.png') no-repeat 15px 22px;
+}
+
+#top-nav h1 {
+    color: $navbar-default-color;
+    margin: 25px auto;
+    position: absolute;
+    width: 100%;
+}
+
+#top-nav .navbar-toggle {
+  background: $navbar-default-bg;
+  margin-top: 30px;
+}
+
+#top-menu {
+  color: $navbar-default-color;
+  margin: 37px 0;
 }
 
 .panel-heading .badge.square {
