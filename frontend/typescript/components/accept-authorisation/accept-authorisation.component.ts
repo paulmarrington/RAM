@@ -35,6 +35,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
                 private rest: RAMRestService) {
     }
 
+    /* tslint:disable:max-func-body-length */
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
             this.code = decodeURIComponent(params['invitationCode']);
