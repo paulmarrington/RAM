@@ -19,11 +19,18 @@ System.config({
     "es6-shim": "npm:es6-shim@0.35.1",
     "lodash": "npm:lodash@4.13.1",
     "ng2-bootstrap": "npm:ng2-bootstrap@1.0.17",
+    "ng2-markdown-component": "github:evanplaice/ng2-markdown@0.2.3",
     "reflect-metadata": "npm:reflect-metadata@0.1.3",
     "rxjs": "npm:rxjs@5.0.0-beta.6",
+    "showdown": "github:showdownjs/showdown@1.4.2",
     "urijs": "npm:urijs@1.18.1",
     "zone": "npm:zone.js@0.6.12",
     "zone.js": "npm:zone.js@0.6.12",
+    "github:evanplaice/ng2-markdown@0.2.3": {
+      "css": "github:systemjs/plugin-css@0.1.20",
+      "prism": "github:PrismJS/prism@gh-pages",
+      "showdown": "github:showdownjs/showdown@0.3.4"
+    },
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.4.1"
     },

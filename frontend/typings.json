@@ -9,6 +9,7 @@
     "jasmine": "registry:dt/jasmine#2.2.0+20160505161446",
     "lodash": "registry:dt/lodash#3.10.0+20160330154726",
     "node": "registry:dt/node#4.0.0+20160509154515",
+    "showdown": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/master/showdown/showdown.d.ts",
     "urijs": "registry:dt/urijs#1.15.1+20160326065022"
   }
 }

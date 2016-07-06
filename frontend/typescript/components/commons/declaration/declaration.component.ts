@@ -1,11 +1,12 @@
 import {OnInit, Input, Output, EventEmitter, Component} from '@angular/core';
 import {ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
-import {RAMNgValidators} from '../../../commons/ram-ng-validators';
+import {RAMNgValidators} from   '../../../commons/ram-ng-validators';
+import {MarkdownComponent} from '../ng2-markdown/ng2-markdown.component';
 
 @Component({
     selector: 'declaration',
     templateUrl: 'declaration.component.html',
-    directives: [FORM_DIRECTIVES]
+    directives: [FORM_DIRECTIVES, MarkdownComponent]
 })
 export class DeclarationComponent implements OnInit {
 
