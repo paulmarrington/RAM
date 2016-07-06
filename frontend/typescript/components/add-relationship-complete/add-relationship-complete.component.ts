@@ -38,7 +38,7 @@ export class AddRelationshipCompleteComponent implements OnInit {
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
             this.code = decodeURIComponent(params['invitationCode']);
-            this.idValue = params['idValue'];
+            this.idValue = decodeURIComponent(params['idValue']);
             this.displayName = decodeURIComponent(params['displayName']);
         });
 

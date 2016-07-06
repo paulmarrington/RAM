@@ -131,7 +131,7 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
 
         const relationship: IRelationshipAddDTO = {
             relationshipType: this.newRelationship.authType.authType,
-            subjectIdValue: this.idValue /* TODO subject identity idValue */,
+            subjectIdValue: this.idValue,
             delegate: delegate,
             startTimestamp: this.newRelationship.accessPeriod.startDate,
             endTimestamp: this.newRelationship.accessPeriod.endDate,
@@ -145,9 +145,9 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
             this.rest.findIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
                 //console.log(JSON.stringify(identity, null, 4));
                 this.router.navigate(['/relationships/add/complete',
-                     encodeURIComponent(this.idValue),
-                     identity.rawIdValue,
-                     this.displayName(this.newRelationship.representativeDetails)
+                    encodeURIComponent(this.idValue),
+                    encodeURIComponent(identity.rawIdValue),
+                    this.displayName(this.newRelationship.representativeDetails)
                 ]);
             }, (err) => {
                 // TODO

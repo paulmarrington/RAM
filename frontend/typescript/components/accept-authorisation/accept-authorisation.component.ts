@@ -3,13 +3,11 @@ import {DatePipe} from '@angular/common';
 import {Router, ActivatedRoute} from '@angular/router';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
-import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
     IRelationship,
     IRelationshipType,
     IRelationshipAttribute,
-    IRelationshipAttributeNameUsage,
-    IName
+    IRelationshipAttributeNameUsage
 } from '../../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
 
@@ -33,7 +31,6 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
-                private identityService: RAMIdentityService,
                 private modelHelper: RAMModelHelper,
                 private rest: RAMRestService) {
     }
@@ -41,7 +38,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
             this.code = decodeURIComponent(params['invitationCode']);
-            this.idValue = params['idValue'];
+            this.idValue = decodeURIComponent(params['idValue']);
             this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
             this.relationship$.subscribe((relationship) => {
                 for (let attribute of relationship.attributes) {

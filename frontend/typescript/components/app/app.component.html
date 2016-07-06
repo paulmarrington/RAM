@@ -18,9 +18,7 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right user-details">
-                <!-- identity component -->
-            </ul>
+            <my-identity></my-identity>
         </div>
         <!-- /.navbar-collapse -->
     </div>
@@ -31,20 +29,10 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-lg-3 col-md-3 col-sm-4" >
-            <div class="list-group table-of-contents">
-                <a class="list-group-item" [routerLink]="['']" href="">Home</a>
-                <a class="list-group-item" href="">Inbox <span class="badge">4</span></a>
-                <a class="list-group-item active" href="">Authorisation</a>
-                <a class="list-group-item" href="">Business details</a>
-                <a class="list-group-item" href="">Agency services</a>
-                <a class="list-group-item" href="">Activity log</a>
-                <a class="list-group-item" href="">Settings</a>
-            </div>
-        </div>
         <router-outlet></router-outlet>
     </div>
 </div>
+
 <footer class="footer">
     <div class="container">
         <div class="row">

@@ -98,7 +98,7 @@ export class RelationshipsTableComponent implements OnInit, OnDestroy {
 
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
-            this._relIds = [params['idValue']];
+            this._relIds = [decodeURIComponent(params['idValue'])];
             this.refreshContents(this._relIds);
         });
     }
@@ -116,8 +116,11 @@ export class RelationshipsTableComponent implements OnInit, OnDestroy {
         const identityValue = this._relIds.slice(-1)[0];
         this._isLoading = true;
         const response = this.rest.getRelationshipTableData(
-            identityValue, this._delegate, this._filters$.value,
-            this._pageNo, this._pageSize)
+            identityValue,
+            this._delegate,
+            this._filters$.value,
+            this._pageNo,
+            this._pageSize)
             .do(() => {
                 this._isLoading = false;
             });
@@ -141,7 +144,6 @@ export class RelationshipsTableComponent implements OnInit, OnDestroy {
     };
 
     public navigateTo(relId: string) {
-        console.log(relId);
         this.router.navigate(['/relationships', encodeURIComponent(relId)]);
     }
 
