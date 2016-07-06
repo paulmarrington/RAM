@@ -5,10 +5,8 @@ import {ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
-import {RAMIdentityService} from '../../services/ram-identity.service';
 import {
     ISearchResult,
-    IName,
     IParty,
     IRelationship,
     IRelationshipType,
@@ -25,7 +23,6 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
 
     public idValue: string;
 
-    public identityDisplayName$: Rx.Observable<IName>;
     public subjectsResponse$: Rx.Observable<ISearchResult<IHrefValue<IParty>[]>>;
     public relationshipsResponse$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>>;
 
@@ -39,7 +36,6 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
-                private identityService: RAMIdentityService,
                 private modelHelper: RAMModelHelper,
                 private rest: RAMRestService) {
     }
@@ -48,7 +44,6 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
         this._isLoading = true;
         this.rteParamSub = this.route.params.subscribe(params => {
             this.idValue = decodeURIComponent(params['idValue']);
-            this.identityDisplayName$ = this.identityService.getDefaultName(this.idValue).map(this.modelHelper.displayName);
             this.subjectsResponse$ = this.rest.searchDistinctSubjectsBySubjectOrDelegateIdentity(this.idValue, 1);
             this.subjectsResponse$.subscribe((searchResult) => {
                 this._isLoading = false;
