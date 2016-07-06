@@ -2,16 +2,15 @@ import {RAMNgValidators} from '../../commons/ram-ng-validators';
 import {OnInit, Component} from '@angular/core';
 import {Validators, ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router} from '@angular/router';
-import {
-    INotifyDelegateDTO
-} from '../../../../commons/RamAPI2';
+import {IIdentity, INotifyDelegateDTO} from '../../../../commons/RamAPI2';
 import {RAMRestService} from '../../services/ram-rest.service';
+import {PageHeaderComponent} from '../page-header/page-header.component';
 import Rx from 'rxjs/Rx';
 
 @Component({
     selector: 'add-relationship-complete',
     templateUrl: 'add-relationship-complete.component.html',
-    directives: [ROUTER_DIRECTIVES, FORM_DIRECTIVES],
+    directives: [PageHeaderComponent, ROUTER_DIRECTIVES, FORM_DIRECTIVES],
     providers: []
 })
 
@@ -21,18 +20,18 @@ export class AddRelationshipCompleteComponent implements OnInit {
     public form: ControlGroup;
     public formUdn: ControlGroup;
 
-    public code: string;
-
     public idValue: string;
-
+    public code: string;
     public displayName: string;
+
+    public identity$: Rx.Observable<IIdentity>;
 
     private rteParamSub: Rx.Subscription;
 
     constructor(private _fb: FormBuilder,
-        private route: ActivatedRoute,
-        private router: Router,
-        private rest: RAMRestService) {
+                private route: ActivatedRoute,
+                private router: Router,
+                private rest: RAMRestService) {
     }
 
     public ngOnInit() {
@@ -40,6 +39,7 @@ export class AddRelationshipCompleteComponent implements OnInit {
             this.code = decodeURIComponent(params['invitationCode']);
             this.idValue = decodeURIComponent(params['idValue']);
             this.displayName = decodeURIComponent(params['displayName']);
+            this.identity$ = this.rest.findIdentityByValue(this.idValue);
         });
 
         this.form = this._fb.group({
@@ -50,6 +50,7 @@ export class AddRelationshipCompleteComponent implements OnInit {
         });
         // 'udn': ['', Validators.compose([Validators.required, RAMNgValidators.validateUDNFormat])]
     }
+
     public ngOnDestroy() {
         this.rteParamSub.unsubscribe();
     }

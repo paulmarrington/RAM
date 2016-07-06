@@ -1,9 +1,11 @@
 import {OnInit, OnDestroy, Component} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Router, ActivatedRoute} from '@angular/router';
+import {PageHeaderComponent} from '../page-header/page-header.component';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {
+    IIdentity,
     IRelationship,
     IRelationshipType,
     IRelationshipAttribute,
@@ -14,7 +16,7 @@ import Rx from 'rxjs/Rx';
 @Component({
     selector: 'accept-authorisation',
     templateUrl: 'accept-authorisation.component.html',
-    providers: []
+    directives: [PageHeaderComponent]
 })
 
 export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
@@ -22,6 +24,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     public code: string;
     public idValue: string;
 
+    public identity$: Rx.Observable<IIdentity>;
     public relationship$: Rx.Observable<IRelationship>;
     public relationshipType$: Rx.Observable<IRelationshipType>;
 
@@ -40,6 +43,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
         this.rteParamSub = this.route.params.subscribe(params => {
             this.code = decodeURIComponent(params['invitationCode']);
             this.idValue = decodeURIComponent(params['idValue']);
+            this.identity$ = this.rest.findIdentityByValue(this.idValue);
             this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
             this.relationship$.subscribe((relationship) => {
                 for (let attribute of relationship.attributes) {

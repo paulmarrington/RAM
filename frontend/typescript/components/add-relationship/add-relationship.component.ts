@@ -16,13 +16,18 @@ import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
     IAttributeDTO,
+    IIdentity,
     ICreateIdentityDTO,
-    IRelationshipAddDTO, IRelationshipAttributeNameUsage, IRelationshipType, IHrefValue
+    IRelationshipAddDTO,
+    IRelationshipAttributeNameUsage,
+    IRelationshipType,
+    IHrefValue
 } from '../../../../commons/RamAPI2';
 import {
     AuthorisationManagementComponent,
     AuthorisationManagementComponentData
 } from '../commons/authorisation-management/authorisation-management.component';
+import {PageHeaderComponent} from '../page-header/page-header.component';
 
 @Component({
     selector: 'add-relationship',
@@ -33,7 +38,8 @@ import {
         AuthorisationTypeComponent,
         DeclarationComponent,
         RepresentativeDetailsComponent,
-        AuthorisationManagementComponent
+        AuthorisationManagementComponent,
+        PageHeaderComponent
     ]
 })
 export class AddRelationshipComponent implements OnInit, OnDestroy {
@@ -41,8 +47,10 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
     private rteParamSub: Rx.Subscription;
 
     public idValue: string;
-    public manageAuthAttribute: IRelationshipAttributeNameUsage;
+    public identity$: Rx.Observable<IIdentity>;
     public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
+
+    public manageAuthAttribute: IRelationshipAttributeNameUsage;
 
     public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
@@ -81,6 +89,7 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
             this.idValue = decodeURIComponent(params['idValue']);
+            this.identity$ = this.rest.findIdentityByValue(this.idValue);
             this.relationshipTypes$ = this.rest.listRelationshipTypes();
             this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
         });

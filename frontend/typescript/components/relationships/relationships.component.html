@@ -127,6 +127,8 @@
 
     <!-- Sprint Set 1 (old) -->
 
+    <page-header [identityObservable]="identity$" tab="MANAGE_AUTHORISATIONS"></page-header>
+
     <div class="page-header">
         <div class="row">
             <div class="pull-md-right col-md-5 col-lg-4 col-xs-12">
@@ -147,7 +149,8 @@
     </div>
 
     <p class="lead">
-        <h4><strong>{{modelHelper.displayNameForIdentity(identityResponse$|async)}}</strong>, you have access to the entries listed below. Select an entity to view the relationship or manage access.
+        <h4><strong>{{modelHelper.displayNameForIdentity(identity$|async)}}</strong>, you have access
+            to the entries listed below. Select an entity to view the relationship or manage access.
             Find out more about <a href="">managing access</a>.</h4></p>
 
     <div class="ram section">

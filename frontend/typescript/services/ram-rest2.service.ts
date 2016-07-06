@@ -38,7 +38,7 @@ export class RAMRestService2 {
         // How about mocking framework?
         return Promise.resolve('The End of Time Pty Limited');
     }
-    
+
     // TODO: pass in Party2 and use identity name if no nickname
     public whatName = (nickname:IName) => {
         if (nickname.unstructuredName) {
