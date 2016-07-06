@@ -2,6 +2,7 @@
 
     <!-- Sprint Set 2 Spike -->
 
+    <!--
     <div class="page-header">
         <div class="row">
             <div class="pull-md-right col-md-5 col-lg-4 col-xs-12">
@@ -32,7 +33,7 @@
                     <h5>{{modelHelper.abnLabelForParty(subjectHrefValue.value)}} / {{modelHelper.partyTypeLabelForParty(subjectHrefValue.value)}}</h5>
                 </div>
 
-                <!--todo pagination-->
+                &lt;!&ndash;todo pagination&ndash;&gt;
                 <br/><br/><br/>
                 <div class="todo">This pagination is for subjects (not connected</div>
 
@@ -84,7 +85,7 @@
                     </tbody>
                 </table>
 
-                <!--todo pagination-->
+                &lt;!&ndash;todo pagination&ndash;&gt;
                 <br/><br/><br/>
                 <div class="todo">This pagination is for relationships (not connected</div>
 
@@ -122,6 +123,7 @@
     <hr/>
 
     <div style="margin-bottom:300px"></div>
+    -->
 
     <!-- Sprint Set 1 (old) -->
 
@@ -163,6 +165,27 @@
         <div class="row">
             <div class="col-md-12">
                 <ram-relationships-table [delegate]="true" [relationshipTypes]="relationshipTypes"></ram-relationships-table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h4>Did you want to give a new individual or business authorisation? Have you received an
+                            "Authorisation code" email asking you to enter a code? Use the buttons on the right to perform these tasks.</h4>
+                    </div>
+                    <div class="col-sm-4">
+                        <br/>
+                        <a (click)="goToRelationshipsAddPage()" class="btn btn-sm btn-primary">Give authorisation</a>
+                        &nbsp;
+                        <a (click)="goToRelationshipsAuthorisationPage()" class="btn btn-sm btn-primary">Get authorised</a>
+                        <br/>
+                        <br/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
