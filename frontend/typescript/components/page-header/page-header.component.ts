@@ -1,9 +1,7 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
-//import {ActivatedRoute, Router} from '@angular/router';
-//import {ROUTER_DIRECTIVES} from '@angular/router';
+import {Router} from '@angular/router';
 import Rx from 'rxjs/Rx';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
-import {RAMRestService} from '../../services/ram-rest.service';
 import {IIdentity} from '../../../../commons/RamAPI2';
 
 @Component({
@@ -19,7 +17,8 @@ export class PageHeaderComponent implements OnInit, OnDestroy {
 
     public identity: IIdentity;
 
-    constructor(private modelHelper: RAMModelHelper) {
+    constructor(private router: Router,
+                private modelHelper: RAMModelHelper) {
     }
 
     public ngOnInit() {
@@ -34,5 +33,17 @@ export class PageHeaderComponent implements OnInit, OnDestroy {
     public title(): string {
         return this.identity ? this.modelHelper.displayNameForIdentity(this.identity) : 'Loading ...';
     }
+
+    public goToRelationshipsPage = () => {
+        this.router.navigate(['/relationships', encodeURIComponent(this.identity.idValue)]);
+    };
+
+    public goToGiveAuthorisationPage = () => {
+        this.router.navigate(['/relationships/add', encodeURIComponent(this.identity.idValue)]);
+    };
+
+    public goToGetAuthorisationPage = () => {
+        this.router.navigate(['/relationships/add/enter', encodeURIComponent(this.identity.idValue)]);
+    };
 
 }

@@ -58,6 +58,14 @@ $pagination-disabled-border:           $brand-primary;
 
 /******************************************************************************************************/
 
+a {
+    cursor: pointer;
+}
+
+.active > a {
+    cursor: default;
+}
+
 .page-header {
     margin-top:0px;
     h2 {
@@ -250,7 +258,7 @@ color: $color;
   border-bottom: 1px solid #e6e6e6;
   padding: 0 0 0.5em 0;
   margin: 0 0 1em 0;
-  text-align: center;
+  text-align: left;
 }
 
 #top-nav .row > div {
