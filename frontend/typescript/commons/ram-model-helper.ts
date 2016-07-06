@@ -23,7 +23,7 @@ export class RAMModelHelper {
 
     public displayName(name: IName): string {
         if (name) {
-            return name.unstructuredName ? name.unstructuredName : name.givenName + ' ' + name.familyName;
+            return name._displayName;
         }
         return '';
     }

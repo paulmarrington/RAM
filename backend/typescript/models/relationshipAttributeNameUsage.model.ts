@@ -39,6 +39,10 @@ export interface IRelationshipAttributeNameUsage extends mongoose.Document {
 export interface IRelationshipAttributeNameUsageModel extends mongoose.Model<IRelationshipAttributeNameUsage> {
 }
 
+// instance methods ...................................................................................................
+
+// static methods .....................................................................................................
+
 // concrete model .....................................................................................................
 
 export const RelationshipAttributeNameUsageModel = mongoose.model(
