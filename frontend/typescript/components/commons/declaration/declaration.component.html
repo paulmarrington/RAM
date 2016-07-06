@@ -4,24 +4,8 @@
     </div>
     <div class="panel-body">
         <form [ngFormModel]='form'>
-            <h4 class="padding-btn-10">By clicking authorise button below you agree:</h4>
-            <ul>
-                <li>
-                    <p>Terms and conditions / declaration item 1.</p>
-                </li>
-                <li>
-                    <p>Terms and conditions / declaration item 2.</p>
-                </li>
-                <li>
-                    <p>Terms and conditions / declaration item 3.</p>
-                </li>
-                <li>
-                    <p>Terms and conditions / declaration item 4.</p>
-                </li>
-                <li>
-                    <p>Terms and conditions / declaration item 5.</p>
-                </li>
-            </ul>
+            <ng2-markdown>
+            </ng2-markdown>
 
             <div class="form-group col-md-12" >
                 <label><h4><input type="checkbox" [ngFormControl]='form.controls["accepted"]'> I accept</h4></label>
