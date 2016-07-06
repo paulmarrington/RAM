@@ -33,6 +33,10 @@ export class RAMModelHelper {
         return resource ? this.displayName(resource.value.profile.name) : '';
     }
 
+    public displayNameForIdentity(identity: IIdentity): string {
+        return identity ? this.displayName(identity.profile.name) : '';
+    }
+
     public abnLabelForParty(party: IParty): string {
         if (party && party.identities && party.identities.length > 0) {
             for (const resource of party.identities) {

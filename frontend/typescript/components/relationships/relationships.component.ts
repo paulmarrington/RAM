@@ -8,6 +8,7 @@ import {RAMRestService} from '../../services/ram-rest.service';
 import {
     ISearchResult,
     IParty,
+    IIdentity,
     IRelationship,
     IRelationshipType,
     IHrefValue
@@ -23,6 +24,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
 
     public idValue: string;
 
+    public identityResponse$: Rx.Observable<IIdentity>;
     public subjectsResponse$: Rx.Observable<ISearchResult<IHrefValue<IParty>[]>>;
     public relationshipsResponse$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>>;
 
@@ -44,6 +46,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
         this._isLoading = true;
         this.rteParamSub = this.route.params.subscribe(params => {
             this.idValue = decodeURIComponent(params['idValue']);
+            this.identityResponse$ = this.rest.findIdentityByValue(this.idValue);
             this.subjectsResponse$ = this.rest.searchDistinctSubjectsBySubjectOrDelegateIdentity(this.idValue, 1);
             this.subjectsResponse$.subscribe((searchResult) => {
                 this._isLoading = false;
