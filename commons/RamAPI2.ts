@@ -13,8 +13,13 @@ export interface ICodeDecode {
     endTimestamp: string;
 }
 
-export interface IHrefValue<T> {
+export interface ILink {
+    type: string;
     href: string;
+}
+
+export interface IHrefValue<T> {
+    _links: ILink[];
     value?: T;
 }
 

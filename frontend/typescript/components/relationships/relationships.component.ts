@@ -79,7 +79,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
 
     public getOtherPartyHrefValue = (relationship: IRelationship) => {
         if (this.subjectHrefValue) {
-            if (relationship.subject.href === this.subjectHrefValue.href) {
+            if (this.modelHelper.linkByType('self', relationship.subject._links).href === this.modelHelper.linkByType('self', this.subjectHrefValue._links).href) {
                 return relationship.delegate;
             } else {
                 return relationship.subject;

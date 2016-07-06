@@ -11,6 +11,7 @@ import {
 } from
 '../commons/representative-details/representative-details.component';
 import {Router, ActivatedRoute} from '@angular/router';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
 import {
@@ -72,7 +73,9 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
 
     constructor(private route: ActivatedRoute,
         private router: Router,
-        private rest: RAMRestService) {
+        private rest: RAMRestService,
+        private modelHelper: RAMModelHelper
+    ) {
     }
 
     public ngOnInit() {
@@ -142,7 +145,8 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
 
         this.rest.createRelationship(relationship).subscribe((relationship) => {
             //console.log(JSON.stringify(relationship, null, 4));
-            this.rest.findIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
+            let selfHref = this.modelHelper.linkByType('self', relationship.delegate.value.identities[0]._links);
+            this.rest.findIdentityByHref(selfHref.href).subscribe((identity) => {
                 //console.log(JSON.stringify(identity, null, 4));
                 this.router.navigate(['/relationships/add/complete',
                     encodeURIComponent(this.idValue),

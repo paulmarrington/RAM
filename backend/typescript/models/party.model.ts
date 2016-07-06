@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {IIdentity, IdentityModel} from './identity.model';
 import {
+    Link,
     HrefValue,
     Party as DTO,
     Identity as IdentityDTO,
@@ -65,7 +66,9 @@ PartySchema.method('toHrefValue', async function (includeValue:boolean) {
     const defaultIdentity = await IdentityModel.findDefaultByPartyId(this.id);
     if (defaultIdentity) {
         return new HrefValue(
-            '/api/v1/party/identity/' + encodeURIComponent(defaultIdentity.idValue),
+            [
+                new Link('self', '/api/v1/party/identity/' + encodeURIComponent(defaultIdentity.idValue))
+            ],
             includeValue ? await this.toDTO() : undefined
         );
     } else {

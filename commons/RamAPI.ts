@@ -29,10 +29,6 @@ export class ErrorResponse implements IResponse<void> {
             this.alert = {messages: [messages], alertType: alertType};
         }
     }
-
-    public static fromJson(json:ErrorResponse) {
-        return json ? new ErrorResponse(json.alert.messages, json.alert.alertType) : null;
-    }
 }
 
 export interface IKeyValue<T> {
@@ -41,8 +37,12 @@ export interface IKeyValue<T> {
 }
 
 export class HrefValue<T> {
-    constructor(public href:string,
-                public value?:T) {
+    constructor(public _links: Link[], public value:T) {
+    }
+}
+
+export class Link {
+    constructor(public type: string, public href:string) {
     }
 }
 
@@ -111,11 +111,6 @@ export class Name {
     public displayName():string {
         return this.unstructuredName ? this.unstructuredName : this.givenName + ' ' + this.familyName;
     }
-
-    public static fromJson(name:Name):Name {
-        return name ? new Name(name.givenName, name.familyName, name.unstructuredName) : null;
-    }
-
 }
 
 export class SharedSecret {
@@ -140,11 +135,6 @@ export class Profile {
                 public name:Name,
                 public sharedSecrets:SharedSecret[]) {
     }
-
-    public static fromJson(json:Profile):Profile {
-        // todo shared secrets not supported yet
-        return json ? new Profile(json.provider, Name.fromJson(json.name), null) : null;
-    }
 }
 
 export class Identity {
@@ -164,47 +154,11 @@ export class Identity {
                 public profile:Profile,
                 public party:HrefValue<Party>) {
     }
-
-    public static fromJson(json:Identity) {
-        return json ? new Identity(
-            json.idValue,
-            json.rawIdValue,
-            json.identityType,
-            json.defaultInd,
-            json.agencyScheme,
-            json.agencyToken,
-            json.invitationCodeStatus,
-            null, null,
-            json.invitationCodeTemporaryEmailAddress,
-            json.publicIdentifierScheme,
-            json.linkIdScheme,
-            json.linkIdConsumer,
-            Profile.fromJson(json.profile),
-            new HrefValue<Party>(json.party.href, Party.fromJson(json.party.value)))
-            : null;
-    }
-
-    // public displayName():string {
-    //     return (this.profile && this.profile.name) ? this.profile.name.displayName() : null;
-    // }
 }
 
 export class Party {
     constructor(public partyType:string,
                 public identities:HrefValue<Identity>[]) {
-    }
-
-    public static fromJson(json:Party):Party {
-        if (json) {
-            const identities:HrefValue<Identity>[] = [];
-            if (json.identities) {
-                for (var identity of json.identities) {
-                    identities.push(new HrefValue<Identity>(identity.href, Identity.fromJson(identity.value)));
-                }
-            }
-            return new Party(json.partyType, identities);
-        }
-        return null;
     }
 }
 

@@ -46,7 +46,8 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
                         this.delegateManageAuthorisationAllowedIndAttribute = attribute;
                     }
                 }
-                this.relationshipType$ = this.rest.findRelationshipTypeByHref(relationship.relationshipType.href);
+                let selfHref = this.modelHelper.linkByType('self', relationship.relationshipType._links);
+                this.relationshipType$ = this.rest.findRelationshipTypeByHref(selfHref.href);
                 this.relationshipType$.subscribe((relationshipType) => {
                     for (let attributeUsage of relationshipType.relationshipAttributeNames) {
                         if (attributeUsage.attributeNameDef.value.code === 'DELEGATE_RELATIONSHIP_TYPE_DECLARATION') {
@@ -69,7 +70,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
 
     public declineAuthorisation = () => {
         alert('TODO: Decline - Out of Scope');
-    }
+    };
 
     public acceptAuthorisation = () => {
         this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {
