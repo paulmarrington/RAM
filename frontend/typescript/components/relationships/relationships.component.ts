@@ -1,13 +1,15 @@
 import {OnInit, OnDestroy, Component} from '@angular/core';
-import {RelationshipsTableComponent} from '../relationships-table/relationships-table.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
+import {PageHeaderComponent} from '../page-header/page-header.component';
+import {RelationshipsTableComponent} from '../relationships-table/relationships-table.component';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {
     ISearchResult,
     IParty,
+    IIdentity,
     IRelationship,
     IRelationshipType,
     IHrefValue
@@ -16,13 +18,14 @@ import {
 @Component({
     selector: 'ram-relationships',
     templateUrl: 'relationships.component.html',
-    directives: [RelationshipsTableComponent, ROUTER_DIRECTIVES],
+    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, RelationshipsTableComponent]
 })
 
 export class RelationshipsComponent implements OnInit, OnDestroy {
 
     public idValue: string;
 
+    public identity$: Rx.Observable<IIdentity>;
     public subjectsResponse$: Rx.Observable<ISearchResult<IHrefValue<IParty>[]>>;
     public relationshipsResponse$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>>;
 
@@ -44,6 +47,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
         this._isLoading = true;
         this.rteParamSub = this.route.params.subscribe(params => {
             this.idValue = decodeURIComponent(params['idValue']);
+            this.identity$ = this.rest.findIdentityByValue(this.idValue);
             this.subjectsResponse$ = this.rest.searchDistinctSubjectsBySubjectOrDelegateIdentity(this.idValue, 1);
             this.subjectsResponse$.subscribe((searchResult) => {
                 this._isLoading = false;
@@ -79,7 +83,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
 
     public getOtherPartyHrefValue = (relationship: IRelationship) => {
         if (this.subjectHrefValue) {
-            if (relationship.subject.href === this.subjectHrefValue.href) {
+            if (this.modelHelper.linkByType('self', relationship.subject._links).href === this.modelHelper.linkByType('self', this.subjectHrefValue._links).href) {
                 return relationship.delegate;
             } else {
                 return relationship.subject;

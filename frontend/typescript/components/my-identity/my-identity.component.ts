@@ -1,5 +1,4 @@
 import 'ng2-bootstrap';
-import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 
 import {IIdentity} from '../../../../commons/RamAPI2';

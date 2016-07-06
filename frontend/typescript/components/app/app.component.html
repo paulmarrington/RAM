@@ -1,28 +1,20 @@
-<nav class="navbar navbar-default" >
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <!--<a class="navbar-brand" href="#">-->
-                            <!--<img src="/images/commonwealth-trans-bw-full.gif" />-->
-                        <!--</a>-->
-                        <h1 class="inline">Business Account</h1></li>
-                    </div>
+<nav id="top-nav" class="navbar navbar-default">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="centered">Business Account</h1>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top-menu">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <div id="top-menu" class="collapse navbar-collapse pull-right">
+                    <my-identity></my-identity>
                 </div>
-            </nav>
-
+            </div>
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <my-identity></my-identity>
-        </div>
-        <!-- /.navbar-collapse -->
     </div>
-    <!-- /.container-fluid -->
 </nav>
 
 <my-error></my-error>

@@ -1,9 +1,11 @@
 import {OnInit, OnDestroy, Component} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Router, ActivatedRoute} from '@angular/router';
+import {PageHeaderComponent} from '../page-header/page-header.component';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {
+    IIdentity,
     IRelationship,
     IRelationshipType,
     IRelationshipAttribute,
@@ -14,7 +16,7 @@ import Rx from 'rxjs/Rx';
 @Component({
     selector: 'accept-authorisation',
     templateUrl: 'accept-authorisation.component.html',
-    providers: []
+    directives: [PageHeaderComponent]
 })
 
 export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
@@ -22,6 +24,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     public code: string;
     public idValue: string;
 
+    public identity$: Rx.Observable<IIdentity>;
     public relationship$: Rx.Observable<IRelationship>;
     public relationshipType$: Rx.Observable<IRelationshipType>;
 
@@ -35,10 +38,12 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
                 private rest: RAMRestService) {
     }
 
+    /* tslint:disable:max-func-body-length */
     public ngOnInit() {
         this.rteParamSub = this.route.params.subscribe(params => {
             this.code = decodeURIComponent(params['invitationCode']);
             this.idValue = decodeURIComponent(params['idValue']);
+            this.identity$ = this.rest.findIdentityByValue(this.idValue);
             this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
             this.relationship$.subscribe((relationship) => {
                 for (let attribute of relationship.attributes) {
@@ -46,7 +51,8 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
                         this.delegateManageAuthorisationAllowedIndAttribute = attribute;
                     }
                 }
-                this.relationshipType$ = this.rest.findRelationshipTypeByHref(relationship.relationshipType.href);
+                let selfHref = this.modelHelper.linkByType('self', relationship.relationshipType._links);
+                this.relationshipType$ = this.rest.findRelationshipTypeByHref(selfHref.href);
                 this.relationshipType$.subscribe((relationshipType) => {
                     for (let attributeUsage of relationshipType.relationshipAttributeNames) {
                         if (attributeUsage.attributeNameDef.value.code === 'DELEGATE_RELATIONSHIP_TYPE_DECLARATION') {
@@ -69,7 +75,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
 
     public declineAuthorisation = () => {
         alert('TODO: Decline - Out of Scope');
-    }
+    };
 
     public acceptAuthorisation = () => {
         this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {

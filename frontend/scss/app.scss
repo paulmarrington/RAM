@@ -58,6 +58,14 @@ $pagination-disabled-border:           $brand-primary;
 
 /******************************************************************************************************/
 
+a {
+    cursor: pointer;
+}
+
+.active > a {
+    cursor: default;
+}
+
 .page-header {
     margin-top:0px;
     h2 {
@@ -72,6 +80,7 @@ $pagination-disabled-border:           $brand-primary;
         color: #333;
     }
 }
+
 div.page-header  {
     padding-bottom: 0px;
 }
@@ -81,6 +90,10 @@ div.navbar-header {
         padding-top: 25px;
         padding-left:10px;
     }
+}
+
+.centered {
+  text-align: center;
 }
 
 .padding-top-5 {
@@ -161,11 +174,10 @@ footer {
             text-decoration: none;
         }
     }
-
     background: #555;
+    margin-top: ($line-height-computed * 3);
     padding-top: 50px;
     padding-bottom: 50px;
-
 }
 
 .btn.btn-inverse {
@@ -236,6 +248,38 @@ color: $color;
 .big-checkbox {
     width: 30px;
     height: 30px;
+}
+
+#page-header {
+  margin: 0 0 3em 0;
+}
+
+#page-header h1 {
+  border-bottom: 1px solid #e6e6e6;
+  padding: 0 0 0.5em 0;
+  margin: 0 0 1em 0;
+  text-align: left;
+}
+
+#top-nav .row > div {
+    background:url('../images/commonwealth-trans-w-full.png') no-repeat 15px 22px;
+}
+
+#top-nav h1 {
+    color: $navbar-default-color;
+    margin: 25px auto;
+    position: absolute;
+    width: 100%;
+}
+
+#top-nav .navbar-toggle {
+  background: $navbar-default-bg;
+  margin-top: 30px;
+}
+
+#top-menu {
+  color: $navbar-default-color;
+  margin: 37px 0;
 }
 
 .panel-heading .badge.square {

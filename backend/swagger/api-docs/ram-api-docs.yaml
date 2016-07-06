@@ -537,7 +537,7 @@ definitions:
   # * <entity>Details
   # * <entity>Request - the combination of <entity>BusinessIdentifier + <entity>Details
   # * <entity>ResourceReference - which is composed of:
-  #   - an href to the resource
+  #   - links for the resource
   #   - a value property which may be null or contains the actual resource
   # * <entity>ListResponse - which is composed of:
   #   - SearchResultResponse - total count + page size
@@ -583,6 +583,9 @@ definitions:
       unstructuredName:
         type: string
         description: The unstructured name of an organisation
+      _displayName:
+        type: string
+        description: The computed name of the individual or organisation
 
   # Shared Secret .....................................................................................................
 
@@ -630,11 +633,13 @@ definitions:
   PartyResourceReference:
     description: A reference to a Party
     type: object
-    required: ["href"]
+    required: ["_links"]
     properties:
-      href:
-        type: string
-        description: URI that uniquely identifies this Party
+      _links:
+        type: array
+        items:
+          $ref: '#/definitions/ILink'
+        description: an array of Links for this Party
       value:
           $ref: '#/definitions/Party'
 
@@ -725,11 +730,13 @@ definitions:
   IdentityResourceReference:
     type: object
     description: A reference to a Resource
-    required: ["href"]
+    required: ["_links"]
     properties:
-      href:
-        type: string
-        description: URI that uniquely identifies this Identity
+      _links:
+        type: array
+        items:
+          $ref: '#/definitions/ILink'
+        description: an array of Links for this Identity
       value:
         $ref: '#/definitions/Identity'
 
@@ -849,11 +856,13 @@ definitions:
   RelationshipResourceReference:
     type: object
     description: A reference to a Resource
-    required: ["href"]
+    required: ["_links"]
     properties:
-      href:
-        type: string
-        description: URI that uniquely identifies this Relationship
+      _links:
+        type: array
+        items:
+          $ref: '#/definitions/ILink'
+        description: an array of Links for this Relationship
       value:
         $ref: '#/definitions/Relationship'
 
@@ -919,11 +928,13 @@ definitions:
   RelationshipTypeResourceReference:
     type: object
     description: A reference to a Resource
-    required: ["href"]
+    required: ["_links"]
     properties:
-      href:
-        type: string
-        description: URI that uniquely identifies this RelationshipType
+      _links:
+        type: array
+        items:
+          $ref: '#/definitions/ILink'
+        description: An array of links for this RelationshipType
       value:
         $ref: '#/definitions/RelationshipType'
 
@@ -990,13 +1001,15 @@ definitions:
   RelationshipAttributeNameResourceReference:
     type: object
     description: A reference to a RelationshipAttributeName Resource
-    required: ["href"]
+    required: ["_links"]
     properties:
-      href:
-        type: string
-        description: URL that uniquely identifies this RelationshipAttributeName
+      _links:
+        type: array
+        items:
+          $ref: '#/definitions/ILink'
+        description: An array of Links for this RelationshipAttributeName
       value:
-        description: The content of this field is optional, it is the same content for a get request on the href
+        description: The content of this field is optional, it is the same content for a get request on the href of the 'self' link.
         schema:
           $ref: '#/definitions/RelationshipAttributeName'
 
@@ -1004,13 +1017,26 @@ definitions:
   # Base and System Models
   # -------------------------------------------------------------------------------------------------------------------
 
-  Resource:
+  ILink:
     type: object
-    required: ['href']
+    required: ['type','href']
     properties:
+      type:
+        type: string
+        description: Name of link type
       href:
         type: string
         description: URL reference to uniquely identified resource
+
+  Resource:
+    type: object
+    required: ['_links']
+    properties:
+      _links:
+        type: array
+        items:
+          $ref: '#/definitions/ILink'
+        description: An array of links for this resource and actions on this resource
       value:
         type: object
         description: Optional value that represent the respond if one sends a GET request to resource url

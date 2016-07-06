@@ -79,12 +79,11 @@ export class RelationshipsTableComponent implements OnInit, OnDestroy {
 
     @Input() public relationshipTypes: IHrefValue<IRelationshipType>[];
 
-    constructor(
-        private constants: RAMConstantsService,
-        private route: ActivatedRoute,
-        private router: Router,
-        private nav: RAMNavService,
-        private rest: RAMRestService2) {
+    constructor(private constants: RAMConstantsService,
+                private route: ActivatedRoute,
+                private router: Router,
+                private nav: RAMNavService,
+                private rest: RAMRestService2) {
         this._filters$ = new ControlGroup({
             'name': new Control(''),
             'accessLevel': new Control(''),
