@@ -31,7 +31,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
 
     // todo rename to relationshipTypeHrefs
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
-    public subjectGroupsWithRelationships: SubjectGroupWithRelationships[] = [];
+    public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
     public subjectHrefValue: IHrefValue<IParty>;
 
     private _isLoading = false; // set to true when you want the UI indicate something is getting loaded.
@@ -74,6 +74,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
 
             // relationships
             // todo add pagination support
+            this.subjectGroupsWithRelationships = [];
             this.relationshipsResponse$ = this.rest.searchRelationshipsByIdentity(this.idValue, 1);
             this.relationshipsResponse$.subscribe((relationshipResources) => {
                 this._isLoading = false;
@@ -174,6 +175,14 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
     public goToRelationshipsAuthorisationPage = () => {
         this.router.navigate(['/relationships/add/enter', encodeURIComponent(this.idValue)]);
     };
+
+    public goToRelationshipsContext(partyResource: IHrefValue<IParty>) {
+        const defaultIdentityResource = this.modelHelper.getDefaultIdentityResource(partyResource.value);
+        if (defaultIdentityResource) {
+            const identityIdValue = defaultIdentityResource.value.idValue;
+            this.router.navigate(['/relationships', encodeURIComponent(identityIdValue)]);
+        }
+    }
 
 }
 

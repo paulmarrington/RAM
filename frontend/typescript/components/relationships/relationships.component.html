@@ -146,7 +146,7 @@
         <tbody *ngIf="!isLoading">
             <template ngFor let-item="$implicit" [ngForOf]="subjectGroupsWithRelationships">
                 <tr>
-                    <td colspan="5">
+                    <td colspan="5" (click)="goToRelationshipsContext(item.subjectResource)" class="clickable">
                         <div class="relationship-subject-heading">
                             <h4>{{modelHelper.displayNameForParty(item.subjectResource.value)}}</h4>
                             <h5>{{modelHelper.abnLabelForParty(item.subjectResource.value)}} /
@@ -155,7 +155,7 @@
                     </td>
                 </tr>
                 <tr *ngFor="let relationshipResource of item.relationshipResources">
-                    <td>{{modelHelper.displayNameForParty(relationshipResource.value.delegate.value)}}</td>
+                    <td>{{modelHelper.displayName(relationshipResource.value.delegateNickName)}}</td>
                     <td>{{commaSeparatedListOfProviderNames(relationshipResource.value.delegate.value)}}</td>
                     <td class="hidden-xs">{{modelHelper.relationshipTypeLabel(relationshipTypes, relationshipResource.value)}}</td>
                     <td class="hidden-xs">{{relationshipResource.value.status}}</td>
