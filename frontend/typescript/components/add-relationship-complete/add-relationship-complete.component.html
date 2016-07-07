@@ -3,19 +3,14 @@
     <page-header [identity]="identity$|async" tab="GIVE_AUTHORISATION"></page-header>
 
     <div class="page-header">
-        <div class="row">
-
-            <h2 class="col-sm-12 col-md-7 col-lg-8 col-xs-12">COMPLETE THE AUTHORISATION</h2>
-        </div>
-    </div>
-
-    <div class="page-header">
         <h3><strong>Option 1</strong></h3>
     </div>
     <p class="lead">
         <h4><strong>{{displayName}}</strong> must accept this authorisation before it is active. Instructions are included in a document
             for you to <a href="">open a print friendly version </a> and provide to {{displayName}}.</h4>
     </p>
+
+    <br/>
 
     <div class="page-header">
         <h3><strong>Option 2</strong></h3>
@@ -36,6 +31,8 @@
             </fieldset>
         </form>
     </p>
+
+    <br/>
 
     <div class="page-header">
         <h3><strong>Option 3</strong></h3>
@@ -58,11 +55,15 @@
     </p>
 
     <hr/>
+
     <p>
         <h4>The authorisation code <strong>{{code}}</strong> is included in the instructions and will expire in 7 days.</h4>
         <h4>You will be notified when <strong>{{displayName}}</strong> has completed the authorisation.</h4>
-        <h4>To access these instructions again refer to the <strong>Authorisations</strong> page and select <strong>Edit</strong>            for this user.</h4>
+        <h4>To access these instructions again refer to the <strong>Authorisations</strong> page and select <strong>Edit</strong> for this user.</h4>
     </p>
+
+    <br/>
+    <br/>
 
     <div class="clearfix"></div>
     <div class="padding-btn-20"></div>
