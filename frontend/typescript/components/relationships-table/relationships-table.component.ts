@@ -1,3 +1,5 @@
+// todo this component is deprecated and should be removed in the near future
+
 import {Component, OnInit, Input, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import Rx from 'rxjs/Rx';
