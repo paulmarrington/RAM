@@ -12,7 +12,6 @@ import {IIdentity} from '../../../../commons/RamAPI2';
 export class PageHeaderComponent {
 
     @Input() public tab: string;
-
     @Input() public identity: IIdentity;
 
     constructor(private router: Router,

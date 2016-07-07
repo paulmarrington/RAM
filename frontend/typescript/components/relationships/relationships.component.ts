@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
 import {PageHeaderComponent} from '../page-header/page-header.component';
+import {SearchResultPaginationComponent} from '../search-result-pagination/search-result-pagination.component';
 import {RelationshipsTableComponent} from '../relationships-table/relationships-table.component';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
@@ -18,7 +19,7 @@ import {
 @Component({
     selector: 'ram-relationships',
     templateUrl: 'relationships.component.html',
-    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, RelationshipsTableComponent]
+    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent, RelationshipsTableComponent]
 })
 
 export class RelationshipsComponent implements OnInit, OnDestroy {
