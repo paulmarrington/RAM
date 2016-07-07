@@ -164,7 +164,8 @@ export class Party {
 }
 
 export class Relationship {
-    constructor(public relationshipType:RelationshipType,
+    constructor(public _links:Link[],
+                public relationshipType:RelationshipType,
                 public subject:Party,
                 public subjectNickName:Name,
                 public delegate:Party,

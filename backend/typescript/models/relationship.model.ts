@@ -6,6 +6,7 @@ import {IRelationshipType} from './relationshipType.model';
 import {IRelationshipAttribute, RelationshipAttributeModel} from './relationshipAttribute.model';
 import {IdentityModel, IIdentity, IdentityType, IdentityInvitationCodeStatus} from './identity.model';
 import {
+    Link,
     HrefValue,
     Relationship as DTO,
     RelationshipAttribute as RelationshipAttributeDTO,
@@ -117,7 +118,7 @@ const RelationshipSchema = RAMSchema({
     }]
 });
 
-RelationshipSchema.pre('validate', function (next: () => void) {
+RelationshipSchema.pre('validate', function (next:() => void) {
     if (this.subjectNickName) {
         this._subjectKeywords = this.subjectNickName._displayName;
     }
@@ -174,8 +175,19 @@ RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
     );
 });
 
-RelationshipSchema.method('toDTO', async function () {
+RelationshipSchema.method('toDTO', async function (invitationCode?:string) {
+
+    const links = [];
+
+    // TODO what other logic around when to add links?
+    if(invitationCode && this.statusEnum() === RelationshipStatus.Pending) {
+        links.push(new Link('accept', `/api/v1/relationship/invitationCode/${invitationCode}/accept`));
+        links.push(new Link('reject', `/api/v1/relationship/invitationCode/${invitationCode}/reject`));
+        links.push(new Link('notifyDelegate', `/api/v1/relationship/invitationCode/${invitationCode}/notifyDelegate`));
+    }
+
     return new DTO(
+        links,
         await this.relationshipType.toHrefValue(false),
         await this.subject.toHrefValue(true),
         await this.subjectNickName.toDTO(),

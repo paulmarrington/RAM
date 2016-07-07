@@ -36,6 +36,7 @@ export interface IName {
 }
 
 export interface IRelationship {
+    _links: ILink[];
     relationshipType: IHrefValue<IRelationshipType>;
     subject: IHrefValue<IParty>;
     subjectNickName?: IName;

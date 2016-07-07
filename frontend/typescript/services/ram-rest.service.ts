@@ -11,11 +11,12 @@ import {
 } from '../../../commons/RamAPI2';
 import Rx from 'rxjs/Rx';
 import {Response, Http, Headers} from '@angular/http';
+import {RAMModelHelper} from '../commons/ram-model-helper';
 
 @Injectable()
 export class RAMRestService {
 
-    constructor(private http: Http) {
+    constructor(private http: Http, private modelHelper: RAMModelHelper) {
     }
 
     // TODO remove temporary api
@@ -89,9 +90,9 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public acceptPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
+    public acceptPendingRelationshipByInvitationCode(relationship: IRelationship): Rx.Observable<IRelationship> {
         return this.http
-            .post(`/api/v1/relationship/invitationCode/${invitationCode}/accept`, '')
+            .post(this.modelHelper.linkByType('accept', relationship._links).href, '')
             .map(this.extractData);
     }
 

@@ -4,7 +4,7 @@ import {
     sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult, REGULAR_CHARS
 } from './helpers';
 import {IRelationshipModel} from '../models/relationship.model';
-import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
+import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO, Link} from '../../../commons/RamAPI';
 import {PartyModel} from '../models/party.model';
 import {ProfileProvider} from '../models/profile.model';
 import {IdentityType} from '../models/identity.model';
@@ -15,7 +15,7 @@ export class RelationshipController {
     constructor(private relationshipModel:IRelationshipModel) {
     }
 
-    private findByIdentifier = async (req:Request, res:Response) => {
+    private findByIdentifier = async(req:Request, res:Response) => {
         const schema = {
             'identifier': {
                 in: 'params',
@@ -30,21 +30,22 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private findPendingByInvitationCodeInDateRange = async (req:Request, res:Response) => {
+    private findPendingByInvitationCodeInDateRange = async(req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
                 errorMessage: 'Invitation Code is not valid'
             }
         };
+        const invitationCode = req.params.invitationCode;
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
-            .then((model) => model ? model.toDTO() : null)
+            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(invitationCode, new Date()))
+            .then((model) => model ? model.toDTO(invitationCode) : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
 
-    private acceptByInvitationCode = async (req:Request, res:Response) => {
+    private acceptByInvitationCode = async(req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -59,7 +60,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private rejectByInvitationCode = async (req:Request, res:Response) => {
+    private rejectByInvitationCode = async(req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -74,7 +75,7 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
-    private notifyDelegateByInvitationCode = async (req:Request, res:Response) => {
+    private notifyDelegateByInvitationCode = async(req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -100,7 +101,7 @@ export class RelationshipController {
 
     /* tslint:disable:max-func-body-length */
     // todo this search might no longer be useful from SS2
-    private searchBySubjectOrDelegate = async (req:Request, res:Response) => {
+    private searchBySubjectOrDelegate = async(req:Request, res:Response) => {
         const schema = {
             'subject_or_delegate': {
                 in: 'params',
@@ -144,7 +145,7 @@ export class RelationshipController {
     };
 
     /* tslint:disable:max-func-body-length */
-    private searchByIdentity = async (req:Request, res:Response) => {
+    private searchByIdentity = async(req:Request, res:Response) => {
         const schema = {
             'identity_id': {
                 in: 'params',
@@ -212,7 +213,7 @@ export class RelationshipController {
     //         .then(sendNotFoundError(res));
     // };
 
-    private create = async (req:Request, res:Response) => {
+    private create = async(req:Request, res:Response) => {
         // TODO support other party types - currently only INDIVIDUAL is supported here
         // TODO how much of this validation should be in the data layer?
         // TODO decide how to handle dates - should they include time? or should server just use 12am AEST
