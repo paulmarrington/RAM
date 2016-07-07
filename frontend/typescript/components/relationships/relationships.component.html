@@ -133,6 +133,49 @@
         </div>
     </div>
 
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-md-3"><h5>Name</h5></th>
+                <th><h5>Login Type</h5></th>
+                <th class="hidden-xs"><h5>Authorisation</h5></th>
+                <th class="hidden-xs"><h5>Status</h5></th>
+                <th class="col-md-2"></th>
+            </tr>
+        </thead>
+        <tbody *ngIf="!isLoading">
+            <template ngFor let-item="$implicit" [ngForOf]="subjectGroupsWithRelationships">
+                <tr>
+                    <td colspan="5">
+                        <div class="relationship-subject-heading">
+                            <h4>{{modelHelper.displayNameForParty(item.subjectResource.value)}}</h4>
+                            <h5>{{modelHelper.abnLabelForParty(item.subjectResource.value)}} /
+                                {{modelHelper.partyTypeLabelForParty(item.subjectResource.value)}}</h5>
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngFor="let relationshipResource of item.relationshipResources">
+                    <td>{{modelHelper.displayNameForParty(relationshipResource.value.delegate.value)}}</td>
+                    <td>{{commaSeparatedListOfProviderNames(relationshipResource.value.delegate.value)}}</td>
+                    <td class="hidden-xs">{{modelHelper.relationshipTypeLabel(relationshipTypes, relationshipResource.value)}}</td>
+                    <td class="hidden-xs">{{relationshipResource.value.status}}</td>
+                    <td></td>
+                </tr>
+            </template>
+        </tbody>
+        <tbody *ngIf="isLoading">
+            <tr>
+                <td colspan="5" class="text-center"><h3>Loading ...</h3></td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
     <p class="lead">
         <h4><strong>{{modelHelper.displayNameForIdentity(identity$|async)}}</strong>, you have access
             to the entries listed below. Select an entity to view the relationship or manage access.
