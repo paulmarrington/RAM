@@ -381,6 +381,7 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:numb
  *
  * todo need to optional filters (term, party type, relationship type, status)
  * todo need to add sorting
+ * todo this search might no longer be useful after SS2 spike
  */
 /* tslint:disable:max-func-body-length */
 RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity',

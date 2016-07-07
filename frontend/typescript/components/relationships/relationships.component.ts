@@ -81,9 +81,12 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
         return providerNames.join(',');
     }
 
+    // todo deprecated
     public getOtherPartyHrefValue = (relationship: IRelationship) => {
         if (this.subjectHrefValue) {
-            if (this.modelHelper.linkByType('self', relationship.subject._links).href === this.modelHelper.linkByType('self', this.subjectHrefValue._links).href) {
+            var relationshipHref = this.modelHelper.linkByType('self', relationship.subject._links).href;
+            var subjectHref = this.modelHelper.linkByType('self', this.subjectHrefValue._links).href;
+            if (relationshipHref === subjectHref) {
                 return relationship.delegate;
             } else {
                 return relationship.subject;
@@ -101,6 +104,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
         this.subjectHrefValue = null;
     };
 
+    // todo deprecated
     public expandSubject = (subjectHrefValue: IHrefValue<IParty>) => {
         this._isLoading = true;
         this.subjectHrefValue = subjectHrefValue;
@@ -116,6 +120,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
         }
     };
 
+    // todo deprecated
     // todo not sure what the drill down conditional logic is, for now assume UNIVERSAL
     public isDrillDownPossible = (relationship: IRelationship) => {
         let relationshipType = this.modelHelper.getRelationshipType(this.relationshipTypes, relationship);
