@@ -336,6 +336,8 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
     });
 });
 
+// todo need to optional filters (term, party type, relationship type, status)
+// todo need to add sorting
 /* tslint:disable:max-func-body-length */
 RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
