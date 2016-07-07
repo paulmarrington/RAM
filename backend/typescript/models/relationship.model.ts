@@ -67,6 +67,11 @@ const RelationshipSchema = RAMSchema({
         ref: 'Name',
         required: [true, 'Subject Nick Name is required']
     },
+    _subjectKeywords: {
+        type: String,
+        required: [true, 'Subject Keywords is required'],
+        trim: true
+    },
     delegate: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Party',
@@ -76,6 +81,11 @@ const RelationshipSchema = RAMSchema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Name',
         required: [true, 'Delegate Nick Name is required']
+    },
+    _delegateKeywords: {
+        type: String,
+        required: [true, 'Delegate Keywords is required'],
+        trim: true
     },
     startTimestamp: {
         type: Date,
@@ -108,14 +118,26 @@ const RelationshipSchema = RAMSchema({
     }]
 });
 
+RelationshipSchema.pre('validate', function (next: () => void) {
+    if (this.subjectNickName) {
+        this._subjectKeywords = this.subjectNickName._displayName;
+    }
+    if (this.delegateNickName) {
+        this._delegateKeywords = this.delegateNickName._displayName;
+    }
+    next();
+});
+
 // interfaces .........................................................................................................
 
 export interface IRelationship extends IRAMObject {
     relationshipType:IRelationshipType;
     subject:IParty;
     subjectNickName:IName;
+    _subjectKeywords:string;
     delegate:IParty;
     delegateNickName:IName;
+    _delegateKeywords:string;
     startTimestamp:Date;
     endTimestamp?:Date;
     endEventTimestamp?:Date;
@@ -367,6 +389,10 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:numb
                     'delegateNickName',
                     'attributes.attributeName'
                 ])
+                .sort({
+                    '_subjectKeywords': 1,
+                    '_delegateKeywords': 1
+                })
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)
                 .sort({name: 1})
