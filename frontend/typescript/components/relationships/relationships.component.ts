@@ -26,8 +26,8 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
     public idValue: string;
 
     public identity$: Rx.Observable<IIdentity>;
-    public subjectsResponse$: Rx.Observable<ISearchResult<IHrefValue<IParty>[]>>;
-    public relationshipsResponse$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>>;
+    public subjectsResponse$: Rx.Observable<ISearchResult<IHrefValue<IParty>>>;
+    public relationshipsResponse$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
     // todo rename to relationshipTypeHrefs
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
@@ -87,7 +87,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
                         }
                     }
                     if (!subjectGroupWithRelationshipsToAddTo) {
-                        subjectGroupWithRelationshipsToAddTo = new SubjectGroupWithRelationships(this.modelHelper);
+                        subjectGroupWithRelationshipsToAddTo = new SubjectGroupWithRelationships();
                         subjectGroupWithRelationshipsToAddTo.subjectResource = subjectResource;
                         this.subjectGroupsWithRelationships.push(subjectGroupWithRelationshipsToAddTo);
                     }
@@ -145,13 +145,8 @@ class SubjectGroupWithRelationships {
     public subjectResource: IHrefValue<IParty>;
     public relationshipResources: IHrefValue<IRelationship>[] = [];
 
-    constructor(private modelHelper: RAMModelHelper) {
-    }
-
     public hasSameSubject(aSubjectResource: IHrefValue<IParty>) {
-        const subjectResourceHref = this.modelHelper.linkByType('self', this.subjectResource._links).href;
-        const aSubjectResourceHref = this.modelHelper.linkByType('self', aSubjectResource._links).href;
-        return subjectResourceHref === aSubjectResourceHref;
+        return this.subjectResource.href === aSubjectResource.href;
     }
 
 }

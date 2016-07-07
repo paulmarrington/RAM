@@ -176,41 +176,41 @@ export class RelationshipController {
             .then(sendSearchResult(res), sendError(res))
             .then(sendNotFoundError(res));
     };
-
-    private searchDistinctSubjectsBySubjectOrDelegateIdentity = async (req:Request, res:Response) => {
-        // todo need to optional filters (term, party type, relationship type, status)
-        // todo need to add sorting
-        const schema = {
-            'identity_id': {
-                in: 'params',
-                notEmpty: true,
-                errorMessage: 'Identity Id is not valid'
-            },
-            'page': {
-                in: 'query',
-                notEmpty: true,
-                isNumeric: {
-                    errorMessage: 'Page is not valid'
-                }
-            },
-            'pageSize': {
-                in: 'query',
-                optional: true,
-                isNumeric: {
-                    errorMessage: 'Page Size is not valid'
-                }
-            }
-        };
-        validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.searchDistinctSubjectsBySubjectOrDelegateIdentity(
-                req.params.identity_id,
-                req.query.page,
-                req.query.pageSize)
-            )
-            .then((results) => (results.map((model) => model.toHrefValue(true))))
-            .then(sendSearchResult(res), sendError(res))
-            .then(sendNotFoundError(res));
-    };
+    //
+    // private searchDistinctSubjectsBySubjectOrDelegateIdentity = async (req:Request, res:Response) => {
+    //     // todo need to optional filters (term, party type, relationship type, status)
+    //     // todo need to add sorting
+    //     const schema = {
+    //         'identity_id': {
+    //             in: 'params',
+    //             notEmpty: true,
+    //             errorMessage: 'Identity Id is not valid'
+    //         },
+    //         'page': {
+    //             in: 'query',
+    //             notEmpty: true,
+    //             isNumeric: {
+    //                 errorMessage: 'Page is not valid'
+    //             }
+    //         },
+    //         'pageSize': {
+    //             in: 'query',
+    //             optional: true,
+    //             isNumeric: {
+    //                 errorMessage: 'Page Size is not valid'
+    //             }
+    //         }
+    //     };
+    //     validateReqSchema(req, schema)
+    //         .then((req:Request) => this.relationshipModel.searchDistinctSubjectsBySubjectOrDelegateIdentity(
+    //             req.params.identity_id,
+    //             req.query.page,
+    //             req.query.pageSize)
+    //         )
+    //         .then((results) => (results.map((model) => model.toHrefValue(true))))
+    //         .then(sendSearchResult(res), sendError(res))
+    //         .then(sendNotFoundError(res));
+    // };
 
     private create = async (req:Request, res:Response) => {
         // TODO support other party types - currently only INDIVIDUAL is supported here
@@ -345,9 +345,9 @@ export class RelationshipController {
             security.isAuthenticated,
             this.searchBySubjectOrDelegate);
 
-        router.get('/v1/relationships/identity/:identity_id/subjects',
-            security.isAuthenticated,
-            this.searchDistinctSubjectsBySubjectOrDelegateIdentity);
+        // router.get('/v1/relationships/identity/:identity_id/subjects',
+        //     security.isAuthenticated,
+        //     this.searchDistinctSubjectsBySubjectOrDelegateIdentity);
 
         router.get('/v1/relationships/identity/:identity_id',
             security.isAuthenticated,

@@ -3,7 +3,6 @@ import {ICodeDecode, CodeDecodeSchema} from './base';
 import {RelationshipAttributeNameModel} from './relationshipAttributeName.model';
 import {IRelationshipAttributeNameUsage, RelationshipAttributeNameUsageModel} from './relationshipAttributeNameUsage.model';
 import {
-    Link,
     HrefValue,
     RelationshipType as DTO,
     RelationshipAttributeNameUsage as RelationshipAttributeNameUsageDTO
@@ -65,9 +64,7 @@ export interface IRelationshipTypeModel extends mongoose.Model<IRelationshipType
 
 RelationshipTypeSchema.method('toHrefValue', async function (includeValue:boolean) {
     return new HrefValue(
-        [
-            new Link('self','/api/v1/relationshipType/' +encodeURIComponent(this.code))
-        ],
+        '/api/v1/relationshipType/' + encodeURIComponent(this.code),
         includeValue ? await this.toDTO() : undefined
     );
 });

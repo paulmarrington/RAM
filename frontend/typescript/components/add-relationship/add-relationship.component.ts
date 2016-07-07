@@ -5,7 +5,9 @@ import {
     AuthorisationTypeComponent,
     AuthorisationTypeComponentData
 } from '../commons/authorisation-type/authorisation-type.component';
-import {DeclarationComponent, DeclarationComponentData} from '../commons/declaration/declaration.component';
+import {
+    RelationshipDeclarationComponent, DeclarationComponentData
+} from '../commons/relationship-declaration/relationship-declaration.component';
 import {
     RepresentativeDetailsComponent, RepresentativeDetailsComponentData
 } from
@@ -36,7 +38,7 @@ import {PageHeaderComponent} from '../page-header/page-header.component';
         AccessPeriodComponent,
         AuthorisationPermissionsComponent,
         AuthorisationTypeComponent,
-        DeclarationComponent,
+        RelationshipDeclarationComponent,
         RepresentativeDetailsComponent,
         AuthorisationManagementComponent,
         PageHeaderComponent
@@ -154,8 +156,7 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
 
         this.rest.createRelationship(relationship).subscribe((relationship) => {
             //console.log(JSON.stringify(relationship, null, 4));
-            let selfHref = this.modelHelper.linkByType('self', relationship.delegate.value.identities[0]._links);
-            this.rest.findIdentityByHref(selfHref.href).subscribe((identity) => {
+            this.rest.findIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
                 //console.log(JSON.stringify(identity, null, 4));
                 this.router.navigate(['/relationships/add/complete',
                     encodeURIComponent(this.idValue),

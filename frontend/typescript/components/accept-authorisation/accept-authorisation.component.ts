@@ -51,8 +51,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
                         this.delegateManageAuthorisationAllowedIndAttribute = attribute;
                     }
                 }
-                let selfHref = this.modelHelper.linkByType('self', relationship.relationshipType._links);
-                this.relationshipType$ = this.rest.findRelationshipTypeByHref(selfHref.href);
+                this.relationshipType$ = this.rest.findRelationshipTypeByHref(relationship.relationshipType.href);
                 this.relationshipType$.subscribe((relationshipType) => {
                     for (let attributeUsage of relationshipType.relationshipAttributeNames) {
                         if (attributeUsage.attributeNameDef.value.code === 'DELEGATE_RELATIONSHIP_TYPE_DECLARATION') {

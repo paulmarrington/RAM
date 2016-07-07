@@ -6,7 +6,6 @@ import {IRelationshipType} from './relationshipType.model';
 import {IRelationshipAttribute, RelationshipAttributeModel} from './relationshipAttribute.model';
 import {IdentityModel, IIdentity, IdentityType, IdentityInvitationCodeStatus} from './identity.model';
 import {
-    Link,
     HrefValue,
     Relationship as DTO,
     RelationshipAttribute as RelationshipAttributeDTO,
@@ -170,9 +169,7 @@ RelationshipSchema.method('statusEnum', function () {
 RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
     const relationshipId:string = this._id.toString();
     return new HrefValue(
-        [
-            new Link('self', '/api/v1/relationship/' + encodeURIComponent(relationshipId))
-        ],
+        '/api/v1/relationship/' + encodeURIComponent(relationshipId),
         includeValue ? await this.toDTO() : undefined
     );
 });

@@ -15,11 +15,11 @@
 
     <!--authorisation-permissions (validationErrors)='authorisationPermissionErrors=$event'></authorisation-permissions-->
 
-    <declaration [(data)]='newRelationship.decalaration'
+    <relationship-declaration [(data)]='newRelationship.decalaration'
                  (backEvent)="back()"
                  (createRelationshipEvent)="submit()"
                  (isValid)='declarationIsValid=$event'
-                 [isAuthorizedBtnEnabled]='accessPeriodIsValid && authTypeIsValid && representativeIsValid'></declaration>
+                 [isAuthorizedBtnEnabled]='accessPeriodIsValid && authTypeIsValid && representativeIsValid'></relationship-declaration>
 
     <!--{{dumpObject(newRelationship)}}-->
 

@@ -19,7 +19,7 @@ export interface ILink {
 }
 
 export interface IHrefValue<T> {
-    _links: ILink[];
+    href: string;
     value?: T;
 }
 

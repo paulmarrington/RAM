@@ -4,11 +4,11 @@ import {RAMNgValidators} from   '../../../commons/ram-ng-validators';
 import {MarkdownComponent} from '../ng2-markdown/ng2-markdown.component';
 
 @Component({
-    selector: 'declaration',
-    templateUrl: 'declaration.component.html',
+    selector: 'relationship-declaration',
+    templateUrl: 'relationship-declaration.component.html',
     directives: [FORM_DIRECTIVES, MarkdownComponent]
 })
-export class DeclarationComponent implements OnInit {
+export class RelationshipDeclarationComponent implements OnInit {
 
     @Input() public isAuthorizedBtnEnabled: boolean;
 

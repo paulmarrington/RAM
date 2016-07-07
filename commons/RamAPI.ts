@@ -37,7 +37,8 @@ export interface IKeyValue<T> {
 }
 
 export class HrefValue<T> {
-    constructor(public _links: Link[], public value:T) {
+    constructor(public href:string,
+                public value?:T) {
     }
 }
 
