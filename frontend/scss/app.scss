@@ -22,6 +22,7 @@ $pagination-disabled-border:           $brand-primary;
 @import "ie10-viewport-bug-workaround";
 
 /******************************************************************************************************/
+
 .text-xs-left { text-align: left; }
 .text-xs-right { text-align: right; }
 .text-xs-center { text-align: center;  }
@@ -94,6 +95,14 @@ div.navbar-header {
 
 .centered {
   text-align: center;
+}
+
+.table > thead > tr > th h4 {
+  font-weight: bold;
+}
+
+.table > tbody > tr > td {
+  padding: 15px;
 }
 
 .padding-top-5 {
@@ -289,8 +298,18 @@ color: $color;
     margin-right: 10px;
 }
 
-.relationship-subject-heading {
-    background: #eee;
-    padding: 10px 15px;
-    margin: 0 0 20px 0;
+.table > tbody > tr.relationship-subject-heading {
+}
+
+.table > tbody > tr.relationship-subject-heading > td {
+  padding: 3em 0 0 0;
+}
+
+.table > tbody > tr.relationship-subject-heading > td > div {
+  background: #eee;
+  padding: 10px 15px;
+}
+
+.table > tbody > tr.relationship-subject-heading > td > div > h4 {
+  font-weight: bold;
 }
