@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {ISearchResult} from '../../../../commons/RamAPI2';
 
 @Component({
@@ -12,6 +12,8 @@ export class SearchResultPaginationComponent {
     @Input() public searchResult: ISearchResult<Object>;
     @Input() public previousPageCountBeforeShowingEllipsis = 2;
     @Input() public nextPageCountBeforeShowingEllipsis = 2;
+
+    @Output('goToPageEvent') public goToPageEvent = new EventEmitter<number>();
 
     public totalPages(): number {
         if (this.searchResult) {
@@ -88,14 +90,14 @@ export class SearchResultPaginationComponent {
 
     public goToPage(page: number) {
         if (this.searchResult && this.searchResult.page !== page) {
-            alert('TODO: Go To Page: ' + page);
+            this.goToPageEvent.emit(page);
         }
     }
 
     public goToPreviousPage() {
         if (!this.isPreviousDisabled()) {
             const previousPage = this.searchResult.page - 1;
-            alert('TODO: Go To Previous Page: ' + previousPage);
+            this.goToPage(previousPage);
         }
     }
 
@@ -103,7 +105,7 @@ export class SearchResultPaginationComponent {
         if (!this.isNextDisabled()) {
             console.log('CURRENT PAGE = ' + this.searchResult.page);
             const nextPage = this.searchResult.page + 1;
-            alert('TODO: Go To Next Page: ' + nextPage);
+            this.goToPage(nextPage);
         }
     }
 
