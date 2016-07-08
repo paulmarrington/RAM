@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
 import {PageHeaderComponent} from '../page-header/page-header.component';
-import {SearchResultPaginationComponent} from '../search-result-pagination/search-result-pagination.component';
+import {SearchResultPaginationComponent, SearchResultPaginationDelegate} from '../search-result-pagination/search-result-pagination.component';
 import {RelationshipsTableComponent} from '../relationships-table/relationships-table.component';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
@@ -34,6 +34,8 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
     public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
     public subjectHrefValue: IHrefValue<IParty>;
+
+    public paginationDelegate: SearchResultPaginationDelegate;
 
     private _isLoading = false; // set to true when you want the UI indicate something is getting loaded.
 
@@ -98,6 +100,13 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
                 alert(JSON.stringify(err, null, 4));
                 this._isLoading = false;
             });
+
+            // pagination delegate
+            this.paginationDelegate = {
+                goToPage: (page: number) => {
+                    // todo navigate to next page
+                }
+            } as SearchResultPaginationDelegate;
 
         });
 

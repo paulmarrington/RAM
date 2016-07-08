@@ -39,7 +39,10 @@
         </tbody>
     </table>
 
-    <search-result-pagination [searchResult]="relationshipsResponse$|async"></search-result-pagination>
+    <search-result-pagination
+            [searchResult]="relationshipsResponse$|async"
+            [delegate]="paginationDelegate">
+    </search-result-pagination>
 
     <!--
     <br/>

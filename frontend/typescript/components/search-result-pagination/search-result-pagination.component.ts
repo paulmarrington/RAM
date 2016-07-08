@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output} from '@angular/core';
 import {ISearchResult} from '../../../../commons/RamAPI2';
 
 @Component({
@@ -10,10 +10,9 @@ import {ISearchResult} from '../../../../commons/RamAPI2';
 export class SearchResultPaginationComponent {
 
     @Input() public searchResult: ISearchResult<Object>;
+    @Input() public delegate: SearchResultPaginationDelegate;
     @Input() public previousPageCountBeforeShowingEllipsis = 2;
     @Input() public nextPageCountBeforeShowingEllipsis = 2;
-
-    @Output('goToPageEvent') public goToPageEvent = new EventEmitter<number>();
 
     public totalPages(): number {
         if (this.searchResult) {
@@ -90,7 +89,9 @@ export class SearchResultPaginationComponent {
 
     public goToPage(page: number) {
         if (this.searchResult && this.searchResult.page !== page) {
-            this.goToPageEvent.emit(page);
+            if (this.delegate) {
+                this.delegate.goToPage(page);
+            }
         }
     }
 
@@ -108,5 +109,11 @@ export class SearchResultPaginationComponent {
             this.goToPage(nextPage);
         }
     }
+
+}
+
+export interface SearchResultPaginationDelegate {
+
+    goToPage(page: number);
 
 }
