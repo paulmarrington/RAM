@@ -2,6 +2,38 @@
 
     <br/>
 
+    <nav>
+
+        <ul class="pagination">
+
+            <li [class.disabled]="isPreviousDisabled()">
+                <a (click)="goToPreviousPage()">&laquo;</a>
+            </li>
+
+            <li class="disabled" *ngIf="hasPreviousEllipsis()">
+                <span>
+                    <span aria-hidden="true">...</span>
+                </span>
+            </li>
+
+            <li *ngFor="let page of pages()" [class.active]="searchResult?.page == page">
+                <a (click)="goToPage(page)">{{page}}</a>
+            </li>
+
+            <li class="disabled" *ngIf="hasNextEllipsis()">
+                <span>
+                    <span aria-hidden="true">...</span>
+                </span>
+            </li>
+
+            <li [class.disabled]="isNextDisabled()">
+                <a (click)="goToNextPage()">&raquo;</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
     <h4>TODO: Search Result Pagination</h4>
     <h4>Page = {{searchResult?.page}}</h4>
     <h4>Page Size = {{searchResult?.pageSize}}</h4>
