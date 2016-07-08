@@ -1,9 +1,9 @@
-import {Control} from '@angular/common';
+import {FormControl} from '@angular/forms';
 import {Utils} from '../../../commons/ram-utils';
 
 export class RAMNgValidators {
 
-    public static dateFormatValidator(dateCtrl: Control) {
+    public static dateFormatValidator(dateCtrl: FormControl) {
         let v = dateCtrl.value;
         return v !== null && Utils.parseDate(v) === null ? {
             validateDate: {
@@ -12,7 +12,7 @@ export class RAMNgValidators {
         } : null;
     }
 
-    public static validateABNFormat = (abnCtrl: Control) => {
+    public static validateABNFormat = (abnCtrl: FormControl) => {
         if (/^(\d *?){11}$/.test(abnCtrl.value)) {
             return null;
         } else {
@@ -20,7 +20,7 @@ export class RAMNgValidators {
         }
     };
 
-    public static validateUDNFormat = (udnCtrl: Control) => {
+    public static validateUDNFormat = (udnCtrl: FormControl) => {
         if (/^(\d *?)$/.test(udnCtrl.value)) {
             return null;
         } else {
@@ -28,7 +28,7 @@ export class RAMNgValidators {
         }
     };
 
-    public static validateEmailFormat = (emailCtrl: Control) => {
+    public static validateEmailFormat = (emailCtrl: FormControl) => {
         const EMAIL_REGEXP = /^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/i;
         if (EMAIL_REGEXP.test(emailCtrl.value)) {
             return null;
@@ -37,7 +37,7 @@ export class RAMNgValidators {
         }
     };
 
-    public static mustBeTrue = (ctrl: Control) => {
+    public static mustBeTrue = (ctrl: FormControl) => {
         if (ctrl.value) {
             return null;
         } else {

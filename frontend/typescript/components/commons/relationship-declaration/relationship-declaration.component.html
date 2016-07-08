@@ -3,12 +3,12 @@
         <h4><span class="badge square">5</span> Declaration</h4>
     </div>
     <div class="panel-body">
-        <form [ngFormModel]='form'>
+        <form [formGroup]='form'>
             <ng2-markdown>
             </ng2-markdown>
 
             <div class="form-group col-md-12" >
-                <label><h4><input type="checkbox" [ngFormControl]='form.controls["accepted"]'> I accept</h4></label>
+                <label><h4><input type="checkbox" [formControl]='form.controls["accepted"]'> I accept</h4></label>
             </div>
             <button class="col-xs-6 col-sm-3 btn btn-default"
                     (click)="back()">&#8592; Back</button>

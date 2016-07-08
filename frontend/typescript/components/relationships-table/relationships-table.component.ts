@@ -3,7 +3,7 @@
 import {Component, OnInit, Input, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import Rx from 'rxjs/Rx';
-import {ControlGroup, Control, FORM_DIRECTIVES, FORM_PROVIDERS} from '@angular/common';
+import {REACTIVE_FORM_DIRECTIVES, FormGroup, FormControl, FORM_DIRECTIVES } from '@angular/forms';
 import {RAMConstantsService} from '../../services/ram-constants.service';
 import {RAMNavService} from '../../services/ram-nav.service';
 import {RAMRestService2, IRelationshipTableRow} from '../../services/ram-rest2.service';
@@ -15,8 +15,8 @@ import {
 @Component({
     selector: 'ram-relationships-table',
     templateUrl: 'relationships-table.component.html',
-    providers: [FORM_PROVIDERS, RAMRestService2],
-    directives: [FORM_DIRECTIVES]
+    providers: [RAMRestService2],
+    directives: [FORM_DIRECTIVES,REACTIVE_FORM_DIRECTIVES]
 })
 export class RelationshipsTableComponent implements OnInit, OnDestroy {
 
@@ -71,7 +71,7 @@ export class RelationshipsTableComponent implements OnInit, OnDestroy {
         return this._relationshipOptions$;
     }
 
-    private _filters$: ControlGroup;
+    private _filters$: FormGroup;
 
     public get filters$() {
         return this._filters$;
@@ -86,11 +86,11 @@ export class RelationshipsTableComponent implements OnInit, OnDestroy {
                 private router: Router,
                 private nav: RAMNavService,
                 private rest: RAMRestService2) {
-        this._filters$ = new ControlGroup({
-            'name': new Control(''),
-            'accessLevel': new Control(''),
-            'relationship': new Control(''),
-            'status': new Control('')
+        this._filters$ = new FormGroup({
+            'name': new FormControl(''),
+            'accessLevel': new FormControl(''),
+            'relationship': new FormControl(''),
+            'status': new FormControl('')
         });
         this._filters$.valueChanges.debounceTime(500).subscribe(() => this.refreshContents(this._relIds));
         this._pageSizeOptions = constants.PageSizeOptions;

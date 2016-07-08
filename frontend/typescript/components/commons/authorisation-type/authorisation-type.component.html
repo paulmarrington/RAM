@@ -4,11 +4,11 @@
     </div>
     <div class="panel-body">
         <div class="form-group">
-            <form [ngFormModel]="form">
+            <form [formGroup]="form">
                 <div class="col-md-12" [class.has-error]="!form.controls['authType'].valid">
                     <h4 class="padding-btn-30">What type of authorisation do you want this representative to have?</h4>
                     <h4>Authorisation type*</h4>
-                    <select class="form-control" [ngFormControl]="form.controls['authType']">
+                    <select class="form-control" [formControl]="form.controls['authType']">
                         <option value="choose" disabled hidden>Please Choose...</option>
                         <option value="UNIVERSAL_REPRESENTATIVE">Universal Representative</option>
                         <!--option value="CUSTOM_REPRESENTATIVE">Custom Representative</option-->

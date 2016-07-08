@@ -11,6 +11,7 @@ System.config({
     "@angular/common": "npm:@angular/common@2.0.0-rc.4",
     "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.4",
     "@angular/core": "npm:@angular/core@2.0.0-rc.4",
+    "@angular/forms": "npm:@angular/forms@0.2.0",
     "@angular/http": "npm:@angular/http@2.0.0-rc.4",
     "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.4",
     "@angular/platform-browser-dynamic": "npm:@angular/platform-browser-dynamic@2.0.0-rc.4",
@@ -76,6 +77,12 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.6",
       "zone.js": "npm:zone.js@0.6.12"
+    },
+    "npm:@angular/forms@0.2.0": {
+      "@angular/common": "npm:@angular/common@2.0.0-rc.4",
+      "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.4",
+      "@angular/core": "npm:@angular/core@2.0.0-rc.4",
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:@angular/http@2.0.0-rc.4": {
       "@angular/core": "npm:@angular/core@2.0.0-rc.4",

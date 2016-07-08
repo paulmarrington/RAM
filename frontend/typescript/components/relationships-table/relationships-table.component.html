@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <form [ngFormModel]="filters$">
+        <form [formGroup]="filters$">
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -17,23 +17,23 @@
 
                     <tr>
                         <th>
-                            <input class="form-control" type="text" [ngFormControl]="filters$.controls['name']" placeholder="Name ...">
+                            <input class="form-control" type="text" [formControl]="filters$.controls['name']" placeholder="Name ...">
                         </th>
                         <th>
-                            <select class="form-control" [ngFormControl]="filters$.controls['relationship']">
+                            <select class="form-control" [formControl]="filters$.controls['relationship']">
                                 <option value="">(All)</option>
                                 <option *ngFor="let item of relationshipOptions$ | async" value="{{item}}">
                                     {{item}}</option>
                             </select>
                         </th>
                         <th class="hidden-xs">
-                            <select [ngFormControl]="filters$.controls['accessLevel']" class="form-control">
+                            <select [formControl]="filters$.controls['accessLevel']" class="form-control">
                                 <option value="">(All)</option>
                                 <option *ngFor="let item of accessLevelOptions$ |async " value="{{item}}">{{item}}</option>
                             </select>
                         </th>
                         <th class="hidden-xs">
-                            <select class="form-control" [ngFormControl]="filters$.controls['status']">
+                            <select class="form-control" [formControl]="filters$.controls['status']">
                                 <option value="">(All)</option>
                                 <option *ngFor="let item of statusOptions$|async" value="{{item}}">{{item}}</option>
                             </select>
