@@ -11,16 +11,30 @@ export class SearchResultPaginationComponent {
 
     @Input() public searchResult: ISearchResult<Object>;
 
+    public totalPages(): number {
+        if (this.searchResult) {
+            const pageSize = this.searchResult.pageSize;
+            const totalCount = this.searchResult.totalCount;
+            return parseInt((totalCount + pageSize - 1) / pageSize);
+        }
+        return 0;
+    }
+
     public pages(): number[] {
-        return [1,2,3,4,5];
+        let result: number[] = [];
+        let totalPages = this.totalPages();
+        for (let page = 1; page <= totalPages; page = page + 1) {
+            result.push(page);
+        }
+        return result;
     }
 
     public isPreviousDisabled(): boolean {
-        return true;
+        return this.searchResult ? this.searchResult.page === 1 : true;
     }
 
     public isNextDisabled(): boolean {
-        return false;
+        return this.searchResult ? this.searchResult.page === (this.totalPages()) : true;
     }
 
     public hasPreviousEllipsis(): boolean {
@@ -32,7 +46,7 @@ export class SearchResultPaginationComponent {
     }
 
     public goToPage(page: number) {
-        if (page != this.searchResult.page) {
+        if (this.searchResult && this.searchResult.page !== page) {
             alert('TODO: Go To Page: ' + page);
         }
     }
