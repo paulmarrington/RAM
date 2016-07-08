@@ -118,7 +118,7 @@ const RelationshipSchema = RAMSchema({
     }]
 });
 
-RelationshipSchema.pre('validate', function (next: () => void) {
+RelationshipSchema.pre('validate', function (next:() => void) {
     if (this.subjectNickName) {
         this._subjectKeywords = this.subjectNickName._displayName;
     }
@@ -170,15 +170,24 @@ RelationshipSchema.method('statusEnum', function () {
 RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
     const relationshipId:string = this._id.toString();
     return new HrefValue(
-        [
-            new Link('self', '/api/v1/relationship/' + encodeURIComponent(relationshipId))
-        ],
+        '/api/v1/relationship/' + encodeURIComponent(relationshipId),
         includeValue ? await this.toDTO() : undefined
     );
 });
 
-RelationshipSchema.method('toDTO', async function () {
+RelationshipSchema.method('toDTO', async function (invitationCode?:string) {
+
+    const links = [];
+
+    // TODO what other logic around when to add links?
+    if(invitationCode && this.statusEnum() === RelationshipStatus.Pending) {
+        links.push(new Link('accept', `/api/v1/relationship/invitationCode/${invitationCode}/accept`));
+        links.push(new Link('reject', `/api/v1/relationship/invitationCode/${invitationCode}/reject`));
+        links.push(new Link('notifyDelegate', `/api/v1/relationship/invitationCode/${invitationCode}/notifyDelegate`));
+    }
+
     return new DTO(
+        links,
         await this.relationshipType.toHrefValue(false),
         await this.subject.toHrefValue(true),
         await this.subjectNickName.toDTO(),
@@ -351,7 +360,7 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IRelationship>(count, pageSize, list));
+            resolve(new SearchResult<IRelationship>(page, count, pageSize, list));
         } catch (e) {
             reject(e);
         }
@@ -397,7 +406,7 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:numb
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IRelationship>(count, pageSize, list));
+            resolve(new SearchResult<IRelationship>(page, count, pageSize, list));
         } catch (e) {
             reject(e);
         }
@@ -443,7 +452,7 @@ RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity',
                     ])
                     .exec();
                 const inflatedList = (await PartyModel.populate(listOfIds, {path: '_id'})).map((item:{_id:string}) => item._id);
-                resolve(new SearchResult<IParty>(count, pageSize, inflatedList));
+                resolve(new SearchResult<IParty>(page, count, pageSize, inflatedList));
             } catch (e) {
                 reject(e);
             }

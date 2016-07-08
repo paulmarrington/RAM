@@ -80,9 +80,9 @@ export class RAMModelHelper {
     }
 
     public getRelationshipType(relationshipTypeResources: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
-        let relationshipTypeHrefString = this.linkByType('self', relationship.relationshipType._links).href;
+        let relationshipTypeHrefString = relationship.relationshipType.href;
         for (let resource of relationshipTypeResources) {
-            if (this.linkByType('self', resource._links).href === relationshipTypeHrefString) {
+            if (resource.href === relationshipTypeHrefString) {
                 return resource.value;
             }
         }

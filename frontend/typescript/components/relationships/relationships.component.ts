@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
 import {PageHeaderComponent} from '../page-header/page-header.component';
+import {SearchResultPaginationComponent, SearchResultPaginationDelegate} from '../search-result-pagination/search-result-pagination.component';
 import {RelationshipsTableComponent} from '../relationships-table/relationships-table.component';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
@@ -18,7 +19,7 @@ import {
 @Component({
     selector: 'ram-relationships',
     templateUrl: 'relationships.component.html',
-    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, RelationshipsTableComponent]
+    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent, RelationshipsTableComponent]
 })
 
 export class RelationshipsComponent implements OnInit, OnDestroy {
@@ -26,13 +27,15 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
     public idValue: string;
 
     public identity$: Rx.Observable<IIdentity>;
-    public subjectsResponse$: Rx.Observable<ISearchResult<IHrefValue<IParty>[]>>;
-    public relationshipsResponse$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>>;
+    public subjectsResponse$: Rx.Observable<ISearchResult<IHrefValue<IParty>>>;
+    public relationshipsResponse$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
     // todo rename to relationshipTypeHrefs
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
     public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
     public subjectHrefValue: IHrefValue<IParty>;
+
+    public paginationDelegate: SearchResultPaginationDelegate;
 
     private _isLoading = false; // set to true when you want the UI indicate something is getting loaded.
 
@@ -87,7 +90,7 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
                         }
                     }
                     if (!subjectGroupWithRelationshipsToAddTo) {
-                        subjectGroupWithRelationshipsToAddTo = new SubjectGroupWithRelationships(this.modelHelper);
+                        subjectGroupWithRelationshipsToAddTo = new SubjectGroupWithRelationships();
                         subjectGroupWithRelationshipsToAddTo.subjectResource = subjectResource;
                         this.subjectGroupsWithRelationships.push(subjectGroupWithRelationshipsToAddTo);
                     }
@@ -97,6 +100,16 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
                 alert(JSON.stringify(err, null, 4));
                 this._isLoading = false;
             });
+
+            // pagination delegate
+            this.paginationDelegate = {
+                goToPage: (page: number) => {
+                    this.router.navigate(['/relationships',
+                        encodeURIComponent(this.idValue)],
+                        {queryParams: {page: page}}
+                    );
+                }
+            } as SearchResultPaginationDelegate;
 
         });
 
@@ -145,13 +158,8 @@ class SubjectGroupWithRelationships {
     public subjectResource: IHrefValue<IParty>;
     public relationshipResources: IHrefValue<IRelationship>[] = [];
 
-    constructor(private modelHelper: RAMModelHelper) {
-    }
-
     public hasSameSubject(aSubjectResource: IHrefValue<IParty>) {
-        const subjectResourceHref = this.modelHelper.linkByType('self', this.subjectResource._links).href;
-        const aSubjectResourceHref = this.modelHelper.linkByType('self', aSubjectResource._links).href;
-        return subjectResourceHref === aSubjectResourceHref;
+        return this.subjectResource.href === aSubjectResource.href;
     }
 
 }

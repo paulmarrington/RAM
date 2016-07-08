@@ -4,7 +4,6 @@ import {conf} from '../bootstrap';
 import * as Hashids from 'hashids';
 import {RAMEnum, IRAMObject, RAMSchema} from './base';
 import {
-    Link,
     HrefValue,
     Identity as DTO,
     CreateIdentityDTO,
@@ -311,9 +310,7 @@ IdentitySchema.method('linkIdSchemeEnum', function () {
 
 IdentitySchema.method('toHrefValue', async function (includeValue:boolean) {
     return new HrefValue(
-        [
-            new Link('self','/api/v1/identity/' + encodeURIComponent(this.idValue))
-        ],
+        '/api/v1/identity/' + encodeURIComponent(this.idValue),
         includeValue ? await this.toDTO() : undefined
     );
 });
@@ -416,7 +413,7 @@ IdentitySchema.static('search', (page:number, reqPageSize:number) => {
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IIdentity>(count, pageSize, list));
+            resolve(new SearchResult<IIdentity>(page, count, pageSize, list));
         } catch (e) {
             reject(e);
         }

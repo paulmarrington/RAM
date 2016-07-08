@@ -1,6 +1,5 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Router} from '@angular/router';
-import Rx from 'rxjs/Rx';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {IIdentity} from '../../../../commons/RamAPI2';
 
@@ -10,20 +9,13 @@ import {IIdentity} from '../../../../commons/RamAPI2';
     directives: []
 })
 
-export class PageHeaderComponent implements OnInit, OnDestroy {
+export class PageHeaderComponent {
 
     @Input() public tab: string;
-
     @Input() public identity: IIdentity;
 
     constructor(private router: Router,
                 private modelHelper: RAMModelHelper) {
-    }
-
-    public ngOnInit() {
-    }
-
-    public ngOnDestroy() {
     }
 
     public title(): string {

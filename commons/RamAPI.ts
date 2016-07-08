@@ -37,7 +37,8 @@ export interface IKeyValue<T> {
 }
 
 export class HrefValue<T> {
-    constructor(public _links: Link[], public value:T) {
+    constructor(public href:string,
+                public value?:T) {
     }
 }
 
@@ -48,11 +49,11 @@ export class Link {
 
 // todo this needs a page index?
 export class SearchResult<T> {
-    constructor(public totalCount:number, public pageSize:number, public list:T[]) {
+    constructor(public page:number, public totalCount:number, public pageSize:number, public list:T[]) {
     }
 
     public map<U>(callback:(value:T, index:number, array:T[]) => U):SearchResult<U> {
-        return new SearchResult(this.totalCount, this.pageSize, this.list.map(callback));
+        return new SearchResult(this.page, this.totalCount, this.pageSize, this.list.map(callback));
     }
 }
 
@@ -163,7 +164,8 @@ export class Party {
 }
 
 export class Relationship {
-    constructor(public relationshipType:RelationshipType,
+    constructor(public _links:Link[],
+                public relationshipType:RelationshipType,
                 public subject:Party,
                 public subjectNickName:Name,
                 public delegate:Party,

@@ -28,6 +28,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     public relationship$: Rx.Observable<IRelationship>;
     public relationshipType$: Rx.Observable<IRelationshipType>;
 
+    public relationship: IRelationship;
     public delegateManageAuthorisationAllowedIndAttribute: IRelationshipAttribute;
     public delegateRelationshipTypeDeclarationAttributeUsage: IRelationshipAttributeNameUsage;
     private rteParamSub: Rx.Subscription;
@@ -46,13 +47,13 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
             this.identity$ = this.rest.findIdentityByValue(this.idValue);
             this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
             this.relationship$.subscribe((relationship) => {
+                this.relationship = relationship;
                 for (let attribute of relationship.attributes) {
                     if (attribute.attributeName.value.code === 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND') {
                         this.delegateManageAuthorisationAllowedIndAttribute = attribute;
                     }
                 }
-                let selfHref = this.modelHelper.linkByType('self', relationship.relationshipType._links);
-                this.relationshipType$ = this.rest.findRelationshipTypeByHref(selfHref.href);
+                this.relationshipType$ = this.rest.findRelationshipTypeByHref(relationship.relationshipType.href);
                 this.relationshipType$.subscribe((relationshipType) => {
                     for (let attributeUsage of relationshipType.relationshipAttributeNames) {
                         if (attributeUsage.attributeNameDef.value.code === 'DELEGATE_RELATIONSHIP_TYPE_DECLARATION') {
@@ -78,7 +79,7 @@ export class AcceptAuthorisationComponent implements OnInit, OnDestroy {
     };
 
     public acceptAuthorisation = () => {
-        this.rest.acceptPendingRelationshipByInvitationCode(this.code).subscribe(() => {
+        this.rest.acceptPendingRelationshipByInvitationCode(this.relationship).subscribe(() => {
             this.goToRelationshipsPage();
         }, (err) => {
             // todo

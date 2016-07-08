@@ -52,8 +52,8 @@ export class RAMRestService2 {
         const relType = (isDelegate ? 'delegate' : 'subject');
         const relationshipDTOToTable = (relref: IHrefValue<IRelationship>):IRelationshipTableRow => {
             const rel = relref.value;
-            const relationshipType = this.modelHelper.linkByType('self', rel.relationshipType._links).href.split('/').slice(-1);
-            const relId = decodeURIComponent(this.modelHelper.linkByType('self', rel.subject._links).href.split('/').slice(-1)[0]);
+            const relationshipType = rel.relationshipType.href.split('/').slice(-1);
+            const relId = decodeURIComponent(rel.subject.href.split('/').slice(-1)[0]);
             return {
                 name:       this.whatName(rel[relType+'NickName']),
                 subName:    '', // TODO: extract ABN when server provides it

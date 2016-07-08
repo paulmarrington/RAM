@@ -67,7 +67,10 @@ export class IdentityController {
             },
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.identityModel.search(req.query.page, req.query.pageSize))
+            .then((req:Request) => this.identityModel.search(
+                parseInt(req.query.page),
+                req.query.pageSize ? parseInt(req.query.pageSize) : null)
+            )
             .then((results) => (results.map((model) => model.toHrefValue(true))))
             .then(sendSearchResult(res), sendError(res))
             .then(sendNotFoundError(res));
