@@ -136,8 +136,8 @@ export class RelationshipController {
             .then((req:Request) => this.relationshipModel.search(
                 req.params.subject_or_delegate === 'subject' ? req.params.identity_id : null,
                 req.params.subject_or_delegate === 'delegate' ? req.params.identity_id : null,
-                req.query.page,
-                req.query.pageSize)
+                parseInt(req.query.page),
+                req.query.pageSize ? parseInt(req.query.pageSize) : null)
             )
             .then((results) => (results.map((model) => model.toHrefValue(true))))
             .then(sendSearchResult(res), sendError(res))
@@ -170,8 +170,8 @@ export class RelationshipController {
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.searchByIdentity(
                 req.params.identity_id,
-                req.query.page,
-                req.query.pageSize)
+                parseInt(req.query.page),
+                req.query.pageSize ? parseInt(req.query.pageSize) : null)
             )
             .then((results) => (results.map((model) => model.toHrefValue(true))))
             .then(sendSearchResult(res), sendError(res))
