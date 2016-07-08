@@ -1,12 +1,12 @@
 import {OnInit, Input, Output, EventEmitter, Component} from '@angular/core';
-import {ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
+import {REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES } from '@angular/forms';
 import {RAMNgValidators} from   '../../../commons/ram-ng-validators';
 import {MarkdownComponent} from '../ng2-markdown/ng2-markdown.component';
 
 @Component({
     selector: 'relationship-declaration',
     templateUrl: 'relationship-declaration.component.html',
-    directives: [FORM_DIRECTIVES, MarkdownComponent]
+    directives: [REACTIVE_FORM_DIRECTIVES,FORM_DIRECTIVES, MarkdownComponent]
 })
 export class RelationshipDeclarationComponent implements OnInit {
 
@@ -20,7 +20,7 @@ export class RelationshipDeclarationComponent implements OnInit {
     @Output('backEvent') public backEvent = new EventEmitter<boolean>();
     @Output('createRelationshipEvent') public createRelationshipEvent = new EventEmitter<boolean>();
 
-    public form: ControlGroup;
+    public form: FormGroup;
 
     constructor(private _fb: FormBuilder) {
     }

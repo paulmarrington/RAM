@@ -9,8 +9,11 @@ import {AppComponent} from './components/app/app.component';
 import 'ng2-bootstrap';
 import {APP_ROUTER_PROVIDERS} from './routes';
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {disableDeprecatedForms, provideForms} from '@angular/forms';
 
 // enableProdMode();
 
 bootstrap(AppComponent, [APP_ROUTER_PROVIDERS,
-{ provide: LocationStrategy, useClass: HashLocationStrategy }]).catch(err => console.error(err));
+  disableDeprecatedForms(),
+  provideForms(),
+  { provide: LocationStrategy, useClass: HashLocationStrategy }]).catch(err => console.error(err));

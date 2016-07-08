@@ -2,10 +2,10 @@
 
     <page-header [identity]="identity$|async" tab="GET_AUTHORISATION"></page-header>
 
-    <form class="form-horizontal" [ngFormModel]='form'>
+    <form class="form-horizontal" [formGroup]='form'>
         <div class="form-group">
             <div class="col-lg-8" [class.has-error]="!form.controls['relationshipCode'].valid">
-                <input type="text" class="form-control" placeholder="Authorisation code ..." [ngFormControl]='form.controls["relationshipCode"]'>
+                <input type="text" class="form-control" placeholder="Authorisation code ..." [formControl]='form.controls["relationshipCode"]'>
             </div>
             <div class="col-lg-2">
                 <button class="btn btn-primary col-lg-12" (click)="activateCode($event)"

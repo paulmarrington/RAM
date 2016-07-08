@@ -1,16 +1,15 @@
 import {OnInit, Input, Output, EventEmitter, Component} from '@angular/core';
-import {ControlGroup, FormBuilder, FORM_DIRECTIVES, Validators, Control}
-from '@angular/common';
+import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FormControl, FORM_DIRECTIVES } from '@angular/forms';
 
 @Component({
     selector: 'authorisation-type',
     templateUrl: 'authorisation-type.component.html',
-    directives: [FORM_DIRECTIVES]
+    directives: [REACTIVE_FORM_DIRECTIVES,FORM_DIRECTIVES]
 })
 
 export class AuthorisationTypeComponent implements OnInit {
 
-    public form: ControlGroup;
+    public form: FormGroup;
 
     @Input('data') public data: AuthorisationTypeComponentData;
 
@@ -32,7 +31,7 @@ export class AuthorisationTypeComponent implements OnInit {
         });
     }
 
-    private isAuthTypeSelected = (authType: Control) => {
+    private isAuthTypeSelected = (authType: FormControl) => {
         return (authType.value === 'choose') ? { authorisationTypeNotSet: { valid: false } } : null;
     };
 }
