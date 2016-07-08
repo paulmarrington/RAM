@@ -10,20 +10,28 @@
                 <a (click)="goToPreviousPage()">&laquo;</a>
             </li>
 
+            <li *ngIf="forceShowFirstPage()">
+                <a (click)="goToPage(1)">1</a>
+            </li>
+
             <li class="disabled" *ngIf="hasPreviousEllipsis()">
                 <span>
                     <span aria-hidden="true">...</span>
                 </span>
             </li>
 
-            <li *ngFor="let page of pages()" [class.active]="searchResult?.page == page">
-                <a (click)="goToPage(page)">{{page}}</a>
+            <li *ngFor="let p of innerPages()" [class.active]="page() == p">
+                <a (click)="goToPage(p)">{{p}}</a>
             </li>
 
             <li class="disabled" *ngIf="hasNextEllipsis()">
                 <span>
                     <span aria-hidden="true">...</span>
                 </span>
+            </li>
+
+            <li *ngIf="forceShowLastPage()">
+                <a (click)="goToPage(totalPages())">{{totalPages()}}</a>
             </li>
 
             <li [class.disabled]="isNextDisabled()">
@@ -33,11 +41,5 @@
         </ul>
 
     </nav>
-
-    <h4>TODO: Search Result Pagination</h4>
-    <h4>Page = {{searchResult?.page}}</h4>
-    <h4>Page Size = {{searchResult?.pageSize}}</h4>
-    <h4>Total Count = {{searchResult?.totalCount}}</h4>
-    <h4>Pages = {{pages()}}</h4>
 
 </div>

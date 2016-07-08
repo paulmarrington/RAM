@@ -10,6 +10,8 @@ import {ISearchResult} from '../../../../commons/RamAPI2';
 export class SearchResultPaginationComponent {
 
     @Input() public searchResult: ISearchResult<Object>;
+    @Input() public previousPageCountBeforeShowingEllipsis = 2;
+    @Input() public nextPageCountBeforeShowingEllipsis = 2;
 
     public totalPages(): number {
         if (this.searchResult) {
@@ -17,32 +19,71 @@ export class SearchResultPaginationComponent {
             const totalCount = this.searchResult.totalCount;
             return parseInt((totalCount + pageSize - 1) / pageSize);
         }
-        return 0;
+        return 1;
     }
 
-    public pages(): number[] {
+    public innerPages(): number[] {
         let result: number[] = [];
+        let page = this.page();
         let totalPages = this.totalPages();
-        for (let page = 1; page <= totalPages; page = page + 1) {
-            result.push(page);
+        for (let p = 1; p <= totalPages; p = p + 1) {
+            const lowerPage = page - this.previousPageCountBeforeShowingEllipsis;
+            const upperPage = page + this.nextPageCountBeforeShowingEllipsis;
+            if (p >= lowerPage && p <= upperPage) {
+                result.push(p);
+            }
         }
         return result;
     }
 
+    public page(): number {
+        return this.searchResult ? this.searchResult.page : 1;
+    }
+
     public isPreviousDisabled(): boolean {
-        return this.searchResult ? this.searchResult.page === 1 : true;
+        return this.page() === 1;
     }
 
     public isNextDisabled(): boolean {
-        return this.searchResult ? this.searchResult.page === (this.totalPages()) : true;
+        return this.page() === this.totalPages();
     }
 
     public hasPreviousEllipsis(): boolean {
-        return true;
+        if (this.searchResult) {
+            const page = this.page();
+            const lowerPage = page - this.previousPageCountBeforeShowingEllipsis;
+            return lowerPage > 2;
+        }
+        return false;
     }
 
     public hasNextEllipsis(): boolean {
-        return true;
+        if (this.searchResult) {
+            const page = this.page();
+            const upperPage = page + this.nextPageCountBeforeShowingEllipsis;
+            const totalPages = this.totalPages();
+            return upperPage <= totalPages - 2;
+        }
+        return false;
+    }
+
+    public forceShowFirstPage(): boolean {
+        if (this.searchResult) {
+            const page = this.page();
+            const lowerPage = page - this.previousPageCountBeforeShowingEllipsis;
+            return lowerPage >= 2;
+        }
+        return false;
+    }
+
+    public forceShowLastPage(): boolean {
+        if (this.searchResult) {
+            const page = this.page();
+            const upperPage = page + this.nextPageCountBeforeShowingEllipsis;
+            const totalPages = this.totalPages();
+            return upperPage <= totalPages - 1;
+        }
+        return false;
     }
 
     public goToPage(page: number) {
@@ -60,6 +101,7 @@ export class SearchResultPaginationComponent {
 
     public goToNextPage() {
         if (!this.isNextDisabled()) {
+            console.log('CURRENT PAGE = ' + this.searchResult.page);
             const nextPage = this.searchResult.page + 1;
             alert('TODO: Go To Next Page: ' + nextPage);
         }
