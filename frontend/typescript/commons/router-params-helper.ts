@@ -1,5 +1,5 @@
 import Rx from 'rxjs/Rx';
-import {ActivatedRoute, Router, Params} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 export class RouterParamsHelper {
 
