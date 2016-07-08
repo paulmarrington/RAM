@@ -1,4 +1,4 @@
-import {Component, Input, Output} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ISearchResult} from '../../../../commons/RamAPI2';
 
 @Component({
@@ -18,7 +18,7 @@ export class SearchResultPaginationComponent {
         if (this.searchResult) {
             const pageSize = this.searchResult.pageSize;
             const totalCount = this.searchResult.totalCount;
-            return parseInt((totalCount + pageSize - 1) / pageSize);
+            return Math.trunc((totalCount + pageSize - 1) / pageSize);
         }
         return 1;
     }
@@ -87,7 +87,7 @@ export class SearchResultPaginationComponent {
         return false;
     }
 
-    public goToPage(page: number) {
+    public goToPage(page: number): void {
         if (this.searchResult && this.searchResult.page !== page) {
             if (this.delegate) {
                 this.delegate.goToPage(page);
@@ -95,14 +95,14 @@ export class SearchResultPaginationComponent {
         }
     }
 
-    public goToPreviousPage() {
+    public goToPreviousPage(): void {
         if (!this.isPreviousDisabled()) {
             const previousPage = this.searchResult.page - 1;
             this.goToPage(previousPage);
         }
     }
 
-    public goToNextPage() {
+    public goToNextPage(): void {
         if (!this.isNextDisabled()) {
             console.log('CURRENT PAGE = ' + this.searchResult.page);
             const nextPage = this.searchResult.page + 1;
