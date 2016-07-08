@@ -9,6 +9,6 @@ import {ISearchResult} from '../../../../commons/RamAPI2';
 
 export class SearchResultPaginationComponent {
 
-    @Input() public searchResult: ISearchResult<T>;
+    @Input() public searchResult: ISearchResult<Object>;
 
 }

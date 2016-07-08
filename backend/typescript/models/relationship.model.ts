@@ -360,7 +360,7 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IRelationship>(count, pageSize, list));
+            resolve(new SearchResult<IRelationship>(page, count, pageSize, list));
         } catch (e) {
             reject(e);
         }
@@ -406,7 +406,7 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:numb
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IRelationship>(count, pageSize, list));
+            resolve(new SearchResult<IRelationship>(page, count, pageSize, list));
         } catch (e) {
             reject(e);
         }
@@ -452,7 +452,7 @@ RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity',
                     ])
                     .exec();
                 const inflatedList = (await PartyModel.populate(listOfIds, {path: '_id'})).map((item:{_id:string}) => item._id);
-                resolve(new SearchResult<IParty>(count, pageSize, inflatedList));
+                resolve(new SearchResult<IParty>(page, count, pageSize, inflatedList));
             } catch (e) {
                 reject(e);
             }

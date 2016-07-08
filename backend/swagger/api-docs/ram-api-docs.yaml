@@ -1076,6 +1076,10 @@ definitions:
       This abstract object just adds common properties to a <entity>SearchResultResponse object
     required: [totalCount, pageSize]
     properties:
+      page:
+        description: Current page number
+        type: integer
+        format: int32
       totalCount:
         description: Total number of records matched for this query
         type: integer

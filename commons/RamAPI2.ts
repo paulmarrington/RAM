@@ -1,5 +1,5 @@
-// todo this needs a page index?
 export interface ISearchResult<T> {
+    page: number,
     totalCount: number,
     pageSize: number,
     list: T[];

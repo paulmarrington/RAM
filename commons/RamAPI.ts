@@ -49,11 +49,11 @@ export class Link {
 
 // todo this needs a page index?
 export class SearchResult<T> {
-    constructor(public totalCount:number, public pageSize:number, public list:T[]) {
+    constructor(public page:number, public totalCount:number, public pageSize:number, public list:T[]) {
     }
 
     public map<U>(callback:(value:T, index:number, array:T[]) => U):SearchResult<U> {
-        return new SearchResult(this.totalCount, this.pageSize, this.list.map(callback));
+        return new SearchResult(this.page, this.totalCount, this.pageSize, this.list.map(callback));
     }
 }
 
