@@ -114,6 +114,6 @@ export class SearchResultPaginationComponent {
 
 export interface SearchResultPaginationDelegate {
 
-    goToPage(page: number);
+    goToPage(page: number): void;
 
 }

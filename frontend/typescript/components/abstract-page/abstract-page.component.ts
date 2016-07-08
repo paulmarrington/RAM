@@ -17,10 +17,17 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
     public ngOnInit() {
 
-        // subscribe to router params
+        let pathParams: Params;
+        let queryParams: Params;
+
         this.rteParamSub = RouterParamsHelper.params(this.route, this.router)
             .subscribe((params) => {
-                this.onInit(params);
+                if (!pathParams) {
+                    pathParams = params;
+                } else {
+                    queryParams = params;
+                    this.onInit({path: pathParams, query: queryParams});
+                }
             });
 
     }
@@ -31,7 +38,7 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
     }
 
     /* tslint:disable:no-empty */
-    public onInit(params: {path:Params, query:Params}) {
+    public onInit(params: {path: Params, query: Params}) {
     }
 
     /* tslint:disable:no-empty */

@@ -8,12 +8,7 @@ export class RouterParamsHelper {
         const pathParams$ = route.params;
         const queryParams$ = router.routerState.queryParams;
 
-        return Rx.Observable.zip(pathParams$, queryParams$, (pathParams: Params, queryParams: Params) => {
-            return {
-                path: pathParams,
-                query: queryParams
-            };
-        });
+        return Rx.Observable.merge(pathParams$, queryParams$);
 
     }
 
