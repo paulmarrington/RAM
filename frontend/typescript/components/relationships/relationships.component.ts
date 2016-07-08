@@ -104,7 +104,10 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
             // pagination delegate
             this.paginationDelegate = {
                 goToPage: (page: number) => {
-                    // todo navigate to next page
+                    this.router.navigate(['/relationships',
+                        encodeURIComponent(this.idValue)],
+                        {queryParams: {page: page}}
+                    );
                 }
             } as SearchResultPaginationDelegate;
 
