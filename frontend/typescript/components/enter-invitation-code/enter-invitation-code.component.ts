@@ -1,5 +1,5 @@
 import {OnInit, Component, OnDestroy} from '@angular/core';
-import {Validators, ControlGroup, FormBuilder, FORM_DIRECTIVES} from '@angular/common';
+import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES } from '@angular/forms';
 import {ActivatedRoute, Router, ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
 import {PageHeaderComponent} from '../page-header/page-header.component';
@@ -9,11 +9,11 @@ import {RAMRestService} from '../../services/ram-rest.service';
 @Component({
     selector: 'enter-invitation-code',
     templateUrl: 'enter-invitation-code.component.html',
-    directives: [FORM_DIRECTIVES, ROUTER_DIRECTIVES, PageHeaderComponent]
+    directives: [REACTIVE_FORM_DIRECTIVES,FORM_DIRECTIVES, ROUTER_DIRECTIVES, PageHeaderComponent]
 })
 export class EnterInvitationCodeComponent implements OnInit, OnDestroy {
 
-    public form: ControlGroup;
+    public form: FormGroup;
 
     public idValue: string;
 

@@ -17,12 +17,12 @@
     </div>
     <p class="lead">
         <h4>Enter an email address to send the instructions to <strong>{{displayName}}</strong>:</h4>
-        <form class="form-horizontal" [ngFormModel]='form' (ngSubmit)="onSubmitEmail()">
+        <form class="form-horizontal" [formGroup]='form' (ngSubmit)="onSubmitEmail()">
             <fieldset>
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Email</label>
                     <div class="col-lg-8">
-                        <input [ngFormControl]="form.find('email')" class="form-control" placeholder="Email ..." type="email">
+                        <input [formControl]="form.find('email')" class="form-control" placeholder="Email ..." type="email">
                     </div>
                     <div class="col-lg-2">
                         <button type="submit" class="btn btn-primary col-lg-12" [disabled]="!form.valid">Send</button>
@@ -39,12 +39,12 @@
     </div>
     <p class="lead">
         <h4>Provide <strong>{{displayName}}</strong>’s Authenticator App's Unique Device Name (UDN):</h4>
-        <form class="form-horizontal" [ngFormModel]='formUdn' (ngSubmit)="onSubmitUdn()">
+        <form class="form-horizontal" [formGroup]='formUdn' (ngSubmit)="onSubmitUdn()">
             <fieldset>
                 <div class="form-group">
                     <label class="col-lg-2 control-label">UDN</label>
                     <div class="col-lg-8">
-                        <input [ngFormControl]="formUdn.find('udn')" class="form-control" type="text" placeholder="UDN ...">
+                        <input [formControl]="formUdn.find('udn')" class="form-control" type="text" placeholder="UDN ...">
                     </div>
                     <div class="col-lg-2">
                         <button type="submit" class="btn btn-primary col-lg-12" [disabled]="!formUdn.valid">Submit</button>
