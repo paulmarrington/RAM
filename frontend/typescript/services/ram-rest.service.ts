@@ -18,7 +18,8 @@ import {
 @Injectable()
 export class RAMRestService {
 
-    constructor(private http: Http, private modelHelper: RAMModelHelper) {
+    constructor(private http: Http,
+                private modelHelper: RAMModelHelper) {
     }
 
     // TODO remove temporary api

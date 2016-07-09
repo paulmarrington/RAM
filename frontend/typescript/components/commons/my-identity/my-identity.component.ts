@@ -26,10 +26,11 @@ export class MyIdentityComponent {
     }
 
     public ngOnInit() {
-        this.rest.findMyIdentity().subscribe(identity => {
+        this.rest.findMyIdentity().subscribe(
+            identity => {
                 this.me = identity;
             },
-            error => this.errorService.handleError(error)
+            errorResponse => this.errorService.handleError(errorResponse)
         );
     }
 

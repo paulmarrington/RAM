@@ -1,8 +1,9 @@
 // TODO this component need to be deleted or migrated to project standards
-
 import {Component, OnInit} from '@angular/core';
+
 import {Error} from './error';
 import {ErrorService} from './error.service';
+
 @Component({
     selector: 'my-error',
     templateUrl: 'error.component.html',
@@ -17,11 +18,14 @@ import {ErrorService} from './error.service';
         }
     `]
 })
+
 export class ErrorComponent implements OnInit {
+
     private errorDisplay = 'none';
     private errorData: Error;
 
-    constructor (private errorService: ErrorService) {}
+    constructor(private errorService: ErrorService) {
+    }
 
     public onErrorHandled() {
         this.errorDisplay = 'none';
