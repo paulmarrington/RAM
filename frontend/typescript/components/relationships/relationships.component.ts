@@ -1,13 +1,14 @@
-import {Component} from '@angular/core';
-import {ActivatedRoute, Router, Params} from '@angular/router';
-import {ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
+
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../page-header/page-header.component';
 import {SearchResultPaginationComponent, SearchResultPaginationDelegate}
     from '../search-result-pagination/search-result-pagination.component';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
+
 import {
     ISearchResult,
     IParty,
@@ -52,6 +53,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
         this._isLoading = true;
 
+        // extract path and query parameters
         this.idValue = decodeURIComponent(params.path['idValue']);
         this.page = params.query['page'] ? +params.query['page'] : 1;
 

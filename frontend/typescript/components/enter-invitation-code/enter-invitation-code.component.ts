@@ -1,40 +1,50 @@
-import {OnInit, Component, OnDestroy} from '@angular/core';
-import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES } from '@angular/forms';
-import {ActivatedRoute, Router, ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
+import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES } from '@angular/forms';
+
+import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../page-header/page-header.component';
-import {IIdentity} from '../../../../commons/RamAPI2';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
+
+import {IIdentity} from '../../../../commons/RamAPI2';
 
 @Component({
     selector: 'enter-invitation-code',
     templateUrl: 'enter-invitation-code.component.html',
-    directives: [REACTIVE_FORM_DIRECTIVES,FORM_DIRECTIVES, ROUTER_DIRECTIVES, PageHeaderComponent]
+    directives: [REACTIVE_FORM_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, PageHeaderComponent]
 })
-export class EnterInvitationCodeComponent implements OnInit, OnDestroy {
 
-    public form: FormGroup;
+export class EnterInvitationCodeComponent extends AbstractPageComponent {
 
     public idValue: string;
 
     public identity$: Rx.Observable<IIdentity>;
 
-    private rteParamSub: Rx.Subscription;
+    public form: FormGroup;
 
-    constructor(private _fb: FormBuilder,
-                private router: Router,
-                private route: ActivatedRoute,
-                private rest: RAMRestService) {
+    constructor(route: ActivatedRoute,
+                router: Router,
+                modelHelper: RAMModelHelper,
+                rest: RAMRestService,
+                private _fb: FormBuilder) {
+        super(route, router, modelHelper, rest);
     }
 
-    public ngOnInit() {
-        this.rteParamSub = this.route.params.subscribe(params => {
-            this.idValue = decodeURIComponent(params['idValue']);
-            this.identity$ = this.rest.findIdentityByValue(this.idValue);
-        });
+    public onInit(params: {path: Params, query: Params}) {
+
+        // extract path and query parameters
+        this.idValue = decodeURIComponent(params.path['idValue']);
+
+        // identity in focus
+        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+
+        // forms
         this.form = this._fb.group({
             'relationshipCode': ['', Validators.compose([Validators.required])]
         });
+
     }
 
     public activateCode(event: Event) {
@@ -46,14 +56,11 @@ export class EnterInvitationCodeComponent implements OnInit, OnDestroy {
 
         event.stopPropagation();
         return false;
+
     }
 
     public goToRelationshipsPage = () => {
         this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
     };
-
-    public ngOnDestroy() {
-        this.rteParamSub.unsubscribe();
-    }
 
 }

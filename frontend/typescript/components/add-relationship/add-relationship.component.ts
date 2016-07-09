@@ -1,4 +1,6 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component} from '@angular/core';
+import {Router, ActivatedRoute, Params} from '@angular/router';
+import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {AccessPeriodComponent, AccessPeriodComponentData} from '../commons/access-period/access-period.component';
 import {AuthorisationPermissionsComponent} from '../commons/authorisation-permissions/authorisation-permissions.component';
 import {
@@ -12,7 +14,6 @@ import {
     RepresentativeDetailsComponent, RepresentativeDetailsComponentData
 } from
 '../commons/representative-details/representative-details.component';
-import {Router, ActivatedRoute} from '@angular/router';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import Rx from 'rxjs/Rx';
@@ -44,11 +45,10 @@ import {PageHeaderComponent} from '../page-header/page-header.component';
         PageHeaderComponent
     ]
 })
-export class AddRelationshipComponent implements OnInit, OnDestroy {
-
-    private rteParamSub: Rx.Subscription;
+export class AddRelationshipComponent extends AbstractPageComponent {
 
     public idValue: string;
+
     public identity$: Rx.Observable<IIdentity>;
     public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
 
@@ -81,24 +81,18 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
         }
     };
 
-    constructor(private route: ActivatedRoute,
-        private router: Router,
-        private rest: RAMRestService,
-        private modelHelper: RAMModelHelper
-    ) {
+    constructor(route: ActivatedRoute,
+                router: Router,
+                modelHelper: RAMModelHelper,
+                rest: RAMRestService) {
+        super(route, router, modelHelper, rest);
     }
 
-    public ngOnInit() {
-        this.rteParamSub = this.route.params.subscribe(params => {
-            this.idValue = decodeURIComponent(params['idValue']);
-            this.identity$ = this.rest.findIdentityByValue(this.idValue);
-            this.relationshipTypes$ = this.rest.listRelationshipTypes();
-            this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
-        });
-    }
-
-    public ngOnDestroy() {
-        this.rteParamSub.unsubscribe();
+    public onInit(params: {path: Params, query: Params}) {
+        this.idValue = decodeURIComponent(params.path['idValue']);
+        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+        this.relationshipTypes$ = this.rest.listRelationshipTypes();
+        this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
     }
 
     public back = () => {
