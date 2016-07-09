@@ -3,9 +3,9 @@ import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
 
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
-import {PageHeaderComponent} from '../page-header/page-header.component';
+import {PageHeaderComponent} from '../commons/page-header/page-header.component';
 import {SearchResultPaginationComponent, SearchResultPaginationDelegate}
-    from '../search-result-pagination/search-result-pagination.component';
+    from '../commons/search-result-pagination/search-result-pagination.component';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 

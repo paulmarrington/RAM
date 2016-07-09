@@ -30,7 +30,7 @@ import {
     AuthorisationManagementComponent,
     AuthorisationManagementComponentData
 } from '../commons/authorisation-management/authorisation-management.component';
-import {PageHeaderComponent} from '../page-header/page-header.component';
+import {PageHeaderComponent} from '../commons/page-header/page-header.component';
 
 @Component({
     selector: 'add-relationship',

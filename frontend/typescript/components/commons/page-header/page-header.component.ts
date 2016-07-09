@@ -1,7 +1,9 @@
 import {Component, Input} from '@angular/core';
 import {Router} from '@angular/router';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
-import {IIdentity} from '../../../../commons/RamAPI2';
+
+import {RAMModelHelper} from '../../../commons/ram-model-helper';
+
+import {IIdentity} from '../../../../../commons/RamAPI2';
 
 @Component({
     selector: 'page-header',
