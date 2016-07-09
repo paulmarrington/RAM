@@ -3,7 +3,7 @@ import {Component} from '@angular/core';
 
 import {RAMRestService} from '../../../services/ram-rest.service';
 import {RAMModelHelper} from '../../../commons/ram-model-helper';
-import {ErrorService} from '../../error/error.service';
+import {ErrorService} from '../error/error.service';
 
 import {IIdentity} from '../../../../../commons/RamAPI2';
 
