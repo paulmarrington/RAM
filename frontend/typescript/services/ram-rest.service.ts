@@ -1,5 +1,5 @@
 import Rx from 'rxjs/Rx';
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Response, Http, Headers} from '@angular/http';
 
 import {RAMModelHelper} from '../commons/ram-model-helper';
