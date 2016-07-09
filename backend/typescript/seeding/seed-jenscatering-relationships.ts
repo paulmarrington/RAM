@@ -5,6 +5,14 @@ import {PartyType} from '../models/party.model';
 import {IdentityType, IdentityLinkIdScheme, IdentityInvitationCodeStatus} from '../models/identity.model';
 import {RelationshipStatus} from '../models/relationship.model';
 
+const lpad = (value: Object, size: number, char: string) => {
+    let s = value + '';
+    while (s.length < size) {
+        s = char + s;
+    }
+    return s;
+};
+
 // seeder .............................................................................................................
 
 /* tslint:disable:no-any */
@@ -233,9 +241,11 @@ export class JensCateringRelationshipsSeeder {
 
                 for (let i = 1; i <= 50; i = i + 1) {
 
+                    const suffix = lpad(i, 3, '0');
+
                     const delegateName = await Seeder.createNameModel({
                         givenName: 'Zoe',
-                        familyName: 'Zombie ' + i
+                        familyName: 'Zombie ' + suffix
                     } as any);
 
                     const delegateDob = await Seeder.createSharedSecretModel({
@@ -256,7 +266,7 @@ export class JensCateringRelationshipsSeeder {
                     Seeder.log('');
 
                     await Seeder.createIdentityModel({
-                        rawIdValue: 'zoezombie_identity_' + i,
+                        rawIdValue: 'zoezombie_identity_' + suffix,
                         identityType: IdentityType.LinkId.name,
                         defaultInd: true,
                         linkIdScheme: IdentityLinkIdScheme.MyGov.name,
