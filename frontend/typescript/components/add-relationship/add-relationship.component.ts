@@ -1,6 +1,6 @@
 import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
-import {Router, ActivatedRoute, Params} from '@angular/router';
+import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from '@angular/router';
 
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../commons/page-header/page-header.component';
@@ -40,6 +40,7 @@ import {
     selector: 'add-relationship',
     templateUrl: 'add-relationship.component.html',
     directives: [
+        ROUTER_DIRECTIVES,
         AccessPeriodComponent,
         AuthorisationPermissionsComponent,
         AuthorisationTypeComponent,
@@ -49,6 +50,7 @@ import {
         PageHeaderComponent
     ]
 })
+
 export class AddRelationshipComponent extends AbstractPageComponent {
 
     public idValue: string;
