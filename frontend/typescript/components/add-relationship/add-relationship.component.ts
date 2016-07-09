@@ -1,6 +1,13 @@
+import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
+
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
+import {PageHeaderComponent} from '../commons/page-header/page-header.component';
+import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
+
 import {AccessPeriodComponent, AccessPeriodComponentData} from '../commons/access-period/access-period.component';
 import {AuthorisationPermissionsComponent} from '../commons/authorisation-permissions/authorisation-permissions.component';
 import {
@@ -14,9 +21,11 @@ import {
     RepresentativeDetailsComponent, RepresentativeDetailsComponentData
 } from
 '../commons/representative-details/representative-details.component';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
-import {RAMRestService} from '../../services/ram-rest.service';
-import Rx from 'rxjs/Rx';
+import {
+    AuthorisationManagementComponent,
+    AuthorisationManagementComponentData
+} from '../commons/authorisation-management/authorisation-management.component';
+
 import {
     IAttributeDTO,
     IIdentity,
@@ -26,11 +35,6 @@ import {
     IRelationshipType,
     IHrefValue
 } from '../../../../commons/RamAPI2';
-import {
-    AuthorisationManagementComponent,
-    AuthorisationManagementComponentData
-} from '../commons/authorisation-management/authorisation-management.component';
-import {PageHeaderComponent} from '../commons/page-header/page-header.component';
 
 @Component({
     selector: 'add-relationship',
@@ -83,9 +87,10 @@ export class AddRelationshipComponent extends AbstractPageComponent {
 
     constructor(route: ActivatedRoute,
                 router: Router,
+                rest: RAMRestService,
                 modelHelper: RAMModelHelper,
-                rest: RAMRestService) {
-        super(route, router, modelHelper, rest);
+                routeHelper: RAMRouteHelper) {
+        super(route, router, rest, modelHelper, routeHelper);
     }
 
     public onInit(params: {path: Params, query: Params}) {

@@ -6,8 +6,9 @@ import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIREC
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../commons/page-header/page-header.component';
 import {RAMNgValidators} from '../../commons/ram-ng-validators';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
 
 import {IIdentity, INotifyDelegateDTO} from '../../../../commons/RamAPI2';
 
@@ -32,10 +33,11 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
 
     constructor(route: ActivatedRoute,
                 router: Router,
-                modelHelper: RAMModelHelper,
                 rest: RAMRestService,
+                modelHelper: RAMModelHelper,
+                routeHelper: RAMRouteHelper,
                 private _fb: FormBuilder) {
-        super(route, router, modelHelper, rest);
+        super(route, router, rest, modelHelper, routeHelper);
     }
 
     public onInit(params: {path: Params, query: Params}) {

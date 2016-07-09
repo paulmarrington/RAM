@@ -5,8 +5,9 @@ import {DatePipe} from '@angular/common';
 
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../commons/page-header/page-header.component';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
 
 import {
     IIdentity,
@@ -37,9 +38,10 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
 
     constructor(route: ActivatedRoute,
                 router: Router,
+                rest: RAMRestService,
                 modelHelper: RAMModelHelper,
-                rest: RAMRestService) {
-        super(route, router, modelHelper, rest);
+                routeHelper: RAMRouteHelper) {
+        super(route, router, rest, modelHelper, routeHelper);
     }
 
     /* tslint:disable:max-func-body-length */

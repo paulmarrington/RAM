@@ -6,8 +6,9 @@ import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../commons/page-header/page-header.component';
 import {SearchResultPaginationComponent, SearchResultPaginationDelegate}
     from '../commons/search-result-pagination/search-result-pagination.component';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
 
 import {
     ISearchResult,
@@ -42,9 +43,10 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
     constructor(route: ActivatedRoute,
                 router: Router,
+                rest: RAMRestService,
                 modelHelper: RAMModelHelper,
-                rest: RAMRestService) {
-        super(route, router, modelHelper, rest);
+                routeHelper: RAMRouteHelper) {
+        super(route, router, rest, modelHelper, routeHelper);
     }
 
     // todo need some way to indicate ALL the loading has finished; not a priority right now
@@ -121,19 +123,19 @@ export class RelationshipsComponent extends AbstractPageComponent {
         return this._isLoading;
     }
 
-    public goToRelationshipsAddPage = () => {
-        this.router.navigate(['/relationships/add', encodeURIComponent(this.idValue)]);
+    public goToRelationshipsAddPage() {
+        this.routeHelper.goToRelationshipsAddPage(this.idValue);
     };
 
-    public goToRelationshipsAuthorisationPage = () => {
-        this.router.navigate(['/relationships/add/enter', encodeURIComponent(this.idValue)]);
+    public goToRelationshipsEnterCodePage() {
+        this.routeHelper.goToRelationshipsEnterCodePage(this.idValue);
     };
 
     public goToRelationshipsContext(partyResource: IHrefValue<IParty>) {
         const defaultIdentityResource = this.modelHelper.getDefaultIdentityResource(partyResource.value);
         if (defaultIdentityResource) {
             const identityIdValue = defaultIdentityResource.value.idValue;
-            this.router.navigate(['/relationships', encodeURIComponent(identityIdValue)]);
+            this.routeHelper.goToRelationshipsPage(identityIdValue);
         }
     }
 

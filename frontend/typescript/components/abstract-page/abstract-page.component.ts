@@ -1,8 +1,10 @@
 import Rx from 'rxjs/Rx';
 import {OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router, Params} from '@angular/router';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
+
 import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
 
 export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
@@ -12,8 +14,9 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
     constructor(public route: ActivatedRoute,
                 public router: Router,
+                public rest: RAMRestService,
                 public modelHelper: RAMModelHelper,
-                public rest: RAMRestService) {
+                public routeHelper: RAMRouteHelper) {
     }
 
     /* tslint:disable:max-func-body-length */

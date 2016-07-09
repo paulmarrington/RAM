@@ -2,8 +2,9 @@ import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
 
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
 
 @Component({
     selector: 'landing-home',
@@ -15,9 +16,10 @@ export class WelcomeHomeComponent extends AbstractPageComponent {
 
     constructor(route: ActivatedRoute,
                 router: Router,
+                rest: RAMRestService,
                 modelHelper: RAMModelHelper,
-                rest: RAMRestService) {
-        super(route, router, modelHelper, rest);
+                routeHelper: RAMRouteHelper) {
+        super(route, router, rest, modelHelper, routeHelper);
     }
 
     public onInit(params: {path: Params, query: Params}) {
@@ -25,7 +27,7 @@ export class WelcomeHomeComponent extends AbstractPageComponent {
         // logged in identity
         this.rest.findMyIdentity().subscribe(identity => {
             const idValue = identity.idValue;
-            this.router.navigate(['/relationships', encodeURIComponent(idValue)]);
+            this.routeHelper.goToRelationshipsPage(idValue);
         });
 
     }

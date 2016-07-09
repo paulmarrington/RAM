@@ -3,8 +3,8 @@ import {RouterConfig, provideRouter} from '@angular/router';
 import {RelationshipsComponent} from './components/relationships/relationships.component';
 import {AddRelationshipComponent} from './components/add-relationship/add-relationship.component';
 import {AddRelationshipCompleteComponent} from './components/add-relationship-complete/add-relationship-complete.component';
-import {AcceptAuthorisationComponent} from './components/accept-authorisation/accept-authorisation.component';
 import {EnterInvitationCodeComponent} from './components/enter-invitation-code/enter-invitation-code.component';
+import {AcceptAuthorisationComponent} from './components/accept-authorisation/accept-authorisation.component';
 import {WelcomeHomeComponent} from './components/welcome-home/welcome-home.component';
 
 export const routes: RouterConfig = [
