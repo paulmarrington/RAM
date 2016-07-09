@@ -1,7 +1,10 @@
 import {Component, Input} from '@angular/core';
 import {Router} from '@angular/router';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
-import {IIdentity} from '../../../../commons/RamAPI2';
+
+import {RAMModelHelper} from '../../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../../commons/ram-route-helper';
+
+import {IIdentity} from '../../../../../commons/RamAPI2';
 
 @Component({
     selector: 'page-header',
@@ -15,7 +18,8 @@ export class PageHeaderComponent {
     @Input() public identity: IIdentity;
 
     constructor(private router: Router,
-                private modelHelper: RAMModelHelper) {
+                private modelHelper: RAMModelHelper,
+                private routeHelper: RAMRouteHelper) {
     }
 
     public title(): string {
@@ -24,19 +28,19 @@ export class PageHeaderComponent {
 
     public goToRelationshipsPage = () => {
         if (this.identity) {
-            this.router.navigate(['/relationships', encodeURIComponent(this.identity.idValue)]);
+            this.routeHelper.goToRelationshipsPage(this.identity.idValue);
         }
     };
 
     public goToGiveAuthorisationPage = () => {
         if (this.identity) {
-            this.router.navigate(['/relationships/add', encodeURIComponent(this.identity.idValue)]);
+            this.routeHelper.goToRelationshipAddPage(this.identity.idValue);
         }
     };
 
     public goToGetAuthorisationPage = () => {
         if (this.identity) {
-            this.router.navigate(['/relationships/add/enter', encodeURIComponent(this.identity.idValue)]);
+            this.routeHelper.goToRelationshipEnterCodePage(this.identity.idValue);
         }
     };
 

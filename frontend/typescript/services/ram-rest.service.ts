@@ -1,4 +1,9 @@
-import { Injectable } from '@angular/core';
+import Rx from 'rxjs/Rx';
+import {Injectable} from '@angular/core';
+import {Response, Http, Headers} from '@angular/http';
+
+import {RAMModelHelper} from '../commons/ram-model-helper';
+
 import {
     ISearchResult,
     IHrefValue,
@@ -9,14 +14,12 @@ import {
     IRelationshipType,
     INotifyDelegateDTO
 } from '../../../commons/RamAPI2';
-import Rx from 'rxjs/Rx';
-import {Response, Http, Headers} from '@angular/http';
-import {RAMModelHelper} from '../commons/ram-model-helper';
 
 @Injectable()
 export class RAMRestService {
 
-    constructor(private http: Http, private modelHelper: RAMModelHelper) {
+    constructor(private http: Http,
+                private modelHelper: RAMModelHelper) {
     }
 
     // TODO remove temporary api

@@ -1,10 +1,11 @@
 import 'ng2-bootstrap';
 import {Component} from '@angular/core';
 
-import {IIdentity} from '../../../../commons/RamAPI2';
-import {RAMRestService} from '../../services/ram-rest.service';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRestService} from '../../../services/ram-rest.service';
+import {RAMModelHelper} from '../../../commons/ram-model-helper';
 import {ErrorService} from '../error/error.service';
+
+import {IIdentity} from '../../../../../commons/RamAPI2';
 
 @Component({
     selector: 'my-identity',
@@ -25,12 +26,11 @@ export class MyIdentityComponent {
     }
 
     public ngOnInit() {
-        this.rest.findMyIdentity()
-            .subscribe(identity => {
-                    this.me = identity;
-                },
-                error => this.errorService.handleError(error)
-            );
+        this.rest.findMyIdentity().subscribe(
+            identity => {
+                this.me = identity;
+            }
+        );
     }
 
 }

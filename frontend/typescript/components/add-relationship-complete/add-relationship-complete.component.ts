@@ -1,24 +1,26 @@
-import {RAMNgValidators} from '../../commons/ram-ng-validators';
-import {OnInit, Component} from '@angular/core';
-import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES } from '@angular/forms';
-import {ROUTER_DIRECTIVES, ActivatedRoute, Router} from '@angular/router';
-import {IIdentity, INotifyDelegateDTO} from '../../../../commons/RamAPI2';
-import {RAMRestService} from '../../services/ram-rest.service';
-import {PageHeaderComponent} from '../page-header/page-header.component';
 import Rx from 'rxjs/Rx';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
+import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES} from '@angular/forms';
+
+import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
+import {PageHeaderComponent} from '../commons/page-header/page-header.component';
+import {RAMNgValidators} from '../../commons/ram-ng-validators';
+import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
+
+import {IIdentity, INotifyDelegateDTO} from '../../../../commons/RamAPI2';
 
 @Component({
     selector: 'add-relationship-complete',
     templateUrl: 'add-relationship-complete.component.html',
-    directives: [PageHeaderComponent, ROUTER_DIRECTIVES, FORM_DIRECTIVES,REACTIVE_FORM_DIRECTIVES],
+    directives: [ROUTER_DIRECTIVES, FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, PageHeaderComponent],
     providers: []
 })
 
 // todo display name shouldn't be sent through in the path, should be obtained from the details associated with the invitation code
-export class AddRelationshipCompleteComponent implements OnInit {
-
-    public form: FormGroup;
-    public formUdn: FormGroup;
+export class AddRelationshipCompleteComponent extends AbstractPageComponent {
 
     public idValue: string;
     public code: string;
@@ -26,22 +28,29 @@ export class AddRelationshipCompleteComponent implements OnInit {
 
     public identity$: Rx.Observable<IIdentity>;
 
-    private rteParamSub: Rx.Subscription;
+    public form: FormGroup;
+    public formUdn: FormGroup;
 
-    constructor(private _fb: FormBuilder,
-        private route: ActivatedRoute,
-        private router: Router,
-        private rest: RAMRestService) {
+    constructor(route: ActivatedRoute,
+                router: Router,
+                rest: RAMRestService,
+                modelHelper: RAMModelHelper,
+                routeHelper: RAMRouteHelper,
+                private _fb: FormBuilder) {
+        super(route, router, rest, modelHelper, routeHelper);
     }
 
-    public ngOnInit() {
-        this.rteParamSub = this.route.params.subscribe(params => {
-            this.code = decodeURIComponent(params['invitationCode']);
-            this.idValue = decodeURIComponent(params['idValue']);
-            this.displayName = decodeURIComponent(params['displayName']);
-            this.identity$ = this.rest.findIdentityByValue(this.idValue);
-        });
+    public onInit(params: {path: Params, query: Params}) {
 
+        // extract path and query parameters
+        this.idValue = decodeURIComponent(params.path['idValue']);
+        this.code = decodeURIComponent(params.path['invitationCode']);
+        this.displayName = decodeURIComponent(params.path['displayName']);
+
+        // identity in focus
+        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+
+        // forms
         this.form = this._fb.group({
             'email': ['', Validators.compose([Validators.required, RAMNgValidators.validateEmailFormat])]
         });
@@ -49,10 +58,7 @@ export class AddRelationshipCompleteComponent implements OnInit {
             'udn': ['']
         });
         // 'udn': ['', Validators.compose([Validators.required, RAMNgValidators.validateUDNFormat])]
-    }
 
-    public ngOnDestroy() {
-        this.rteParamSub.unsubscribe();
     }
 
     public onSubmitUdn() {
@@ -77,7 +83,7 @@ export class AddRelationshipCompleteComponent implements OnInit {
         return false;
     };
 
-    public goToRelationshipsPage = () => {
-        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
+    public goToRelationshipsPage() {
+        this.routeHelper.goToRelationshipsPage(this.idValue);
     }
 }

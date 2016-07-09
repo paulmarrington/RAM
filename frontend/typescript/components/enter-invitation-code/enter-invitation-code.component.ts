@@ -1,59 +1,68 @@
-import {OnInit, Component, OnDestroy} from '@angular/core';
-import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES } from '@angular/forms';
-import {ActivatedRoute, Router, ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
-import {PageHeaderComponent} from '../page-header/page-header.component';
-import {IIdentity} from '../../../../commons/RamAPI2';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
+import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES } from '@angular/forms';
+
+import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
+import {PageHeaderComponent} from '../commons/page-header/page-header.component';
 import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
+
+import {IIdentity} from '../../../../commons/RamAPI2';
 
 @Component({
     selector: 'enter-invitation-code',
     templateUrl: 'enter-invitation-code.component.html',
-    directives: [REACTIVE_FORM_DIRECTIVES,FORM_DIRECTIVES, ROUTER_DIRECTIVES, PageHeaderComponent]
+    directives: [REACTIVE_FORM_DIRECTIVES, FORM_DIRECTIVES, ROUTER_DIRECTIVES, PageHeaderComponent]
 })
-export class EnterInvitationCodeComponent implements OnInit, OnDestroy {
 
-    public form: FormGroup;
+export class EnterInvitationCodeComponent extends AbstractPageComponent {
 
     public idValue: string;
 
     public identity$: Rx.Observable<IIdentity>;
 
-    private rteParamSub: Rx.Subscription;
+    public form: FormGroup;
 
-    constructor(private _fb: FormBuilder,
-                private router: Router,
-                private route: ActivatedRoute,
-                private rest: RAMRestService) {
+    constructor(route: ActivatedRoute,
+                router: Router,
+                rest: RAMRestService,
+                modelHelper: RAMModelHelper,
+                routeHelper: RAMRouteHelper,
+                private _fb: FormBuilder) {
+        super(route, router, rest, modelHelper, routeHelper);
     }
 
-    public ngOnInit() {
-        this.rteParamSub = this.route.params.subscribe(params => {
-            this.idValue = decodeURIComponent(params['idValue']);
-            this.identity$ = this.rest.findIdentityByValue(this.idValue);
-        });
+    public onInit(params: {path: Params, query: Params}) {
+
+        // extract path and query parameters
+        this.idValue = decodeURIComponent(params.path['idValue']);
+
+        // identity in focus
+        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+
+        // forms
         this.form = this._fb.group({
             'relationshipCode': ['', Validators.compose([Validators.required])]
         });
+
     }
 
     public activateCode(event: Event) {
 
-        this.router.navigate(['/relationships/add/accept',
-            encodeURIComponent(this.idValue),
+        this.routeHelper.goToRelationshipAcceptPage(
+            this.idValue,
             this.form.controls['relationshipCode'].value
-        ]);
+        );
 
         event.stopPropagation();
         return false;
+
     }
 
-    public goToRelationshipsPage = () => {
-        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
+    public goToRelationshipsPage() {
+        this.routeHelper.goToRelationshipsPage(this.idValue);
     };
-
-    public ngOnDestroy() {
-        this.rteParamSub.unsubscribe();
-    }
 
 }
