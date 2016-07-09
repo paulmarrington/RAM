@@ -1,4 +1,3 @@
-// TODO this component need to be deleted or migrated to project standards
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
 
