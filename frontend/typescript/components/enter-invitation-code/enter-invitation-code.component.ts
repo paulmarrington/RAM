@@ -51,18 +51,18 @@ export class EnterInvitationCodeComponent extends AbstractPageComponent {
 
     public activateCode(event: Event) {
 
-        this.router.navigate(['/relationships/add/accept',
-            encodeURIComponent(this.idValue),
+        this.routeHelper.goToRelationshipAcceptPage(
+            this.idValue,
             this.form.controls['relationshipCode'].value
-        ]);
+        );
 
         event.stopPropagation();
         return false;
 
     }
 
-    public goToRelationshipsPage = () => {
-        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
+    public goToRelationshipsPage() {
+        this.routeHelper.goToRelationshipsPage(this.idValue);
     };
 
 }

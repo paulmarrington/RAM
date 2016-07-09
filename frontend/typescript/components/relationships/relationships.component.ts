@@ -123,12 +123,12 @@ export class RelationshipsComponent extends AbstractPageComponent {
         return this._isLoading;
     }
 
-    public goToRelationshipsAddPage() {
-        this.routeHelper.goToRelationshipsAddPage(this.idValue);
+    public goToRelationshipAddPage() {
+        this.routeHelper.goToRelationshipAddPage(this.idValue);
     };
 
-    public goToRelationshipsEnterCodePage() {
-        this.routeHelper.goToRelationshipsEnterCodePage(this.idValue);
+    public goToRelationshipEnterCodePage() {
+        this.routeHelper.goToRelationshipEnterCodePage(this.idValue);
     };
 
     public goToRelationshipsContext(partyResource: IHrefValue<IParty>) {

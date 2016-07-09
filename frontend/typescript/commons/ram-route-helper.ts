@@ -11,12 +11,19 @@ export class RAMRouteHelper {
         this.router.navigate(['/relationships', encodeURIComponent(idValue)]);
     }
 
-    public goToRelationshipsAddPage(idValue: string) {
+    public goToRelationshipAddPage(idValue: string) {
         this.router.navigate(['/relationships/add', encodeURIComponent(idValue)]);
     }
 
-    public goToRelationshipsEnterCodePage(idValue: string) {
+    public goToRelationshipEnterCodePage(idValue: string) {
         this.router.navigate(['/relationships/add/enter', encodeURIComponent(idValue)]);
+    }
+
+    public goToRelationshipAcceptPage(idValue: string, code: string) {
+        this.router.navigate(['/relationships/add/accept',
+            encodeURIComponent(idValue),
+            encodeURIComponent(code)
+        ]);
     }
 
 }
