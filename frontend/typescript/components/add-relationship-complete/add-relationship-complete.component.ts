@@ -83,7 +83,7 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
         return false;
     };
 
-    public goToRelationshipsPage = () => {
-        this.router.navigate(['/relationships', encodeURIComponent(this.idValue)]);
+    public goToRelationshipsPage() {
+        this.routeHelper.goToRelationshipsPage(this.idValue);
     }
 }

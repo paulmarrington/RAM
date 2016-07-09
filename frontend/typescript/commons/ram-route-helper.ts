@@ -15,6 +15,14 @@ export class RAMRouteHelper {
         this.router.navigate(['/relationships/add', encodeURIComponent(idValue)]);
     }
 
+    public goToRelationshipAddCompletePage(idValue: string, code: string, displayName: string) {
+        this.router.navigate(['relationships/add/complete',
+            encodeURIComponent(idValue),
+            encodeURIComponent(code),
+            encodeURIComponent(displayName)
+        ]);
+    }
+
     public goToRelationshipEnterCodePage(idValue: string) {
         this.router.navigate(['/relationships/add/enter', encodeURIComponent(idValue)]);
     }
