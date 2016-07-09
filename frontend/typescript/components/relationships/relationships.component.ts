@@ -6,7 +6,6 @@ import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../page-header/page-header.component';
 import {SearchResultPaginationComponent, SearchResultPaginationDelegate}
     from '../search-result-pagination/search-result-pagination.component';
-import {RelationshipsTableComponent} from '../relationships-table/relationships-table.component';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 import {
@@ -21,7 +20,7 @@ import {
 @Component({
     selector: 'ram-relationships',
     templateUrl: 'relationships.component.html',
-    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent, RelationshipsTableComponent]
+    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent]
 })
 
 export class RelationshipsComponent extends AbstractPageComponent {
