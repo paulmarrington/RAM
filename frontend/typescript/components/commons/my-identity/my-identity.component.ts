@@ -29,8 +29,7 @@ export class MyIdentityComponent {
         this.rest.findMyIdentity().subscribe(
             identity => {
                 this.me = identity;
-            },
-            errorResponse => this.errorService.handleError(errorResponse)
+            }
         );
     }
 
