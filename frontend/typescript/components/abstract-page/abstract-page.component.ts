@@ -16,6 +16,7 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
                 public rest: RAMRestService) {
     }
 
+    /* tslint:disable:max-func-body-length */
     public ngOnInit() {
 
         let pathParams: Params;
