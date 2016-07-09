@@ -5,10 +5,10 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="col-md-3"></th>
-                <th><h4>Login Type</h4></th>
-                <th class="hidden-xs"><h4>Authorisation</h4></th>
-                <th class="hidden-xs"><h4>Status</h4></th>
+                <th></th>
+                <th class="col-md-2"><h4>Login Type</h4></th>
+                <th class="col-md-3"><h4>Authorisation</h4></th>
+                <th class="col-md-2"><h4>Status</h4></th>
                 <th class="col-md-2"></th>
             </tr>
         </thead>
@@ -40,40 +40,9 @@
     </table>
 
     <search-result-pagination
-            [searchResult]="relationshipsResponse$|async"
+            [searchResult]="relationships$|async"
             [delegate]="paginationDelegate">
     </search-result-pagination>
-
-    <!--
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-
-    <p class="lead">
-        <h4><strong>{{modelHelper.displayNameForIdentity(identity$|async)}}</strong>, you have access
-            to the entries listed below. Select an entity to view the relationship or manage access.
-            Find out more about <a href="">managing access</a>.</h4></p>
-
-    <div class="ram section">
-        <ram-relationships-table [delegate]="false" [relationshipTypes]="relationshipTypes"></ram-relationships-table>
-    </div>
-
-    <div class="page-header">
-        <h3>Who can act/authorised for <strong>{{identityDisplayName$|async}}</strong></h3>
-    </div>
-    <p class="lead">
-        <h4>The entities below have access to your entity. Select an entity to view the relationship or manage access.
-            Find out more about <a href="">managing access</a>.</h4></p>
-
-    <div class="ram section">
-        <div class="row">
-            <div class="col-md-12">
-                <ram-relationships-table [delegate]="true" [relationshipTypes]="relationshipTypes"></ram-relationships-table>
-            </div>
-        </div>
-    </div>
-    -->
 
     <br/>
     <br/>

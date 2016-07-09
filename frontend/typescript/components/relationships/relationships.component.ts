@@ -30,7 +30,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public page: number;
 
     public identity$: Rx.Observable<IIdentity>;
-    public relationshipsResponse$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
+    public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
     // todo rename to relationshipTypeHrefs
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
@@ -69,8 +69,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
         // relationships
         this.subjectGroupsWithRelationships = [];
-        this.relationshipsResponse$ = this.rest.searchRelationshipsByIdentity(this.idValue, this.page);
-        this.relationshipsResponse$.subscribe((relationshipResources) => {
+        this.relationships$ = this.rest.searchRelationshipsByIdentity(this.idValue, this.page);
+        this.relationships$.subscribe((relationshipResources) => {
             this._isLoading = false;
             for (const relationshipResource of relationshipResources.list) {
                 let subjectGroupWithRelationshipsToAddTo: SubjectGroupWithRelationships;
