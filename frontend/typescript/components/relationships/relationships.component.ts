@@ -55,6 +55,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
         this.idValue = decodeURIComponent(params.path['idValue']);
         this.page = params.query['page'] ? +params.query['page'] : 1;
+
+        // identity in focus
         this.identity$ = this.rest.findIdentityByValue(this.idValue);
 
         // relationship types

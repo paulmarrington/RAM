@@ -1,13 +1,14 @@
 import Rx from 'rxjs/Rx';
 import {OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router, Params} from '@angular/router';
-import {RouterParamsHelper} from '../../commons/router-params-helper';
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';
 
 export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
-    protected rteParamSub: Rx.Subscription;
+    protected mergedParamSub: Rx.Subscription;
+    protected pathParamSub: Rx.Subscription;
+    protected queryParamSub: Rx.Subscription;
 
     constructor(public route: ActivatedRoute,
                 public router: Router,
@@ -20,20 +21,58 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
         let pathParams: Params;
         let queryParams: Params;
 
-        this.rteParamSub = RouterParamsHelper.params(this.route, this.router)
+        const pathParams$ = this.route.params;
+        const queryParams$ = this.router.routerState.queryParams;
+
+        this.mergedParamSub = Rx.Observable.merge(pathParams$, queryParams$)
             .subscribe((params) => {
                 if (!pathParams) {
+                    this.log('-----------');
+                    this.log('[i] PATH  = ' + JSON.stringify(params));
                     pathParams = params;
-                } else {
+                } else if (!queryParams) {
+                    this.log('[i] QUERY = ' + JSON.stringify(params));
                     queryParams = params;
                     this.onInit({path: pathParams, query: queryParams});
+                } else if (this.mergedParamSub) {
+                    this.log('-----------');
+                    this.log('Unsubscribing from merged observable ...');
+                    this.mergedParamSub.unsubscribe();
+                    this.pathParamSub = pathParams$.subscribe((params) => {
+                        if (!this.isEqual(pathParams, params)) {
+                            this.log('-----------');
+                            pathParams = params;
+                            this.log('[p] PARAMS = ' + JSON.stringify(params));
+                            this.log('[p] PATH   = ' + JSON.stringify(pathParams));
+                            this.log('[p] QUERY  = ' + JSON.stringify(queryParams));
+                            this.onInit({path: pathParams, query: queryParams});
+                        }
+                    });
+                    this.queryParamSub = queryParams$.subscribe((params) => {
+                        if (!this.isEqual(queryParams, params)) {
+                            this.log('-----------');
+                            queryParams = params;
+                            this.log('[p] PARAMS = ' + JSON.stringify(params));
+                            this.log('[p] PATH   = ' + JSON.stringify(pathParams));
+                            this.log('[p] QUERY  = ' + JSON.stringify(queryParams));
+                            this.onInit({path: pathParams, query: queryParams});
+                        }
+                    });
                 }
             });
 
     }
 
     public ngOnDestroy() {
-        this.rteParamSub.unsubscribe();
+        if (this.mergedParamSub) {
+            this.mergedParamSub.unsubscribe();
+        }
+        if (this.pathParamSub) {
+            this.pathParamSub.unsubscribe();
+        }
+        if (this.queryParamSub) {
+            this.queryParamSub.unsubscribe();
+        }
         this.onDestroy();
     }
 
@@ -43,6 +82,14 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
     /* tslint:disable:no-empty */
     public onDestroy() {
+    }
+
+    private isEqual(params1: Params, params2: Params): boolean {
+        return params1 && params2 && JSON.stringify(params1) === JSON.stringify(params2);
+    }
+
+    private log(msg: string): void {
+        //console.log(msg);
     }
 
 }
