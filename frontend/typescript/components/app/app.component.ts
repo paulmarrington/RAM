@@ -1,7 +1,7 @@
 import 'ng2-bootstrap';
 import {Component} from '@angular/core';
 import {HTTP_PROVIDERS} from '@angular/http';
-import {ROUTER_DIRECTIVES } from '@angular/router';
+import {ROUTER_DIRECTIVES} from '@angular/router';
 
 import {RAMModelHelper} from '../../commons/ram-model-helper';
 import {RAMRestService} from '../../services/ram-rest.service';

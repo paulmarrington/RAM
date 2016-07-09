@@ -19,7 +19,7 @@ import {
 } from '../../../../commons/RamAPI2';
 
 @Component({
-    selector: 'ram-relationships',
+    selector: 'relationships',
     templateUrl: 'relationships.component.html',
     directives: [ROUTER_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent]
 })
