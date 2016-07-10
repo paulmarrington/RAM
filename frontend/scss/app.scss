@@ -1,6 +1,6 @@
-$brand-primary:    #0F979B;
-$brand-primary-bg: darken($brand-primary,10%);
-$brand-primary-border: darken($brand-primary,12%);
+$brand-primary:                        #0F979B;
+$brand-primary-bg:                     darken($brand-primary,10%);
+$brand-primary-border:                 darken($brand-primary,12%);
 
 $pagination-color:                     $brand-primary;
 $pagination-bg:                        #fff !default;
@@ -103,6 +103,35 @@ div.navbar-header {
 
 .table > tbody > tr > td {
   padding: 15px;
+}
+
+select, select.form-control {
+  background: url('../images/select-arrow.png') no-repeat 100% 50% #fff;
+  border: 1px solid $input-border;
+  padding: 6px 32px 6px 10px;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  -moz-border-radius: $input-border-radius;
+  -webkit-border-radius: $input-border-radius;
+  border-radius: $input-border-radius;
+  -moz-appearance: none;
+  text-indent: 0.01px;
+  text-overflow: '';
+}
+
+select.full, select.form-control {
+  width: 100%;
+}
+
+select:focus, select.form-control:focus {
+  outline: 0;
+  border: 1px solid #50c1e9;
+}
+
+select:-moz-focusring, select.form-control:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
 }
 
 .padding-top-5 {
