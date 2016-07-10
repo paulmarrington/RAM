@@ -60,8 +60,8 @@ export class RAMModelHelper {
         }
     }
 
-    public relationshipTypeLabel(relationshipTypes: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
-        let relationshipType = this.getRelationshipType(relationshipTypes, relationship);
+    public relationshipTypeLabel(relationshipTypeRefs: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
+        let relationshipType = this.getRelationshipType(relationshipTypeRefs, relationship);
         if (relationshipType) {
             return relationshipType.shortDecodeText;
         }
@@ -80,11 +80,11 @@ export class RAMModelHelper {
         return null;
     }
 
-    public getRelationshipType(relationshipTypeResources: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
-        let relationshipTypeHrefString = relationship.relationshipType.href;
-        for (let resource of relationshipTypeResources) {
-            if (resource.href === relationshipTypeHrefString) {
-                return resource.value;
+    public getRelationshipType(relationshipTypeRefs: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
+        let relationshipTypeHref = relationship.relationshipType.href;
+        for (let ref of relationshipTypeRefs) {
+            if (ref.href === relationshipTypeHref) {
+                return ref.value;
             }
         }
         return null;

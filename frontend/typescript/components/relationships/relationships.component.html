@@ -16,18 +16,18 @@
             <template ngFor let-item="$implicit" [ngForOf]="subjectGroupsWithRelationships">
                 <tr class="relationship-subject-heading">
                     <td colspan="5">
-                        <div (click)="goToRelationshipsContext(item.subjectResource)" class="clickable">
-                            <h4>{{modelHelper.displayNameForParty(item.subjectResource.value)}}</h4>
-                            <h5>{{modelHelper.abnLabelForParty(item.subjectResource.value)}} /
-                                {{modelHelper.partyTypeLabelForParty(item.subjectResource.value)}}</h5>
+                        <div (click)="goToRelationshipsContext(item.subjectRef)" class="clickable">
+                            <h4>{{modelHelper.displayNameForParty(item.subjectRef.value)}}</h4>
+                            <h5>{{modelHelper.abnLabelForParty(item.subjectRef.value)}} /
+                                {{modelHelper.partyTypeLabelForParty(item.subjectRef.value)}}</h5>
                         </div>
                     </td>
                 </tr>
-                <tr *ngFor="let relationshipResource of item.relationshipResources">
-                    <td>{{modelHelper.displayName(relationshipResource.value.delegateNickName)}}</td>
-                    <td>{{commaSeparatedListOfProviderNames(relationshipResource.value.delegate.value)}}</td>
-                    <td class="hidden-xs">{{modelHelper.relationshipTypeLabel(relationshipTypes, relationshipResource.value)}}</td>
-                    <td class="hidden-xs">{{relationshipResource.value.status}}</td>
+                <tr *ngFor="let relationshipRef of item.relationshipRefs">
+                    <td>{{modelHelper.displayName(relationshipRef.value.delegateNickName)}}</td>
+                    <td>{{commaSeparatedListOfProviderNames(relationshipRef.value.delegate.value)}}</td>
+                    <td class="hidden-xs">{{modelHelper.relationshipTypeLabel(relationshipTypeRefs, relationshipRef.value)}}</td>
+                    <td class="hidden-xs">{{relationshipRef.value.status}}</td>
                     <td></td>
                 </tr>
             </template>

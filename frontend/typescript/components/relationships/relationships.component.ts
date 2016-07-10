@@ -33,8 +33,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public identity$: Rx.Observable<IIdentity>;
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
-    // todo rename to relationshipTypeHrefs
-    public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
+    public relationshipTypeRefs: IHrefValue<IRelationshipType>[] = [];
     public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
 
     public paginationDelegate: SearchResultPaginationDelegate;
@@ -63,8 +62,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
         this.identity$ = this.rest.findIdentityByValue(this.idValue);
 
         // relationship types
-        this.rest.listRelationshipTypes().subscribe((relationshipTypes) => {
-            this.relationshipTypes = relationshipTypes;
+        this.rest.listRelationshipTypes().subscribe((relationshipTypeRefs) => {
+            this.relationshipTypeRefs = relationshipTypeRefs;
         }, (err) => {
             alert(JSON.stringify(err, null, 4));
             this._isLoading = false;
@@ -73,22 +72,22 @@ export class RelationshipsComponent extends AbstractPageComponent {
         // relationships
         this.subjectGroupsWithRelationships = [];
         this.relationships$ = this.rest.searchRelationshipsByIdentity(this.idValue, this.page);
-        this.relationships$.subscribe((relationshipResources) => {
+        this.relationships$.subscribe((relationshipRefs) => {
             this._isLoading = false;
-            for (const relationshipResource of relationshipResources.list) {
+            for (const relationshipRef of relationshipRefs.list) {
                 let subjectGroupWithRelationshipsToAddTo: SubjectGroupWithRelationships;
-                const subjectResource = relationshipResource.value.subject;
+                const subjectRef = relationshipRef.value.subject;
                 for (const subjectGroupWithRelationships of this.subjectGroupsWithRelationships) {
-                    if (subjectGroupWithRelationships.hasSameSubject(subjectResource)) {
+                    if (subjectGroupWithRelationships.hasSameSubject(subjectRef)) {
                         subjectGroupWithRelationshipsToAddTo = subjectGroupWithRelationships;
                     }
                 }
                 if (!subjectGroupWithRelationshipsToAddTo) {
                     subjectGroupWithRelationshipsToAddTo = new SubjectGroupWithRelationships();
-                    subjectGroupWithRelationshipsToAddTo.subjectResource = subjectResource;
+                    subjectGroupWithRelationshipsToAddTo.subjectRef = subjectRef;
                     this.subjectGroupsWithRelationships.push(subjectGroupWithRelationshipsToAddTo);
                 }
-                subjectGroupWithRelationshipsToAddTo.relationshipResources.push(relationshipResource);
+                subjectGroupWithRelationshipsToAddTo.relationshipRefs.push(relationshipRef);
             }
         }, (err) => {
             alert(JSON.stringify(err, null, 4));
@@ -143,11 +142,11 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
 class SubjectGroupWithRelationships {
 
-    public subjectResource: IHrefValue<IParty>;
-    public relationshipResources: IHrefValue<IRelationship>[] = [];
+    public subjectRef: IHrefValue<IParty>;
+    public relationshipRefs: IHrefValue<IRelationship>[] = [];
 
-    public hasSameSubject(aSubjectResource: IHrefValue<IParty>) {
-        return this.subjectResource.href === aSubjectResource.href;
+    public hasSameSubject(aSubjectRef: IHrefValue<IParty>) {
+        return this.subjectRef.href === aSubjectRef.href;
     }
 
 }
