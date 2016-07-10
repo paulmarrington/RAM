@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "b0937ed2-808b-0a03-1f83-59d3c489139d",
+		"_postman_id": "d747f121-3515-3618-2824-10f7b11a73c2",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -644,9 +644,9 @@
 					"response": []
 				},
 				{
-					"name": "Get By Invitation Code (jEVYNX)",
+					"name": "Get By Invitation Code",
 					"request": {
-						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX",
+						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}",
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -657,9 +657,9 @@
 					"response": []
 				},
 				{
-					"name": "Accept By Invitation Code (jEVYNX)",
+					"name": "Accept By Invitation Code",
 					"request": {
-						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/accept",
+						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/accept",
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -670,9 +670,9 @@
 					"response": []
 				},
 				{
-					"name": "Notify Delegate By Invitation Code (jEVYNX)",
+					"name": "Notify Delegate By Invitation Code",
 					"request": {
-						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/notifyDelegate",
+						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/notifyDelegate",
 						"method": "POST",
 						"header": [
 							{
@@ -689,9 +689,9 @@
 					"response": []
 				},
 				{
-					"name": "Reject By Invitation Code (jEVYNX)",
+					"name": "Reject By Invitation Code",
 					"request": {
-						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/reject",
+						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/reject",
 						"method": "POST",
 						"header": [],
 						"body": {
