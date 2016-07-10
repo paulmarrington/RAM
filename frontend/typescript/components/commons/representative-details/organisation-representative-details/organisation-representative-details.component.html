@@ -3,17 +3,17 @@
         <div class="col-md-12">
             <h4>ABN*</h4>
         </div>
-        <div class="col-md-3"
+        <div class="col-md-4"
         [class.has-error]="!form.controls['abn'].valid">
             <input class="form-control" type="number"
             minlength=11 maxlength=14 [disabled]='isCompanyNameSet()'
             [formControl]="form.controls['abn']"
             placeholder="Type ABN here ...">
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h4>{{organisationName}}</h4>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <span *ngIf='!isCompanyNameSet()'>
                 <button class="col-md-12 btn btn-primary"
                 [disabled]="!form.controls['abn'].valid" (click)='validateOrganisationName(form.controls["abn"].value)' >
