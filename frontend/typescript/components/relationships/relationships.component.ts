@@ -122,6 +122,11 @@ export class RelationshipsComponent extends AbstractPageComponent {
         return this._isLoading;
     }
 
+    public search() {
+        // todo search
+        alert('TODO: Not yet implemented');
+    }
+
     public goToRelationshipAddPage() {
         this.routeHelper.goToRelationshipAddPage(this.idValue);
     };
