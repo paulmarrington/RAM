@@ -1,6 +1,7 @@
 import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
+import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../commons/page-header/page-header.component';
@@ -23,7 +24,7 @@ import {
 @Component({
     selector: 'list-relationships',
     templateUrl: 'relationships.component.html',
-    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent]
+    directives: [ROUTER_DIRECTIVES, FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent]
 })
 
 export class RelationshipsComponent extends AbstractPageComponent {
@@ -39,6 +40,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
 
     public paginationDelegate: SearchResultPaginationDelegate;
+    public form: FormGroup;
 
     private _isLoading = false; // set to true when you want the UI indicate something is getting loaded.
 
@@ -46,7 +48,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
                 router: Router,
                 rest: RAMRestService,
                 modelHelper: RAMModelHelper,
-                routeHelper: RAMRouteHelper) {
+                routeHelper: RAMRouteHelper,
+                private _fb: FormBuilder) {
         super(route, router, rest, modelHelper, routeHelper);
     }
 
@@ -108,6 +111,16 @@ export class RelationshipsComponent extends AbstractPageComponent {
             }
         } as SearchResultPaginationDelegate;
 
+        // forms
+        this.form = this._fb.group({
+            partyType: '-',
+            relationshipType: '-',
+            linkIdScheme: '-',
+            status: '-',
+            sort: '-',
+            text: ''
+        });
+
     }
 
     public commaSeparatedListOfProviderNames(subject: IParty): string {
@@ -129,6 +142,12 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public search() {
         // todo search
         alert('TODO: Not yet implemented');
+        const partyType = this.form.controls['partyType'].value;
+        const relationshipType = this.form.controls['relationshipType'].value;
+        const linkIdScheme = this.form.controls['linkIdScheme'].value;
+        const status = this.form.controls['status'].value;
+        const sort = this.form.controls['sort'].value;
+        const text = this.form.controls['text'].value;
     }
 
     public goToRelationshipAddPage() {
