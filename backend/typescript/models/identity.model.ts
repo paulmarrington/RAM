@@ -122,14 +122,14 @@ export class IdentityPublicIdentifierScheme extends RAMEnum {
 
 export class IdentityLinkIdScheme extends RAMEnum {
 
+    public static AUSkey = new IdentityPublicIdentifierScheme('AUSkey');
     public static AuthenticatorApp = new IdentityPublicIdentifierScheme('AUTHENTICATOR_APP');
     public static MyGov = new IdentityPublicIdentifierScheme('MY_GOV');
-    public static Vanguard = new IdentityPublicIdentifierScheme('VANGUARD');
 
     protected static AllValues = [
+        IdentityLinkIdScheme.AUSkey,
         IdentityLinkIdScheme.AuthenticatorApp,
-        IdentityLinkIdScheme.MyGov,
-        IdentityLinkIdScheme.Vanguard
+        IdentityLinkIdScheme.MyGov
     ];
 
     constructor(name:string) {
