@@ -54,6 +54,11 @@ export interface IRelationship {
     attributes: IRelationshipAttribute[];
 }
 
+export interface IRelationshipStatus {
+    name: string;
+    decodeText: string;
+}
+
 export interface RelationshipSearchDTO {
     totalCount: number;
     pageSize: number;

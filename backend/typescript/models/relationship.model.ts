@@ -9,6 +9,7 @@ import {
     Link,
     HrefValue,
     Relationship as DTO,
+    RelationshipStatus as RelationshipStatusDTO,
     RelationshipAttribute as RelationshipAttributeDTO,
     SearchResult
 } from '../../../commons/RamAPI';
@@ -46,6 +47,17 @@ export class RelationshipStatus extends RAMEnum {
 
     constructor(name:string, decodeText:string) {
         super(name, decodeText);
+    }
+
+    public toHrefValue(includeValue:boolean): HrefValue<RelationshipStatusDTO> {
+        return new HrefValue(
+            '/api/v1/relationshipStatus/' + this.name,
+            includeValue ? this.toDTO() : undefined
+        );
+    }
+
+    public toDTO(): RelationshipStatusDTO {
+        return new RelationshipStatusDTO(this.name, this.decodeText);
     }
 }
 

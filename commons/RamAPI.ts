@@ -184,6 +184,12 @@ export class Relationship {
     }
 }
 
+export class RelationshipStatus {
+    constructor(public name:string,
+                public decodeText:string) {
+    }
+}
+
 export class RelationshipAttribute {
     constructor(public value:string,
                 public attributeName:HrefValue<RelationshipAttributeName>) {
