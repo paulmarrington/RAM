@@ -122,7 +122,7 @@ export class IdentityPublicIdentifierScheme extends RAMEnum {
 
 export class IdentityLinkIdScheme extends RAMEnum {
 
-    public static AUSkey = new IdentityPublicIdentifierScheme('AUSkey');
+    public static AUSkey = new IdentityPublicIdentifierScheme('AUSKEY');
     public static AuthenticatorApp = new IdentityPublicIdentifierScheme('AUTHENTICATOR_APP');
     public static MyGov = new IdentityPublicIdentifierScheme('MY_GOV');
 
