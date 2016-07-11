@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "b0937ed2-808b-0a03-1f83-59d3c489139d",
+		"_postman_id": "ec9d18dc-297b-4ffa-be8a-ae7ac28c7cc1",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -529,6 +529,47 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "List types",
+					"request": {
+						"url": "{{host}}/api/v1/partyTypes",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get type (INDIVIDUAL)",
+					"request": {
+						"url": "{{host}}/api/v1/partyType/INDIVIDUAL",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
 					},
 					"response": []
 				}

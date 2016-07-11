@@ -93,6 +93,44 @@ paths:
 
   # Parties ...........................................................................................................
 
+  /partyType/{name}:
+    get:
+      tags:
+        - Business - Party
+      operationId: Party.findTypeByName
+      summary: Get the party type by name
+      description: Get the party type by name
+      parameters:
+        - $ref: "#/parameters/name"
+      responses:
+        200:
+          description: The party type returned
+          schema:
+            $ref: "#/definitions/PartyType"
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+
+  /partyTypes:
+    get:
+      tags:
+        - Business - Party
+      operationId: Party.listTypes
+      summary: Get the party types
+      description: Get the party types
+      responses:
+        200:
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartyTypeResourceReference'
+        500:
+          $ref: '#/responses/500'
+
   /party/identity/me:
     get:
       tags:
@@ -610,6 +648,28 @@ definitions:
         description: The domain the shared secrety type is for
 
   # Party .............................................................................................................
+
+  PartyType:
+    type: object
+    description: Party code and type
+    properties:
+      name:
+        type: string
+        description: The code or name
+      decodeText:
+        type: string
+        description: The human friendly label
+
+  PartyTypeResourceReference:
+    type: object
+    description: A reference to a Resource
+    required: ["href"]
+    properties:
+      href:
+        type: string
+        description: URI that uniquely identifies this PartyType
+      value:
+        $ref: '#/definitions/PartyType'
 
   Party:
     allOf:
@@ -1129,6 +1189,13 @@ parameters:
     required: true
     type: string
     enum: ['subject','delegate']
+
+  name:
+    name: name
+    in: path
+    description: The unique name for an enum
+    required: true
+    type: string
 
   idValue:
     name: idValue

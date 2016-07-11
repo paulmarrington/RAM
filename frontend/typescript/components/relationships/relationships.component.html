@@ -10,8 +10,9 @@
                     <div class="form-group">
                         <select class="form-control">
                             <option value="">Party Type</option>
-                            <option value="ABN">ABN</option>
-                            <option value="INDIVIDUAL">Individual</option>
+                            <template ngFor let-item="$implicit" [ngForOf]="partyTypes$|async">
+                                <option value="{{item.value.name}}">{{item.value.decodeText}}</option>
+                            </template>
                         </select>
                     </div>
                     &nbsp;

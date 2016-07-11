@@ -13,6 +13,7 @@ import {RAMRouteHelper} from '../../commons/ram-route-helper';
 import {
     ISearchResult,
     IParty,
+    IPartyType,
     IIdentity,
     IRelationship,
     IRelationshipType,
@@ -32,6 +33,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
     public identity$: Rx.Observable<IIdentity>;
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
+    public partyTypes$: Rx.Observable<IHrefValue<IPartyType>[]>;
     public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
 
     public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
@@ -60,6 +62,9 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
         // identity in focus
         this.identity$ = this.rest.findIdentityByValue(this.idValue);
+
+        // party types
+        this.partyTypes$ = this.rest.listPartyTypes();
 
         // relationship types
         this.relationshipTypes$ = this.rest.listRelationshipTypes();

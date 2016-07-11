@@ -9,6 +9,7 @@ import {
     IHrefValue,
     IIdentity,
     IParty,
+    IPartyType,
     IRelationshipAddDTO,
     IRelationship,
     IRelationshipType,
@@ -66,6 +67,12 @@ export class RAMRestService {
                                                              page:number):Rx.Observable<ISearchResult<IHrefValue<IParty>>> {
         return this.http
             .get(`/api/v1/relationships/identity/${idValue}/subjects?page=${page}`)
+            .map(this.extractData);
+    }
+
+    public listPartyTypes(): Rx.Observable<IHrefValue<IPartyType>[]> {
+        return this.http
+            .get('/api/v1/partyTypes')
             .map(this.extractData);
     }
 

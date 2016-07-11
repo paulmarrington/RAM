@@ -163,6 +163,12 @@ export class Party {
     }
 }
 
+export class PartyType {
+    constructor(public name:string,
+                public decodeText:string) {
+    }
+}
+
 export class Relationship {
     constructor(public _links:Link[],
                 public relationshipType:RelationshipType,

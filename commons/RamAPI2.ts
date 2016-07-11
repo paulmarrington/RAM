@@ -28,6 +28,11 @@ export interface IParty {
     identities: Array<IHrefValue<IIdentity>>;
 }
 
+export interface IPartyType {
+    name: string;
+    decodeText: string;
+}
+
 export interface IName {
     givenName?: string;
     familyName?: string;

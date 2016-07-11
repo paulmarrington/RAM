@@ -38,22 +38,22 @@ const getNewInvitationCodeExpiry = ():Date => {
 
 export class IdentityType extends RAMEnum {
 
-    public static AgencyProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN')
+    public static AgencyProvidedToken = new IdentityType('AGENCY_PROVIDED_TOKEN', 'Agency Provided Token')
         .withIdValueBuilder((identity:IIdentity):String => {
             return identity.identityType + ':' + identity.agencyScheme + ':' + identity.rawIdValue;
         });
 
-    public static InvitationCode = new IdentityType('INVITATION_CODE')
+    public static InvitationCode = new IdentityType('INVITATION_CODE', 'Invitation Code')
         .withIdValueBuilder((identity:IIdentity):String => {
             return identity.identityType + ':' + identity.rawIdValue;
         });
 
-    public static LinkId = new IdentityType('LINK_ID')
+    public static LinkId = new IdentityType('LINK_ID', 'Link ID')
         .withIdValueBuilder((identity:IIdentity):String => {
             return identity.identityType + ':' + identity.linkIdScheme + ':' + identity.rawIdValue;
         });
 
-    public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER')
+    public static PublicIdentifier = new IdentityType('PUBLIC_IDENTIFIER', 'Public Identifier')
         .withIdValueBuilder((identity:IIdentity):String => {
             return identity.identityType + ':' + identity.publicIdentifierScheme + ':' + identity.rawIdValue;
         });
@@ -67,8 +67,8 @@ export class IdentityType extends RAMEnum {
 
     public buildIdValue:(identity:IIdentity) => String;
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
     }
 
     public withIdValueBuilder(builder:(identity:IIdentity) => String):IdentityType {
@@ -79,9 +79,9 @@ export class IdentityType extends RAMEnum {
 
 export class IdentityInvitationCodeStatus extends RAMEnum {
 
-    public static Claimed = new IdentityInvitationCodeStatus('CLAIMED');
-    public static Pending = new IdentityInvitationCodeStatus('PENDING');
-    public static Rejected = new IdentityInvitationCodeStatus('REJECTED');
+    public static Claimed = new IdentityInvitationCodeStatus('CLAIMED', 'Claimed');
+    public static Pending = new IdentityInvitationCodeStatus('PENDING', 'Pending');
+    public static Rejected = new IdentityInvitationCodeStatus('REJECTED', 'Rejected');
 
     protected static AllValues = [
         IdentityInvitationCodeStatus.Claimed,
@@ -89,42 +89,42 @@ export class IdentityInvitationCodeStatus extends RAMEnum {
         IdentityInvitationCodeStatus.Rejected
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
     }
 }
 
 export class IdentityAgencyScheme extends RAMEnum {
 
-    public static Medicare = new IdentityAgencyScheme('MEDICARE');
+    public static Medicare = new IdentityAgencyScheme('MEDICARE', 'Medicare');
 
     protected static AllValues = [
         IdentityAgencyScheme.Medicare
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
     }
 }
 
 export class IdentityPublicIdentifierScheme extends RAMEnum {
 
-    public static ABN = new IdentityPublicIdentifierScheme('ABN');
+    public static ABN = new IdentityPublicIdentifierScheme('ABN', 'ABN');
 
     protected static AllValues = [
         IdentityPublicIdentifierScheme.ABN
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
     }
 }
 
 export class IdentityLinkIdScheme extends RAMEnum {
 
-    public static AUSkey = new IdentityPublicIdentifierScheme('AUSKEY');
-    public static AuthenticatorApp = new IdentityPublicIdentifierScheme('AUTHENTICATOR_APP');
-    public static MyGov = new IdentityPublicIdentifierScheme('MY_GOV');
+    public static AUSkey = new IdentityPublicIdentifierScheme('AUSKEY', 'AUSkey');
+    public static AuthenticatorApp = new IdentityPublicIdentifierScheme('AUTHENTICATOR_APP', 'Authenticator App');
+    public static MyGov = new IdentityPublicIdentifierScheme('MY_GOV', 'myGov');
 
     protected static AllValues = [
         IdentityLinkIdScheme.AUSkey,
@@ -132,8 +132,8 @@ export class IdentityLinkIdScheme extends RAMEnum {
         IdentityLinkIdScheme.MyGov
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
     }
 }
 

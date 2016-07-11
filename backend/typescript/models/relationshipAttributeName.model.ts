@@ -34,16 +34,16 @@ export class RelationshipAttributeNameDomain extends RAMEnum {
 
 export class RelationshipAttributeNameClassifier extends RAMEnum {
 
-    public static Other = new RelationshipAttributeNameClassifier('OTHER');
-    public static Permission = new RelationshipAttributeNameClassifier('PERMISSION');
+    public static Other = new RelationshipAttributeNameClassifier('OTHER', 'Other');
+    public static Permission = new RelationshipAttributeNameClassifier('PERMISSION', 'Permission');
 
     protected static AllValues = [
         RelationshipAttributeNameClassifier.Other,
         RelationshipAttributeNameClassifier.Permission
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
     }
 }
 

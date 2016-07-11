@@ -19,12 +19,12 @@ const _SharedSecretModel = SharedSecretModel;
 
 export class ProfileProvider extends RAMEnum {
 
-    public static ABR = new ProfileProvider('ABR');
-    public static AuthenticatorApp = new ProfileProvider('AUTHENTICATOR_APP');
-    public static MyGov = new ProfileProvider('MY_GOV');
-    public static SelfAsserted = new ProfileProvider('SELF_ASSERTED');
-    public static Vanguard = new ProfileProvider('VANGUARD');
-    public static Temp = new ProfileProvider('TEMP'); // TODO validate what this value should be for temp identities
+    public static ABR = new ProfileProvider('ABR', 'ABR');
+    public static AuthenticatorApp = new ProfileProvider('AUTHENTICATOR_APP', 'Authenticator App');
+    public static MyGov = new ProfileProvider('MY_GOV', 'myGov');
+    public static SelfAsserted = new ProfileProvider('SELF_ASSERTED', 'Self Asserted');
+    public static Vanguard = new ProfileProvider('VANGUARD', 'Vanguard');
+    public static Temp = new ProfileProvider('TEMP', 'Temp'); // TODO validate what this value should be for temp identities
 
     protected static AllValues = [
         ProfileProvider.ABR,
@@ -35,8 +35,8 @@ export class ProfileProvider extends RAMEnum {
         ProfileProvider.Temp
     ];
 
-    constructor(public name:string) {
-        super(name);
+    constructor(public name:string, decodeText:string) {
+        super(name, decodeText);
     }
 }
 
