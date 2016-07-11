@@ -18,8 +18,9 @@
                     <div class="form-group">
                         <select class="form-control">
                             <option value="">Authorisation Type</option>
-                            <option value="CUSTOM_REPRESENTATIVE">Custom Representative</option>
-                            <option value="UNIVERSAL_REPRESENTATIVE">Universal Representative</option>
+                            <template ngFor let-item="$implicit" [ngForOf]="relationshipTypes$|async">
+                                <option value="{{item.value.code}}">{{item.value.shortDecodeText}}</option>
+                            </template>
                         </select>
                     </div>
                     &nbsp;
