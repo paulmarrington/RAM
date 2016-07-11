@@ -90,8 +90,8 @@
                 <tr *ngFor="let relationshipRef of item.relationshipRefs">
                     <td>{{modelHelper.displayName(relationshipRef.value.delegateNickName)}}</td>
                     <td>{{commaSeparatedListOfProviderNames(relationshipRef.value.delegate.value)}}</td>
-                    <td class="hidden-xs">{{modelHelper.relationshipTypeLabel(relationshipTypeRefs, relationshipRef.value)}}</td>
-                    <td class="hidden-xs">{{relationshipRef.value.status}}</td>
+                    <td>{{modelHelper.relationshipTypeLabel(relationshipTypes$|async, relationshipRef.value)}}</td>
+                    <td>{{relationshipRef.value.status}}</td>
                     <td></td>
                 </tr>
             </template>

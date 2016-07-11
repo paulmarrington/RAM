@@ -61,9 +61,11 @@ export class RAMModelHelper {
     }
 
     public relationshipTypeLabel(relationshipTypeRefs: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
-        let relationshipType = this.getRelationshipType(relationshipTypeRefs, relationship);
-        if (relationshipType) {
-            return relationshipType.shortDecodeText;
+        if (relationshipTypeRefs && relationship) {
+            let relationshipType = this.getRelationshipType(relationshipTypeRefs, relationship);
+            if (relationshipType) {
+                return relationshipType.shortDecodeText;
+            }
         }
         return '';
     }
