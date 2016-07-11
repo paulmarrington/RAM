@@ -10,7 +10,7 @@
                     <div class="form-group">
                         <select class="form-control">
                             <option value="">Party Type</option>
-                            <template ngFor let-item="$implicit" [ngForOf]="partyTypes$|async">
+                            <template ngFor let-item="$implicit" [ngForOf]="partyTypeRefs">
                                 <option value="{{item.value.name}}">{{item.value.decodeText}}</option>
                             </template>
                         </select>
@@ -19,7 +19,7 @@
                     <div class="form-group">
                         <select class="form-control">
                             <option value="">Authorisation Type</option>
-                            <template ngFor let-item="$implicit" [ngForOf]="relationshipTypes$|async">
+                            <template ngFor let-item="$implicit" [ngForOf]="relationshipTypeRefs">
                                 <option value="{{item.value.code}}">{{item.value.shortDecodeText}}</option>
                             </template>
                         </select>
@@ -92,7 +92,7 @@
                 <tr *ngFor="let relationshipRef of item.relationshipRefs">
                     <td>{{modelHelper.displayName(relationshipRef.value.delegateNickName)}}</td>
                     <td>{{commaSeparatedListOfProviderNames(relationshipRef.value.delegate.value)}}</td>
-                    <td>{{modelHelper.relationshipTypeLabel(relationshipTypes$|async, relationshipRef.value)}}</td>
+                    <td>{{modelHelper.relationshipTypeLabel(relationshipTypeRefs, relationshipRef.value)}}</td>
                     <td>{{relationshipRef.value.status}}</td>
                     <td></td>
                 </tr>
