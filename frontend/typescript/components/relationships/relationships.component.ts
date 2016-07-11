@@ -18,6 +18,7 @@ import {
     IIdentity,
     IRelationship,
     IRelationshipType,
+    IRelationshipStatus,
     IHrefValue
 } from '../../../../commons/RamAPI2';
 
@@ -36,6 +37,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
     public partyTypeRefs: IHrefValue<IPartyType>;
+    public relationshipStatusRefs: IHrefValue<IRelationshipStatus>;
     public relationshipTypeRefs: IHrefValue<IRelationshipType>;
     public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
 
@@ -69,6 +71,11 @@ export class RelationshipsComponent extends AbstractPageComponent {
         // party types
         this.rest.listPartyTypes().subscribe((partyTypeRefs) => {
             this.partyTypeRefs = partyTypeRefs;
+        });
+
+        // party types
+        this.rest.listRelationshipStatuses().subscribe((relationshipStatusRefs) => {
+            this.relationshipStatusRefs = relationshipStatusRefs;
         });
 
         // relationship types

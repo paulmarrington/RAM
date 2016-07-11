@@ -37,8 +37,9 @@
                         <div class="form-group">
                             <select class="form-control" [formControl]="form.controls['status']">
                                 <option value="-">Status</option>
-                                <option value="ACTIVE">ACTIVE</option>
-                                <option value="PENDING">PENDING</option>
+                                <template ngFor let-item="$implicit" [ngForOf]="relationshipStatusRefs">
+                                    <option value="{{item.value.name}}">{{item.value.decodeText}}</option>
+                                </template>
                             </select>
                         </div>
                     </div>
@@ -95,7 +96,7 @@
                     <td>{{modelHelper.displayName(relationshipRef.value.delegateNickName)}}</td>
                     <td>{{commaSeparatedListOfProviderNames(relationshipRef.value.delegate.value)}}</td>
                     <td>{{modelHelper.relationshipTypeLabel(relationshipTypeRefs, relationshipRef.value)}}</td>
-                    <td>{{relationshipRef.value.status}}</td>
+                    <td>{{modelHelper.relationshipStatusLabel(relationshipStatusRefs, relationshipRef.value.status)}}</td>
                     <td></td>
                 </tr>
             </template>

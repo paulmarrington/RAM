@@ -13,6 +13,7 @@ import {
     IRelationshipAddDTO,
     IRelationship,
     IRelationshipType,
+    IRelationshipStatus,
     INotifyDelegateDTO
 } from '../../../commons/RamAPI2';
 
@@ -54,6 +55,12 @@ export class RAMRestService {
     public findIdentityByHref(href: string): Rx.Observable<IIdentity> {
         return this.http
             .get(href)
+            .map(this.extractData);
+    }
+
+    public listRelationshipStatuses(): Rx.Observable<IHrefValue<IRelationshipStatus>[]> {
+        return this.http
+            .get('/api/v1/relationshipStatuses')
             .map(this.extractData);
     }
 
