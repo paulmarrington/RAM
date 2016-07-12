@@ -23,7 +23,7 @@ const _ProfileModel = ProfileModel;
 /* tslint:disable:no-unused-variable */
 const _PartyModel = PartyModel;
 
-const MAX_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE = 100;
 const NEW_INVITATION_CODE_EXPIRY_DAYS = 7;
 
 // enums, utilities, helpers ..........................................................................................
@@ -412,10 +412,12 @@ IdentitySchema.static('listByPartyId', (partyId:string) => {
 });
 
 IdentitySchema.static('search', (page:number, reqPageSize:number) => {
-    return new Promise<SearchResult<IIdentity>>(async(resolve, reject) => {
+    return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
-            const query = {};
+            const query = {
+                identityType: IdentityType.LinkId.name
+            };
             const count = await this.IdentityModel
                 .count(query)
                 .exec();
@@ -425,9 +427,9 @@ IdentitySchema.static('search', (page:number, reqPageSize:number) => {
                     'profile.name',
                     'party'
                 ])
+                .sort({'profile.name._displayName': -1})
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)
-                .sort({name: 1})
                 .exec();
             resolve(new SearchResult<IIdentity>(page, count, pageSize, list));
         } catch (e) {
