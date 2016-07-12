@@ -15,6 +15,7 @@ import {
     SearchResult
 } from '../../../commons/RamAPI';
 import {logger} from '../logger';
+import {IdentityPublicIdentifierScheme} from './identity.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
@@ -139,6 +140,14 @@ const RelationshipSchema = RAMSchema({
         required: [true, 'Delegate NickName String is required'],
         trim: true
     },
+    _subjectABNString: {
+        type: String,
+        trim: true
+    },
+    _delegateABNString: {
+        type: String,
+        trim: true
+    },
     _subjectPartyTypeCode: {
         type: String,
         required: [true, 'Subject Party Type Code is required'],
@@ -174,6 +183,9 @@ RelationshipSchema.pre('validate', function (next:() => void) {
             this._subjectProfileProviderCodes = [];
             for (let identity of identities) {
                 this._subjectProfileProviderCodes.push(identity.profile.provider);
+                if (identity.publicIdentifierScheme === IdentityPublicIdentifierScheme.ABN.name) {
+                    this._subjectABNString = identity.rawIdValue;
+                }
             }
         });
     const delegatePromise = IdentityModel.listByPartyId(this.delegate.id)
@@ -181,6 +193,9 @@ RelationshipSchema.pre('validate', function (next:() => void) {
             this._delegateProfileProviderCodes = [];
             for (let identity of identities) {
                 this._delegateProfileProviderCodes.push(identity.profile.provider);
+                if (identity.publicIdentifierScheme === IdentityPublicIdentifierScheme.ABN.name) {
+                    this._delegateABNString = identity.rawIdValue;
+                }
             }
         });
     Promise.all([subjectPromise, delegatePromise])
@@ -207,6 +222,8 @@ export interface IRelationship extends IRAMObject {
     attributes:IRelationshipAttribute[];
     _subjectNickNameString:string;
     _delegateNickNameString:string;
+    _subjectABNString:string;
+    _delegateABNString:string;
     _subjectPartyTypeCode:string;
     _delegatePartyTypeCode:string;
     _relationshipTypeCode:string;
@@ -508,11 +525,9 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue: string,
         const pageSize: number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
             const party = await PartyModel.findByIdentityIdValue(identityIdValue);
-            const where = {
-                '$and': [
-                    {'$or': [{subject: party}, {delegate: party}]}
-                ]
-            };
+            const where: Object = {};
+            where['$and'] = [];
+            where['$and'].push({'$or': [{subject: party}, {delegate: party}]});
             if (partyType) {
                 where['$and'].push({
                     '$or': [
@@ -539,7 +554,9 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue: string,
                 where['$and'].push({
                     '$or': [
                         {'_subjectNickNameString': new RegExp(text, 'i')},
-                        {'_delegateNickNameString': new RegExp(text, 'i')}
+                        {'_delegateNickNameString': new RegExp(text, 'i')},
+                        {'_subjectABNString': new RegExp(text, 'i')},
+                        {'_delegateABNString': new RegExp(text, 'i')}
                     ]
                 });
             }
