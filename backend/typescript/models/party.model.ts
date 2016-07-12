@@ -129,18 +129,15 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
     }
 
     // create the relationship
-    const relationship = await RelationshipModel.create({
-        relationshipType: relationshipType,
-        subject: subjectIdentity.party,
-        subjectNickName: subjectIdentity.profile.name,
-        delegate: temporaryDelegateIdentity.party,
-        delegateNickName: temporaryDelegateIdentity.profile.name,
-        invitationIdentity: temporaryDelegateIdentity,
-        startTimestamp: dto.startTimestamp,
-        endTimestamp: dto.endTimestamp,
-        status: RelationshipStatus.Pending.name,
-        attributes: attributes
-    });
+    const relationship = await RelationshipModel.add(
+        relationshipType,
+        subjectIdentity.party,
+        subjectIdentity.profile.name,
+        temporaryDelegateIdentity,
+        dto.startTimestamp,
+        dto.endTimestamp,
+        attributes
+    );
 
     return relationship;
 

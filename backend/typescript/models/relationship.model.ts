@@ -239,7 +239,7 @@ export interface IRelationship extends IRAMObject {
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
-    add:(relationshipType: IRelationshipType, subject: IParty, subjectNickName: IName, invitationCodeIdentity:IIdentity, startTimestamp:Date, endTimestamp:Date) => Promise<IRelationship>;
+    add:(relationshipType: IRelationshipType, subject: IParty, subjectNickName: IName, invitationCodeIdentity: IIdentity, startTimestamp: Date, endTimestamp: Date, attributes: IRelationshipAttribute[]) => Promise<IRelationship>;
     findByIdentifier:(id:string) => Promise<IRelationship>;
     findByInvitationCode:(invitationCode:string) => Promise<IRelationship>;
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
@@ -307,6 +307,11 @@ RelationshipSchema.method('claimPendingInvitation', async function (claimingDele
 
         // validate current status
         Assert.assertTrue(this.statusEnum() === RelationshipStatus.Pending, 'Unable to accept a non-pending relationship');
+
+        // if the user is already the delegate then there is nothing to do
+        if(this.delegate.id === claimingDelegateIdentity.party.id) {
+            return this;
+        }
 
         // find identity to match user against
         const invitationIdentities = await IdentityModel.listByPartyId(this.delegate.id);
@@ -427,7 +432,7 @@ RelationshipSchema.method('notifyDelegate', async function (email: string, notif
 
 // static methods .....................................................................................................
 
-RelationshipSchema.static('add', async (relationshipType: IRelationshipType, subject: IParty, subjectNickName: IName, invitationCodeIdentity:IIdentity, startTimestamp:Date, endTimestamp:Date) => {
+RelationshipSchema.static('add', async (relationshipType: IRelationshipType, subject: IParty, subjectNickName: IName, invitationCodeIdentity: IIdentity, startTimestamp: Date, endTimestamp: Date, attributes: IRelationshipAttribute[]) => {
     return await RelationshipModel.create({
         relationshipType: relationshipType,
         subject: subject,
@@ -437,7 +442,8 @@ RelationshipSchema.static('add', async (relationshipType: IRelationshipType, sub
         invitationIdentity: invitationCodeIdentity,
         startTimestamp: startTimestamp,
         endTimestamp: endTimestamp,
-        status: RelationshipStatus.Pending.name
+        status: RelationshipStatus.Pending.name,
+        attributes: attributes
     });
 });
 
@@ -453,6 +459,7 @@ RelationshipSchema.static('findByIdentifier', (id:string) => {
             'subjectNickName',
             'delegate',
             'delegateNickName',
+            'invitationIdentity.profile.name',
             'attributes.attributeName'
         ])
         .exec();
@@ -472,6 +479,7 @@ RelationshipSchema.static('findByInvitationCode', async(invitationCode:string) =
                 'subjectNickName',
                 'delegate',
                 'delegateNickName',
+                'invitationIdentity.profile.name',
                 'attributes.attributeName'
             ])
             .exec();
@@ -493,6 +501,7 @@ RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async(invita
                 'subjectNickName',
                 'delegate',
                 'delegateNickName',
+                'invitationIdentity',
                 'attributes.attributeName'
             ])
             .exec();
