@@ -11,7 +11,7 @@ import {
 } from '../../../commons/RamAPI';
 import {NameModel} from './name.model';
 import {SharedSecretModel} from './sharedSecret.model';
-import {IProfile, ProfileModel} from './profile.model';
+import {IProfile, ProfileModel, ProfileProvider} from './profile.model';
 import {IParty, PartyModel} from './party.model';
 import {SharedSecretTypeModel} from './sharedSecretType.model';
 
@@ -81,7 +81,7 @@ export class IdentityInvitationCodeStatus extends RAMEnum {
 
     public static Claimed = new IdentityInvitationCodeStatus('CLAIMED', 'Claimed');
     public static Pending = new IdentityInvitationCodeStatus('PENDING', 'Pending');
-    public static Rejected = new IdentityInvitationCodeStatus('REJECTED', 'Rejected');
+    public static Rejected = new IdentityInvitationCodeStatus('REJECTED', 'Rejected'); // TODO this state is not possible?
 
     protected static AllValues = [
         IdentityInvitationCodeStatus.Claimed,
@@ -279,7 +279,9 @@ export interface IIdentity extends IRAMObject {
 
 export interface IIdentityModel extends mongoose.Model<IIdentity> {
     createFromDTO:(dto:CreateIdentityDTO) => Promise<IIdentity>;
+    createInvitationCodeIdentity:(givenName:string, familyName:string, dateOfBirth:string) => Promise<IIdentity>;
     findByIdValue:(idValue:string) => Promise<IIdentity>;
+    findByInvitationCode:(invitationCode:string) => Promise<IIdentity>;
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IIdentity>;
     findDefaultByPartyId:(partyId:string) => Promise<IIdentity>;
     listByPartyId:(partyId:string) => Promise<IIdentity[]>;
@@ -350,6 +352,20 @@ IdentitySchema.static('findByIdValue', (idValue:string) => {
         .exec();
 });
 
+IdentitySchema.static('findByInvitationCode', (invitationCode:string) => {
+    return this.IdentityModel
+        .findOne({
+            rawIdValue: invitationCode,
+            identityType: IdentityType.InvitationCode.name
+        })
+        .deepPopulate([
+            'profile.name',
+            'profile.sharedSecrets.sharedSecretType',
+            'party'
+        ])
+        .exec();
+});
+
 IdentitySchema.static('findPendingByInvitationCodeInDateRange', (invitationCode:string, date:Date) => {
     return this.IdentityModel
         .findOne({
@@ -396,7 +412,7 @@ IdentitySchema.static('listByPartyId', (partyId:string) => {
 });
 
 IdentitySchema.static('search', (page:number, reqPageSize:number) => {
-    return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
+    return new Promise<SearchResult<IIdentity>>(async(resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
             const query = {};
@@ -420,57 +436,77 @@ IdentitySchema.static('search', (page:number, reqPageSize:number) => {
     });
 });
 
+IdentitySchema.static('createInvitationCodeIdentity', async(givenName:string, familyName:string, dateOfBirth:string):Promise<IIdentity> => {
+    return await this.IdentityModel.createFromDTO(
+        new CreateIdentityDTO(
+            undefined, // TODO should this be a UUID?
+            'INDIVIDUAL',
+            givenName,
+            familyName,
+            undefined,
+            'DATE_OF_BIRTH',
+            dateOfBirth,
+            IdentityType.InvitationCode.name,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            ProfileProvider.Temp.name
+        ));
+});
+
 /**
  * Creates an InvitationCode identity required when creating a new relationship. This identity is temporary and will
  * only be associated with the relationship until the relationship is accepted, whereby the relationship will be
  * transferred to the authorised identity.
  */
 /* tslint:disable:max-func-body-length */
-IdentitySchema.static('createFromDTO', async (dto:CreateIdentityDTO):Promise<IIdentity> => {
+IdentitySchema.static('createFromDTO', async(dto:CreateIdentityDTO):Promise<IIdentity> => {
 
-        const name = await NameModel.create({
-            givenName: dto.givenName,
-            familyName: dto.familyName,
-            unstructuredName: dto.unstructuredName
-        });
-
-        const sharedSecret = await SharedSecretModel.create({
-            value: dto.sharedSecretValue,
-            sharedSecretType: await SharedSecretTypeModel.findByCodeInDateRange(dto.sharedSecretTypeCode, new Date())
-        });
-
-        const profile = await ProfileModel.create({
-            provider: dto.profileProvider,
-            name: name,
-            sharedSecrets: [sharedSecret]
-        });
-
-        const party = await PartyModel.create({
-            partyType: dto.partyType,
-            name: name
-        });
-
-        const identity = await this.IdentityModel.create({
-            rawIdValue: dto.rawIdValue,
-            identityType: dto.identityType,
-            defaultInd: true,
-            agencyScheme: dto.agencyScheme,
-            agencyToken: dto.agencyToken,
-            invitationCodeStatus: dto.identityType === IdentityType.InvitationCode.name ?
-                IdentityInvitationCodeStatus.Pending.name : undefined,
-            invitationCodeExpiryTimestamp: dto.identityType === IdentityType.InvitationCode.name ?
-                getNewInvitationCodeExpiry() : undefined,
-            invitationCodeClaimedTimestamp: undefined,
-            publicIdentifierScheme: dto.publicIdentifierScheme,
-            linkIdScheme: dto.linkIdScheme,
-            linkIdConsumer: dto.linkIdConsumer,
-            profile: profile,
-            party: party
-        });
-
-        return identity;
-
+    const name = await NameModel.create({
+        givenName: dto.givenName,
+        familyName: dto.familyName,
+        unstructuredName: dto.unstructuredName
     });
+
+    const sharedSecret = await SharedSecretModel.create({
+        value: dto.sharedSecretValue,
+        sharedSecretType: await SharedSecretTypeModel.findByCodeInDateRange(dto.sharedSecretTypeCode, new Date())
+    });
+
+    const profile = await ProfileModel.create({
+        provider: dto.profileProvider,
+        name: name,
+        sharedSecrets: [sharedSecret]
+    });
+
+    const party = await PartyModel.create({
+        partyType: dto.partyType,
+        name: name
+    });
+
+    const identity = await this.IdentityModel.create({
+        rawIdValue: dto.rawIdValue,
+        identityType: dto.identityType,
+        defaultInd: true,
+        agencyScheme: dto.agencyScheme,
+        agencyToken: dto.agencyToken,
+        invitationCodeStatus: dto.identityType === IdentityType.InvitationCode.name ?
+            IdentityInvitationCodeStatus.Pending.name : undefined,
+        invitationCodeExpiryTimestamp: dto.identityType === IdentityType.InvitationCode.name ?
+            getNewInvitationCodeExpiry() : undefined,
+        invitationCodeClaimedTimestamp: undefined,
+        publicIdentifierScheme: dto.publicIdentifierScheme,
+        linkIdScheme: dto.linkIdScheme,
+        linkIdConsumer: dto.linkIdConsumer,
+        profile: profile,
+        party: party
+    });
+
+    return identity;
+
+});
 
 // concrete model .....................................................................................................
 

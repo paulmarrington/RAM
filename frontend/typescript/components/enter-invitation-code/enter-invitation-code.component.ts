@@ -1,7 +1,7 @@
 import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
-import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES } from '@angular/forms';
+import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES} from '@angular/forms';
 
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../commons/page-header/page-header.component';
@@ -19,22 +19,22 @@ import {IIdentity} from '../../../../commons/RamAPI2';
 
 export class EnterInvitationCodeComponent extends AbstractPageComponent {
 
-    public idValue: string;
+    public idValue:string;
 
-    public identity$: Rx.Observable<IIdentity>;
+    public identity$:Rx.Observable<IIdentity>;
 
-    public form: FormGroup;
+    public form:FormGroup;
 
-    constructor(route: ActivatedRoute,
-                router: Router,
-                rest: RAMRestService,
-                modelHelper: RAMModelHelper,
-                routeHelper: RAMRouteHelper,
-                private _fb: FormBuilder) {
+    constructor(route:ActivatedRoute,
+                router:Router,
+                rest:RAMRestService,
+                modelHelper:RAMModelHelper,
+                routeHelper:RAMRouteHelper,
+                private _fb:FormBuilder) {
         super(route, router, rest, modelHelper, routeHelper);
     }
 
-    public onInit(params: {path: Params, query: Params}) {
+    public onInit(params:{path:Params, query:Params}) {
 
         // extract path and query parameters
         this.idValue = decodeURIComponent(params.path['idValue']);
@@ -49,16 +49,21 @@ export class EnterInvitationCodeComponent extends AbstractPageComponent {
 
     }
 
-    public activateCode(event: Event) {
+    public activateCode(event:Event) {
 
-        this.routeHelper.goToRelationshipAcceptPage(
-            this.idValue,
-            this.form.controls['relationshipCode'].value
-        );
+        this.rest.claimRelationshipByInvitationCode(this.form.controls['relationshipCode'].value)
+            .subscribe((relationship) => {
+                    this.routeHelper.goToRelationshipAcceptPage(
+                        this.idValue,
+                        this.form.controls['relationshipCode'].value
+                    );
+                }, (err) => {
+                    // TODO
+                    alert(JSON.stringify(err, null, 2));
+                });
 
         event.stopPropagation();
         return false;
-
     }
 
     public goToRelationshipsPage() {
