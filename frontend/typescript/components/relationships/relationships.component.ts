@@ -112,10 +112,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
         // pagination delegate
         this.paginationDelegate = {
             goToPage: (page: number) => {
-                this.router.navigate(['/relationships',
-                    encodeURIComponent(this.idValue)],
-                    {queryParams: {page: page}}
-                );
+                this.routeHelper.goToRelationshipsPage(this.idValue, page);
             }
         } as SearchResultPaginationDelegate;
 
