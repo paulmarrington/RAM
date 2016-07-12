@@ -242,7 +242,10 @@ describe('RAM Relationship', () => {
 
         try {
 
-            const invitationCodeIdentity = await IdentityModel.createInvitationCodeIdentity(delegateProfile1.name.givenName, delegateProfile1.name.familyName, '01/01/1999');
+            const invitationCodeIdentity = await IdentityModel.createInvitationCodeIdentity(
+                delegateProfile1.name.givenName,
+                delegateProfile1.name.familyName,
+                '01/01/1999');
             const invitationCode = invitationCodeIdentity.rawIdValue;
 
             const relationshipToClaim = await RelationshipModel.create({
@@ -266,7 +269,6 @@ describe('RAM Relationship', () => {
             });
 
             // relationship should be created with a PENDING invitation code delegate
-            const preClaimedDelegateParty = relationshipToClaim.delegate;
             const preClaimedDelegateIdentity = (await IdentityModel.findByInvitationCode(invitationCode));
             expect(preClaimedDelegateIdentity.invitationCodeStatusEnum()).toBe(IdentityInvitationCodeStatus.Pending);
 
