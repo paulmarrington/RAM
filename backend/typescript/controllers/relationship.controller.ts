@@ -4,7 +4,7 @@ import {
     sendResource, sendList, sendSearchResult, sendError, sendNotFoundError, validateReqSchema, REGULAR_CHARS
 } from './helpers';
 import {IRelationshipModel, RelationshipStatus} from '../models/relationship.model';
-import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO, Link} from '../../../commons/RamAPI';
+import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
 import {FilterParams} from '../../../commons/RamAPI2';
 import {PartyModel} from '../models/party.model';
 import {ProfileProvider} from '../models/profile.model';
