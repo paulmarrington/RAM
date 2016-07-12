@@ -62,8 +62,6 @@ export class RelationshipController {
             .then(sendResource(res))
             .then(sendNotFoundError(res))
             .catch((err) => {
-                console.log('err');
-                console.log(err);
                 sendError(res)(err);
             });
     };
@@ -83,8 +81,11 @@ export class RelationshipController {
             })
             .then((model) => model ? model.acceptPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
             .then((model) => model ? model.toDTO(null) : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => {
+                sendError(res)(err);
+            });
     };
 
     private rejectByInvitationCode = async(req:Request, res:Response) => {
@@ -98,8 +99,11 @@ export class RelationshipController {
             .then((req:Request) => this.relationshipModel.findByInvitationCode(req.params.invitationCode))
             .then((model) => model ? model.rejectPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
             .then((model) => model ? Promise.resolve({}) : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => {
+                sendError(res)(err);
+            });
     };
 
     private notifyDelegateByInvitationCode = async(req:Request, res:Response) => {
@@ -120,10 +124,13 @@ export class RelationshipController {
 
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
-            .then((model) => model ? model.notifyDelegate(req.body.email) : null)
+            .then((model) => model ? model.notifyDelegate(req.body.email, security.getAuthenticatedIdentity(res)) : null)
             .then((model) => model ? model.toDTO(null) : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => {
+                sendError(res)(err);
+            });
     };
 
     /* tslint:disable:max-func-body-length */
