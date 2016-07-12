@@ -459,21 +459,33 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue: string,
                 ]
             };
             if (partyType) {
-                where['$and'].push({'_delegatePartyTypeCode': partyType});
+                where['$and'].push({
+                    '$or': [
+                        {'_delegatePartyTypeCode': partyType},
+                        {'_subjectPartyTypeCode': partyType}
+                    ]
+                });
             }
             if (relationshipType) {
                 where['$and'].push({'_relationshipTypeCode': relationshipType});
             }
             if (profileProvider) {
-                where['$and'].push({'_delegateProfileProviderCodes': profileProvider});
+                where['$and'].push({
+                    '$or': [
+                        {'_delegateProfileProviderCodes': profileProvider},
+                        {'_subjectProfileProviderCodes': profileProvider}
+                    ]
+                });
             }
             if (status) {
                 where['$and'].push({'status': status});
             }
             if (text) {
-                where['$and'].push({ '$or': [
+                where['$and'].push({
+                    '$or': [
                         {'_subjectNickNameString': new RegExp(text, 'i')},
-                        {'_delegateNickNameString': new RegExp(text, 'i')}]
+                        {'_delegateNickNameString': new RegExp(text, 'i')}
+                    ]
                 });
             }
             const count = await this.RelationshipModel
