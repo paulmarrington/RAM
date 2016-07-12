@@ -19,7 +19,8 @@ import {
     IRelationship,
     IRelationshipType,
     IRelationshipStatus,
-    IHrefValue
+    IHrefValue,
+    FilterParams
 } from '../../../../commons/RamAPI2';
 
 @Component({
@@ -147,7 +148,18 @@ export class RelationshipsComponent extends AbstractPageComponent {
     }
 
     public search() {
-        // todo
+        const filter = new FilterParams()
+            .add('partyType', this.form.controls['partyType'].value)
+            .add('relationshipType', this.form.controls['relationshipType'].value)
+            .add('linkIdScheme', this.form.controls['linkIdScheme'].value)
+            .add('status', this.form.controls['status'].value)
+            .add('sort', this.form.controls['sort'].value)
+            .add('text', this.form.controls['text'].value)
+            .encode();
+        console.log('Filter (encoded): ' + filter);
+        console.log('Filter (decoded): ' + JSON.stringify(FilterParams.decode(filter), null, 4));
+        // todo search
+        alert('TODO: SEARCH');
     }
 
     public goToRelationshipAddPage() {
