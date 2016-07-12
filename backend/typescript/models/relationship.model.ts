@@ -12,7 +12,7 @@ import {
     Relationship as DTO,
     RelationshipStatus as RelationshipStatusDTO,
     RelationshipAttribute as RelationshipAttributeDTO,
-    SearchResult
+    SearchResult, RelationshipType
 } from '../../../commons/RamAPI';
 import {logger} from '../logger';
 import {IdentityPublicIdentifierScheme} from './identity.model';
@@ -235,10 +235,11 @@ export interface IRelationship extends IRAMObject {
     claimPendingInvitation(claimingDelegateIdentity:IIdentity):Promise<IRelationship>;
     acceptPendingInvitation(acceptingDelegateIdentity:IIdentity):Promise<IRelationship>;
     rejectPendingInvitation(rejectingDelegateIdentity:IIdentity):Promise<IRelationship>;
-    notifyDelegate(email:string):Promise<IRelationship>;
+    notifyDelegate(email:string, notifyingIdentity:IIdentity):Promise<IRelationship>;
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
+    add:(relationshipType: IRelationshipType, subject: IParty, subjectNickName: IName, invitationCodeIdentity:IIdentity, startTimestamp:Date, endTimestamp:Date) => Promise<IRelationship>;
     findByIdentifier:(id:string) => Promise<IRelationship>;
     findByInvitationCode:(invitationCode:string) => Promise<IRelationship>;
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
@@ -370,7 +371,6 @@ RelationshipSchema.method('claimPendingInvitation', async function (claimingDele
 
 RelationshipSchema.method('acceptPendingInvitation', async function (acceptingDelegateIdentity:IIdentity) {
     logger.debug('Attempting to accept relationship by ', acceptingDelegateIdentity.idValue);
-    logger.debug('Relationship ', JSON.stringify(this));
     Assert.assertTrue(this.statusEnum() === RelationshipStatus.Pending, 'Unable to accept a non-pending relationship');
 
     // confirm the delegate is the user accepting
@@ -401,28 +401,21 @@ RelationshipSchema.method('rejectPendingInvitation', async function (rejectingDe
     return this;
 });
 
-RelationshipSchema.method('notifyDelegate', async function (email:string) {
+RelationshipSchema.method('notifyDelegate', async function (email: string, notifyingIdentity:IIdentity) {
 
-    if (this.statusEnum() === RelationshipStatus.Pending) {
+    const identity = this.invitationIdentity;
+    Assert.assertTrue(notifyingIdentity.party.id === this.subject.id, 'Not allowed');
+    Assert.assertTrue(this.statusEnum() === RelationshipStatus.Pending, 'Unable to update relationship with delegate email');
+    Assert.assertTrue(identity.identityTypeEnum() === IdentityType.InvitationCode, 'Unable to update relationship with delegate email');
+    Assert.assertTrue(identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending, 'Unable to update relationship with delegate email');
 
-        // save email
-        // as relationship doesn't have a pointer to the identity, this sets email on all invitation identities
-        // associated with the temporary delegate (there should only be one)
-        const identities = await IdentityModel.listByPartyId(this.delegate.id);
-        for (let identity of identities) {
-            if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
-                identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending) {
-                identity.invitationCodeTemporaryEmailAddress = email;
-                await identity.save();
-            }
-        }
+    identity.invitationCodeTemporaryEmailAddress = email;
+    await identity.save();
 
-        // TODO notify relevant parties
+    // TODO notify relevant parties
+    logger.debug(`TODO Send notification to ${email}`);
 
-        return Promise.resolve(this);
-    } else {
-        throw new Error('Unable to update relationship with delegate email');
-    }
+    return Promise.resolve(this);
 
 });
 
@@ -433,6 +426,20 @@ RelationshipSchema.method('notifyDelegate', async function (email:string) {
 // });
 
 // static methods .....................................................................................................
+
+RelationshipSchema.static('add', async (relationshipType: IRelationshipType, subject: IParty, subjectNickName: IName, invitationCodeIdentity:IIdentity, startTimestamp:Date, endTimestamp:Date) => {
+    return await RelationshipModel.create({
+        relationshipType: relationshipType,
+        subject: subject,
+        subjectNickName: subjectNickName,
+        delegate: invitationCodeIdentity.party,
+        delegateNickName: invitationCodeIdentity.profile.name,
+        invitationIdentity: invitationCodeIdentity,
+        startTimestamp: startTimestamp,
+        endTimestamp: endTimestamp,
+        status: RelationshipStatus.Pending.name
+    });
+});
 
 RelationshipSchema.static('findByIdentifier', (id:string) => {
     // TODO migrate from _id to another id
