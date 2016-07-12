@@ -32,6 +32,7 @@ import {
 export class RelationshipsComponent extends AbstractPageComponent {
 
     public idValue: string;
+    public filter: FilterParams;
     public page: number;
 
     public identity$: Rx.Observable<IIdentity>;
@@ -64,6 +65,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
         // extract path and query parameters
         this.idValue = decodeURIComponent(params.path['idValue']);
+        this.filter = FilterParams.decode(params.query['filter']);
         this.page = params.query['page'] ? +params.query['page'] : 1;
 
         // identity in focus
@@ -112,18 +114,18 @@ export class RelationshipsComponent extends AbstractPageComponent {
         // pagination delegate
         this.paginationDelegate = {
             goToPage: (page: number) => {
-                this.routeHelper.goToRelationshipsPage(this.idValue, page);
+                this.routeHelper.goToRelationshipsPage(this.idValue, this.filter.encode(), page);
             }
         } as SearchResultPaginationDelegate;
 
         // forms
         this.form = this._fb.group({
-            partyType: '-',
-            relationshipType: '-',
-            linkIdScheme: '-',
-            status: '-',
-            sort: '-',
-            text: ''
+            partyType: this.filter.get('partyType', '-'),
+            relationshipType: this.filter.get('relationshipType', '-'),
+            linkIdScheme: this.filter.get('linkIdScheme', '-'),
+            status: this.filter.get('status', '-'),
+            sort: this.filter.get('sort', '-'),
+            text: this.filter.get('text', '')
         });
 
     }
@@ -145,7 +147,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
     }
 
     public search() {
-        const filter = new FilterParams()
+        const filterString = new FilterParams()
             .add('partyType', this.form.controls['partyType'].value)
             .add('relationshipType', this.form.controls['relationshipType'].value)
             .add('linkIdScheme', this.form.controls['linkIdScheme'].value)
@@ -153,10 +155,9 @@ export class RelationshipsComponent extends AbstractPageComponent {
             .add('sort', this.form.controls['sort'].value)
             .add('text', this.form.controls['text'].value)
             .encode();
-        console.log('Filter (encoded): ' + filter);
-        console.log('Filter (decoded): ' + JSON.stringify(FilterParams.decode(filter), null, 4));
-        // todo search
-        alert('TODO: SEARCH');
+        //console.log('Filter (encoded): ' + filterString);
+        //console.log('Filter (decoded): ' + JSON.stringify(FilterParams.decode(filterString), null, 4));
+        this.routeHelper.goToRelationshipsPage(this.idValue, filterString);
     }
 
     public goToRelationshipAddPage() {
