@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "ec9d18dc-297b-4ffa-be8a-ae7ac28c7cc1",
+		"_postman_id": "77233972-8051-0b42-6d1f-45963c6c21f6",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -743,25 +743,6 @@
 					"response": []
 				},
 				{
-					"name": "Create",
-					"request": {
-						"url": "{{host}}/api/v1/relationship",
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"relationshipType\": \"CUSTOM_REPRESENTATIVE\",\n  \"subject\": \"PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1\",\n  \"delegate\": {\n    \"partyType\": \"INDIVIDUAL\",\n    \"givenName\": \"a\",\n    \"familyName\": \"b\",\n    \"unstructuredName\": \"\",\n    \"sharedSecret\": {\n      \"code\": \"DATE_OF_BIRTH\",\n      \"value\": \"2016-06-15\"\n    }\n  },\n  \"startTimestamp\": \"2016-06-15T03:49:06.682Z\",\n  \"endTimestamp\": \"2017-06-15T03:49:06.682Z\",\n  \"attributes\": [\n    {\n      \"code\": \"PERMISSION_CUSTOMISATION_ALLOWED_IND\",\n      \"value\": \"true\"\n    }\n  ]\n}"
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "List statuses",
 					"request": {
 						"url": "{{host}}/api/v1/relationshipStatuses",
@@ -799,6 +780,51 @@
 							"formdata": []
 						},
 						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"url": "{{host}}/api/v1/relationship",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"relationshipType\": \"UNIVERSAL_REPRESENTATIVE\",\n  \"subjectIdValue\": \"LINK_ID:MY_GOV:jennifermaxims_identity_1\",\n  \"delegate\": {\n    \"partyType\": \"INDIVIDUAL\",\n    \"givenName\": \"Bob\",\n    \"familyName\": \"Smith\",\n    \"sharedSecretTypeCode\": \"DATE_OF_BIRTH\",\n    \"sharedSecretValue\": \" \",\n    \"identityType\": \"INVITATION_CODE\"\n  },\n  \"startTimestamp\": \"2016-07-11\",\n  \"endTimestamp\": null,\n  \"attributes\": [\n    {\n      \"code\": \"DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND\",\n      \"value\": \"\"\n    }\n  ]\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Claim By Invitation Code",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/claim",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept By Invitation Code",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/accept",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						}
 					},
 					"response": []
 				}
