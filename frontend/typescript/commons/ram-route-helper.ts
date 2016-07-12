@@ -7,8 +7,15 @@ export class RAMRouteHelper {
     constructor(private router: Router) {
     }
 
-    public goToRelationshipsPage(idValue: string) {
-        this.router.navigate(['/relationships', encodeURIComponent(idValue)]);
+    public goToRelationshipsPage(idValue: string, page?: number) {
+        if (page) {
+            this.router.navigate(['/relationships',
+                encodeURIComponent(idValue)],
+                {queryParams: {page: page}}
+            );
+        } else {
+            this.router.navigate(['/relationships', encodeURIComponent(idValue)]);
+        }
     }
 
     public goToRelationshipAddPage(idValue: string) {
