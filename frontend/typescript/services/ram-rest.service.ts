@@ -103,9 +103,9 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public claimRelationshipByInvitationCode(invitationCode:string):Rx.Observable<IRelationship> {
+    public claimRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
         return this.http
-            .post(`/api/v1/relationship/invitationCode/${invitationCode}/claim`)
+            .post(`/api/v1/relationship/invitationCode/${invitationCode}/claim`, '')
             .map(this.extractData);
     }
 
