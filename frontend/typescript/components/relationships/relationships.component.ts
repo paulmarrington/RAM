@@ -88,7 +88,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
         // relationships
         this.subjectGroupsWithRelationships = [];
-        this.relationships$ = this.rest.searchRelationshipsByIdentity(this.idValue, this.page);
+        this.relationships$ = this.rest.searchRelationshipsByIdentity(this.idValue, this.filter.encode(), this.page);
         this.relationships$.subscribe((relationshipRefs) => {
             this._isLoading = false;
             for (const relationshipRef of relationshipRefs.list) {

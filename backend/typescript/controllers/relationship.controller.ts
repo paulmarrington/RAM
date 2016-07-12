@@ -5,6 +5,7 @@ import {
 } from './helpers';
 import {IRelationshipModel, RelationshipStatus} from '../models/relationship.model';
 import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO, Link} from '../../../commons/RamAPI';
+import {FilterParams} from '../../../commons/RamAPI2';
 import {PartyModel} from '../models/party.model';
 import {ProfileProvider} from '../models/profile.model';
 import {IdentityType} from '../models/identity.model';
@@ -152,6 +153,9 @@ export class RelationshipController {
                 notEmpty: true,
                 errorMessage: 'Identity Id is not valid'
             },
+            'filter': {
+                in: 'query'
+            },
             'page': {
                 in: 'query',
                 notEmpty: true,
@@ -167,6 +171,7 @@ export class RelationshipController {
                 }
             }
         };
+        const filterParams = FilterParams.decode(req.query.filter);
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.searchByIdentity(
                 req.params.identity_id,
