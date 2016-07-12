@@ -196,8 +196,8 @@ describe('RAM Relationship', () => {
             expect(instance.status).not.toBeNull();
             expect(instance.statusEnum()).toBe(RelationshipStatus.Active);
             expect(instance.endEventTimestamp).toBeFalsy();
-            expect(instance._subjectKeywords).not.toBeNull();
-            expect(instance._delegateKeywords).not.toBeNull();
+            expect(instance._subjectNickNameString).not.toBeNull();
+            expect(instance._delegateNickNameString).not.toBeNull();
 
             done();
 
@@ -227,8 +227,8 @@ describe('RAM Relationship', () => {
             expect(instance.status).not.toBeNull();
             expect(instance.statusEnum()).toBe(RelationshipStatus.Active);
             expect(instance.endEventTimestamp).not.toBeFalsy();
-            expect(instance._subjectKeywords).not.toBeNull();
-            expect(instance._delegateKeywords).not.toBeNull();
+            expect(instance._subjectNickNameString).not.toBeNull();
+            expect(instance._delegateNickNameString).not.toBeNull();
 
             done();
 
@@ -413,6 +413,23 @@ describe('RAM Relationship', () => {
         }
     });
 
+    it('searches with subject as party', async (done) => {
+        try {
+
+            const relationships = await RelationshipModel.searchByIdentity(subjectIdentity1.idValue,
+                null, null, null, null, null, null, 1, 10);
+            expect(relationships.totalCount).toBe(1);
+            expect(relationships.list.length).toBe(1);
+            expect(relationships.list[0].id).toBe(relationship1.id);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
     it('searches with delegate as party', async (done) => {
         try {
 
@@ -430,14 +447,30 @@ describe('RAM Relationship', () => {
         }
     });
 
-    it('searches with subject as party', async (done) => {
+    it('searches with subject as party with good filters', async (done) => {
         try {
 
             const relationships = await RelationshipModel.searchByIdentity(subjectIdentity1.idValue,
-                null, null, null, null, null, null, 1, 10);
+                PartyType.Individual.name, null, null, null, null, null, 1, 10);
             expect(relationships.totalCount).toBe(1);
             expect(relationships.list.length).toBe(1);
             expect(relationships.list[0].id).toBe(relationship1.id);
+
+            done();
+
+        } catch (e) {
+            fail('Because ' + e);
+            done();
+        }
+    });
+
+    it('searches with subject as party with bad filters', async (done) => {
+        try {
+
+            const relationships = await RelationshipModel.searchByIdentity(subjectIdentity1.idValue,
+                PartyType.ABN.name, null, null, null, null, null, 1, 10);
+            expect(relationships.totalCount).toBe(0);
+            expect(relationships.list.length).toBe(0);
 
             done();
 

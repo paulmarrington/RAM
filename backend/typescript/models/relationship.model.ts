@@ -79,11 +79,6 @@ const RelationshipSchema = RAMSchema({
         ref: 'Name',
         required: [true, 'Subject Nick Name is required']
     },
-    _subjectKeywords: {
-        type: String,
-        required: [true, 'Subject Keywords is required'],
-        trim: true
-    },
     delegate: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Party',
@@ -94,18 +89,13 @@ const RelationshipSchema = RAMSchema({
         ref: 'Name',
         required: [true, 'Delegate Nick Name is required']
     },
-    _delegateKeywords: {
-        type: String,
-        required: [true, 'Delegate Keywords is required'],
-        trim: true
-    },
     startTimestamp: {
         type: Date,
         required: [true, 'Start Timestamp is required']
     },
     endTimestamp: {
         type: Date,
-        set: function (value:String) {
+        set: function (value: String) {
             if (value) {
                 this.endEventTimestamp = new Date();
             }
@@ -127,17 +117,73 @@ const RelationshipSchema = RAMSchema({
     attributes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'RelationshipAttribute'
+    }],
+    _relationshipTypeCode: {
+        type: String,
+        required: [true, 'Relationship Type Code is required'],
+        trim: true
+    },
+    _subjectNickNameString: {
+        type: String,
+        required: [true, 'Subject Nick Name String is required'],
+        trim: true
+    },
+    _delegateNickNameString: {
+        type: String,
+        required: [true, 'Delegate NickName String is required'],
+        trim: true
+    },
+    _subjectPartyTypeCode: {
+        type: String,
+        required: [true, 'Subject Party Type Code is required'],
+        trim: true
+    },
+    _delegatePartyTypeCode: {
+        type: String,
+        required: [true, 'Delegate Party Type Code is required'],
+        trim: true
+    },
+    _subjectProfileProviderCodes: [{
+        type: String
+    }],
+    _delegateProfileProviderCodes: [{
+        type: String
     }]
 });
 
 RelationshipSchema.pre('validate', function (next:() => void) {
+    if (this.relationshipType) {
+        this._relationshipTypeCode = this.relationshipType.code;
+    }
     if (this.subjectNickName) {
-        this._subjectKeywords = this.subjectNickName._displayName;
+        this._subjectNickNameString = this.subjectNickName._displayName;
     }
     if (this.delegateNickName) {
-        this._delegateKeywords = this.delegateNickName._displayName;
+        this._delegateNickNameString = this.delegateNickName._displayName;
     }
-    next();
+    this._subjectPartyTypeCode = this.subject.partyType;
+    this._delegatePartyTypeCode = this.delegate.partyType;
+    const subjectPromise = IdentityModel.listByPartyId(this.subject.id)
+        .then((identities: IIdentity[]) => {
+            this._subjectProfileProviderCodes = [];
+            for (let identity of identities) {
+                this._subjectProfileProviderCodes.push(identity.profile.provider);
+            }
+        });
+    const delegatePromise = IdentityModel.listByPartyId(this.delegate.id)
+        .then((identities: IIdentity[]) => {
+            this._delegateProfileProviderCodes = [];
+            for (let identity of identities) {
+                this._delegateProfileProviderCodes.push(identity.profile.provider);
+            }
+        });
+    Promise.all([subjectPromise, delegatePromise])
+        .then(() => {
+            next();
+        })
+        .catch((err:Error) => {
+            next();
+        });
 });
 
 // interfaces .........................................................................................................
@@ -146,15 +192,20 @@ export interface IRelationship extends IRAMObject {
     relationshipType:IRelationshipType;
     subject:IParty;
     subjectNickName:IName;
-    _subjectKeywords:string;
     delegate:IParty;
     delegateNickName:IName;
-    _delegateKeywords:string;
     startTimestamp:Date;
     endTimestamp?:Date;
     endEventTimestamp?:Date;
     status:string;
     attributes:IRelationshipAttribute[];
+    _subjectNickNameString:string;
+    _delegateNickNameString:string;
+    _subjectPartyTypeCode:string;
+    _delegatePartyTypeCode:string;
+    _relationshipTypeCode:string;
+    _subjectProfileProviderCodes:string[];
+    _delegateProfileProviderCodes:string[];
     statusEnum():RelationshipStatus;
     toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
     toDTO():Promise<DTO>;
@@ -402,21 +453,32 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue: string,
         const pageSize: number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
             const party = await PartyModel.findByIdentityIdValue(identityIdValue);
+            const where = {
+                '$or': [
+                    {subject: party},
+                    {delegate: party}
+                ]
+            };
+            if (partyType) {
+                where['_delegatePartyTypeCode'] = partyType;
+            }
+            if (relationshipType) {
+                where['_relationshipTypeCode'] = relationshipType;
+            }
+            if (profileProvider) {
+                where['_delegateProfileProviderCodes'] = profileProvider;
+            }
+            if (status) {
+                where['status'] = status;
+            }
+            if (text) {
+                where['_delegateNickNameString'] = new RegExp(text, 'i');
+            }
             const count = await this.RelationshipModel
-                .count({
-                    '$or': [
-                        {subject: party},
-                        {delegate: party}
-                    ]
-                })
+                .count(where)
                 .exec();
             const list = await this.RelationshipModel
-                .find({
-                    '$or': [
-                        {subject: party},
-                        {delegate: party}
-                    ]
-                })
+                .find(where)
                 .deepPopulate([
                     'relationshipType',
                     'subject',
@@ -426,8 +488,8 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue: string,
                     'attributes.attributeName'
                 ])
                 .sort({
-                    '_subjectKeywords': 1,
-                    '_delegateKeywords': 1
+                    '_subjectNickNameString': !sort || sort === 'asc' ? 1 : -1,
+                    '_delegateNickNameString': !sort || sort === 'asc' ? 1 : -1
                 })
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)
