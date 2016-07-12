@@ -9,6 +9,7 @@ import {
     ILink,
     IHrefValue
 } from '../../../commons/RamAPI2';
+import {IRelationshipStatus} from '../../../commons/RamAPI2';
 
 @Injectable()
 export class RAMModelHelper {
@@ -61,19 +62,26 @@ export class RAMModelHelper {
     }
 
     public relationshipTypeLabel(relationshipTypeRefs: IHrefValue<IRelationshipType>[], relationship: IRelationship) {
-        let relationshipType = this.getRelationshipType(relationshipTypeRefs, relationship);
-        if (relationshipType) {
-            return relationshipType.shortDecodeText;
+        if (relationshipTypeRefs && relationship) {
+            let relationshipType = this.getRelationshipType(relationshipTypeRefs, relationship);
+            if (relationshipType) {
+                return relationshipType.shortDecodeText;
+            }
         }
         return '';
     }
 
+    public relationshipStatusLabel(relationshipStatusRefs: IHrefValue<IRelationshipStatus>[], name: string) {
+        const status = this.getRelationshipStatus(relationshipStatusRefs, name);
+        return status ? status.decodeText : '';
+    }
+
     public getDefaultIdentityResource(party: IParty): IHrefValue<IIdentity> {
         if (party && party.identities && party.identities.length > 0) {
-            for (const resource of party.identities) {
-                const identity = resource.value;
+            for (let ref of party.identities) {
+                const identity = ref.value;
                 if (identity.defaultInd) {
-                    return resource;
+                    return ref;
                 }
             }
         }
@@ -84,6 +92,15 @@ export class RAMModelHelper {
         let relationshipTypeHref = relationship.relationshipType.href;
         for (let ref of relationshipTypeRefs) {
             if (ref.href === relationshipTypeHref) {
+                return ref.value;
+            }
+        }
+        return null;
+    }
+
+    public getRelationshipStatus(relationshipStatusRefs: IHrefValue<IRelationshipStatus>[], name: string) {
+        for (let ref of relationshipStatusRefs) {
+            if (ref.value.name === name) {
                 return ref.value;
             }
         }

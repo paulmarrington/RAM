@@ -163,6 +163,12 @@ export class Party {
     }
 }
 
+export class PartyType {
+    constructor(public name:string,
+                public decodeText:string) {
+    }
+}
+
 export class Relationship {
     constructor(public _links:Link[],
                 public relationshipType:RelationshipType,
@@ -175,6 +181,12 @@ export class Relationship {
                 public endEventTimestamp:Date,
                 public status:string,
                 public attributes:RelationshipAttribute[]) {
+    }
+}
+
+export class RelationshipStatus {
+    constructor(public name:string,
+                public decodeText:string) {
     }
 }
 

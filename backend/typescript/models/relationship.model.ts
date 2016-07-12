@@ -9,6 +9,7 @@ import {
     Link,
     HrefValue,
     Relationship as DTO,
+    RelationshipStatus as RelationshipStatusDTO,
     RelationshipAttribute as RelationshipAttributeDTO,
     SearchResult
 } from '../../../commons/RamAPI';
@@ -30,11 +31,11 @@ const MAX_PAGE_SIZE = 10;
 
 export class RelationshipStatus extends RAMEnum {
 
-    public static Active = new RelationshipStatus('ACTIVE');
-    public static Cancelled = new RelationshipStatus('CANCELLED');
-    public static Deleted = new RelationshipStatus('DELETED');
-    public static Invalid = new RelationshipStatus('INVALID');
-    public static Pending = new RelationshipStatus('PENDING');
+    public static Active = new RelationshipStatus('ACTIVE', 'Active');
+    public static Cancelled = new RelationshipStatus('CANCELLED', 'Cancelled');
+    public static Deleted = new RelationshipStatus('DELETED', 'Deleted');
+    public static Invalid = new RelationshipStatus('INVALID', 'Invalid');
+    public static Pending = new RelationshipStatus('PENDING', 'Pending');
 
     protected static AllValues = [
         RelationshipStatus.Active,
@@ -44,8 +45,19 @@ export class RelationshipStatus extends RAMEnum {
         RelationshipStatus.Pending
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
+    }
+
+    public toHrefValue(includeValue:boolean): HrefValue<RelationshipStatusDTO> {
+        return new HrefValue(
+            '/api/v1/relationshipStatus/' + this.name,
+            includeValue ? this.toDTO() : undefined
+        );
+    }
+
+    public toDTO(): RelationshipStatusDTO {
+        return new RelationshipStatusDTO(this.name, this.decodeText);
     }
 }
 

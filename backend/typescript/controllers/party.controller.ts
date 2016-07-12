@@ -1,8 +1,8 @@
 import {Router, Request, Response} from 'express';
 import {security} from './security.middleware';
-import {sendResource, sendError, sendNotFoundError, validateReqSchema} from './helpers';
+import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
 import {Headers} from './headers';
-import {IPartyModel} from '../models/party.model';
+import {IPartyModel, PartyType} from '../models/party.model';
 
 export class PartyController {
 
@@ -34,6 +34,31 @@ export class PartyController {
             .then(sendNotFoundError(res));
     };
 
+    private findTypeByName = (req:Request, res:Response) => {
+        const schema = {
+            'name': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Name is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => PartyType.valueOf(req.params.name))
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
+    private listTypes = (req:Request, res:Response) => {
+        const schema = {
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => PartyType.values())
+            .then((results) => results ? results.map((model) => model.toHrefValue(true)) : null)
+            .then(sendList(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
     public assignRoutes = (router:Router) => {
 
         router.get('/v1/party/identity/me',
@@ -43,6 +68,12 @@ export class PartyController {
         router.get('/v1/party/identity/:idValue',
             security.isAuthenticated,
             this.findByIdentityIdValue);
+
+        router.get('/v1/partyType/:name',
+            this.findTypeByName);
+
+        router.get('/v1/partyTypes',
+            this.listTypes);
 
         return router;
 

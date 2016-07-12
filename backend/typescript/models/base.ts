@@ -67,7 +67,7 @@ export class RAMEnum {
         return null;
     }
 
-    constructor(public name:string) {
+    constructor(public name:string, public decodeText:string) {
     }
 }
 
