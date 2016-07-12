@@ -1,14 +1,12 @@
 import {Router, Request, Response} from 'express';
-import {security} from './security.middleware';
 import {sendResource, sendList, sendError, sendNotFoundError, validateReqSchema} from './helpers';
-import {Headers} from './headers';
 import {IProfileModel, ProfileProvider} from '../models/profile.model';
 
 export class ProfileController {
 
     constructor(private profileModel:IProfileModel) {
     }
-    
+
     private findProviderByName = (req:Request, res:Response) => {
         const schema = {
             'name': {

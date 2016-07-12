@@ -110,7 +110,11 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
     const subjectIdentity = await IdentityModel.findByIdValue(dto.subjectIdValue);
 
     // create the temp identity for the invitation code
-    const temporaryDelegateIdentity = await IdentityModel.createInvitationCodeIdentity(dto.delegate.givenName, dto.delegate.familyName, dto.delegate.sharedSecretValue);
+    const temporaryDelegateIdentity = await IdentityModel.createInvitationCodeIdentity(
+        dto.delegate.givenName,
+        dto.delegate.familyName,
+        dto.delegate.sharedSecretValue
+    );
 
     const attributes:IRelationshipAttribute[] = [];
 
