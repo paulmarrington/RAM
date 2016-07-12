@@ -175,6 +175,12 @@ export class RelationshipController {
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.searchByIdentity(
                 req.params.identity_id,
+                filterParams.get('partyType'),
+                filterParams.get('relationshipType'),
+                filterParams.get('linkIdScheme'),
+                filterParams.get('status'),
+                filterParams.get('text'),
+                filterParams.get('sort'),
                 parseInt(req.query.page),
                 req.query.pageSize ? parseInt(req.query.pageSize) : null)
             )

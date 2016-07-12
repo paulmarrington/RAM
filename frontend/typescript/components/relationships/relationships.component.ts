@@ -124,8 +124,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
             relationshipType: this.filter.get('relationshipType', '-'),
             linkIdScheme: this.filter.get('linkIdScheme', '-'),
             status: this.filter.get('status', '-'),
-            sort: this.filter.get('sort', '-'),
-            text: this.filter.get('text', '')
+            text: this.filter.get('text', ''),
+            sort: this.filter.get('sort', '-')
         });
 
     }
@@ -152,8 +152,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
             .add('relationshipType', this.form.controls['relationshipType'].value)
             .add('linkIdScheme', this.form.controls['linkIdScheme'].value)
             .add('status', this.form.controls['status'].value)
-            .add('sort', this.form.controls['sort'].value)
             .add('text', this.form.controls['text'].value)
+            .add('sort', this.form.controls['sort'].value)
             .encode();
         //console.log('Filter (encoded): ' + filterString);
         //console.log('Filter (decoded): ' + JSON.stringify(FilterParams.decode(filterString), null, 4));
