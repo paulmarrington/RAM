@@ -157,15 +157,20 @@ export interface INotifyDelegateDTO {
 }
 
 declare type FilterParamsData = {
-    [key: string]: Object;
+    [key: string]: string;
 };
 
 export class FilterParams {
 
     private data: FilterParamsData = {};
 
-    public add(key:string, value:Object) {
-        this.data[key] = value;
+    public get(key:string, defaultValue?:string):string {
+        const value = this.data[key];
+        return value ? value: defaultValue;
+    }
+
+    public add(key:string, value:Object):FilterParams {
+        this.data[key] = value ? value.toString() : null;
         return this;
     }
 
@@ -178,7 +183,7 @@ export class FilterParams {
                     if (filter.length > 0) {
                         filter += '&';
                     }
-                    filter += encodeURIComponent(key) + '=' + encodeURIComponent(value.toString());
+                    filter += encodeURIComponent(key) + '=' + encodeURIComponent(value);
                 }
             }
         }

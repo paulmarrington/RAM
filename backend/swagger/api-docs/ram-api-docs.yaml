@@ -302,27 +302,18 @@ paths:
         500:
           $ref: '#/responses/500'
 
-  /relationships/{subjectOrDelegate}/identity/{idValue}:
+  /relationships/identity/{idValue}:
     get:
       tags:
         - Business - Relationship
-      operationId: Relationship.searchBySubjectOrDelegate
-      summary: Search Relationships for a subject or delegate
-      description: Search Relationships for a subject or delegate
+      operationId: Relationship.searchByIdentity
+      summary: Search Relationships for an identity
+      description: Search Relationships for an identity
       parameters:
-        - $ref: "#/parameters/subjectOrDelegate"
         - $ref: "#/parameters/idValue"
         - name: filter
           in: query
-          description: Filtering - TODO
-          required: false
-          type: array
-          collectionFormat: multi
-          items:
-            type: string
-        - name: sort
-          in: query
-          description: Sorting - TODO
+          description: Filtering and Sorting
           required: false
           type: string
         - name: page

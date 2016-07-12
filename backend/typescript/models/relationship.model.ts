@@ -168,7 +168,14 @@ export interface IRelationshipModel extends mongoose.Model<IRelationship> {
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
     search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IRelationship>>;
-    searchByIdentity:(identityIdValue:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
+    searchByIdentity:(identityIdValue: string,
+                      partyType: string,
+                      relationshipType: string,
+                      profileProvider: string,
+                      status: string,
+                      text: string,
+                      sort: string,
+                      page: number, pageSize: number) => Promise<SearchResult<IRelationship>>;
     searchDistinctSubjectsBySubjectOrDelegateIdentity:(identityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IParty>>;
 }
@@ -382,9 +389,17 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
 // todo need to optional filters (term, party type, relationship type, status)
 // todo need to add sorting
 /* tslint:disable:max-func-body-length */
-RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:number, reqPageSize:number) => {
+RelationshipSchema.static('searchByIdentity', (identityIdValue: string,
+                                               partyType: string,
+                                               relationshipType: string,
+                                               profileProvider: string,
+                                               status: string,
+                                               text: string,
+                                               sort: string,
+                                               page: number,
+                                               reqPageSize: number) => {
     return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
-        const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
+        const pageSize: number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
             const party = await PartyModel.findByIdentityIdValue(identityIdValue);
             const count = await this.RelationshipModel

@@ -4,7 +4,8 @@ import {
     sendResource, sendList, sendSearchResult, sendError, sendNotFoundError, validateReqSchema, REGULAR_CHARS
 } from './helpers';
 import {IRelationshipModel, RelationshipStatus} from '../models/relationship.model';
-import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO, Link} from '../../../commons/RamAPI';
+import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
+import {FilterParams} from '../../../commons/RamAPI2';
 import {PartyModel} from '../models/party.model';
 import {ProfileProvider} from '../models/profile.model';
 import {IdentityType} from '../models/identity.model';
@@ -152,6 +153,9 @@ export class RelationshipController {
                 notEmpty: true,
                 errorMessage: 'Identity Id is not valid'
             },
+            'filter': {
+                in: 'query'
+            },
             'page': {
                 in: 'query',
                 notEmpty: true,
@@ -167,9 +171,16 @@ export class RelationshipController {
                 }
             }
         };
+        const filterParams = FilterParams.decode(req.query.filter);
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.searchByIdentity(
                 req.params.identity_id,
+                filterParams.get('partyType'),
+                filterParams.get('relationshipType'),
+                filterParams.get('profileProvider'),
+                filterParams.get('status'),
+                filterParams.get('text'),
+                filterParams.get('sort'),
                 parseInt(req.query.page),
                 req.query.pageSize ? parseInt(req.query.pageSize) : null)
             )
