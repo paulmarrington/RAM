@@ -81,7 +81,7 @@ export class IdentityInvitationCodeStatus extends RAMEnum {
 
     public static Claimed = new IdentityInvitationCodeStatus('CLAIMED', 'Claimed');
     public static Pending = new IdentityInvitationCodeStatus('PENDING', 'Pending');
-    public static Rejected = new IdentityInvitationCodeStatus('REJECTED', 'Rejected'); // TODO this state is not possible?
+    public static Rejected = new IdentityInvitationCodeStatus('REJECTED', 'Rejected');//TODO this state is not possible?
 
     protected static AllValues = [
         IdentityInvitationCodeStatus.Claimed,
@@ -436,8 +436,10 @@ IdentitySchema.static('search', (page:number, reqPageSize:number) => {
     });
 });
 
-IdentitySchema.static('createInvitationCodeIdentity', async(givenName:string, familyName:string, dateOfBirth:string):Promise<IIdentity> => {
-    return await this.IdentityModel.createFromDTO(
+IdentitySchema.static('createInvitationCodeIdentity',
+    async (givenName:string, familyName:string, dateOfBirth:string):Promise<IIdentity> => {
+
+        return await this.IdentityModel.createFromDTO(
         new CreateIdentityDTO(
             undefined, // TODO should this be a UUID?
             'INDIVIDUAL',
