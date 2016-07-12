@@ -27,8 +27,9 @@ export class RelationshipController {
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findByIdentifier(req.params.identifier))
             .then((model) => model ? model.toDTO(null) : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     private findByInvitationCode = async(req:Request, res:Response) => {
@@ -56,10 +57,7 @@ export class RelationshipController {
         const invitationCode = req.params.invitationCode;
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findByInvitationCode(invitationCode))
-            .then((model) => {
-                console.log('found relationship', model);
-                return model ? model.claimPendingInvitation(security.getAuthenticatedIdentity(res)) : null
-            })
+            .then((model) => model ? model.claimPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
             .then((model) => model ? model.toDTO(invitationCode) : null)
             .then(sendResource(res))
             .then(sendNotFoundError(res))
@@ -172,8 +170,6 @@ export class RelationshipController {
             .then(sendSearchResult(res))
             .then(sendNotFoundError(res))
             .catch((err) => {
-                console.log('err');
-                console.log(err);
                 sendError(res)(err);
             });
     };
