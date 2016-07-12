@@ -14,8 +14,8 @@ import {IIdentity} from '../../../../../commons/RamAPI2';
 
 export class PageHeaderComponent {
 
-    @Input() public tab: string;
     @Input() public identity: IIdentity;
+    @Input() public tab: string;
 
     constructor(private router: Router,
                 private modelHelper: RAMModelHelper,
