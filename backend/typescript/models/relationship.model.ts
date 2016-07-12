@@ -314,14 +314,31 @@ RelationshipSchema.method('claimPendingInvitation', async function (claimingDele
         const invitationIdentity = invitationIdentities[0];
 
         // check invitation code is valid
-        Assert.assertTrue(invitationIdentity.identityTypeEnum() === IdentityType.InvitationCode, 'Must be an invitation code to claim');
-        Assert.assertTrue(invitationIdentity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending, 'Invitation code must be pending');
-        Assert.assertTrue(invitationIdentity.invitationCodeExpiryTimestamp > new Date(), 'Invitation code has expired');
+        Assert.assertTrue(
+            invitationIdentity.identityTypeEnum() === IdentityType.InvitationCode,
+            'Must be an invitation code to claim'
+        );
+        Assert.assertTrue(
+            invitationIdentity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending,
+            'Invitation code must be pending'
+        );
+        Assert.assertTrue(
+            invitationIdentity.invitationCodeExpiryTimestamp > new Date(),
+            'Invitation code has expired'
+        );
 
         // check name
-        Assert.assertTrue(claimingDelegateIdentity.profile.name.givenName === invitationIdentity.profile.name.givenName, 'Identity does not match', `${claimingDelegateIdentity.profile.name.givenName} != ${invitationIdentity.profile.name.givenName}`);
+        Assert.assertTrue(
+            claimingDelegateIdentity.profile.name.givenName === invitationIdentity.profile.name.givenName,
+            'Identity does not match',
+            `${claimingDelegateIdentity.profile.name.givenName} != ${invitationIdentity.profile.name.givenName}`
+        );
 
-        Assert.assertTrue(claimingDelegateIdentity.profile.name.familyName === invitationIdentity.profile.name.familyName, 'Identity does not match', `${claimingDelegateIdentity.profile.name.familyName} != ${invitationIdentity.profile.name.familyName}`);
+        Assert.assertTrue(
+            claimingDelegateIdentity.profile.name.familyName === invitationIdentity.profile.name.familyName,
+            'Identity does not match',
+            `${claimingDelegateIdentity.profile.name.familyName} != ${invitationIdentity.profile.name.familyName}`
+        );
 
         // TODO not sure about this implementation
         // check date of birth IF it is recorded on the invitation
