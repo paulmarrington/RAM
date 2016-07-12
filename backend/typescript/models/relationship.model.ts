@@ -12,7 +12,7 @@ import {
     Relationship as DTO,
     RelationshipStatus as RelationshipStatusDTO,
     RelationshipAttribute as RelationshipAttributeDTO,
-    SearchResult, RelationshipType
+    SearchResult
 } from '../../../commons/RamAPI';
 import {logger} from '../logger';
 import {IdentityPublicIdentifierScheme} from './identity.model';
@@ -239,7 +239,13 @@ export interface IRelationship extends IRAMObject {
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
-    add:(relationshipType: IRelationshipType, subject: IParty, subjectNickName: IName, invitationCodeIdentity: IIdentity, startTimestamp: Date, endTimestamp: Date, attributes: IRelationshipAttribute[]) => Promise<IRelationship>;
+    add:(relationshipType: IRelationshipType,
+         subject: IParty,
+         subjectNickName: IName,
+         invitationCodeIdentity: IIdentity,
+         startTimestamp: Date,
+         endTimestamp: Date,
+         attributes: IRelationshipAttribute[]) => Promise<IRelationship>;
     findByIdentifier:(id:string) => Promise<IRelationship>;
     findByInvitationCode:(invitationCode:string) => Promise<IRelationship>;
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
@@ -272,7 +278,6 @@ RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
 });
 
 RelationshipSchema.method('toDTO', async function (invitationCode?:string) {
-console.log('toDTO on ', this);
     const links:Link[] = [];
     // links.push(new Link('self', `/api/v1/relationship/${this.id}`));
 
@@ -315,7 +320,10 @@ RelationshipSchema.method('claimPendingInvitation', async function (claimingDele
 
         // find identity to match user against
         const invitationIdentities = await IdentityModel.listByPartyId(this.delegate.id);
-        Assert.assertTrue(invitationIdentities.length === 1, 'A pending relationship should only have one delegate identity');
+        Assert.assertTrue(
+            invitationIdentities.length === 1,
+            'A pending relationship should only have one delegate identity'
+        );
 
         const invitationIdentity = invitationIdentities[0];
 
@@ -412,7 +420,10 @@ RelationshipSchema.method('notifyDelegate', async function (email: string, notif
     Assert.assertTrue(notifyingIdentity.party.id === this.subject.id, 'Not allowed');
     Assert.assertTrue(this.statusEnum() === RelationshipStatus.Pending, 'Unable to update relationship with delegate email');
     Assert.assertTrue(identity.identityTypeEnum() === IdentityType.InvitationCode, 'Unable to update relationship with delegate email');
-    Assert.assertTrue(identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending, 'Unable to update relationship with delegate email');
+    Assert.assertTrue(
+        identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending,
+        'Unable to update relationship with delegate email'
+    );
 
     identity.invitationCodeTemporaryEmailAddress = email;
     await identity.save();
@@ -432,8 +443,14 @@ RelationshipSchema.method('notifyDelegate', async function (email: string, notif
 
 // static methods .....................................................................................................
 
-RelationshipSchema.static('add', async (relationshipType: IRelationshipType, subject: IParty, subjectNickName: IName, invitationCodeIdentity: IIdentity, startTimestamp: Date, endTimestamp: Date, attributes: IRelationshipAttribute[]) => {
-    return await RelationshipModel.create({
+RelationshipSchema.static('add', async (relationshipType: IRelationshipType,
+                                        subject: IParty,
+                                        subjectNickName: IName,
+                                        invitationCodeIdentity: IIdentity,
+                                        startTimestamp: Date,
+                                        endTimestamp: Date,
+                                        attributes: IRelationshipAttribute[]) => {
+    return await this.RelationshipModel.create({
         relationshipType: relationshipType,
         subject: subject,
         subjectNickName: subjectNickName,

@@ -103,12 +103,14 @@ describe('RAM Relationship', () => {
                         party: delegateParty1
                     });
 
-                    relationship1 = await RelationshipModel.add(relationshipTypeCustom, 
-                        subjectParty1, 
-                        subjectNickName1, 
-                        delegateIdentity1, 
-                        new Date(), 
-                        null);
+                    relationship1 = await RelationshipModel.add(relationshipTypeCustom,
+                        subjectParty1,
+                        subjectNickName1,
+                        delegateIdentity1,
+                        new Date(),
+                        null,
+                        []
+                    );
 
                 } catch (e) {
                     fail(e);
@@ -294,7 +296,15 @@ describe('RAM Relationship', () => {
 
             const invitationCodeIdentity = await IdentityModel.createInvitationCodeIdentity('John', 'Delegate 1', '01/01/1999');
 
-            const relationshipToAccept = await RelationshipModel.add(relationshipTypeCustom, subjectParty1, subjectNickName1, invitationCodeIdentity, new Date(), new Date(2020, 12, 31));
+            const relationshipToAccept = await RelationshipModel.add(
+                relationshipTypeCustom,
+                subjectParty1,
+                subjectNickName1,
+                invitationCodeIdentity,
+                new Date(),
+                new Date(2020, 12, 31),
+                []
+            );
 
             const acceptingDelegateIdentity1 = await IdentityModel.create({
                 rawIdValue: 'accepting_delegate_identity_1',

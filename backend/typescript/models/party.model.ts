@@ -8,7 +8,7 @@ import {
     Identity as IdentityDTO,
     RelationshipAddDTO
 } from '../../../commons/RamAPI';
-import {RelationshipModel, RelationshipStatus, IRelationship} from './relationship.model';
+import {RelationshipModel, IRelationship} from './relationship.model';
 import {RelationshipTypeModel} from './relationshipType.model';
 import {RelationshipAttributeModel, IRelationshipAttribute} from './relationshipAttribute.model';
 import {RelationshipAttributeNameModel} from './relationshipAttributeName.model';
