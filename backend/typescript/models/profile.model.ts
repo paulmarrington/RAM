@@ -4,7 +4,8 @@ import {IName, NameModel} from './name.model';
 import {ISharedSecret, SharedSecretModel} from './sharedSecret.model';
 import {
     HrefValue,
-    Profile as DTO
+    Profile as DTO,
+    ProfileProvider as ProfileProviderDTO
 } from '../../../commons/RamAPI';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
@@ -37,6 +38,17 @@ export class ProfileProvider extends RAMEnum {
 
     constructor(public name:string, decodeText:string) {
         super(name, decodeText);
+    }
+
+    public toHrefValue(includeValue:boolean): HrefValue<ProfileProviderDTO> {
+        return new HrefValue(
+            '/api/v1/profileProvider/' + this.name,
+            includeValue ? this.toDTO() : undefined
+        );
+    }
+
+    public toDTO(): ProfileProviderDTO {
+        return new ProfileProviderDTO(this.name, this.decodeText);
     }
 }
 

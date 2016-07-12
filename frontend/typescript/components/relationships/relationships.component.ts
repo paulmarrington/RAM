@@ -15,6 +15,7 @@ import {
     ISearchResult,
     IParty,
     IPartyType,
+    IProfileProvider,
     IIdentity,
     IRelationship,
     IRelationshipType,
@@ -39,6 +40,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
     public partyTypeRefs: IHrefValue<IPartyType>[];
+    public profileProviderRefs: IHrefValue<IProfileProvider>[];
     public relationshipStatusRefs: IHrefValue<IRelationshipStatus>[];
     public relationshipTypeRefs: IHrefValue<IRelationshipType>[];
     public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
@@ -76,7 +78,12 @@ export class RelationshipsComponent extends AbstractPageComponent {
             this.partyTypeRefs = partyTypeRefs;
         });
 
-        // party types
+        // profile providers
+        this.rest.listProfileProviders().subscribe((profileProviderRefs) => {
+            this.profileProviderRefs = profileProviderRefs;
+        });
+
+        // relationship statuses
         this.rest.listRelationshipStatuses().subscribe((relationshipStatusRefs) => {
             this.relationshipStatusRefs = relationshipStatusRefs;
         });

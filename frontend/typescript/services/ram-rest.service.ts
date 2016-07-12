@@ -10,6 +10,7 @@ import {
     IIdentity,
     IParty,
     IPartyType,
+    IProfileProvider,
     IRelationshipAddDTO,
     IRelationship,
     IRelationshipType,
@@ -82,6 +83,12 @@ export class RAMRestService {
     public listPartyTypes(): Rx.Observable<IHrefValue<IPartyType>[]> {
         return this.http
             .get('/api/v1/partyTypes')
+            .map(this.extractData);
+    }
+
+    public listProfileProviders(): Rx.Observable<IHrefValue<IProfileProvider>[]> {
+        return this.http
+            .get('/api/v1/profileProviders')
             .map(this.extractData);
     }
 
