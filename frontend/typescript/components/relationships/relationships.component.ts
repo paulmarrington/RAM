@@ -1,7 +1,7 @@
 import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
-import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup} from '@angular/forms';
 
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../commons/page-header/page-header.component';
@@ -36,9 +36,9 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public identity$: Rx.Observable<IIdentity>;
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
-    public partyTypeRefs: IHrefValue<IPartyType>;
-    public relationshipStatusRefs: IHrefValue<IRelationshipStatus>;
-    public relationshipTypeRefs: IHrefValue<IRelationshipType>;
+    public partyTypeRefs: IHrefValue<IPartyType>[];
+    public relationshipStatusRefs: IHrefValue<IRelationshipStatus>[];
+    public relationshipTypeRefs: IHrefValue<IRelationshipType>[];
     public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
 
     public paginationDelegate: SearchResultPaginationDelegate;
@@ -147,14 +147,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
     }
 
     public search() {
-        // todo search
-        alert('TODO: Not yet implemented');
-        const partyType = this.form.controls['partyType'].value;
-        const relationshipType = this.form.controls['relationshipType'].value;
-        const linkIdScheme = this.form.controls['linkIdScheme'].value;
-        const status = this.form.controls['status'].value;
-        const sort = this.form.controls['sort'].value;
-        const text = this.form.controls['text'].value;
+        // todo
     }
 
     public goToRelationshipAddPage() {
