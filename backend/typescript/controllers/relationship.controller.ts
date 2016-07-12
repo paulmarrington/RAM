@@ -26,12 +26,13 @@ export class RelationshipController {
         };
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findByIdentifier(req.params.identifier))
-            .then((model) => model ? model.toDTO() : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then((model) => model ? model.toDTO(null) : null)
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
-    private findPendingByInvitationCodeInDateRange = async(req:Request, res:Response) => {
+    private findByInvitationCode = async(req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -40,10 +41,31 @@ export class RelationshipController {
         };
         const invitationCode = req.params.invitationCode;
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(invitationCode, new Date()))
+            .then((req:Request) => this.relationshipModel.findByInvitationCode(invitationCode))
             .then((model) => model ? model.toDTO(invitationCode) : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
+    };
+
+    private claimByInvitationCode = async(req:Request, res:Response) => {
+        const schema = {
+            'invitationCode': {
+                notEmpty: true,
+                errorMessage: 'Invitation Code is not valid'
+            }
+        };
+        const invitationCode = req.params.invitationCode;
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.findByInvitationCode(invitationCode))
+            .then((model) => model ? model.claimPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
+            .then((model) => model ? model.toDTO(invitationCode) : null)
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => {
+                console.log('err');
+                console.log(err);
+                sendError(res)(err);
+            });
     };
 
     private acceptByInvitationCode = async(req:Request, res:Response) => {
@@ -54,9 +76,13 @@ export class RelationshipController {
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
+            .then((req:Request) => this.relationshipModel.findByInvitationCode(req.params.invitationCode))
+            .then((model) => {
+                console.log('model ', model);
+                return model;
+            })
             .then((model) => model ? model.acceptPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
-            .then((model) => model ? model.toDTO() : null)
+            .then((model) => model ? model.toDTO(null) : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
@@ -69,8 +95,8 @@ export class RelationshipController {
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
-            .then((model) => model ? model.rejectPendingInvitation() : null)
+            .then((req:Request) => this.relationshipModel.findByInvitationCode(req.params.invitationCode))
+            .then((model) => model ? model.rejectPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
             .then((model) => model ? Promise.resolve({}) : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
@@ -95,7 +121,7 @@ export class RelationshipController {
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
             .then((model) => model ? model.notifyDelegate(req.body.email) : null)
-            .then((model) => model ? model.toDTO() : null)
+            .then((model) => model ? model.toDTO(null) : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
@@ -141,8 +167,11 @@ export class RelationshipController {
                 req.query.pageSize ? parseInt(req.query.pageSize) : null)
             )
             .then((results) => (results.map((model) => model.toHrefValue(true))))
-            .then(sendSearchResult(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendSearchResult(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => {
+                sendError(res)(err);
+            });
     };
 
     /* tslint:disable:max-func-body-length */
@@ -326,7 +355,7 @@ export class RelationshipController {
                 );
                 return subjectParty.addRelationship(relationshipAddDTO);
             })
-            .then((model) => model ? model.toDTO() : null)
+            .then((model) => model ? model.toDTO(null) : null)
             .then(sendResource(res), sendError(res))
             .then(sendNotFoundError(res));
     };
@@ -347,8 +376,7 @@ export class RelationshipController {
     };
 
     private listStatuses = (req:Request, res:Response) => {
-        const schema = {
-        };
+        const schema = {};
         validateReqSchema(req, schema)
             .then((req:Request) => RelationshipStatus.values())
             .then((results) => results ? results.map((model) => model.toHrefValue(true)) : null)
@@ -364,7 +392,11 @@ export class RelationshipController {
 
         router.get('/v1/relationship/invitationCode/:invitationCode',
             security.isAuthenticated,
-            this.findPendingByInvitationCodeInDateRange);
+            this.findByInvitationCode);
+
+        router.post('/v1/relationship/invitationCode/:invitationCode/claim',
+            security.isAuthenticated,
+            this.claimByInvitationCode);
 
         router.post('/v1/relationship/invitationCode/:invitationCode/accept',
             security.isAuthenticated,

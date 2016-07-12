@@ -43,6 +43,4 @@ export class RAMRouteHelper {
             encodeURIComponent(code)
         ]);
     }
-
 }
-

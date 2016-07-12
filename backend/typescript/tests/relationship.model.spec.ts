@@ -114,7 +114,7 @@ describe('RAM Relationship', () => {
                     });
 
                 } catch (e) {
-                    fail('Because ' + e);
+                    fail(e);
                     done();
                 }
 
@@ -135,7 +135,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -152,7 +152,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -172,7 +172,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -202,7 +202,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -233,13 +233,78 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
+            done();
+        }
+    });
+
+    it('claims pending invitation', async(done) => {
+
+        try {
+
+            const invitationCodeIdentity = await IdentityModel.createInvitationCodeIdentity(delegateProfile1.name.givenName, delegateProfile1.name.familyName, '01/01/1999');
+            const invitationCode = invitationCodeIdentity.rawIdValue;
+
+            const relationshipToClaim = await RelationshipModel.create({
+                relationshipType: relationshipTypeCustom,
+                subject: subjectParty1,
+                subjectNickName: subjectNickName1,
+                delegate: invitationCodeIdentity.party,
+                delegateNickName: invitationCodeIdentity.profile.name,
+                startTimestamp: new Date(),
+                endTimestamp: new Date(2020, 12, 31),
+                status: RelationshipStatus.Pending.name
+            });
+
+            const claimingDelegateIdentity1 = await IdentityModel.create({
+                rawIdValue: 'accepting_delegate_identity_1',
+                identityType: IdentityType.LinkId.name,
+                defaultInd: true,
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                profile: delegateProfile1,
+                party: delegateParty1
+            });
+
+            // relationship should be created with a PENDING invitation code delegate
+            const preClaimedDelegateParty = relationshipToClaim.delegate;
+            const preClaimedDelegateIdentity = (await IdentityModel.findByInvitationCode(invitationCode));
+            expect(preClaimedDelegateIdentity.invitationCodeStatusEnum()).toBe(IdentityInvitationCodeStatus.Pending);
+
+            // perform claim
+            await relationshipToClaim.claimPendingInvitation(claimingDelegateIdentity1);
+            const retrievedClaimedInstance = await RelationshipModel.findByIdentifier(relationshipToClaim.id);
+
+            // delegate should be updated to claimingDelegateIdentity1
+            expect(retrievedClaimedInstance.delegate.id).toBe(claimingDelegateIdentity1.party.id);
+
+            // invitation identity should be claimed
+            const postClaimedDelegateIdentity = (await IdentityModel.findByInvitationCode(invitationCode));
+            expect(postClaimedDelegateIdentity.invitationCodeStatusEnum()).toBe(IdentityInvitationCodeStatus.Claimed);
+            expect(postClaimedDelegateIdentity.invitationCodeClaimedTimestamp).not.toBeNull();
+
+            done();
+
+        } catch (e) {
+            fail(e);
             done();
         }
     });
 
     it('accepts pending invitation', async (done) => {
         try {
+
+            const invitationCodeIdentity = await IdentityModel.createInvitationCodeIdentity('John', 'Delegate 1', '01/01/1999');
+
+            const relationshipToAccept = await RelationshipModel.create({
+                relationshipType: relationshipTypeCustom,
+                subject: subjectParty1,
+                subjectNickName: subjectNickName1,
+                delegate: invitationCodeIdentity.party,
+                delegateNickName: invitationCodeIdentity.profile.name,
+                startTimestamp: new Date(),
+                endTimestamp: new Date(2020, 12, 31),
+                status: RelationshipStatus.Pending.name
+            });
 
             const acceptingDelegateIdentity1 = await IdentityModel.create({
                 rawIdValue: 'accepting_delegate_identity_1',
@@ -250,16 +315,14 @@ describe('RAM Relationship', () => {
                 party: delegateParty1
             });
 
-            const acceptedInstance = await relationship1.acceptPendingInvitation(acceptingDelegateIdentity1);
-            const retrievedAcceptedInstance = await RelationshipModel.findByIdentifier(relationship1.id);
+            await relationshipToAccept.claimPendingInvitation(acceptingDelegateIdentity1);
+            const acceptedInstance = await relationshipToAccept.acceptPendingInvitation(acceptingDelegateIdentity1);
+            const retrievedAcceptedInstance = await RelationshipModel.findByIdentifier(relationshipToAccept.id);
 
-            const retrievedClaimedDelegateIdentity = await IdentityModel.findByIdValue(delegateIdentity1.idValue);
             const retrievedAcceptedDelegateIdentity = await IdentityModel.findByIdValue(acceptingDelegateIdentity1.idValue);
 
-            expect(relationship1.statusEnum()).toBe(RelationshipStatus.Active);
-            expect(acceptedInstance.statusEnum()).toBe(relationship1.statusEnum());
-            expect(retrievedClaimedDelegateIdentity.invitationCodeStatusEnum()).toBe(IdentityInvitationCodeStatus.Claimed);
-            expect(retrievedClaimedDelegateIdentity.invitationCodeClaimedTimestamp).not.toBeNull();
+            expect(relationshipToAccept.statusEnum()).toBe(RelationshipStatus.Active);
+            expect(acceptedInstance.statusEnum()).toBe(relationshipToAccept.statusEnum());
             expect(acceptedInstance.delegate.id).toBe(retrievedAcceptedDelegateIdentity.party.id);
             expect(retrievedAcceptedInstance.delegate.id).toBe(retrievedAcceptedDelegateIdentity.party.id);
             expect(retrievedAcceptedInstance.id).toBe(acceptedInstance.id);
@@ -267,7 +330,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -285,7 +348,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -318,19 +381,41 @@ describe('RAM Relationship', () => {
     it('rejects pending invitation', async (done) => {
         try {
 
-            await relationship1.rejectPendingInvitation();
+            const invitationCodeIdentity = await IdentityModel.createInvitationCodeIdentity('John', 'Delegate 1', '01/01/1999');
 
-            const retrievedInstance = await RelationshipModel.findByIdentifier(relationship1.id);
-            const retrievedDelegateIdentity = await IdentityModel.findByIdValue(delegateIdentity1.idValue);
+            const relationshipToReject = await RelationshipModel.create({
+                relationshipType: relationshipTypeCustom,
+                subject: subjectParty1,
+                subjectNickName: subjectNickName1,
+                delegate: invitationCodeIdentity.party,
+                delegateNickName: invitationCodeIdentity.profile.name,
+                startTimestamp: new Date(),
+                endTimestamp: new Date(2020, 12, 31),
+                status: RelationshipStatus.Pending.name
+            });
 
-            expect(relationship1.statusEnum()).toBe(RelationshipStatus.Invalid);
-            expect(retrievedInstance.statusEnum()).toBe(relationship1.statusEnum());
-            expect(retrievedDelegateIdentity.invitationCodeStatusEnum()).toBe(IdentityInvitationCodeStatus.Rejected);
+            const acceptingDelegateIdentity1 = await IdentityModel.create({
+                rawIdValue: 'accepting_delegate_identity_1',
+                identityType: IdentityType.LinkId.name,
+                defaultInd: true,
+                linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                profile: delegateProfile1,
+                party: delegateParty1
+            });
+
+            await relationshipToReject.claimPendingInvitation(acceptingDelegateIdentity1);
+
+            await relationshipToReject.rejectPendingInvitation(acceptingDelegateIdentity1);
+
+            const retrievedInstance = await RelationshipModel.findByIdentifier(relationshipToReject.id);
+
+            expect(relationshipToReject.statusEnum()).toBe(RelationshipStatus.Invalid);
+            expect(retrievedInstance.statusEnum()).toBe(relationshipToReject.statusEnum());
 
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -338,10 +423,10 @@ describe('RAM Relationship', () => {
     it('fails reject non-pending invitation', async (done) => {
         try {
 
-            await relationship1.rejectPendingInvitation();
+            await relationship1.rejectPendingInvitation(delegateIdentity1);
             expect(relationship1.statusEnum()).toBe(RelationshipStatus.Invalid);
 
-            await relationship1.rejectPendingInvitation();
+            await relationship1.rejectPendingInvitation(delegateIdentity1);
             fail('should not have been able to reject a non-pending relationship');
 
             done();
@@ -362,7 +447,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -377,7 +462,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -393,7 +478,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -408,7 +493,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -442,7 +527,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -475,7 +560,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
@@ -518,7 +603,7 @@ describe('RAM Relationship', () => {
             done();
 
         } catch (e) {
-            fail('Because ' + e);
+            fail(e);
             done();
         }
     });
