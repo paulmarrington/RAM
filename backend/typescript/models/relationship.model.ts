@@ -471,7 +471,10 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue: string,
                 where['$and'].push({'status': status});
             }
             if (text) {
-                where['$and'].push({'_delegateNickNameString': new RegExp(text, 'i')});
+                where['$and'].push({ '$or': [
+                        {'_subjectNickNameString': new RegExp(text, 'i')},
+                        {'_delegateNickNameString': new RegExp(text, 'i')}]
+                });
             }
             const count = await this.RelationshipModel
                 .count(where)
