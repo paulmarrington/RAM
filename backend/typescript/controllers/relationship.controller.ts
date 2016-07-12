@@ -43,8 +43,9 @@ export class RelationshipController {
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findByInvitationCode(invitationCode))
             .then((model) => model ? model.toDTO(invitationCode) : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     private claimByInvitationCode = async(req:Request, res:Response) => {
@@ -61,9 +62,7 @@ export class RelationshipController {
             .then((model) => model ? model.toDTO(invitationCode) : null)
             .then(sendResource(res))
             .then(sendNotFoundError(res))
-            .catch((err) => {
-                sendError(res)(err);
-            });
+            .catch((err) => sendError(res)(err));
     };
 
     private acceptByInvitationCode = async(req:Request, res:Response) => {
@@ -83,9 +82,7 @@ export class RelationshipController {
             .then((model) => model ? model.toDTO(null) : null)
             .then(sendResource(res))
             .then(sendNotFoundError(res))
-            .catch((err) => {
-                sendError(res)(err);
-            });
+            .catch((err) => sendError(res)(err));
     };
 
     private rejectByInvitationCode = async(req:Request, res:Response) => {
@@ -101,9 +98,7 @@ export class RelationshipController {
             .then((model) => model ? Promise.resolve({}) : null)
             .then(sendResource(res))
             .then(sendNotFoundError(res))
-            .catch((err) => {
-                sendError(res)(err);
-            });
+            .catch((err) => sendError(res)(err));
     };
 
     private notifyDelegateByInvitationCode = async(req:Request, res:Response) => {
@@ -128,9 +123,7 @@ export class RelationshipController {
             .then((model) => model ? model.toDTO(null) : null)
             .then(sendResource(res))
             .then(sendNotFoundError(res))
-            .catch((err) => {
-                sendError(res)(err);
-            });
+            .catch((err) => sendError(res)(err));
     };
 
     /* tslint:disable:max-func-body-length */
@@ -176,9 +169,7 @@ export class RelationshipController {
             .then((results) => (results.map((model) => model.toHrefValue(true))))
             .then(sendSearchResult(res))
             .then(sendNotFoundError(res))
-            .catch((err) => {
-                sendError(res)(err);
-            });
+            .catch((err) => sendError(res)(err));
     };
 
     /* tslint:disable:max-func-body-length */
@@ -221,8 +212,9 @@ export class RelationshipController {
                 req.query.pageSize ? parseInt(req.query.pageSize) : null)
             )
             .then((results) => (results.map((model) => model.toHrefValue(true))))
-            .then(sendSearchResult(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendSearchResult(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
     //
     // private searchDistinctSubjectsBySubjectOrDelegateIdentity = async (req:Request, res:Response) => {
@@ -363,8 +355,9 @@ export class RelationshipController {
                 return subjectParty.addRelationship(relationshipAddDTO);
             })
             .then((model) => model ? model.toDTO(null) : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     private findStatusByName = (req:Request, res:Response) => {
@@ -378,8 +371,9 @@ export class RelationshipController {
         validateReqSchema(req, schema)
             .then((req:Request) => RelationshipStatus.valueOf(req.params.name))
             .then((model) => model ? model.toDTO() : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     private listStatuses = (req:Request, res:Response) => {
@@ -387,8 +381,9 @@ export class RelationshipController {
         validateReqSchema(req, schema)
             .then((req:Request) => RelationshipStatus.values())
             .then((results) => results ? results.map((model) => model.toHrefValue(true)) : null)
-            .then(sendList(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendList(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     public assignRoutes = (router:Router) => {
