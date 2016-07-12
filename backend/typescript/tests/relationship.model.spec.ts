@@ -103,15 +103,12 @@ describe('RAM Relationship', () => {
                         party: delegateParty1
                     });
 
-                    relationship1 = await RelationshipModel.create({
-                        relationshipType: relationshipTypeCustom,
-                        subject: subjectParty1,
-                        subjectNickName: subjectNickName1,
-                        delegate: delegateParty1,
-                        delegateNickName: delegateNickName1,
-                        startTimestamp: new Date(),
-                        status: RelationshipStatus.Pending.name
-                    });
+                    relationship1 = await RelationshipModel.add(relationshipTypeCustom, 
+                        subjectParty1, 
+                        subjectNickName1, 
+                        delegateIdentity1, 
+                        new Date(), 
+                        null);
 
                 } catch (e) {
                     fail(e);
@@ -297,16 +294,7 @@ describe('RAM Relationship', () => {
 
             const invitationCodeIdentity = await IdentityModel.createInvitationCodeIdentity('John', 'Delegate 1', '01/01/1999');
 
-            const relationshipToAccept = await RelationshipModel.create({
-                relationshipType: relationshipTypeCustom,
-                subject: subjectParty1,
-                subjectNickName: subjectNickName1,
-                delegate: invitationCodeIdentity.party,
-                delegateNickName: invitationCodeIdentity.profile.name,
-                startTimestamp: new Date(),
-                endTimestamp: new Date(2020, 12, 31),
-                status: RelationshipStatus.Pending.name
-            });
+            const relationshipToAccept = await RelationshipModel.add(relationshipTypeCustom, subjectParty1, subjectNickName1, invitationCodeIdentity, new Date(), new Date(2020, 12, 31));
 
             const acceptingDelegateIdentity1 = await IdentityModel.create({
                 rawIdValue: 'accepting_delegate_identity_1',
@@ -341,7 +329,7 @@ describe('RAM Relationship', () => {
         try {
 
             const email = 'test@example.com';
-            await relationship1.notifyDelegate(email);
+            await relationship1.notifyDelegate(email, subjectIdentity1);
 
             const retrievedDelegateIdentity = await IdentityModel.findByIdValue(delegateIdentity1.idValue);
 
