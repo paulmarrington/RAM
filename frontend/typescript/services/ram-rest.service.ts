@@ -128,6 +128,12 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
+    public rejectPendingRelationshipByInvitationCode(relationship:IRelationship):Rx.Observable<IRelationship> {
+        return this.http
+            .post(this.modelHelper.linkByType('reject', relationship._links).href, '')
+            .map(this.extractData);
+    }
+
     public notifyDelegateByInvitationCode(invitationCode: string, notification: INotifyDelegateDTO): Rx.Observable<IRelationship> {
         return this.http
             .post(`/api/v1/relationship/invitationCode/${invitationCode}/notifyDelegate`, JSON.stringify(notification), {
@@ -149,5 +155,4 @@ export class RAMRestService {
         headers.append('Content-Type', 'application/json');
         return headers;
     }
-
 }
