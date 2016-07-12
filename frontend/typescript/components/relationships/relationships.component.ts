@@ -122,7 +122,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
         this.form = this._fb.group({
             partyType: this.filter.get('partyType', '-'),
             relationshipType: this.filter.get('relationshipType', '-'),
-            linkIdScheme: this.filter.get('linkIdScheme', '-'),
+            profileProvider: this.filter.get('profileProvider', '-'),
             status: this.filter.get('status', '-'),
             text: this.filter.get('text', ''),
             sort: this.filter.get('sort', '-')
@@ -150,7 +150,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
         const filterString = new FilterParams()
             .add('partyType', this.form.controls['partyType'].value)
             .add('relationshipType', this.form.controls['relationshipType'].value)
-            .add('linkIdScheme', this.form.controls['linkIdScheme'].value)
+            .add('profileProvider', this.form.controls['profileProvider'].value)
             .add('status', this.form.controls['status'].value)
             .add('text', this.form.controls['text'].value)
             .add('sort', this.form.controls['sort'].value)

@@ -177,7 +177,7 @@ export class RelationshipController {
                 req.params.identity_id,
                 filterParams.get('partyType'),
                 filterParams.get('relationshipType'),
-                filterParams.get('linkIdScheme'),
+                filterParams.get('profileProvider'),
                 filterParams.get('status'),
                 filterParams.get('text'),
                 filterParams.get('sort'),
