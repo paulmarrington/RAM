@@ -98,6 +98,11 @@ export interface IProfile {
     sharedSecrets: ISharedSecret[];
 }
 
+export interface IProfileProvider {
+    name: string;
+    decodeText: string;
+}
+
 export interface IIdentity {
     idValue: string;
     rawIdValue: string;

@@ -138,6 +138,12 @@ export class Profile {
     }
 }
 
+export class ProfileProvider {
+    constructor(public name:string,
+                public decodeText:string) {
+    }
+}
+
 export class Identity {
     constructor(public idValue:string,
                 public rawIdValue:string,

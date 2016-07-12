@@ -29,8 +29,9 @@
                         <div class="form-group">
                             <select class="form-control" [formControl]="form.controls['profileProvider']">
                                 <option value="-">Login Type</option>
-                                <option value="AUSKEY">AUSKEY</option>
-                                <option value="MY_GOV">MY_GOV</option>
+                                <template ngFor let-item="$implicit" [ngForOf]="profileProviderRefs">
+                                    <option value="{{item.value.name}}">{{item.value.decodeText}}</option>
+                                </template>
                             </select>
                         </div>
                         &nbsp;
