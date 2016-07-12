@@ -64,14 +64,16 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public searchRelationshipsByIdentity(idValue:string, filter:string, page:number):Rx.Observable<ISearchResult<IHrefValue<IRelationship>>> {
+    public searchRelationshipsByIdentity(idValue: string,
+                                         filter: string,
+                                         page: number): Rx.Observable<ISearchResult<IHrefValue<IRelationship>>> {
         return this.http
             .get(`/api/v1/relationships/identity/${idValue}?filter=${filter}&page=${page}`)
             .map(this.extractData);
     }
 
-    public searchDistinctSubjectsBySubjectOrDelegateIdentity(idValue:string,
-                                                             page:number):Rx.Observable<ISearchResult<IHrefValue<IParty>>> {
+    public searchDistinctSubjectsBySubjectOrDelegateIdentity(idValue: string,
+                                                             page: number): Rx.Observable<ISearchResult<IHrefValue<IParty>>> {
         return this.http
             .get(`/api/v1/relationships/identity/${idValue}/subjects?page=${page}`)
             .map(this.extractData);
@@ -113,7 +115,7 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public notifyDelegateByInvitationCode(invitationCode: string, notification:INotifyDelegateDTO): Rx.Observable<IRelationship> {
+    public notifyDelegateByInvitationCode(invitationCode: string, notification: INotifyDelegateDTO): Rx.Observable<IRelationship> {
         return this.http
             .post(`/api/v1/relationship/invitationCode/${invitationCode}/notifyDelegate`, JSON.stringify(notification), {
                 headers: this.headersForJson()

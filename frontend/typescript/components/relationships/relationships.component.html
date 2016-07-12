@@ -2,7 +2,7 @@
 
     <page-header [identity]="identity$|async" tab="MANAGE_AUTHORISATIONS"></page-header>
 
-    <div [formGroup]=form>
+    <form [formGroup]=form>
         <div class="panel panel-default container-fluid">
             <div class="panel-heading row">
                 <div class="form-group col-md-8">
@@ -50,7 +50,7 @@
                         <div class="form-group">
                             <select class="form-control" [formControl]="form.controls['sort']">
                                 <option value="-">Sort</option>
-                                <option value="AUSKEY">Name (Alphabetical)</option>
+                                <option value="ASC">Name (Alphabetical)</option>
                             </select>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <h4><b>&nbsp;</b></h4>
-                    <a (click)="search()" class="btn btn-primary">Search Authorisations</a>
+                    <button (click)="search()" class="btn btn-primary">Search Authorisations</button>
                 </div>
             </div>
         </div>
@@ -133,4 +133,4 @@
         </div>
     </div>
 
-</div>
+</form>
