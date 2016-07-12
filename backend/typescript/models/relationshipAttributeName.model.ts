@@ -7,14 +7,14 @@ import {HrefValue, RelationshipAttributeName as DTO} from '../../../commons/RamA
 // see https://github.com/atogov/RAM/wiki/Relationship-Attribute-Types
 export class RelationshipAttributeNameDomain extends RAMEnum {
 
-    public static Null = new RelationshipAttributeNameDomain('NULL');
-    public static Boolean = new RelationshipAttributeNameDomain('BOOLEAN');
-    public static Number = new RelationshipAttributeNameDomain('NUMBER');
-    public static String = new RelationshipAttributeNameDomain('STRING');
-    public static Date = new RelationshipAttributeNameDomain('DATE');
-    public static Markdown = new RelationshipAttributeNameDomain('MARKDOWN');
-    public static SelectSingle = new RelationshipAttributeNameDomain('SELECT_SINGLE');
-    public static SelectMulti = new RelationshipAttributeNameDomain('SELECT_MULTI');
+    public static Null = new RelationshipAttributeNameDomain('NULL', 'NULL');
+    public static Boolean = new RelationshipAttributeNameDomain('BOOLEAN', 'BOOLEAN');
+    public static Number = new RelationshipAttributeNameDomain('NUMBER', 'NUMBER');
+    public static String = new RelationshipAttributeNameDomain('STRING', 'STRING');
+    public static Date = new RelationshipAttributeNameDomain('DATE', 'DATE');
+    public static Markdown = new RelationshipAttributeNameDomain('MARKDOWN', 'MARKDOWN');
+    public static SelectSingle = new RelationshipAttributeNameDomain('SELECT_SINGLE', 'SELECT_SINGLE');
+    public static SelectMulti = new RelationshipAttributeNameDomain('SELECT_MULTI', 'SELECT_MULTI');
 
     protected static AllValues = [
         RelationshipAttributeNameDomain.Null,
@@ -27,8 +27,8 @@ export class RelationshipAttributeNameDomain extends RAMEnum {
         RelationshipAttributeNameDomain.SelectMulti
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
     }
 }
 
