@@ -454,25 +454,24 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue: string,
         try {
             const party = await PartyModel.findByIdentityIdValue(identityIdValue);
             const where = {
-                '$or': [
-                    {subject: party},
-                    {delegate: party}
+                '$and': [
+                    {'$or': [{subject: party}, {delegate: party}]}
                 ]
             };
             if (partyType) {
-                where['_delegatePartyTypeCode'] = partyType;
+                where['$and'].push({'_delegatePartyTypeCode': partyType});
             }
             if (relationshipType) {
-                where['_relationshipTypeCode'] = relationshipType;
+                where['$and'].push({'_relationshipTypeCode': relationshipType});
             }
             if (profileProvider) {
-                where['_delegateProfileProviderCodes'] = profileProvider;
+                where['$and'].push({'_delegateProfileProviderCodes': profileProvider});
             }
             if (status) {
-                where['status'] = status;
+                where['$and'].push({'status': status});
             }
             if (text) {
-                where['_delegateNickNameString'] = new RegExp(text, 'i');
+                where['$and'].push({'_delegateNickNameString': new RegExp(text, 'i')});
             }
             const count = await this.RelationshipModel
                 .count(where)
