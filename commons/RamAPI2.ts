@@ -28,6 +28,11 @@ export interface IParty {
     identities: Array<IHrefValue<IIdentity>>;
 }
 
+export interface IPartyType {
+    name: string;
+    decodeText: string;
+}
+
 export interface IName {
     givenName?: string;
     familyName?: string;
@@ -47,6 +52,11 @@ export interface IRelationship {
     endEventTimestamp?: string,
     status: string;
     attributes: IRelationshipAttribute[];
+}
+
+export interface IRelationshipStatus {
+    name: string;
+    decodeText: string;
 }
 
 export interface RelationshipSearchDTO {

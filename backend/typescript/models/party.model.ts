@@ -4,6 +4,7 @@ import {IIdentity, IdentityModel} from './identity.model';
 import {
     HrefValue,
     Party as DTO,
+    PartyType as PartyTypeDTO,
     Identity as IdentityDTO,
     RelationshipAddDTO
 } from '../../../commons/RamAPI';
@@ -16,16 +17,27 @@ import {RelationshipAttributeNameModel} from './relationshipAttributeName.model'
 
 export class PartyType extends RAMEnum {
 
-    public static ABN = new PartyType('ABN');
-    public static Individual = new PartyType('INDIVIDUAL');
+    public static ABN = new PartyType('ABN', 'ABN');
+    public static Individual = new PartyType('INDIVIDUAL', 'Individual');
 
     protected static AllValues = [
         PartyType.ABN,
         PartyType.Individual,
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
+    }
+
+    public toHrefValue(includeValue:boolean): HrefValue<PartyTypeDTO> {
+        return new HrefValue(
+            '/api/v1/partyType/' + this.name,
+            includeValue ? this.toDTO() : undefined
+        );
+    }
+
+    public toDTO(): PartyTypeDTO {
+        return new PartyTypeDTO(this.name, this.decodeText);
     }
 }
 

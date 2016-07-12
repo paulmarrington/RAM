@@ -9,9 +9,11 @@ import {
     IHrefValue,
     IIdentity,
     IParty,
+    IPartyType,
     IRelationshipAddDTO,
     IRelationship,
     IRelationshipType,
+    IRelationshipStatus,
     INotifyDelegateDTO
 } from '../../../commons/RamAPI2';
 
@@ -56,6 +58,12 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
+    public listRelationshipStatuses(): Rx.Observable<IHrefValue<IRelationshipStatus>[]> {
+        return this.http
+            .get('/api/v1/relationshipStatuses')
+            .map(this.extractData);
+    }
+
     public searchRelationshipsByIdentity(idValue:string, page:number):Rx.Observable<ISearchResult<IHrefValue<IRelationship>>> {
         return this.http
             .get(`/api/v1/relationships/identity/${idValue}?page=${page}`)
@@ -66,6 +74,12 @@ export class RAMRestService {
                                                              page:number):Rx.Observable<ISearchResult<IHrefValue<IParty>>> {
         return this.http
             .get(`/api/v1/relationships/identity/${idValue}/subjects?page=${page}`)
+            .map(this.extractData);
+    }
+
+    public listPartyTypes(): Rx.Observable<IHrefValue<IPartyType>[]> {
+        return this.http
+            .get('/api/v1/partyTypes')
             .map(this.extractData);
     }
 

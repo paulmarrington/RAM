@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "d747f121-3515-3618-2824-10f7b11a73c2",
+		"_postman_id": "ec9d18dc-297b-4ffa-be8a-ae7ac28c7cc1",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -531,6 +531,47 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "List types",
+					"request": {
+						"url": "{{host}}/api/v1/partyTypes",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get type (INDIVIDUAL)",
+					"request": {
+						"url": "{{host}}/api/v1/partyType/INDIVIDUAL",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},
@@ -644,9 +685,9 @@
 					"response": []
 				},
 				{
-					"name": "Get By Invitation Code",
+					"name": "Get By Invitation Code (jEVYNX)",
 					"request": {
-						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}",
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX",
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -657,9 +698,9 @@
 					"response": []
 				},
 				{
-					"name": "Accept By Invitation Code",
+					"name": "Accept By Invitation Code (jEVYNX)",
 					"request": {
-						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/accept",
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/accept",
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -670,9 +711,9 @@
 					"response": []
 				},
 				{
-					"name": "Notify Delegate By Invitation Code",
+					"name": "Notify Delegate By Invitation Code (jEVYNX)",
 					"request": {
-						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/notifyDelegate",
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/notifyDelegate",
 						"method": "POST",
 						"header": [
 							{
@@ -689,9 +730,9 @@
 					"response": []
 				},
 				{
-					"name": "Reject By Invitation Code",
+					"name": "Reject By Invitation Code (jEVYNX)",
 					"request": {
-						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/reject",
+						"url": "{{host}}/api/v1/relationship/invitationCode/jEVYNX/reject",
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -717,6 +758,47 @@
 							"mode": "raw",
 							"raw": "{\n  \"relationshipType\": \"CUSTOM_REPRESENTATIVE\",\n  \"subject\": \"PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1\",\n  \"delegate\": {\n    \"partyType\": \"INDIVIDUAL\",\n    \"givenName\": \"a\",\n    \"familyName\": \"b\",\n    \"unstructuredName\": \"\",\n    \"sharedSecret\": {\n      \"code\": \"DATE_OF_BIRTH\",\n      \"value\": \"2016-06-15\"\n    }\n  },\n  \"startTimestamp\": \"2016-06-15T03:49:06.682Z\",\n  \"endTimestamp\": \"2017-06-15T03:49:06.682Z\",\n  \"attributes\": [\n    {\n      \"code\": \"PERMISSION_CUSTOMISATION_ALLOWED_IND\",\n      \"value\": \"true\"\n    }\n  ]\n}"
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "List statuses",
+					"request": {
+						"url": "{{host}}/api/v1/relationshipStatuses",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get status (ACTIVE)",
+					"request": {
+						"url": "{{host}}/api/v1/relationshipStatus/ACTIVE",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
 					},
 					"response": []
 				}

@@ -1,9 +1,9 @@
 import {Router, Request, Response} from 'express';
 import {security} from './security.middleware';
 import {
-    sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult, REGULAR_CHARS
+    sendResource, sendList, sendSearchResult, sendError, sendNotFoundError, validateReqSchema, REGULAR_CHARS
 } from './helpers';
-import {IRelationshipModel} from '../models/relationship.model';
+import {IRelationshipModel, RelationshipStatus} from '../models/relationship.model';
 import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO, Link} from '../../../commons/RamAPI';
 import {PartyModel} from '../models/party.model';
 import {ProfileProvider} from '../models/profile.model';
@@ -320,6 +320,31 @@ export class RelationshipController {
             .then(sendNotFoundError(res));
     };
 
+    private findStatusByName = (req:Request, res:Response) => {
+        const schema = {
+            'name': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Name is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => RelationshipStatus.valueOf(req.params.name))
+            .then((model) => model ? model.toDTO() : null)
+            .then(sendResource(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
+    private listStatuses = (req:Request, res:Response) => {
+        const schema = {
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => RelationshipStatus.values())
+            .then((results) => results ? results.map((model) => model.toHrefValue(true)) : null)
+            .then(sendList(res), sendError(res))
+            .then(sendNotFoundError(res));
+    };
+
     public assignRoutes = (router:Router) => {
 
         router.get('/v1/relationship/:identifier',
@@ -357,6 +382,12 @@ export class RelationshipController {
         router.post('/v1/relationship',
             security.isAuthenticated,
             this.create);
+
+        router.get('/v1/relationshipStatus/:name',
+            this.findStatusByName);
+
+        router.get('/v1/relationshipStatuses',
+            this.listStatuses);
 
         return router;
 
