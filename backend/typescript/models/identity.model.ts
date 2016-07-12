@@ -413,7 +413,7 @@ IdentitySchema.static('search', (page:number, reqPageSize:number) => {
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IIdentity>(count, pageSize, list));
+            resolve(new SearchResult<IIdentity>(page, count, pageSize, list));
         } catch (e) {
             reject(e);
         }

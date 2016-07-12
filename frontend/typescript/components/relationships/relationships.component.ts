@@ -1,73 +1,110 @@
-import {OnInit, OnDestroy, Component} from '@angular/core';
-import {RelationshipsTableComponent} from '../relationships-table/relationships-table.component';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ROUTER_DIRECTIVES} from '@angular/router';
 import Rx from 'rxjs/Rx';
-import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
+
+import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
+import {PageHeaderComponent} from '../commons/page-header/page-header.component';
+import {SearchResultPaginationComponent, SearchResultPaginationDelegate}
+    from '../commons/search-result-pagination/search-result-pagination.component';
 import {RAMRestService} from '../../services/ram-rest.service';
-import {RAMIdentityService} from '../../services/ram-identity.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
+
 import {
     ISearchResult,
-    IName,
     IParty,
+    IIdentity,
     IRelationship,
     IRelationshipType,
     IHrefValue
 } from '../../../../commons/RamAPI2';
 
 @Component({
-    selector: 'ram-relationships',
+    selector: 'list-relationships',
     templateUrl: 'relationships.component.html',
-    directives: [RelationshipsTableComponent, ROUTER_DIRECTIVES],
+    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent]
 })
 
-export class RelationshipsComponent implements OnInit, OnDestroy {
+export class RelationshipsComponent extends AbstractPageComponent {
 
     public idValue: string;
+    public page: number;
 
-    public identityDisplayName$: Rx.Observable<IName>;
-    public subjectsResponse$: Rx.Observable<ISearchResult<IHrefValue<IParty>[]>>;
-    public relationshipsResponse$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>>;
+    public identity$: Rx.Observable<IIdentity>;
+    public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
     // todo rename to relationshipTypeHrefs
     public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
-    public subjectHrefValue: IHrefValue<IParty>;
+    public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
+
+    public paginationDelegate: SearchResultPaginationDelegate;
 
     private _isLoading = false; // set to true when you want the UI indicate something is getting loaded.
 
-    private rteParamSub: Rx.Subscription;
-
-    constructor(private route: ActivatedRoute,
-                private router: Router,
-                private identityService: RAMIdentityService,
-                private modelHelper: RAMModelHelper,
-                private rest: RAMRestService) {
+    constructor(route: ActivatedRoute,
+                router: Router,
+                rest: RAMRestService,
+                modelHelper: RAMModelHelper,
+                routeHelper: RAMRouteHelper) {
+        super(route, router, rest, modelHelper, routeHelper);
     }
 
-    public ngOnInit() {
+    // todo need some way to indicate ALL the loading has finished; not a priority right now
+    /* tslint:disable:max-func-body-length */
+    public onInit(params: {path: Params, query: Params}) {
+
         this._isLoading = true;
-        this.rteParamSub = this.route.params.subscribe(params => {
-            this.idValue = decodeURIComponent(params['idValue']);
-            this.identityDisplayName$ = this.identityService.getDefaultName(this.idValue).map(this.modelHelper.displayName);
-            this.subjectsResponse$ = this.rest.searchDistinctSubjectsBySubjectOrDelegateIdentity(this.idValue, 1);
-            this.subjectsResponse$.subscribe((searchResult) => {
-                this._isLoading = false;
-            }, (err) => {
-                alert(JSON.stringify(err, null, 4));
-                this._isLoading = false;
-            });
 
-            this.rest.listRelationshipTypes().subscribe((relationshipTypes) => {
-                this.relationshipTypes = relationshipTypes;
-            }, (err) => {
-                alert(JSON.stringify(err, null, 4));
-                this._isLoading = false;
-            });
+        // extract path and query parameters
+        this.idValue = decodeURIComponent(params.path['idValue']);
+        this.page = params.query['page'] ? +params.query['page'] : 1;
+
+        // identity in focus
+        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+
+        // relationship types
+        this.rest.listRelationshipTypes().subscribe((relationshipTypes) => {
+            this.relationshipTypes = relationshipTypes;
+        }, (err) => {
+            alert(JSON.stringify(err, null, 4));
+            this._isLoading = false;
         });
-    }
 
-    public ngOnDestroy() {
-        this.rteParamSub.unsubscribe();
+        // relationships
+        this.subjectGroupsWithRelationships = [];
+        this.relationships$ = this.rest.searchRelationshipsByIdentity(this.idValue, this.page);
+        this.relationships$.subscribe((relationshipResources) => {
+            this._isLoading = false;
+            for (const relationshipResource of relationshipResources.list) {
+                let subjectGroupWithRelationshipsToAddTo: SubjectGroupWithRelationships;
+                const subjectResource = relationshipResource.value.subject;
+                for (const subjectGroupWithRelationships of this.subjectGroupsWithRelationships) {
+                    if (subjectGroupWithRelationships.hasSameSubject(subjectResource)) {
+                        subjectGroupWithRelationshipsToAddTo = subjectGroupWithRelationships;
+                    }
+                }
+                if (!subjectGroupWithRelationshipsToAddTo) {
+                    subjectGroupWithRelationshipsToAddTo = new SubjectGroupWithRelationships();
+                    subjectGroupWithRelationshipsToAddTo.subjectResource = subjectResource;
+                    this.subjectGroupsWithRelationships.push(subjectGroupWithRelationshipsToAddTo);
+                }
+                subjectGroupWithRelationshipsToAddTo.relationshipResources.push(relationshipResource);
+            }
+        }, (err) => {
+            alert(JSON.stringify(err, null, 4));
+            this._isLoading = false;
+        });
+
+        // pagination delegate
+        this.paginationDelegate = {
+            goToPage: (page: number) => {
+                this.router.navigate(['/relationships',
+                    encodeURIComponent(this.idValue)],
+                    {queryParams: {page: page}}
+                );
+            }
+        } as SearchResultPaginationDelegate;
+
     }
 
     public commaSeparatedListOfProviderNames(subject: IParty): string {
@@ -82,57 +119,35 @@ export class RelationshipsComponent implements OnInit, OnDestroy {
         return providerNames.join(',');
     }
 
-    public getOtherPartyHrefValue = (relationship: IRelationship) => {
-        if (this.subjectHrefValue) {
-            if (relationship.subject.href === this.subjectHrefValue.href) {
-                return relationship.delegate;
-            } else {
-                return relationship.subject;
-            }
-        }
-        return null;
-    };
-
-    public getOtherParty = (relationship: IRelationship) => {
-        const party = this.getOtherPartyHrefValue(relationship);
-        return party ? party.value : null;
-    };
-
-    public backToListing = () => {
-        this.subjectHrefValue = null;
-    };
-
-    public expandSubject = (subjectHrefValue: IHrefValue<IParty>) => {
-        this._isLoading = true;
-        this.subjectHrefValue = subjectHrefValue;
-        if (subjectHrefValue.value.identities.length > 0) {
-            const idValue = subjectHrefValue.value.identities[0].value.idValue;
-            this.relationshipsResponse$ = this.rest.searchRelationshipsByIdentity(idValue, 1);
-            this.relationshipsResponse$.subscribe(() => {
-                this._isLoading = false;
-            }, (err) => {
-                alert(JSON.stringify(err, null, 4));
-                this._isLoading = false;
-            });
-        }
-    };
-
-    // todo not sure what the drill down conditional logic is, for now assume UNIVERSAL
-    public isDrillDownPossible = (relationship: IRelationship) => {
-        let relationshipType = this.modelHelper.getRelationshipType(this.relationshipTypes, relationship);
-        return relationshipType && relationshipType.code === 'UNIVERSAL_REPRESENTATIVE';
-    };
-
     public get isLoading() {
         return this._isLoading;
     }
 
-    public goToRelationshipsAddPage = () => {
-        this.router.navigate(['/relationships/add', encodeURIComponent(this.idValue)]);
+    public goToRelationshipAddPage() {
+        this.routeHelper.goToRelationshipAddPage(this.idValue);
     };
 
-    public goToRelationshipsAuthorisationPage = () => {
-        this.router.navigate(['/relationships/add/enter', encodeURIComponent(this.idValue)]);
+    public goToRelationshipEnterCodePage() {
+        this.routeHelper.goToRelationshipEnterCodePage(this.idValue);
     };
+
+    public goToRelationshipsContext(partyResource: IHrefValue<IParty>) {
+        const defaultIdentityResource = this.modelHelper.getDefaultIdentityResource(partyResource.value);
+        if (defaultIdentityResource) {
+            const identityIdValue = defaultIdentityResource.value.idValue;
+            this.routeHelper.goToRelationshipsPage(identityIdValue);
+        }
+    }
+
+}
+
+class SubjectGroupWithRelationships {
+
+    public subjectResource: IHrefValue<IParty>;
+    public relationshipResources: IHrefValue<IRelationship>[] = [];
+
+    public hasSameSubject(aSubjectResource: IHrefValue<IParty>) {
+        return this.subjectResource.href === aSubjectResource.href;
+    }
 
 }

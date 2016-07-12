@@ -1,50 +1,30 @@
-<nav class="navbar navbar-default" >
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <!--<a class="navbar-brand" href="#">-->
-                            <!--<img src="/images/commonwealth-trans-bw-full.gif" />-->
-                        <!--</a>-->
-                        <h1 class="inline">Business Account</h1></li>
-                    </div>
+<nav id="top-nav" class="navbar navbar-default">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="centered">Authorisations</h1>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top-menu">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <div id="top-menu" class="collapse navbar-collapse pull-right">
+                    <my-identity></my-identity>
                 </div>
-            </nav>
-
+            </div>
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right user-details">
-                <!-- identity component -->
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
     </div>
-    <!-- /.container-fluid -->
 </nav>
 
 <my-error></my-error>
 
 <div class="container">
     <div class="row">
-        <div class="col-lg-3 col-md-3 col-sm-4" >
-            <div class="list-group table-of-contents">
-                <a class="list-group-item" [routerLink]="['']" href="">Home</a>
-                <a class="list-group-item" href="">Inbox <span class="badge">4</span></a>
-                <a class="list-group-item active" href="">Authorisation</a>
-                <a class="list-group-item" href="">Business details</a>
-                <a class="list-group-item" href="">Agency services</a>
-                <a class="list-group-item" href="">Activity log</a>
-                <a class="list-group-item" href="">Settings</a>
-            </div>
-        </div>
         <router-outlet></router-outlet>
     </div>
 </div>
+
 <footer class="footer">
     <div class="container">
         <div class="row">

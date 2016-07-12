@@ -1,4 +1,4 @@
-<form [ngFormModel]="form">
+<form [formGroup]="form">
     <div class="form-group">
         <div class="col-md-12">
             <h4>ABN*</h4>
@@ -7,7 +7,7 @@
         [class.has-error]="!form.controls['abn'].valid">
             <input class="form-control" type="number"
             minlength=11 maxlength=14 [disabled]='isCompanyNameSet()'
-            [ngFormControl]="form.controls['abn']" 
+            [formControl]="form.controls['abn']"
             placeholder="Type ABN here ...">
         </div>
         <div class="col-md-6">

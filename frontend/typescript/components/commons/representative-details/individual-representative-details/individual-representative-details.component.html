@@ -1,21 +1,21 @@
-<form [ngFormModel]=form>
+<form [formGroup]=form>
     <div class="form-group">
         <div class="col-md-4"
         [class.has-error]="!form.controls['givenName'].valid">
             <h4>Given name*</h4>
-            <input class="form-control" type="text" name="givenName" [ngFormControl]="form.controls['givenName']"
+            <input class="form-control" type="text" name="givenName" [formControl]="form.controls['givenName']"
                 placeholder="Given name ...">
         </div>
         <div class="col-md-4"
         [class.has-error]="!form.controls['familyName'].valid">
             <h4>Family name</h4>
-            <input class="form-control" type="text" name="familyName" [ngFormControl]="form.controls['familyName']"
+            <input class="form-control" type="text" name="familyName" [formControl]="form.controls['familyName']"
                 placeholder="Family name ...">
         </div>
         <div class="col-md-4">
             <h4>Date of birth</h4>
             <input class="form-control" type="date" name="dob"
-            [ngFormControl]="form.controls['dob']"
+            [formControl]="form.controls['dob']"
             placeholder="Date of birth ...">
         </div>
     </div>

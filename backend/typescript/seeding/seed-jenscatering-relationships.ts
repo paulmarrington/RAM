@@ -2,8 +2,16 @@ import {conf} from '../bootstrap';
 import {Seeder} from './seed';
 import {ProfileProvider} from '../models/profile.model';
 import {PartyType} from '../models/party.model';
-import {IdentityType, IdentityInvitationCodeStatus} from '../models/identity.model';
+import {IdentityType, IdentityLinkIdScheme, IdentityInvitationCodeStatus} from '../models/identity.model';
 import {RelationshipStatus} from '../models/relationship.model';
+
+const lpad = (value: Object, size: number, char: string) => {
+    let s = value + '';
+    while (s.length < size) {
+        s = char + s;
+    }
+    return s;
+};
 
 // seeder .............................................................................................................
 
@@ -220,10 +228,97 @@ export class JensCateringRelationshipsSeeder {
         }
     }
 
+    public static async load_zoezombies() {
+        try {
+
+            if (!conf.devMode) {
+
+                Seeder.log('Skipped in prod mode'.gray);
+
+            } else {
+
+                Seeder.log('\nInserting Jen\'s Catering Pty Ltd / Zoe Zombie:\n'.underline);
+
+                for (let i = 1; i <= 50; i = i + 1) {
+
+                    const suffix = lpad(i, 3, '0');
+
+                    const delegateName = await Seeder.createNameModel({
+                        givenName: 'Zoe',
+                        familyName: 'Zombie ' + suffix
+                    } as any);
+
+                    const delegateDob = await Seeder.createSharedSecretModel({
+                        value: '01/01/2000',
+                        sharedSecretType: Seeder.dob_sharedSecretType
+                    } as any);
+
+                    const delegateProfile = await Seeder.createProfileModel({
+                        provider: ProfileProvider.MyGov.name,
+                        name: delegateName,
+                        sharedSecrets: [delegateDob]
+                    } as any);
+
+                    const delegateParty = await Seeder.createPartyModel({
+                        partyType: PartyType.Individual.name
+                    } as any);
+
+                    Seeder.log('');
+
+                    await Seeder.createIdentityModel({
+                        rawIdValue: 'zoezombie_identity_' + suffix,
+                        identityType: IdentityType.LinkId.name,
+                        defaultInd: true,
+                        linkIdScheme: IdentityLinkIdScheme.MyGov.name,
+                        profile: delegateProfile,
+                        party: delegateParty
+                    } as any);
+
+                    Seeder.log('');
+
+                    await Seeder.createRelationshipModel({
+                        relationshipType: Seeder.universal_delegate_relationshipType,
+                        subject: Seeder.jenscatering_party,
+                        subjectNickName: Seeder.jenscatering_name,
+                        delegate: delegateParty,
+                        delegateNickName: delegateName,
+                        startTimestamp: new Date(),
+                        status: RelationshipStatus.Active.name,
+                        attributes: [
+                            await Seeder.createRelationshipAttributeModel({
+                                value: true,
+                                attributeName: Seeder.permissionCustomisationAllowedInd_attributeName
+                            } as any),
+                            await Seeder.createRelationshipAttributeModel({
+                                value: true,
+                                attributeName: Seeder.delegateManageAuthorisationAllowedInd_attributeName
+                            } as any),
+                            await Seeder.createRelationshipAttributeModel({
+                                value: true,
+                                attributeName: Seeder.delegateRelationshipTypeDeclaration_attributeName
+                            } as any),
+                            await Seeder.createRelationshipAttributeModel({
+                                value: true,
+                                attributeName: Seeder.subjectRelationshipTypeDeclaration_attributeName
+                            } as any)
+                        ]
+                    } as any);
+
+                }
+
+            }
+
+        } catch (e) {
+            Seeder.log('Seeding failed!');
+            Seeder.log(e);
+        }
+    }
+
     public static async load() {
         await JensCateringRelationshipsSeeder.load_jenniferMaxim_associate();
         await JensCateringRelationshipsSeeder.load_robertsmith_invitationCode();
         await JensCateringRelationshipsSeeder.load_fredjohnson_invitationCode();
+        await JensCateringRelationshipsSeeder.load_zoezombies();
     }
 
 }

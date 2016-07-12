@@ -1,5 +1,5 @@
-// todo this needs a page index?
 export interface ISearchResult<T> {
+    page: number,
     totalCount: number,
     pageSize: number,
     list: T[];
@@ -11,6 +11,11 @@ export interface ICodeDecode {
     longDecodeText: string;
     startTimestamp: string;
     endTimestamp: string;
+}
+
+export interface ILink {
+    type: string;
+    href: string;
 }
 
 export interface IHrefValue<T> {
@@ -27,9 +32,11 @@ export interface IName {
     givenName?: string;
     familyName?: string;
     unstructuredName?: string;
+    _displayName?: string;
 }
 
 export interface IRelationship {
+    _links: ILink[];
     relationshipType: IHrefValue<IRelationshipType>;
     subject: IHrefValue<IParty>;
     subjectNickName?: IName;

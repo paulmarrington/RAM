@@ -6,6 +6,7 @@ import {IRelationshipType} from './relationshipType.model';
 import {IRelationshipAttribute, RelationshipAttributeModel} from './relationshipAttribute.model';
 import {IdentityModel, IIdentity, IdentityType, IdentityInvitationCodeStatus} from './identity.model';
 import {
+    Link,
     HrefValue,
     Relationship as DTO,
     RelationshipAttribute as RelationshipAttributeDTO,
@@ -66,6 +67,11 @@ const RelationshipSchema = RAMSchema({
         ref: 'Name',
         required: [true, 'Subject Nick Name is required']
     },
+    _subjectKeywords: {
+        type: String,
+        required: [true, 'Subject Keywords is required'],
+        trim: true
+    },
     delegate: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Party',
@@ -75,6 +81,11 @@ const RelationshipSchema = RAMSchema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Name',
         required: [true, 'Delegate Nick Name is required']
+    },
+    _delegateKeywords: {
+        type: String,
+        required: [true, 'Delegate Keywords is required'],
+        trim: true
     },
     startTimestamp: {
         type: Date,
@@ -107,14 +118,26 @@ const RelationshipSchema = RAMSchema({
     }]
 });
 
+RelationshipSchema.pre('validate', function (next:() => void) {
+    if (this.subjectNickName) {
+        this._subjectKeywords = this.subjectNickName._displayName;
+    }
+    if (this.delegateNickName) {
+        this._delegateKeywords = this.delegateNickName._displayName;
+    }
+    next();
+});
+
 // interfaces .........................................................................................................
 
 export interface IRelationship extends IRAMObject {
     relationshipType:IRelationshipType;
     subject:IParty;
     subjectNickName:IName;
+    _subjectKeywords:string;
     delegate:IParty;
     delegateNickName:IName;
+    _delegateKeywords:string;
     startTimestamp:Date;
     endTimestamp?:Date;
     endEventTimestamp?:Date;
@@ -152,8 +175,19 @@ RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
     );
 });
 
-RelationshipSchema.method('toDTO', async function () {
+RelationshipSchema.method('toDTO', async function (invitationCode?:string) {
+
+    const links = [];
+
+    // TODO what other logic around when to add links?
+    if(invitationCode && this.statusEnum() === RelationshipStatus.Pending) {
+        links.push(new Link('accept', `/api/v1/relationship/invitationCode/${invitationCode}/accept`));
+        links.push(new Link('reject', `/api/v1/relationship/invitationCode/${invitationCode}/reject`));
+        links.push(new Link('notifyDelegate', `/api/v1/relationship/invitationCode/${invitationCode}/notifyDelegate`));
+    }
+
     return new DTO(
+        links,
         await this.relationshipType.toHrefValue(false),
         await this.subject.toHrefValue(true),
         await this.subjectNickName.toDTO(),
@@ -326,13 +360,15 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IRelationship>(count, pageSize, list));
+            resolve(new SearchResult<IRelationship>(page, count, pageSize, list));
         } catch (e) {
             reject(e);
         }
     });
 });
 
+// todo need to optional filters (term, party type, relationship type, status)
+// todo need to add sorting
 /* tslint:disable:max-func-body-length */
 RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
@@ -362,11 +398,15 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:numb
                     'delegateNickName',
                     'attributes.attributeName'
                 ])
+                .sort({
+                    '_subjectKeywords': 1,
+                    '_delegateKeywords': 1
+                })
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)
                 .sort({name: 1})
                 .exec();
-            resolve(new SearchResult<IRelationship>(count, pageSize, list));
+            resolve(new SearchResult<IRelationship>(page, count, pageSize, list));
         } catch (e) {
             reject(e);
         }
@@ -378,6 +418,7 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:numb
  *
  * todo need to optional filters (term, party type, relationship type, status)
  * todo need to add sorting
+ * todo this search might no longer be useful after SS2 spike
  */
 /* tslint:disable:max-func-body-length */
 RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity',
@@ -411,7 +452,7 @@ RelationshipSchema.static('searchDistinctSubjectsBySubjectOrDelegateIdentity',
                     ])
                     .exec();
                 const inflatedList = (await PartyModel.populate(listOfIds, {path: '_id'})).map((item:{_id:string}) => item._id);
-                resolve(new SearchResult<IParty>(count, pageSize, inflatedList));
+                resolve(new SearchResult<IParty>(page, count, pageSize, inflatedList));
             } catch (e) {
                 reject(e);
             }

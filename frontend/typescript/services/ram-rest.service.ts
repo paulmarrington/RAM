@@ -1,4 +1,9 @@
-import { Injectable } from '@angular/core';
+import Rx from 'rxjs/Rx';
+import {Injectable} from '@angular/core';
+import {Response, Http, Headers} from '@angular/http';
+
+import {RAMModelHelper} from '../commons/ram-model-helper';
+
 import {
     ISearchResult,
     IHrefValue,
@@ -9,13 +14,12 @@ import {
     IRelationshipType,
     INotifyDelegateDTO
 } from '../../../commons/RamAPI2';
-import Rx from 'rxjs/Rx';
-import {Response, Http, Headers} from '@angular/http';
 
 @Injectable()
 export class RAMRestService {
 
-    constructor(private http: Http) {
+    constructor(private http: Http,
+                private modelHelper: RAMModelHelper) {
     }
 
     // TODO remove temporary api
@@ -52,14 +56,14 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public searchRelationshipsByIdentity(idValue:string, page:number):Rx.Observable<ISearchResult<IHrefValue<IRelationship>[]>> {
+    public searchRelationshipsByIdentity(idValue:string, page:number):Rx.Observable<ISearchResult<IHrefValue<IRelationship>>> {
         return this.http
             .get(`/api/v1/relationships/identity/${idValue}?page=${page}`)
             .map(this.extractData);
     }
 
     public searchDistinctSubjectsBySubjectOrDelegateIdentity(idValue:string,
-                                                             page:number):Rx.Observable<ISearchResult<IHrefValue<IParty>[]>> {
+                                                             page:number):Rx.Observable<ISearchResult<IHrefValue<IParty>>> {
         return this.http
             .get(`/api/v1/relationships/identity/${idValue}/subjects?page=${page}`)
             .map(this.extractData);
@@ -89,9 +93,9 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public acceptPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
+    public acceptPendingRelationshipByInvitationCode(relationship: IRelationship): Rx.Observable<IRelationship> {
         return this.http
-            .post(`/api/v1/relationship/invitationCode/${invitationCode}/accept`, '')
+            .post(this.modelHelper.linkByType('accept', relationship._links).href, '')
             .map(this.extractData);
     }
 

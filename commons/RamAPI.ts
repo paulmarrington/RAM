@@ -29,10 +29,6 @@ export class ErrorResponse implements IResponse<void> {
             this.alert = {messages: [messages], alertType: alertType};
         }
     }
-
-    public static fromJson(json:ErrorResponse) {
-        return json ? new ErrorResponse(json.alert.messages, json.alert.alertType) : null;
-    }
 }
 
 export interface IKeyValue<T> {
@@ -46,13 +42,18 @@ export class HrefValue<T> {
     }
 }
 
+export class Link {
+    constructor(public type: string, public href:string) {
+    }
+}
+
 // todo this needs a page index?
 export class SearchResult<T> {
-    constructor(public totalCount:number, public pageSize:number, public list:T[]) {
+    constructor(public page:number, public totalCount:number, public pageSize:number, public list:T[]) {
     }
 
     public map<U>(callback:(value:T, index:number, array:T[]) => U):SearchResult<U> {
-        return new SearchResult(this.totalCount, this.pageSize, this.list.map(callback));
+        return new SearchResult(this.page, this.totalCount, this.pageSize, this.list.map(callback));
     }
 }
 
@@ -104,17 +105,13 @@ export class RelationshipAttributeName extends ICodeDecode {
 export class Name {
     constructor(public givenName:string,
                 public familyName:string,
-                public unstructuredName:string) {
+                public unstructuredName:string,
+                public _displayName:string) {
     }
 
     public displayName():string {
         return this.unstructuredName ? this.unstructuredName : this.givenName + ' ' + this.familyName;
     }
-
-    public static fromJson(name:Name):Name {
-        return name ? new Name(name.givenName, name.familyName, name.unstructuredName) : null;
-    }
-
 }
 
 export class SharedSecret {
@@ -139,11 +136,6 @@ export class Profile {
                 public name:Name,
                 public sharedSecrets:SharedSecret[]) {
     }
-
-    public static fromJson(json:Profile):Profile {
-        // todo shared secrets not supported yet
-        return json ? new Profile(json.provider, Name.fromJson(json.name), null) : null;
-    }
 }
 
 export class Identity {
@@ -163,52 +155,17 @@ export class Identity {
                 public profile:Profile,
                 public party:HrefValue<Party>) {
     }
-
-    public static fromJson(json:Identity) {
-        return json ? new Identity(
-            json.idValue,
-            json.rawIdValue,
-            json.identityType,
-            json.defaultInd,
-            json.agencyScheme,
-            json.agencyToken,
-            json.invitationCodeStatus,
-            null, null,
-            json.invitationCodeTemporaryEmailAddress,
-            json.publicIdentifierScheme,
-            json.linkIdScheme,
-            json.linkIdConsumer,
-            Profile.fromJson(json.profile),
-            new HrefValue<Party>(json.party.href, Party.fromJson(json.party.value)))
-            : null;
-    }
-
-    // public displayName():string {
-    //     return (this.profile && this.profile.name) ? this.profile.name.displayName() : null;
-    // }
 }
 
 export class Party {
     constructor(public partyType:string,
                 public identities:HrefValue<Identity>[]) {
     }
-
-    public static fromJson(json:Party):Party {
-        if (json) {
-            const identities:HrefValue<Identity>[] = [];
-            if (json.identities) {
-                for (var identity of json.identities) {
-                    identities.push(new HrefValue<Identity>(identity.href, Identity.fromJson(identity.value)));
-                }
-            }
-            return new Party(json.partyType, identities);
-        }
-        return null;
-    }
 }
 
 export class Relationship {
-    constructor(public relationshipType:RelationshipType,
+    constructor(public _links:Link[],
+                public relationshipType:RelationshipType,
                 public subject:Party,
                 public subjectNickName:Name,
                 public delegate:Party,

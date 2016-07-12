@@ -196,6 +196,8 @@ describe('RAM Relationship', () => {
             expect(instance.status).not.toBeNull();
             expect(instance.statusEnum()).toBe(RelationshipStatus.Active);
             expect(instance.endEventTimestamp).toBeFalsy();
+            expect(instance._subjectKeywords).not.toBeNull();
+            expect(instance._delegateKeywords).not.toBeNull();
 
             done();
 
@@ -225,6 +227,8 @@ describe('RAM Relationship', () => {
             expect(instance.status).not.toBeNull();
             expect(instance.statusEnum()).toBe(RelationshipStatus.Active);
             expect(instance.endEventTimestamp).not.toBeFalsy();
+            expect(instance._subjectKeywords).not.toBeNull();
+            expect(instance._delegateKeywords).not.toBeNull();
 
             done();
 

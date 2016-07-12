@@ -1,17 +1,16 @@
 import {OnInit, Input, Output, EventEmitter, Component} from '@angular/core';
-import {ControlGroup, Control, FormBuilder, FORM_DIRECTIVES, Validators}
-from '@angular/common';
+import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FormControl, FORM_DIRECTIVES } from '@angular/forms';
 import {RAMRestService} from '../../../../services/ram-rest.service';
 import {RAMNgValidators} from '../../../../commons/ram-ng-validators';
 
 @Component({
     selector: 'organisation-representative-details',
     templateUrl: 'organisation-representative-details.component.html',
-    directives: [FORM_DIRECTIVES]
+    directives: [REACTIVE_FORM_DIRECTIVES,FORM_DIRECTIVES]
 })
 export class OrganisationRepresentativeDetailsComponent implements OnInit {
 
-    public form: ControlGroup;
+    public form: FormGroup;
 
     public organisationName = '';
 
@@ -51,7 +50,7 @@ export class OrganisationRepresentativeDetailsComponent implements OnInit {
 
     public clearOrganisationABN = () => {
         // All we need to do is clear controls to start again
-        (this.form.controls['abn'] as Control).updateValue('');
+        (this.form.controls['abn'] as FormControl).updateValue('');
         this.organisationName = '';
     }
 

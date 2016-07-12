@@ -1,0 +1,21 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4><span class="badge square">5</span> Declaration</h4>
+    </div>
+    <div class="panel-body">
+        <form [formGroup]='form'>
+            <ng2-markdown>
+            </ng2-markdown>
+
+            <div class="form-group col-md-12" >
+                <label><h4><input type="checkbox" [formControl]='form.controls["accepted"]'> I accept</h4></label>
+            </div>
+            <button class="col-xs-6 col-sm-3 btn btn-default"
+                    (click)="back()">&#8592; Back</button>
+            <button class=" col-xs-6 col-sm-3 col-sm-offset-6 btn btn-primary"
+                [disabled]='!(form.controls["accepted"].valid && isAuthorizedBtnEnabled)'
+                (click)="createRelationship()"
+            >Authorise →</button>
+        </form>
+    </div>
+</div>

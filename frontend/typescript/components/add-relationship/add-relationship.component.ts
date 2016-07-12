@@ -1,47 +1,64 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import Rx from 'rxjs/Rx';
+import {Component} from '@angular/core';
+import {ROUTER_DIRECTIVES, Router, ActivatedRoute, Params} from '@angular/router';
+
+import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
+import {PageHeaderComponent} from '../commons/page-header/page-header.component';
+import {RAMRestService} from '../../services/ram-rest.service';
+import {RAMModelHelper} from '../../commons/ram-model-helper';
+import {RAMRouteHelper} from '../../commons/ram-route-helper';
+
 import {AccessPeriodComponent, AccessPeriodComponentData} from '../commons/access-period/access-period.component';
 import {AuthorisationPermissionsComponent} from '../commons/authorisation-permissions/authorisation-permissions.component';
 import {
     AuthorisationTypeComponent,
     AuthorisationTypeComponentData
 } from '../commons/authorisation-type/authorisation-type.component';
-import {DeclarationComponent, DeclarationComponentData} from '../commons/declaration/declaration.component';
+import {
+    RelationshipDeclarationComponent, DeclarationComponentData
+} from '../commons/relationship-declaration/relationship-declaration.component';
 import {
     RepresentativeDetailsComponent, RepresentativeDetailsComponentData
 } from
 '../commons/representative-details/representative-details.component';
-import {Router, ActivatedRoute} from '@angular/router';
-import {RAMRestService} from '../../services/ram-rest.service';
-import Rx from 'rxjs/Rx';
-import {
-    IAttributeDTO,
-    ICreateIdentityDTO,
-    IRelationshipAddDTO, IRelationshipAttributeNameUsage, IRelationshipType, IHrefValue
-} from '../../../../commons/RamAPI2';
 import {
     AuthorisationManagementComponent,
     AuthorisationManagementComponentData
 } from '../commons/authorisation-management/authorisation-management.component';
 
+import {
+    IAttributeDTO,
+    IIdentity,
+    ICreateIdentityDTO,
+    IRelationshipAddDTO,
+    IRelationshipAttributeNameUsage,
+    IRelationshipType,
+    IHrefValue
+} from '../../../../commons/RamAPI2';
+
 @Component({
     selector: 'add-relationship',
     templateUrl: 'add-relationship.component.html',
     directives: [
+        ROUTER_DIRECTIVES,
         AccessPeriodComponent,
         AuthorisationPermissionsComponent,
         AuthorisationTypeComponent,
-        DeclarationComponent,
+        RelationshipDeclarationComponent,
         RepresentativeDetailsComponent,
-        AuthorisationManagementComponent
+        AuthorisationManagementComponent,
+        PageHeaderComponent
     ]
 })
-export class AddRelationshipComponent implements OnInit, OnDestroy {
 
-    private rteParamSub: Rx.Subscription;
+export class AddRelationshipComponent extends AbstractPageComponent {
 
     public idValue: string;
-    public manageAuthAttribute: IRelationshipAttributeNameUsage;
+
+    public identity$: Rx.Observable<IIdentity>;
     public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
+
+    public manageAuthAttribute: IRelationshipAttributeNameUsage;
 
     public newRelationship: AddRelationshipComponentData = {
         accessPeriod: {
@@ -70,21 +87,19 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
         }
     };
 
-    constructor(private route: ActivatedRoute,
-        private router: Router,
-        private rest: RAMRestService) {
+    constructor(route: ActivatedRoute,
+                router: Router,
+                rest: RAMRestService,
+                modelHelper: RAMModelHelper,
+                routeHelper: RAMRouteHelper) {
+        super(route, router, rest, modelHelper, routeHelper);
     }
 
-    public ngOnInit() {
-        this.rteParamSub = this.route.params.subscribe(params => {
-            this.idValue = decodeURIComponent(params['idValue']);
-            this.relationshipTypes$ = this.rest.listRelationshipTypes();
-            this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
-        });
-    }
-
-    public ngOnDestroy() {
-        this.rteParamSub.unsubscribe();
+    public onInit(params: {path: Params, query: Params}) {
+        this.idValue = decodeURIComponent(params.path['idValue']);
+        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+        this.relationshipTypes$ = this.rest.listRelationshipTypes();
+        this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
     }
 
     public back = () => {
@@ -131,7 +146,7 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
 
         const relationship: IRelationshipAddDTO = {
             relationshipType: this.newRelationship.authType.authType,
-            subjectIdValue: this.idValue /* TODO subject identity idValue */,
+            subjectIdValue: this.idValue,
             delegate: delegate,
             startTimestamp: this.newRelationship.accessPeriod.startDate,
             endTimestamp: this.newRelationship.accessPeriod.endDate,
@@ -144,11 +159,10 @@ export class AddRelationshipComponent implements OnInit, OnDestroy {
             //console.log(JSON.stringify(relationship, null, 4));
             this.rest.findIdentityByHref(relationship.delegate.value.identities[0].href).subscribe((identity) => {
                 //console.log(JSON.stringify(identity, null, 4));
-                this.router.navigate(['/relationships/add/complete',
-                     encodeURIComponent(this.idValue),
-                     identity.rawIdValue,
-                     this.displayName(this.newRelationship.representativeDetails)
-                ]);
+                this.routeHelper.goToRelationshipAddCompletePage(
+                    this.idValue,
+                    identity.rawIdValue,
+                    this.displayName(this.newRelationship.representativeDetails));
             }, (err) => {
                 // TODO
                 alert(JSON.stringify(err, null, 2));

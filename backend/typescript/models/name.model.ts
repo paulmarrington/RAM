@@ -27,6 +27,11 @@ const NameSchema = RAMSchema({
         required: [function () {
             return !this.givenName && !this.familyName;
         }, 'Given Name or Unstructured Name is required']
+    },
+    _displayName: {
+        type: String,
+        trim: true,
+        required: true
     }
 });
 
@@ -34,6 +39,11 @@ NameSchema.pre('validate', function (next:() => void) {
     if ((this.givenName || this.familyName) && this.unstructuredName) {
         throw new Error('Given/Family Name and Unstructured Name cannot both be specified');
     } else {
+        if (this.givenName) {
+            this._displayName = this.givenName + (this.familyName ? ' ' + this.familyName : '');
+        } else if (this.unstructuredName) {
+            this._displayName = this.unstructuredName;
+        }
         next();
     }
 });
@@ -44,6 +54,7 @@ export interface IName extends IRAMObject {
     givenName?: string;
     familyName?: string;
     unstructuredName?: string;
+    _displayName?: string;
     toHrefValue():Promise<HrefValue<DTO>>;
     toDTO():Promise<DTO>;
 }
@@ -65,7 +76,8 @@ NameSchema.method('toDTO', async function () {
     return new DTO(
         this.givenName,
         this.familyName,
-        this.unstructuredName
+        this.unstructuredName,
+        this._displayName
     );
 });
 

@@ -583,6 +583,9 @@ definitions:
       unstructuredName:
         type: string
         description: The unstructured name of an organisation
+      _displayName:
+        type: string
+        description: The computed name of the individual or organisation
 
   # Shared Secret .....................................................................................................
 
@@ -630,7 +633,7 @@ definitions:
   PartyResourceReference:
     description: A reference to a Party
     type: object
-    required: ["href","value"]
+    required: ["href"]
     properties:
       href:
         type: string
@@ -725,7 +728,7 @@ definitions:
   IdentityResourceReference:
     type: object
     description: A reference to a Resource
-    required: ["href","value"]
+    required: ["href"]
     properties:
       href:
         type: string
@@ -849,7 +852,7 @@ definitions:
   RelationshipResourceReference:
     type: object
     description: A reference to a Resource
-    required: ["href","value"]
+    required: ["href"]
     properties:
       href:
         type: string
@@ -1004,6 +1007,17 @@ definitions:
   # Base and System Models
   # -------------------------------------------------------------------------------------------------------------------
 
+  ILink:
+    type: object
+    required: ['type','href']
+    properties:
+      type:
+        type: string
+        description: Name of link type
+      href:
+        type: string
+        description: URL reference to uniquely identified resource
+
   Resource:
     type: object
     required: ['href']
@@ -1062,6 +1076,10 @@ definitions:
       This abstract object just adds common properties to a <entity>SearchResultResponse object
     required: [totalCount, pageSize]
     properties:
+      page:
+        description: Current page number
+        type: integer
+        format: int32
       totalCount:
         description: Total number of records matched for this query
         type: integer

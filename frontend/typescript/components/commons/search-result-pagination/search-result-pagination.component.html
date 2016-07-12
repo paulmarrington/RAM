@@ -1,0 +1,45 @@
+<div class="search-result-pagination centered todo">
+
+    <br/>
+
+    <nav>
+
+        <ul class="pagination">
+
+            <li [class.disabled]="isPreviousDisabled()">
+                <a (click)="goToPreviousPage()">&laquo;</a>
+            </li>
+
+            <li *ngIf="forceShowFirstPage()">
+                <a (click)="goToPage(1)">1</a>
+            </li>
+
+            <li class="disabled" *ngIf="hasPreviousEllipsis()">
+                <span>
+                    <span aria-hidden="true">...</span>
+                </span>
+            </li>
+
+            <li *ngFor="let p of innerPages()" [class.active]="page() == p">
+                <a (click)="goToPage(p)">{{p}}</a>
+            </li>
+
+            <li class="disabled" *ngIf="hasNextEllipsis()">
+                <span>
+                    <span aria-hidden="true">...</span>
+                </span>
+            </li>
+
+            <li *ngIf="forceShowLastPage()">
+                <a (click)="goToPage(totalPages())">{{totalPages()}}</a>
+            </li>
+
+            <li [class.disabled]="isNextDisabled()">
+                <a (click)="goToNextPage()">&raquo;</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</div>
