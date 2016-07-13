@@ -76,8 +76,7 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
         this.rest.notifyDelegateByInvitationCode(this.code, notifyDelegateDTO).subscribe((relationship) => {
             this.routeHelper.goToRelationshipsPage(this.idValue, null, 1, 'DELEGATE_NOTIFIED');
         }, (err) => {
-            // TODO
-            alert(JSON.stringify(err, null, 2));
+            this.addGlobalMessages(this.rest.extractErrorMessages(err));
         });
         return false;
     };
