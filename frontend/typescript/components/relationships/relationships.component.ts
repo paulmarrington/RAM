@@ -75,6 +75,10 @@ export class RelationshipsComponent extends AbstractPageComponent {
         const msg = params.query['msg'];
         if (msg === 'DELEGATE_NOTIFIED') {
             this.addGlobalMessage('A notification has been sent to the delegate.');
+        } else if (msg === 'DECLINED_RELATIONSHIP') {
+            this.addGlobalMessage('You have declined the relationship.');
+        } else if (msg === 'ACCEPTED_RELATIONSHIP') {
+            this.addGlobalMessage('You have accepted the relationship.');
         }
 
         // identity in focus

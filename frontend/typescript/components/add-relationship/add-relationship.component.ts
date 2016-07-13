@@ -174,12 +174,10 @@ export class AddRelationshipComponent extends AbstractPageComponent {
                     identity.rawIdValue,
                     this.displayName(this.newRelationship.representativeDetails));
             }, (err) => {
-                // TODO
-                alert(JSON.stringify(err, null, 2));
+                this.addGlobalMessages(this.rest.extractErrorMessages(err));
             });
         }, (err) => {
-            // TODO
-            alert(JSON.stringify(err, null, 2));
+            this.addGlobalMessages(this.rest.extractErrorMessages(err));
         });
 
     };

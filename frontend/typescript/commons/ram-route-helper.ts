@@ -36,8 +36,15 @@ export class RAMRouteHelper {
         ]);
     }
 
-    public goToRelationshipEnterCodePage(idValue: string) {
-        this.router.navigate(['/relationships/add/enter', encodeURIComponent(idValue)]);
+    public goToRelationshipEnterCodePage(idValue: string, msg?: string) {
+        const queryParams = {};
+        if (msg) {
+            queryParams['msg'] = msg;
+        }
+        this.router.navigate(['/relationships/add/enter',
+            encodeURIComponent(idValue)],
+            {queryParams: queryParams}
+        );
     }
 
     public goToRelationshipAcceptPage(idValue: string, code: string) {

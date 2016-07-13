@@ -38,6 +38,12 @@ export class EnterInvitationCodeComponent extends AbstractPageComponent {
         // extract path and query parameters
         this.idValue = decodeURIComponent(params.path['idValue']);
 
+        // message
+        const msg = params.query['msg'];
+        if (msg === 'INVALID_CODE') {
+            this.addGlobalMessage('The code you have entered does not exist or is invalid.');
+        }
+
         // identity in focus
         this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
             this.identity = identity;

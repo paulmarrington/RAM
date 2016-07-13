@@ -75,11 +75,9 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
             });
         }, (err) => {
             if (err.status === 404) {
-                alert('Invalid invitation code');
                 this.goToEnterAuthorisationPage();
             } else {
-                // todo
-                alert(JSON.stringify(err, null, 4));
+                this.addGlobalMessages(this.rest.extractErrorMessages(err));
             }
         });
 
@@ -87,24 +85,22 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
 
     public declineAuthorisation = () => {
         this.rest.rejectPendingRelationshipByInvitationCode(this.relationship).subscribe(() => {
-            this.goToRelationshipsPage();
+            this.routeHelper.goToRelationshipsPage(this.idValue, null, 1, 'DECLINED_RELATIONSHIP');
         }, (err) => {
-            // todo
-            alert(JSON.stringify(err, null, 4));
+            this.addGlobalMessages(this.rest.extractErrorMessages(err));
         });
     };
 
     public acceptAuthorisation = () => {
         this.rest.acceptPendingRelationshipByInvitationCode(this.relationship).subscribe(() => {
-            this.goToRelationshipsPage();
+            this.routeHelper.goToRelationshipsPage(this.idValue, null, 1, 'ACCEPTED_RELATIONSHIP');
         }, (err) => {
-            // todo
-            alert(JSON.stringify(err, null, 4));
+            this.addGlobalMessages(this.rest.extractErrorMessages(err));
         });
     };
 
     public goToEnterAuthorisationPage = () => {
-        this.routeHelper.goToRelationshipEnterCodePage(this.idValue);
+        this.routeHelper.goToRelationshipEnterCodePage(this.idValue, 'INVALID_CODE');
     };
 
     public goToRelationshipsPage = () => {
