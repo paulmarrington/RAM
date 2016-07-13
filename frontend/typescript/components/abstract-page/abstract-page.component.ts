@@ -8,6 +8,8 @@ import {RAMRouteHelper} from '../../commons/ram-route-helper';
 
 export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
+    protected globalMessages: string[];
+
     protected mergedParamSub: Rx.Subscription;
     protected pathParamSub: Rx.Subscription;
     protected queryParamSub: Rx.Subscription;
@@ -21,6 +23,37 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
     /* tslint:disable:max-func-body-length */
     public ngOnInit() {
+
+        // clear global messages
+        this.clearGlobalMessages();
+
+        // subscribe to path and query params
+        this.subscribeToPathAndQueryParams();
+
+    }
+
+    public ngOnDestroy() {
+        if (this.mergedParamSub) {
+            this.mergedParamSub.unsubscribe();
+        }
+        if (this.pathParamSub) {
+            this.pathParamSub.unsubscribe();
+        }
+        if (this.queryParamSub) {
+            this.queryParamSub.unsubscribe();
+        }
+        this.onDestroy();
+    }
+
+    /* tslint:disable:no-empty */
+    public onInit(params: {path: Params, query: Params}) {
+    }
+
+    /* tslint:disable:no-empty */
+    public onDestroy() {
+    }
+
+    private subscribeToPathAndQueryParams() {
 
         let pathParams: Params;
         let queryParams: Params;
@@ -67,25 +100,12 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
     }
 
-    public ngOnDestroy() {
-        if (this.mergedParamSub) {
-            this.mergedParamSub.unsubscribe();
-        }
-        if (this.pathParamSub) {
-            this.pathParamSub.unsubscribe();
-        }
-        if (this.queryParamSub) {
-            this.queryParamSub.unsubscribe();
-        }
-        this.onDestroy();
+    protected addGlobalMessage(message: string) {
+        this.globalMessages.push(message);
     }
 
-    /* tslint:disable:no-empty */
-    public onInit(params: {path: Params, query: Params}) {
-    }
-
-    /* tslint:disable:no-empty */
-    public onDestroy() {
+    protected clearGlobalMessages() {
+        this.globalMessages = [];
     }
 
     private isEqual(params1: Params, params2: Params): boolean {
