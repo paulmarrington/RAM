@@ -771,7 +771,7 @@ definitions:
       name:
         type: string
         description: The code or name
-      decodeText:
+      shortDecodeText:
         type: string
         description: The human friendly label
 
@@ -795,7 +795,7 @@ definitions:
       name:
         type: string
         description: The code or name
-      decodeText:
+      shortDecodeText:
         type: string
         description: The human friendly label
 
@@ -1036,7 +1036,7 @@ definitions:
       name:
         type: string
         description: The code or name
-      decodeText:
+      shortDecodeText:
         type: string
         description: The human friendly label
 

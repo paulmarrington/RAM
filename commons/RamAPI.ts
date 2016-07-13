@@ -140,7 +140,7 @@ export class Profile {
 
 export class ProfileProvider {
     constructor(public name:string,
-                public decodeText:string) {
+                public shortDecodeText:string) {
     }
 }
 
@@ -171,7 +171,7 @@ export class Party {
 
 export class PartyType {
     constructor(public name:string,
-                public decodeText:string) {
+                public shortDecodeText:string) {
     }
 }
 
@@ -192,7 +192,7 @@ export class Relationship {
 
 export class RelationshipStatus {
     constructor(public name:string,
-                public decodeText:string) {
+                public shortDecodeText:string) {
     }
 }
 

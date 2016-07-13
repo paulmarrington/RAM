@@ -48,8 +48,8 @@ export class RelationshipStatus extends RAMEnum {
         RelationshipStatus.Pending
     ];
 
-    constructor(name:string, decodeText:string) {
-        super(name, decodeText);
+    constructor(name:string, shortDecodeText:string) {
+        super(name, shortDecodeText);
     }
 
     public toHrefValue(includeValue:boolean): HrefValue<RelationshipStatusDTO> {
@@ -60,7 +60,7 @@ export class RelationshipStatus extends RAMEnum {
     }
 
     public toDTO(): RelationshipStatusDTO {
-        return new RelationshipStatusDTO(this.name, this.decodeText);
+        return new RelationshipStatusDTO(this.name, this.shortDecodeText);
     }
 }
 
