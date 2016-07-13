@@ -36,8 +36,8 @@ export class ProfileProvider extends RAMEnum {
         ProfileProvider.Vanguard
     ];
 
-    constructor(public name:string, decodeText:string) {
-        super(name, decodeText);
+    constructor(public name:string, shortDecodeText:string) {
+        super(name, shortDecodeText);
     }
 
     public toHrefValue(includeValue:boolean): HrefValue<ProfileProviderDTO> {
@@ -48,7 +48,7 @@ export class ProfileProvider extends RAMEnum {
     }
 
     public toDTO(): ProfileProviderDTO {
-        return new ProfileProviderDTO(this.name, this.decodeText);
+        return new ProfileProviderDTO(this.name, this.shortDecodeText);
     }
 }
 

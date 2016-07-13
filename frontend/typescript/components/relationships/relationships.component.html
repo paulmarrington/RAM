@@ -12,7 +12,7 @@
                             <select class="form-control" [formControl]="form.controls['partyType']">
                                 <option value="-">Party Type</option>
                                 <template ngFor let-item="$implicit" [ngForOf]="partyTypeRefs">
-                                    <option value="{{item.value.name}}">{{item.value.decodeText}}</option>
+                                    <option value="{{item.value.name}}">{{item.value.shortDecodeText}}</option>
                                 </template>
                             </select>
                         </div>
@@ -30,7 +30,7 @@
                             <select class="form-control" [formControl]="form.controls['profileProvider']">
                                 <option value="-">Login Type</option>
                                 <template ngFor let-item="$implicit" [ngForOf]="profileProviderRefs">
-                                    <option value="{{item.value.name}}">{{item.value.decodeText}}</option>
+                                    <option value="{{item.value.name}}">{{item.value.shortDecodeText}}</option>
                                 </template>
                             </select>
                         </div>
@@ -39,7 +39,7 @@
                             <select class="form-control" [formControl]="form.controls['status']">
                                 <option value="-">Status</option>
                                 <template ngFor let-item="$implicit" [ngForOf]="relationshipStatusRefs">
-                                    <option value="{{item.value.name}}">{{item.value.decodeText}}</option>
+                                    <option value="{{item.value.name}}">{{item.value.shortDecodeText}}</option>
                                 </template>
                             </select>
                         </div>

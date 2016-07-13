@@ -74,12 +74,12 @@ export class RAMModelHelper {
 
     public relationshipStatusLabel(relationshipStatusRefs: IHrefValue<IRelationshipStatus>[], name: string) {
         const status = this.getRelationshipStatus(relationshipStatusRefs, name);
-        return status ? status.decodeText : '';
+        return status ? status.shortDecodeText : '';
     }
 
     public profileProviderLabel(profileProviderRefs: IHrefValue<IProfileProvider>[], name: string) {
         const profileProvider = this.getProfileProvider(profileProviderRefs, name);
-        return profileProvider ? profileProvider.decodeText : '';
+        return profileProvider ? profileProvider.shortDecodeText : '';
     }
 
     public getDefaultIdentityResource(party: IParty): IHrefValue<IIdentity> {
