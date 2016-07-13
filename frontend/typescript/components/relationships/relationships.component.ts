@@ -80,6 +80,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
         // identity in focus
         this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
             this.identity = identity;
+            // todo
+            this.giveAuthorisationsEnabled = true;
         });
 
         // party types
