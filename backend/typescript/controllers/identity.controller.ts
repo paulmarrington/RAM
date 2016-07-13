@@ -67,7 +67,7 @@ export class IdentityController {
             },
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.identityModel.search(
+            .then((req:Request) => this.identityModel.searchLinkIds(
                 parseInt(req.query.page),
                 req.query.pageSize ? parseInt(req.query.pageSize) : null)
             )

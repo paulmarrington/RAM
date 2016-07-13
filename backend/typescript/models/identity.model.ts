@@ -285,7 +285,7 @@ export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IIdentity>;
     findDefaultByPartyId:(partyId:string) => Promise<IIdentity>;
     listByPartyId:(partyId:string) => Promise<IIdentity[]>;
-    search:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
+    searchLinkIds:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
 }
 
 // instance methods ...................................................................................................
@@ -411,7 +411,7 @@ IdentitySchema.static('listByPartyId', (partyId:string) => {
         .exec();
 });
 
-IdentitySchema.static('search', (page:number, reqPageSize:number) => {
+IdentitySchema.static('searchLinkIds', (page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
