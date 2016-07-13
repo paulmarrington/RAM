@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {
     IName,
     IParty,
-    IProfileProvider
+    IProfileProvider,
     IIdentity,
     IRelationship,
     IRelationshipType,
@@ -112,7 +112,7 @@ export class RAMModelHelper {
         }
         return null;
     }
-    
+
     public getProfileProvider(profileProviderRefs: IHrefValue<IProfileProvider>[], name: string) {
         for (let ref of profileProviderRefs) {
             if (ref.value.name === name) {
