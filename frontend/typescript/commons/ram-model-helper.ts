@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {
     IName,
     IParty,
+    IProfileProvider
     IIdentity,
     IRelationship,
     IRelationshipType,
@@ -76,6 +77,11 @@ export class RAMModelHelper {
         return status ? status.decodeText : '';
     }
 
+    public profileProviderLabel(profileProviderRefs: IHrefValue<IProfileProvider>[], name: string) {
+        const profileProvider = this.getProfileProvider(profileProviderRefs, name);
+        return profileProvider ? profileProvider.decodeText : '';
+    }
+
     public getDefaultIdentityResource(party: IParty): IHrefValue<IIdentity> {
         if (party && party.identities && party.identities.length > 0) {
             for (let ref of party.identities) {
@@ -100,6 +106,15 @@ export class RAMModelHelper {
 
     public getRelationshipStatus(relationshipStatusRefs: IHrefValue<IRelationshipStatus>[], name: string) {
         for (let ref of relationshipStatusRefs) {
+            if (ref.value.name === name) {
+                return ref.value;
+            }
+        }
+        return null;
+    }
+    
+    public getProfileProvider(profileProviderRefs: IHrefValue<IProfileProvider>[], name: string) {
+        for (let ref of profileProviderRefs) {
             if (ref.value.name === name) {
                 return ref.value;
             }

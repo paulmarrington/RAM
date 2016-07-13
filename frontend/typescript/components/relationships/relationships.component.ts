@@ -142,7 +142,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
         if (subject) {
             if (subject && subject.identities && subject.identities.length > 0) {
                 for (const identityHrefValue of subject.identities) {
-                    providerNames.push(identityHrefValue.value.profile.provider);
+                    let label = this.modelHelper.profileProviderLabel(this.profileProviderRefs, identityHrefValue.value.profile.provider);
+                    providerNames.push(label);
                 }
             }
         }
