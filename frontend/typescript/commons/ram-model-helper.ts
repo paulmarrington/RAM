@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {
     IName,
     IParty,
-    IProfileProvider
+    IProfileProvider,
     IIdentity,
     IRelationship,
     IRelationshipType,
