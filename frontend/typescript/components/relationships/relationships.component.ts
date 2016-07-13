@@ -36,7 +36,6 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public filter: FilterParams;
     public page: number;
 
-    public identity$: Rx.Observable<IIdentity>;
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
     public giveAuthorisationsEnabled: boolean;
