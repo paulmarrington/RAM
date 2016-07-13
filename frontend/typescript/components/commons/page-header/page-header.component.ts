@@ -31,32 +31,46 @@ export class PageHeaderComponent {
         return this.identity ? this.modelHelper.displayNameForIdentity(this.identity) : 'Loading ...';
     }
 
-    public goToRelationshipsPage = () => {
+    public goToRelationshipsPage() {
         if (this.identity) {
             this.routeHelper.goToRelationshipsPage(this.identity.idValue);
         }
     };
 
-    public goToGiveAuthorisationPage = () => {
+    public goToGiveAuthorisationPage() {
         if (this.identity) {
             this.routeHelper.goToRelationshipAddPage(this.identity.idValue);
         }
     };
 
-    public goToGetAuthorisationPage = () => {
+    public goToGetAuthorisationPage() {
         if (this.identity) {
             this.routeHelper.goToRelationshipEnterCodePage(this.identity.idValue);
         }
     };
 
-    public goToLoginsPage = () => {
-        // todo logins page
-        alert('TODO: MANAGE LOGINS');
+    // todo logins page
+    public goToLoginsPage() {
+        if (this.isLoginsPageEnabled()) {
+            alert('TODO: MANAGE LOGINS');
+        }
+    };
+
+    // todo roles page
+    public goToRolesPage() {
+        if (this.isRolesPageEnabled()) {
+            alert('TODO: MANAGE ROLES');
+        }
+    };
+
+    // todo logins page
+    public isLoginsPageEnabled() {
+        return false;
     }
 
-    public goToRolesPage = () => {
-        // todo roles page
-        alert('TODO: MANAGE ROLES');
+    // todo roles page
+    public isRolesPageEnabled() {
+        return false;
     }
 
 }
