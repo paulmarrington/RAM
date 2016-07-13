@@ -139,7 +139,7 @@ export class JensCateringRelationshipsSeeder {
                 } as any);
 
                 Seeder.robertsmith_profile = await Seeder.createProfileModel({
-                    provider: ProfileProvider.MyGov.name,
+                    provider: ProfileProvider.Temp.name,
                     name: Seeder.robertsmith_name,
                     sharedSecrets: [Seeder.robertsmith_dob]
                 } as any);
