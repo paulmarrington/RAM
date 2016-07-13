@@ -17,6 +17,7 @@ export class PageHeaderComponent {
     @Input() public identity: IIdentity;
     @Input() public tab: string;
     @Input() public messages: string[];
+    @Input() public giveAuthorisationsEnabled: boolean = false;
 
     constructor(private router: Router,
                 private modelHelper: RAMModelHelper,
@@ -38,8 +39,10 @@ export class PageHeaderComponent {
     };
 
     public goToGiveAuthorisationPage() {
-        if (this.identity) {
-            this.routeHelper.goToRelationshipAddPage(this.identity.idValue);
+        if (this.isGiveAuthorisationsPageEnabled()) {
+            if (this.identity) {
+                this.routeHelper.goToRelationshipAddPage(this.identity.idValue);
+            }
         }
     };
 
@@ -62,6 +65,10 @@ export class PageHeaderComponent {
             alert('TODO: MANAGE ROLES');
         }
     };
+
+    public isGiveAuthorisationsPageEnabled() {
+        return this.giveAuthorisationsEnabled;
+    }
 
     // todo logins page
     public isLoginsPageEnabled() {

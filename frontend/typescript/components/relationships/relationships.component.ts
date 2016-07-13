@@ -38,7 +38,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
-    public giveAuthorisationsEnabled: boolean;
+    public giveAuthorisationsEnabled: boolean = true; // todo need to set this
     public identity: IIdentity;
     public partyTypeRefs: IHrefValue<IPartyType>[];
     public profileProviderRefs: IHrefValue<IProfileProvider>[];
@@ -84,8 +84,6 @@ export class RelationshipsComponent extends AbstractPageComponent {
         // identity in focus
         this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
             this.identity = identity;
-            // todo
-            this.giveAuthorisationsEnabled = true;
         });
 
         // party types

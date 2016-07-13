@@ -25,6 +25,7 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
     public code: string;
     public displayName: string;
 
+    public giveAuthorisationsEnabled: boolean = true; // todo need to set this
     public identity: IIdentity;
 
     public form: FormGroup;

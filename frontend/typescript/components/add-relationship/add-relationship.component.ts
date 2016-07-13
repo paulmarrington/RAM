@@ -57,6 +57,7 @@ export class AddRelationshipComponent extends AbstractPageComponent {
 
     public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
 
+    public giveAuthorisationsEnabled: boolean = true; // todo need to set this
     public identity: IIdentity;
     public manageAuthAttribute: IRelationshipAttributeNameUsage;
 

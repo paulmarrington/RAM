@@ -20,6 +20,7 @@ export class EnterInvitationCodeComponent extends AbstractPageComponent {
 
     public idValue: string;
 
+    public giveAuthorisationsEnabled: boolean = true; // todo need to set this
     public identity: IIdentity;
 
     public form: FormGroup;
