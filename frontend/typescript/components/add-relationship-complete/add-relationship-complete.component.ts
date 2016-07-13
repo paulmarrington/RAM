@@ -1,4 +1,3 @@
-import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
 import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES} from '@angular/forms';
@@ -75,9 +74,7 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
         };
 
         this.rest.notifyDelegateByInvitationCode(this.code, notifyDelegateDTO).subscribe((relationship) => {
-            // TODO a more suitable confirmation is probably desirable
-            alert('Delegate Notification Sent');
-            this.goToRelationshipsPage();
+            this.routeHelper.goToRelationshipsPage(this.idValue, null, 1, 'DELEGATE_NOTIFIED');
         }, (err) => {
             // TODO
             alert(JSON.stringify(err, null, 2));

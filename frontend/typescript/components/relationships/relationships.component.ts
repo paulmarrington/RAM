@@ -71,6 +71,12 @@ export class RelationshipsComponent extends AbstractPageComponent {
         this.filter = FilterParams.decode(params.query['filter']);
         this.page = params.query['page'] ? +params.query['page'] : 1;
 
+        // message
+        const msg = params.query['msg'];
+        if (msg === 'DELEGATE_NOTIFIED') {
+            this.addGlobalMessage('A notification has been sent to the delegate.');
+        }
+
         // identity in focus
         this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
             this.identity = identity;

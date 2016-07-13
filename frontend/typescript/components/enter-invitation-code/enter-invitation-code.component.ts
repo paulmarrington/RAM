@@ -1,4 +1,3 @@
-import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
 import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES} from '@angular/forms';
