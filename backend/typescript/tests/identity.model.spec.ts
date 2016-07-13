@@ -487,7 +487,7 @@ describe('RAM Identity', () => {
                 undefined,
                 undefined,
                 undefined,
-                ProfileProvider.Temp.name);
+                ProfileProvider.Invitation.name);
 
             // Create new temp identity for invitation code
             const tempIdentity = await IdentityModel.createFromDTO(identityDTO);

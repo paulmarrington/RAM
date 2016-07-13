@@ -112,7 +112,7 @@ export class RAMModelHelper {
         }
         return null;
     }
-    
+
     public getProfileProvider(profileProviderRefs: IHrefValue<IProfileProvider>[], name: string) {
         for (let ref of profileProviderRefs) {
             if (ref.value.name === name) {

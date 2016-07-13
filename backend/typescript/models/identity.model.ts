@@ -456,7 +456,7 @@ IdentitySchema.static('createInvitationCodeIdentity',
             undefined,
             undefined,
             undefined,
-            ProfileProvider.Temp.name
+            ProfileProvider.Invitation.name
         ));
 });
 
