@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
-import {RAMEnum, IRAMObject, RAMSchema, Query} from './base';
+import {RAMEnum, IRAMObject, RAMSchema, Query, Assert} from './base';
+import {DOB_SHARED_SECRET_TYPE_CODE} from './sharedSecretType.model';
 import {IParty, PartyModel} from './party.model';
 import {IName, NameModel} from './name.model';
 import {IRelationshipType} from './relationshipType.model';
@@ -9,9 +10,12 @@ import {
     Link,
     HrefValue,
     Relationship as DTO,
+    RelationshipStatus as RelationshipStatusDTO,
     RelationshipAttribute as RelationshipAttributeDTO,
     SearchResult
 } from '../../../commons/RamAPI';
+import {logger} from '../logger';
+import {IdentityPublicIdentifierScheme} from './identity.model';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
 
@@ -30,11 +34,11 @@ const MAX_PAGE_SIZE = 10;
 
 export class RelationshipStatus extends RAMEnum {
 
-    public static Active = new RelationshipStatus('ACTIVE');
-    public static Cancelled = new RelationshipStatus('CANCELLED');
-    public static Deleted = new RelationshipStatus('DELETED');
-    public static Invalid = new RelationshipStatus('INVALID');
-    public static Pending = new RelationshipStatus('PENDING');
+    public static Active = new RelationshipStatus('ACTIVE', 'Active');
+    public static Cancelled = new RelationshipStatus('CANCELLED', 'Cancelled');
+    public static Deleted = new RelationshipStatus('DELETED', 'Deleted');
+    public static Invalid = new RelationshipStatus('INVALID', 'Invalid');
+    public static Pending = new RelationshipStatus('PENDING', 'Pending');
 
     protected static AllValues = [
         RelationshipStatus.Active,
@@ -44,8 +48,19 @@ export class RelationshipStatus extends RAMEnum {
         RelationshipStatus.Pending
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, decodeText:string) {
+        super(name, decodeText);
+    }
+
+    public toHrefValue(includeValue:boolean): HrefValue<RelationshipStatusDTO> {
+        return new HrefValue(
+            '/api/v1/relationshipStatus/' + this.name,
+            includeValue ? this.toDTO() : undefined
+        );
+    }
+
+    public toDTO(): RelationshipStatusDTO {
+        return new RelationshipStatusDTO(this.name, this.decodeText);
     }
 }
 
@@ -67,11 +82,6 @@ const RelationshipSchema = RAMSchema({
         ref: 'Name',
         required: [true, 'Subject Nick Name is required']
     },
-    _subjectKeywords: {
-        type: String,
-        required: [true, 'Subject Keywords is required'],
-        trim: true
-    },
     delegate: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Party',
@@ -82,10 +92,9 @@ const RelationshipSchema = RAMSchema({
         ref: 'Name',
         required: [true, 'Delegate Nick Name is required']
     },
-    _delegateKeywords: {
-        type: String,
-        required: [true, 'Delegate Keywords is required'],
-        trim: true
+    invitationIdentity: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Identity'
     },
     startTimestamp: {
         type: Date,
@@ -93,7 +102,7 @@ const RelationshipSchema = RAMSchema({
     },
     endTimestamp: {
         type: Date,
-        set: function (value:String) {
+        set: function (value: String) {
             if (value) {
                 this.endEventTimestamp = new Date();
             }
@@ -115,17 +124,87 @@ const RelationshipSchema = RAMSchema({
     attributes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'RelationshipAttribute'
+    }],
+    _relationshipTypeCode: {
+        type: String,
+        required: [true, 'Relationship Type Code is required'],
+        trim: true
+    },
+    _subjectNickNameString: {
+        type: String,
+        required: [true, 'Subject Nick Name String is required'],
+        trim: true
+    },
+    _delegateNickNameString: {
+        type: String,
+        required: [true, 'Delegate NickName String is required'],
+        trim: true
+    },
+    _subjectABNString: {
+        type: String,
+        trim: true
+    },
+    _delegateABNString: {
+        type: String,
+        trim: true
+    },
+    _subjectPartyTypeCode: {
+        type: String,
+        required: [true, 'Subject Party Type Code is required'],
+        trim: true
+    },
+    _delegatePartyTypeCode: {
+        type: String,
+        required: [true, 'Delegate Party Type Code is required'],
+        trim: true
+    },
+    _subjectProfileProviderCodes: [{
+        type: String
+    }],
+    _delegateProfileProviderCodes: [{
+        type: String
     }]
 });
 
 RelationshipSchema.pre('validate', function (next:() => void) {
+    if (this.relationshipType) {
+        this._relationshipTypeCode = this.relationshipType.code;
+    }
     if (this.subjectNickName) {
-        this._subjectKeywords = this.subjectNickName._displayName;
+        this._subjectNickNameString = this.subjectNickName._displayName;
     }
     if (this.delegateNickName) {
-        this._delegateKeywords = this.delegateNickName._displayName;
+        this._delegateNickNameString = this.delegateNickName._displayName;
     }
-    next();
+    this._subjectPartyTypeCode = this.subject.partyType;
+    this._delegatePartyTypeCode = this.delegate.partyType;
+    const subjectPromise = IdentityModel.listByPartyId(this.subject.id)
+        .then((identities: IIdentity[]) => {
+            this._subjectProfileProviderCodes = [];
+            for (let identity of identities) {
+                this._subjectProfileProviderCodes.push(identity.profile.provider);
+                if (identity.publicIdentifierScheme === IdentityPublicIdentifierScheme.ABN.name) {
+                    this._subjectABNString = identity.rawIdValue;
+                }
+            }
+        });
+    const delegatePromise = IdentityModel.listByPartyId(this.delegate.id)
+        .then((identities: IIdentity[]) => {
+            this._delegateProfileProviderCodes = [];
+            for (let identity of identities) {
+                this._delegateProfileProviderCodes.push(identity.profile.provider);
+                if (identity.publicIdentifierScheme === IdentityPublicIdentifierScheme.ABN.name) {
+                    this._delegateABNString = identity.rawIdValue;
+                }
+            }
+        });
+    Promise.all([subjectPromise, delegatePromise])
+        .then(() => {
+            next();
+        })
+        .catch((err:Error) => {
+            next();
+        });
 });
 
 // interfaces .........................................................................................................
@@ -134,29 +213,52 @@ export interface IRelationship extends IRAMObject {
     relationshipType:IRelationshipType;
     subject:IParty;
     subjectNickName:IName;
-    _subjectKeywords:string;
     delegate:IParty;
     delegateNickName:IName;
-    _delegateKeywords:string;
     startTimestamp:Date;
     endTimestamp?:Date;
     endEventTimestamp?:Date;
     status:string;
     attributes:IRelationshipAttribute[];
+    _subjectNickNameString:string;
+    _delegateNickNameString:string;
+    _subjectABNString:string;
+    _delegateABNString:string;
+    _subjectPartyTypeCode:string;
+    _delegatePartyTypeCode:string;
+    _relationshipTypeCode:string;
+    _subjectProfileProviderCodes:string[];
+    _delegateProfileProviderCodes:string[];
     statusEnum():RelationshipStatus;
     toHrefValue(includeValue:boolean):Promise<HrefValue<DTO>>;
-    toDTO():Promise<DTO>;
+    toDTO(invitationCode:string):Promise<DTO>;
+    claimPendingInvitation(claimingDelegateIdentity:IIdentity):Promise<IRelationship>;
     acceptPendingInvitation(acceptingDelegateIdentity:IIdentity):Promise<IRelationship>;
-    rejectPendingInvitation():void;
-    notifyDelegate(email:string):Promise<IRelationship>;
+    rejectPendingInvitation(rejectingDelegateIdentity:IIdentity):Promise<IRelationship>;
+    notifyDelegate(email:string, notifyingIdentity:IIdentity):Promise<IRelationship>;
 }
 
 export interface IRelationshipModel extends mongoose.Model<IRelationship> {
+    add:(relationshipType: IRelationshipType,
+         subject: IParty,
+         subjectNickName: IName,
+         invitationCodeIdentity: IIdentity,
+         startTimestamp: Date,
+         endTimestamp: Date,
+         attributes: IRelationshipAttribute[]) => Promise<IRelationship>;
     findByIdentifier:(id:string) => Promise<IRelationship>;
+    findByInvitationCode:(invitationCode:string) => Promise<IRelationship>;
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IRelationship>;
     search:(subjectIdentityIdValue:string, delegateIdentityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IRelationship>>;
-    searchByIdentity:(identityIdValue:string, page:number, pageSize:number) => Promise<SearchResult<IRelationship>>;
+    searchByIdentity:(identityIdValue: string,
+                      partyType: string,
+                      relationshipType: string,
+                      profileProvider: string,
+                      status: string,
+                      text: string,
+                      sort: string,
+                      page: number, pageSize: number) => Promise<SearchResult<IRelationship>>;
     searchDistinctSubjectsBySubjectOrDelegateIdentity:(identityIdValue:string, page:number, pageSize:number)
         => Promise<SearchResult<IParty>>;
 }
@@ -171,16 +273,16 @@ RelationshipSchema.method('toHrefValue', async function (includeValue:boolean) {
     const relationshipId:string = this._id.toString();
     return new HrefValue(
         '/api/v1/relationship/' + encodeURIComponent(relationshipId),
-        includeValue ? await this.toDTO() : undefined
+        includeValue ? await this.toDTO(null) : undefined
     );
 });
 
 RelationshipSchema.method('toDTO', async function (invitationCode?:string) {
-
-    const links = [];
+    const links:Link[] = [];
+    // links.push(new Link('self', `/api/v1/relationship/${this.id}`));
 
     // TODO what other logic around when to add links?
-    if(invitationCode && this.statusEnum() === RelationshipStatus.Pending) {
+    if (invitationCode && this.statusEnum() === RelationshipStatus.Pending) {
         links.push(new Link('accept', `/api/v1/relationship/invitationCode/${invitationCode}/accept`));
         links.push(new Link('reject', `/api/v1/relationship/invitationCode/${invitationCode}/reject`));
         links.push(new Link('notifyDelegate', `/api/v1/relationship/invitationCode/${invitationCode}/notifyDelegate`));
@@ -204,87 +306,132 @@ RelationshipSchema.method('toDTO', async function (invitationCode?:string) {
     );
 });
 
-RelationshipSchema.method('acceptPendingInvitation', async function (acceptingDelegateIdentity:IIdentity) {
+RelationshipSchema.method('claimPendingInvitation', async function (claimingDelegateIdentity:IIdentity) {
+    try {
+        /* validate */
 
-    if (this.statusEnum() === RelationshipStatus.Pending) {
+        // validate current status
+        Assert.assertTrue(this.statusEnum() === RelationshipStatus.Pending, 'Unable to accept a non-pending relationship');
 
-        // TODO need to match identity details, validate identity and credentials strengths (not spec'ed out yet)
-
-        // mark claimed with timestamp on the temporary delegate identity
-        const identities = await IdentityModel.listByPartyId(this.delegate.id);
-        for (let identity of identities) {
-            if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
-                identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending) {
-                identity.invitationCodeStatus = IdentityInvitationCodeStatus.Claimed.name;
-                identity.invitationCodeClaimedTimestamp = new Date();
-                await identity.save();
-            }
+        // if the user is already the delegate then there is nothing to do
+        if(this.delegate.id === claimingDelegateIdentity.party.id) {
+            return this;
         }
 
-        // mark relationship as active
+        // find identity to match user against
+        const invitationIdentities = await IdentityModel.listByPartyId(this.delegate.id);
+        Assert.assertTrue(
+            invitationIdentities.length === 1,
+            'A pending relationship should only have one delegate identity'
+        );
+
+        const invitationIdentity = invitationIdentities[0];
+
+        // check invitation code is valid
+        Assert.assertTrue(
+            invitationIdentity.identityTypeEnum() === IdentityType.InvitationCode,
+            'Must be an invitation code to claim'
+        );
+        Assert.assertTrue(
+            invitationIdentity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending,
+            'Invitation code must be pending'
+        );
+        Assert.assertTrue(
+            invitationIdentity.invitationCodeExpiryTimestamp > new Date(),
+            'Invitation code has expired'
+        );
+
+        // check name
+        Assert.assertTrue(
+            claimingDelegateIdentity.profile.name.givenName === invitationIdentity.profile.name.givenName,
+            'Identity does not match',
+            `${claimingDelegateIdentity.profile.name.givenName} != ${invitationIdentity.profile.name.givenName}`
+        );
+
+        Assert.assertTrue(
+            claimingDelegateIdentity.profile.name.familyName === invitationIdentity.profile.name.familyName,
+            'Identity does not match',
+            `${claimingDelegateIdentity.profile.name.familyName} != ${invitationIdentity.profile.name.familyName}`
+        );
+
+        // TODO not sure about this implementation
+        // check date of birth IF it is recorded on the invitation
+        if (invitationIdentity.profile.getSharedSecret(DOB_SHARED_SECRET_TYPE_CODE)) {
+            //
+            // Assert.assertTrue(
+            //      acceptingDelegateIdentity.profile.getSharedSecret(DOB_SHARED_SECRET_TYPE_CODE)
+            //     identity.profile.getSharedSecret(DOB_SHARED_SECRET_TYPE_CODE).matchesValue(),
+            //     'Identity does not match');
+        }
+
+        // TODO credentials strengths (not spec'ed out yet)
+
+        /* complete claim */
+
+        // mark invitation code identity as claimed
+        invitationIdentity.invitationCodeStatus = IdentityInvitationCodeStatus.Claimed.name;
+        invitationIdentity.invitationCodeClaimedTimestamp = new Date();
+        await invitationIdentity.save();
+
         // point relationship to the accepting delegate identity
-        this.status = RelationshipStatus.Active.name;
-        this.delegate = acceptingDelegateIdentity.party;
+        this.delegate = claimingDelegateIdentity.party;
         await this.save();
-
-        // TODO notify relevant parties
-
         return Promise.resolve(this);
-
-    } else {
-        throw new Error('Unable to accept a non-pending relationship');
+    } catch (err) {
+        return Promise.reject(err);
     }
 });
 
-RelationshipSchema.method('rejectPendingInvitation', async function () {
+RelationshipSchema.method('acceptPendingInvitation', async function (acceptingDelegateIdentity:IIdentity) {
+    logger.debug('Attempting to accept relationship by ', acceptingDelegateIdentity.idValue);
+    Assert.assertTrue(this.statusEnum() === RelationshipStatus.Pending, 'Unable to accept a non-pending relationship');
 
-    if (this.statusEnum() === RelationshipStatus.Pending) {
+    // confirm the delegate is the user accepting
+    Assert.assertTrue(acceptingDelegateIdentity.party.id === this.delegate.id, 'Not allowed');
 
-        // mark relationship as invalid
-        this.status = RelationshipStatus.Invalid.name;
-        await this.save();
+    // mark relationship as active
+    this.status = RelationshipStatus.Active.name;
+    await this.save();
 
-        // as relationship doesn't have a pointer to the identity, this rejects all invitation identities
-        // associated with the temporary delegate (there should only be one)
-        const identities = await IdentityModel.listByPartyId(this.delegate.id);
-        for (let identity of identities) {
-            if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
-                identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending) {
-                identity.invitationCodeStatus = IdentityInvitationCodeStatus.Rejected.name;
-                await identity.save();
-            }
-        }
+    // TODO notify relevant parties
 
-        // TODO notify relevant parties
-
-    } else {
-        throw new Error('Unable to reject a non-pending relationship');
-    }
-
+    return Promise.resolve(this);
 });
 
-RelationshipSchema.method('notifyDelegate', async function (email:string) {
+RelationshipSchema.method('rejectPendingInvitation', async function (rejectingDelegateIdentity:IIdentity) {
 
-    if (this.statusEnum() === RelationshipStatus.Pending) {
+    Assert.assertTrue(this.statusEnum() === RelationshipStatus.Pending, 'Unable to reject a non-pending relationship');
 
-        // save email
-        // as relationship doesn't have a pointer to the identity, this sets email on all invitation identities
-        // associated with the temporary delegate (there should only be one)
-        const identities = await IdentityModel.listByPartyId(this.delegate.id);
-        for (let identity of identities) {
-            if (identity.identityTypeEnum() === IdentityType.InvitationCode &&
-                identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending) {
-                identity.invitationCodeTemporaryEmailAddress = email;
-                await identity.save();
-            }
-        }
+    // confirm the delegate is the user accepting
+    Assert.assertTrue(rejectingDelegateIdentity.party.id === this.delegate.id, 'Not allowed');
 
-        // TODO notify relevant parties
+    // mark relationship as invalid
+    this.status = RelationshipStatus.Invalid.name;
+    await this.save();
 
-        return Promise.resolve(this);
-    } else {
-        throw new Error('Unable to update relationship with delegate email');
-    }
+    // TODO notify relevant parties
+
+    return this;
+});
+
+RelationshipSchema.method('notifyDelegate', async function (email: string, notifyingIdentity:IIdentity) {
+
+    const identity = this.invitationIdentity;
+    Assert.assertTrue(notifyingIdentity.party.id === this.subject.id, 'Not allowed');
+    Assert.assertTrue(this.statusEnum() === RelationshipStatus.Pending, 'Unable to update relationship with delegate email');
+    Assert.assertTrue(identity.identityTypeEnum() === IdentityType.InvitationCode, 'Unable to update relationship with delegate email');
+    Assert.assertTrue(
+        identity.invitationCodeStatusEnum() === IdentityInvitationCodeStatus.Pending,
+        'Unable to update relationship with delegate email'
+    );
+
+    identity.invitationCodeTemporaryEmailAddress = email;
+    await identity.save();
+
+    // TODO notify relevant parties
+    logger.debug(`TODO Send notification to ${email}`);
+
+    return Promise.resolve(this);
 
 });
 
@@ -295,6 +442,27 @@ RelationshipSchema.method('notifyDelegate', async function (email:string) {
 // });
 
 // static methods .....................................................................................................
+
+RelationshipSchema.static('add', async (relationshipType: IRelationshipType,
+                                        subject: IParty,
+                                        subjectNickName: IName,
+                                        invitationCodeIdentity: IIdentity,
+                                        startTimestamp: Date,
+                                        endTimestamp: Date,
+                                        attributes: IRelationshipAttribute[]) => {
+    return await this.RelationshipModel.create({
+        relationshipType: relationshipType,
+        subject: subject,
+        subjectNickName: subjectNickName,
+        delegate: invitationCodeIdentity.party,
+        delegateNickName: invitationCodeIdentity.profile.name,
+        invitationIdentity: invitationCodeIdentity,
+        startTimestamp: startTimestamp,
+        endTimestamp: endTimestamp,
+        status: RelationshipStatus.Pending.name,
+        attributes: attributes
+    });
+});
 
 RelationshipSchema.static('findByIdentifier', (id:string) => {
     // TODO migrate from _id to another id
@@ -308,9 +476,32 @@ RelationshipSchema.static('findByIdentifier', (id:string) => {
             'subjectNickName',
             'delegate',
             'delegateNickName',
+            'invitationIdentity.profile.name',
             'attributes.attributeName'
         ])
         .exec();
+});
+
+RelationshipSchema.static('findByInvitationCode', async(invitationCode:string) => {
+    const identity = await IdentityModel.findByInvitationCode(invitationCode);
+    if (identity) {
+        const delegate = identity.party;
+        return await this.RelationshipModel
+            .findOne({
+                invitationIdentity: identity
+            })
+            .deepPopulate([
+                'relationshipType',
+                'subject',
+                'subjectNickName',
+                'delegate',
+                'delegateNickName',
+                'invitationIdentity.profile.name',
+                'attributes.attributeName'
+            ])
+            .exec();
+    }
+    return null;
 });
 
 RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async(invitationCode:string, date:Date) => {
@@ -327,6 +518,7 @@ RelationshipSchema.static('findPendingByInvitationCodeInDateRange', async(invita
                 'subjectNickName',
                 'delegate',
                 'delegateNickName',
+                'invitationIdentity',
                 'attributes.attributeName'
             ])
             .exec();
@@ -367,29 +559,60 @@ RelationshipSchema.static('search', (subjectIdentityIdValue:string, delegateIden
     });
 });
 
-// todo need to optional filters (term, party type, relationship type, status)
-// todo need to add sorting
 /* tslint:disable:max-func-body-length */
-RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:number, reqPageSize:number) => {
+RelationshipSchema.static('searchByIdentity', (identityIdValue: string,
+                                               partyType: string,
+                                               relationshipType: string,
+                                               profileProvider: string,
+                                               status: string,
+                                               text: string,
+                                               sort: string,
+                                               page: number,
+                                               reqPageSize: number) => {
     return new Promise<SearchResult<IRelationship>>(async(resolve, reject) => {
-        const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
+        const pageSize: number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
             const party = await PartyModel.findByIdentityIdValue(identityIdValue);
-            const count = await this.RelationshipModel
-                .count({
+            const where: Object = {};
+            where['$and'] = [];
+            where['$and'].push({'$or': [{subject: party}, {delegate: party}]});
+            if (partyType) {
+                where['$and'].push({
                     '$or': [
-                        {subject: party},
-                        {delegate: party}
+                        {'_delegatePartyTypeCode': partyType},
+                        {'_subjectPartyTypeCode': partyType}
                     ]
-                })
+                });
+            }
+            if (relationshipType) {
+                where['$and'].push({'_relationshipTypeCode': relationshipType});
+            }
+            if (profileProvider) {
+                where['$and'].push({
+                    '$or': [
+                        {'_delegateProfileProviderCodes': profileProvider},
+                        {'_subjectProfileProviderCodes': profileProvider}
+                    ]
+                });
+            }
+            if (status) {
+                where['$and'].push({'status': status});
+            }
+            if (text) {
+                where['$and'].push({
+                    '$or': [
+                        {'_subjectNickNameString': new RegExp(text, 'i')},
+                        {'_delegateNickNameString': new RegExp(text, 'i')},
+                        {'_subjectABNString': new RegExp(text, 'i')},
+                        {'_delegateABNString': new RegExp(text, 'i')}
+                    ]
+                });
+            }
+            const count = await this.RelationshipModel
+                .count(where)
                 .exec();
             const list = await this.RelationshipModel
-                .find({
-                    '$or': [
-                        {subject: party},
-                        {delegate: party}
-                    ]
-                })
+                .find(where)
                 .deepPopulate([
                     'relationshipType',
                     'subject',
@@ -399,8 +622,8 @@ RelationshipSchema.static('searchByIdentity', (identityIdValue:string, page:numb
                     'attributes.attributeName'
                 ])
                 .sort({
-                    '_subjectKeywords': 1,
-                    '_delegateKeywords': 1
+                    '_subjectNickNameString': !sort || sort === 'asc' ? 1 : -1,
+                    '_delegateNickNameString': !sort || sort === 'asc' ? 1 : -1
                 })
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)

@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import {logger} from '../logger';
 
 /* tslint:disable:no-var-requires */
 const mongooseUniqueValidator = require('mongoose-unique-validator');
@@ -67,7 +68,7 @@ export class RAMEnum {
         return null;
     }
 
-    constructor(public name:string) {
+    constructor(public name:string, public decodeText:string) {
     }
 }
 
@@ -153,3 +154,14 @@ export const CodeDecodeSchema = (schema:Object) => {
 
     return result;
 };
+
+export class Assert {
+    public static assertTrue(condition:boolean, failMessage:string, detail?:string) {
+        if (!condition) {
+            if(detail) {
+                logger.debug(`Assertion Failed: ${detail}`);
+            }
+            throw new Error(failMessage);
+        }
+    }
+}

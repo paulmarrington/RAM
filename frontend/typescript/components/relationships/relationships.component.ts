@@ -1,6 +1,7 @@
 import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
+import {FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup} from '@angular/forms';
 
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../commons/page-header/page-header.component';
@@ -13,31 +14,39 @@ import {RAMRouteHelper} from '../../commons/ram-route-helper';
 import {
     ISearchResult,
     IParty,
+    IPartyType,
+    IProfileProvider,
     IIdentity,
     IRelationship,
     IRelationshipType,
-    IHrefValue
+    IRelationshipStatus,
+    IHrefValue,
+    FilterParams
 } from '../../../../commons/RamAPI2';
 
 @Component({
     selector: 'list-relationships',
     templateUrl: 'relationships.component.html',
-    directives: [ROUTER_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent]
+    directives: [ROUTER_DIRECTIVES, FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, PageHeaderComponent, SearchResultPaginationComponent]
 })
 
 export class RelationshipsComponent extends AbstractPageComponent {
 
     public idValue: string;
+    public filter: FilterParams;
     public page: number;
 
     public identity$: Rx.Observable<IIdentity>;
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
-    // todo rename to relationshipTypeHrefs
-    public relationshipTypes: IHrefValue<IRelationshipType>[] = [];
+    public partyTypeRefs: IHrefValue<IPartyType>[];
+    public profileProviderRefs: IHrefValue<IProfileProvider>[];
+    public relationshipStatusRefs: IHrefValue<IRelationshipStatus>[];
+    public relationshipTypeRefs: IHrefValue<IRelationshipType>[];
     public subjectGroupsWithRelationships: SubjectGroupWithRelationships[];
 
     public paginationDelegate: SearchResultPaginationDelegate;
+    public form: FormGroup;
 
     private _isLoading = false; // set to true when you want the UI indicate something is getting loaded.
 
@@ -45,7 +54,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
                 router: Router,
                 rest: RAMRestService,
                 modelHelper: RAMModelHelper,
-                routeHelper: RAMRouteHelper) {
+                routeHelper: RAMRouteHelper,
+                private _fb: FormBuilder) {
         super(route, router, rest, modelHelper, routeHelper);
     }
 
@@ -57,38 +67,51 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
         // extract path and query parameters
         this.idValue = decodeURIComponent(params.path['idValue']);
+        this.filter = FilterParams.decode(params.query['filter']);
         this.page = params.query['page'] ? +params.query['page'] : 1;
 
         // identity in focus
         this.identity$ = this.rest.findIdentityByValue(this.idValue);
 
+        // party types
+        this.rest.listPartyTypes().subscribe((partyTypeRefs) => {
+            this.partyTypeRefs = partyTypeRefs;
+        });
+
+        // profile providers
+        this.rest.listProfileProviders().subscribe((profileProviderRefs) => {
+            this.profileProviderRefs = profileProviderRefs;
+        });
+
+        // relationship statuses
+        this.rest.listRelationshipStatuses().subscribe((relationshipStatusRefs) => {
+            this.relationshipStatusRefs = relationshipStatusRefs;
+        });
+
         // relationship types
-        this.rest.listRelationshipTypes().subscribe((relationshipTypes) => {
-            this.relationshipTypes = relationshipTypes;
-        }, (err) => {
-            alert(JSON.stringify(err, null, 4));
-            this._isLoading = false;
+        this.rest.listRelationshipTypes().subscribe((relationshipTypeRefs) => {
+            this.relationshipTypeRefs = relationshipTypeRefs;
         });
 
         // relationships
         this.subjectGroupsWithRelationships = [];
-        this.relationships$ = this.rest.searchRelationshipsByIdentity(this.idValue, this.page);
-        this.relationships$.subscribe((relationshipResources) => {
+        this.relationships$ = this.rest.searchRelationshipsByIdentity(this.idValue, this.filter.encode(), this.page);
+        this.relationships$.subscribe((relationshipRefs) => {
             this._isLoading = false;
-            for (const relationshipResource of relationshipResources.list) {
+            for (const relationshipRef of relationshipRefs.list) {
                 let subjectGroupWithRelationshipsToAddTo: SubjectGroupWithRelationships;
-                const subjectResource = relationshipResource.value.subject;
+                const subjectRef = relationshipRef.value.subject;
                 for (const subjectGroupWithRelationships of this.subjectGroupsWithRelationships) {
-                    if (subjectGroupWithRelationships.hasSameSubject(subjectResource)) {
+                    if (subjectGroupWithRelationships.hasSameSubject(subjectRef)) {
                         subjectGroupWithRelationshipsToAddTo = subjectGroupWithRelationships;
                     }
                 }
                 if (!subjectGroupWithRelationshipsToAddTo) {
                     subjectGroupWithRelationshipsToAddTo = new SubjectGroupWithRelationships();
-                    subjectGroupWithRelationshipsToAddTo.subjectResource = subjectResource;
+                    subjectGroupWithRelationshipsToAddTo.subjectRef = subjectRef;
                     this.subjectGroupsWithRelationships.push(subjectGroupWithRelationshipsToAddTo);
                 }
-                subjectGroupWithRelationshipsToAddTo.relationshipResources.push(relationshipResource);
+                subjectGroupWithRelationshipsToAddTo.relationshipRefs.push(relationshipRef);
             }
         }, (err) => {
             alert(JSON.stringify(err, null, 4));
@@ -98,12 +121,19 @@ export class RelationshipsComponent extends AbstractPageComponent {
         // pagination delegate
         this.paginationDelegate = {
             goToPage: (page: number) => {
-                this.router.navigate(['/relationships',
-                    encodeURIComponent(this.idValue)],
-                    {queryParams: {page: page}}
-                );
+                this.routeHelper.goToRelationshipsPage(this.idValue, this.filter.encode(), page);
             }
         } as SearchResultPaginationDelegate;
+
+        // forms
+        this.form = this._fb.group({
+            partyType: this.filter.get('partyType', '-'),
+            relationshipType: this.filter.get('relationshipType', '-'),
+            profileProvider: this.filter.get('profileProvider', '-'),
+            status: this.filter.get('status', '-'),
+            text: this.filter.get('text', ''),
+            sort: this.filter.get('sort', '-')
+        });
 
     }
 
@@ -121,6 +151,20 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
     public get isLoading() {
         return this._isLoading;
+    }
+
+    public search() {
+        const filterString = new FilterParams()
+            .add('partyType', this.form.controls['partyType'].value)
+            .add('relationshipType', this.form.controls['relationshipType'].value)
+            .add('profileProvider', this.form.controls['profileProvider'].value)
+            .add('status', this.form.controls['status'].value)
+            .add('text', this.form.controls['text'].value)
+            .add('sort', this.form.controls['sort'].value)
+            .encode();
+        //console.log('Filter (encoded): ' + filterString);
+        //console.log('Filter (decoded): ' + JSON.stringify(FilterParams.decode(filterString), null, 4));
+        this.routeHelper.goToRelationshipsPage(this.idValue, filterString);
     }
 
     public goToRelationshipAddPage() {
@@ -143,11 +187,11 @@ export class RelationshipsComponent extends AbstractPageComponent {
 
 class SubjectGroupWithRelationships {
 
-    public subjectResource: IHrefValue<IParty>;
-    public relationshipResources: IHrefValue<IRelationship>[] = [];
+    public subjectRef: IHrefValue<IParty>;
+    public relationshipRefs: IHrefValue<IRelationship>[] = [];
 
-    public hasSameSubject(aSubjectResource: IHrefValue<IParty>) {
-        return this.subjectResource.href === aSubjectResource.href;
+    public hasSameSubject(aSubjectRef: IHrefValue<IParty>) {
+        return this.subjectRef.href === aSubjectRef.href;
     }
 
 }

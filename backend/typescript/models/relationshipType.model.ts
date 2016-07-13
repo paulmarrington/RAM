@@ -121,7 +121,7 @@ RelationshipTypeSchema.static('listIgnoringDateRange', () => {
         .deepPopulate([
             'attributeNameUsages.attributeName'
         ])
-        .sort({name: 1})
+        .sort({shortDecodeText: 1})
         .exec();
 });
 
@@ -134,7 +134,7 @@ RelationshipTypeSchema.static('listInDateRange', (date:Date) => {
         .deepPopulate([
             'attributeNameUsages.attributeName'
         ])
-        .sort({name: 1})
+        .sort({shortDecodeText: 1})
         .exec();
 });
 

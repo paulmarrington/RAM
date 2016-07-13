@@ -223,6 +223,7 @@ case "$1" in
   'test:backend')
     echo ""
     echo "Starting backend tests"
+    echo ""
     cd backend
     if [ -z "$3" ]; then
       RAM_CONF=$DIR/backend/conf/conf-test.js gulp test
@@ -238,6 +239,7 @@ case "$1" in
   'test:api')
     echo ""
     echo "Starting api tests"
+    echo ""
     cd tests
     if [ -z "$3" ]; then
       gulp test

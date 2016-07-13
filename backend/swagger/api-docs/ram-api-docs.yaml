@@ -133,6 +133,84 @@ paths:
         500:
           $ref: '#/responses/500'
 
+  # Party Types .......................................................................................................
+
+  /partyType/{name}:
+    get:
+      tags:
+        - Business - Party Type
+      operationId: Party.findTypeByName
+      summary: Get the party type by name
+      description: Get the party type by name
+      parameters:
+        - $ref: "#/parameters/name"
+      responses:
+        200:
+          description: The party type returned
+          schema:
+            $ref: "#/definitions/PartyType"
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /partyTypes:
+    get:
+      tags:
+        - Business - Party Type
+      operationId: Party.listTypes
+      summary: Get the party types
+      description: Get the party types
+      responses:
+        200:
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PartyTypeResourceReference'
+        500:
+          $ref: '#/responses/500'
+
+  # Profile Providers .......................................................................................................
+
+  /profileProvider/{name}:
+    get:
+      tags:
+        - Business - Profile Provider
+      operationId: Profile.findProviderByName
+      summary: Get the profile provider by name
+      description: Get the profile provider by name
+      parameters:
+        - $ref: "#/parameters/name"
+      responses:
+        200:
+          description: The profile provider returned
+          schema:
+            $ref: "#/definitions/ProfileProvider"
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /profileProviders:
+    get:
+      tags:
+        - Business - Profile Provider
+      operationId: Profile.listProviders
+      summary: Get the pprofile providers
+      description: Get the profile providers
+      responses:
+        200:
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProfileProviderResourceReference'
+        500:
+          $ref: '#/responses/500'
+
   # Relationships .....................................................................................................
 
   /relationship/{id}:
@@ -263,27 +341,18 @@ paths:
         500:
           $ref: '#/responses/500'
 
-  /relationships/{subjectOrDelegate}/identity/{idValue}:
+  /relationships/identity/{idValue}:
     get:
       tags:
         - Business - Relationship
-      operationId: Relationship.searchBySubjectOrDelegate
-      summary: Search Relationships for a subject or delegate
-      description: Search Relationships for a subject or delegate
+      operationId: Relationship.searchByIdentity
+      summary: Search Relationships for an identity
+      description: Search Relationships for an identity
       parameters:
-        - $ref: "#/parameters/subjectOrDelegate"
         - $ref: "#/parameters/idValue"
         - name: filter
           in: query
-          description: Filtering - TODO
-          required: false
-          type: array
-          collectionFormat: multi
-          items:
-            type: string
-        - name: sort
-          in: query
-          description: Sorting - TODO
+          description: Filtering and Sorting
           required: false
           type: string
         - name: page
@@ -376,6 +445,45 @@ paths:
             $ref: '#/definitions/Relationship'
         400:
           $ref: '#/responses/400'
+        500:
+          $ref: '#/responses/500'
+
+  # Relationship Statuses..............................................................................................
+
+  /relationshipStatus/{name}:
+    get:
+      tags:
+        - Business - Relationship Status
+      operationId: Relationship.findStatusByName
+      summary: Get the relationship status by name
+      description: Get the relationship status by name
+      parameters:
+        - $ref: "#/parameters/name"
+      responses:
+        200:
+          description: The relationship status returned
+          schema:
+            $ref: "#/definitions/RelationshipStatus"
+        400:
+          $ref: '#/responses/400'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+
+  /relationshipStatuses:
+    get:
+      tags:
+        - Business - Relationship Status
+      operationId: Relationship.listStatuses
+      summary: Get the relationship statuses
+      description: Get the relationship statuses
+      responses:
+        200:
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RelationshipStatusResourceReference'
         500:
           $ref: '#/responses/500'
 
@@ -654,6 +762,54 @@ definitions:
           $ref: '#/definitions/PartyResourceReference'
         minItems: 1
 
+  # Party Type ........................................................................................................
+
+  PartyType:
+    type: object
+    description: Party code and type
+    properties:
+      name:
+        type: string
+        description: The code or name
+      decodeText:
+        type: string
+        description: The human friendly label
+
+  PartyTypeResourceReference:
+    type: object
+    description: A reference to a Resource
+    required: ["href"]
+    properties:
+      href:
+        type: string
+        description: URI that uniquely identifies this PartyType
+      value:
+        $ref: '#/definitions/PartyType'
+
+  # Profile Provider ........................................................................................................
+
+  ProfileProvider:
+    type: object
+    description: Profile Provider code and human friendly label
+    properties:
+      name:
+        type: string
+        description: The code or name
+      decodeText:
+        type: string
+        description: The human friendly label
+
+  ProfileProviderResourceReference:
+    type: object
+    description: A reference to a Resource
+    required: ["href"]
+    properties:
+      href:
+        type: string
+        description: URI that uniquely identifies this ProfileProvider
+      value:
+        $ref: '#/definitions/ProfileProvider'
+
   # Identity ..........................................................................................................
 
   Identity:
@@ -870,6 +1026,30 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/RelationshipResourceReference'
+
+  # Relationship Attribute ............................................................................................
+
+  RelationshipStatus:
+    type: object
+    description: Relationship status
+    properties:
+      name:
+        type: string
+        description: The code or name
+      decodeText:
+        type: string
+        description: The human friendly label
+
+  RelationshipStatusResourceReference:
+    type: object
+    description: A reference to a Resource
+    required: ["href"]
+    properties:
+      href:
+        type: string
+        description: URI that uniquely identifies this RelationshipStatus
+      value:
+        $ref: '#/definitions/RelationshipStatus'
 
   # Relationship Attribute ............................................................................................
 
@@ -1129,6 +1309,13 @@ parameters:
     required: true
     type: string
     enum: ['subject','delegate']
+
+  name:
+    name: name
+    in: path
+    description: The unique name for an enum
+    required: true
+    type: string
 
   idValue:
     name: idValue

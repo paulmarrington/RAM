@@ -4,7 +4,8 @@ import {IName, NameModel} from './name.model';
 import {ISharedSecret, SharedSecretModel} from './sharedSecret.model';
 import {
     HrefValue,
-    Profile as DTO
+    Profile as DTO,
+    ProfileProvider as ProfileProviderDTO
 } from '../../../commons/RamAPI';
 
 // force schema to load first (see https://github.com/atogov/RAM/pull/220#discussion_r65115456)
@@ -19,12 +20,12 @@ const _SharedSecretModel = SharedSecretModel;
 
 export class ProfileProvider extends RAMEnum {
 
-    public static ABR = new ProfileProvider('ABR');
-    public static AuthenticatorApp = new ProfileProvider('AUTHENTICATOR_APP');
-    public static MyGov = new ProfileProvider('MY_GOV');
-    public static SelfAsserted = new ProfileProvider('SELF_ASSERTED');
-    public static Vanguard = new ProfileProvider('VANGUARD');
-    public static Temp = new ProfileProvider('TEMP'); // TODO validate what this value should be for temp identities
+    public static ABR = new ProfileProvider('ABR', 'ABR');
+    public static AuthenticatorApp = new ProfileProvider('AUTHENTICATOR_APP', 'Authenticator App');
+    public static MyGov = new ProfileProvider('MY_GOV', 'myGov');
+    public static SelfAsserted = new ProfileProvider('SELF_ASSERTED', 'Self Asserted');
+    public static Vanguard = new ProfileProvider('VANGUARD', 'Vanguard');
+    public static Temp = new ProfileProvider('TEMP', 'Temp'); // TODO validate what this value should be for temp identities
 
     protected static AllValues = [
         ProfileProvider.ABR,
@@ -35,8 +36,19 @@ export class ProfileProvider extends RAMEnum {
         ProfileProvider.Temp
     ];
 
-    constructor(public name:string) {
-        super(name);
+    constructor(public name:string, decodeText:string) {
+        super(name, decodeText);
+    }
+
+    public toHrefValue(includeValue:boolean): HrefValue<ProfileProviderDTO> {
+        return new HrefValue(
+            '/api/v1/profileProvider/' + this.name,
+            includeValue ? this.toDTO() : undefined
+        );
+    }
+
+    public toDTO(): ProfileProviderDTO {
+        return new ProfileProviderDTO(this.name, this.decodeText);
     }
 }
 

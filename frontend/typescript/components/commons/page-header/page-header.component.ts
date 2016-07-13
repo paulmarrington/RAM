@@ -14,12 +14,17 @@ import {IIdentity} from '../../../../../commons/RamAPI2';
 
 export class PageHeaderComponent {
 
-    @Input() public tab: string;
     @Input() public identity: IIdentity;
+    @Input() public tab: string;
+    @Input() public messages: string[];
 
     constructor(private router: Router,
                 private modelHelper: RAMModelHelper,
                 private routeHelper: RAMRouteHelper) {
+    }
+
+    public hasMessages(): boolean {
+        return this.messages && this.messages.length > 0;
     }
 
     public title(): string {

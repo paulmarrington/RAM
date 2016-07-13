@@ -84,7 +84,12 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
     }
 
     public declineAuthorisation = () => {
-        alert('TODO: Decline - Out of Scope');
+        this.rest.rejectPendingRelationshipByInvitationCode(this.relationship).subscribe(() => {
+            this.goToRelationshipsPage();
+        }, (err) => {
+            // todo
+            alert(JSON.stringify(err, null, 4));
+        });
     };
 
     public acceptAuthorisation = () => {
