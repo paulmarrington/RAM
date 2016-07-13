@@ -48,8 +48,8 @@ export class RelationshipStatus extends RAMEnum {
         RelationshipStatus.Pending
     ];
 
-    constructor(name:string, decodeText:string) {
-        super(name, decodeText);
+    constructor(name:string, shortDecodeText:string) {
+        super(name, shortDecodeText);
     }
 
     public toHrefValue(includeValue:boolean): HrefValue<RelationshipStatusDTO> {
@@ -60,7 +60,7 @@ export class RelationshipStatus extends RAMEnum {
     }
 
     public toDTO(): RelationshipStatusDTO {
-        return new RelationshipStatusDTO(this.name, this.decodeText);
+        return new RelationshipStatusDTO(this.name, this.shortDecodeText);
     }
 }
 
@@ -342,14 +342,16 @@ RelationshipSchema.method('claimPendingInvitation', async function (claimingDele
         );
 
         // check name
-        Assert.assertTrue(
-            claimingDelegateIdentity.profile.name.givenName === invitationIdentity.profile.name.givenName,
+        Assert.assertCaseInsensitiveEqual(
+            claimingDelegateIdentity.profile.name.givenName,
+            invitationIdentity.profile.name.givenName,
             'Identity does not match',
             `${claimingDelegateIdentity.profile.name.givenName} != ${invitationIdentity.profile.name.givenName}`
         );
 
-        Assert.assertTrue(
-            claimingDelegateIdentity.profile.name.familyName === invitationIdentity.profile.name.familyName,
+        Assert.assertCaseInsensitiveEqual(
+            claimingDelegateIdentity.profile.name.familyName,
+            invitationIdentity.profile.name.familyName,
             'Identity does not match',
             `${claimingDelegateIdentity.profile.name.familyName} != ${invitationIdentity.profile.name.familyName}`
         );
@@ -417,7 +419,8 @@ RelationshipSchema.method('rejectPendingInvitation', async function (rejectingDe
 RelationshipSchema.method('notifyDelegate', async function (email: string, notifyingIdentity:IIdentity) {
 
     const identity = this.invitationIdentity;
-    Assert.assertTrue(notifyingIdentity.party.id === this.subject.id, 'Not allowed');
+    // TODO Assert that the user is an administrator of the subject
+    // Assert.assertEqual(notifyingIdentity.party.id, this.subject.id, 'Not allowed');
     Assert.assertTrue(this.statusEnum() === RelationshipStatus.Pending, 'Unable to update relationship with delegate email');
     Assert.assertTrue(identity.identityTypeEnum() === IdentityType.InvitationCode, 'Unable to update relationship with delegate email');
     Assert.assertTrue(

@@ -121,7 +121,7 @@ describe('RAM Party', () => {
                     undefined,
                     undefined,
                     undefined,
-                    ProfileProvider.Temp.name),
+                    ProfileProvider.Invitation.name),
                 new Date(),
                 new Date(),
                 [

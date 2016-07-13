@@ -346,7 +346,7 @@ export class RelationshipController {
                         undefined,
                         undefined,
                         undefined,
-                        ProfileProvider.Temp.name
+                        ProfileProvider.Invitation.name
                     ),
                     req.body.startTimestamp ? new Date(req.body.startTimestamp) : undefined,
                     req.body.endTimestamp ? new Date(req.body.endTimestamp) : undefined,

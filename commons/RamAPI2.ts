@@ -30,7 +30,7 @@ export interface IParty {
 
 export interface IPartyType {
     name: string;
-    decodeText: string;
+    shortDecodeText: string;
 }
 
 export interface IName {
@@ -56,7 +56,7 @@ export interface IRelationship {
 
 export interface IRelationshipStatus {
     name: string;
-    decodeText: string;
+    shortDecodeText: string;
 }
 
 export interface RelationshipSearchDTO {
@@ -100,7 +100,7 @@ export interface IProfile {
 
 export interface IProfileProvider {
     name: string;
-    decodeText: string;
+    shortDecodeText: string;
 }
 
 export interface IIdentity {

@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import {logger} from '../logger';
+import * as _ from 'lodash';
 
 /* tslint:disable:no-var-requires */
 const mongooseUniqueValidator = require('mongoose-unique-validator');
@@ -68,7 +69,7 @@ export class RAMEnum {
         return null;
     }
 
-    constructor(public name:string, public decodeText:string) {
+    constructor(public name:string, public shortDecodeText:string) {
     }
 }
 
@@ -164,4 +165,15 @@ export class Assert {
             throw new Error(failMessage);
         }
     }
+
+    public static assertEqual(value1: string, value2: string, failMessage:string) {
+        const condition = value1 === value2;
+        this.assertTrue(condition, failMessage, `${value1} != ${value2}`);
+    }
+
+    public static assertCaseInsensitiveEqual(value1: string, value2: string, failMessage:string, detail?:string) {
+        const condition = _.trim(value1).toLowerCase() === _.trim(value2).toLowerCase();
+        this.assertTrue(condition, failMessage, detail);
+    }
+
 }

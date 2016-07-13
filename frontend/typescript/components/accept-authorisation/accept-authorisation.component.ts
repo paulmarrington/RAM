@@ -28,10 +28,11 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
     public idValue: string;
     public code: string;
 
-    public identity$: Rx.Observable<IIdentity>;
     public relationship$: Rx.Observable<IRelationship>;
     public relationshipType$: Rx.Observable<IRelationshipType>;
 
+    public giveAuthorisationsEnabled: boolean = true; // todo need to set this
+    public identity: IIdentity;
     public relationship: IRelationship;
     public delegateManageAuthorisationAllowedIndAttribute: IRelationshipAttribute;
     public delegateRelationshipTypeDeclarationAttributeUsage: IRelationshipAttributeNameUsage;
@@ -52,7 +53,9 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
         this.code = decodeURIComponent(params.path['invitationCode']);
 
         // identity in focus
-        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+        this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
+            this.identity = identity;
+        });
 
         // relationship
         this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);
@@ -73,11 +76,9 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
             });
         }, (err) => {
             if (err.status === 404) {
-                alert('Invalid invitation code');
                 this.goToEnterAuthorisationPage();
             } else {
-                // todo
-                alert(JSON.stringify(err, null, 4));
+                this.addGlobalMessages(this.rest.extractErrorMessages(err));
             }
         });
 
@@ -85,24 +86,22 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
 
     public declineAuthorisation = () => {
         this.rest.rejectPendingRelationshipByInvitationCode(this.relationship).subscribe(() => {
-            this.goToRelationshipsPage();
+            this.routeHelper.goToRelationshipsPage(this.idValue, null, 1, 'DECLINED_RELATIONSHIP');
         }, (err) => {
-            // todo
-            alert(JSON.stringify(err, null, 4));
+            this.addGlobalMessages(this.rest.extractErrorMessages(err));
         });
     };
 
     public acceptAuthorisation = () => {
         this.rest.acceptPendingRelationshipByInvitationCode(this.relationship).subscribe(() => {
-            this.goToRelationshipsPage();
+            this.routeHelper.goToRelationshipsPage(this.idValue, null, 1, 'ACCEPTED_RELATIONSHIP');
         }, (err) => {
-            // todo
-            alert(JSON.stringify(err, null, 4));
+            this.addGlobalMessages(this.rest.extractErrorMessages(err));
         });
     };
 
     public goToEnterAuthorisationPage = () => {
-        this.routeHelper.goToRelationshipEnterCodePage(this.idValue);
+        this.routeHelper.goToRelationshipEnterCodePage(this.idValue, 'INVALID_CODE');
     };
 
     public goToRelationshipsPage = () => {

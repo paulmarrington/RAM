@@ -17,6 +17,7 @@ export class PageHeaderComponent {
     @Input() public identity: IIdentity;
     @Input() public tab: string;
     @Input() public messages: string[];
+    @Input() public giveAuthorisationsEnabled: boolean = false;
 
     constructor(private router: Router,
                 private modelHelper: RAMModelHelper,
@@ -31,22 +32,52 @@ export class PageHeaderComponent {
         return this.identity ? this.modelHelper.displayNameForIdentity(this.identity) : 'Loading ...';
     }
 
-    public goToRelationshipsPage = () => {
+    public goToRelationshipsPage() {
         if (this.identity) {
             this.routeHelper.goToRelationshipsPage(this.identity.idValue);
         }
     };
 
-    public goToGiveAuthorisationPage = () => {
-        if (this.identity) {
-            this.routeHelper.goToRelationshipAddPage(this.identity.idValue);
+    public goToGiveAuthorisationPage() {
+        if (this.isGiveAuthorisationsPageEnabled()) {
+            if (this.identity) {
+                this.routeHelper.goToRelationshipAddPage(this.identity.idValue);
+            }
         }
     };
 
-    public goToGetAuthorisationPage = () => {
+    public goToGetAuthorisationPage() {
         if (this.identity) {
             this.routeHelper.goToRelationshipEnterCodePage(this.identity.idValue);
         }
     };
+
+    // todo logins page
+    public goToLoginsPage() {
+        if (this.isLoginsPageEnabled()) {
+            alert('TODO: MANAGE LOGINS');
+        }
+    };
+
+    // todo roles page
+    public goToRolesPage() {
+        if (this.isRolesPageEnabled()) {
+            alert('TODO: MANAGE ROLES');
+        }
+    };
+
+    public isGiveAuthorisationsPageEnabled() {
+        return this.giveAuthorisationsEnabled;
+    }
+
+    // todo logins page
+    public isLoginsPageEnabled() {
+        return false;
+    }
+
+    // todo roles page
+    public isRolesPageEnabled() {
+        return false;
+    }
 
 }

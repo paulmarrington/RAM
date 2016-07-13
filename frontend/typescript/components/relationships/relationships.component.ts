@@ -36,9 +36,10 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public filter: FilterParams;
     public page: number;
 
-    public identity$: Rx.Observable<IIdentity>;
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
+    public giveAuthorisationsEnabled: boolean = true; // todo need to set this
+    public identity: IIdentity;
     public partyTypeRefs: IHrefValue<IPartyType>[];
     public profileProviderRefs: IHrefValue<IProfileProvider>[];
     public relationshipStatusRefs: IHrefValue<IRelationshipStatus>[];
@@ -70,8 +71,20 @@ export class RelationshipsComponent extends AbstractPageComponent {
         this.filter = FilterParams.decode(params.query['filter']);
         this.page = params.query['page'] ? +params.query['page'] : 1;
 
+        // message
+        const msg = params.query['msg'];
+        if (msg === 'DELEGATE_NOTIFIED') {
+            this.addGlobalMessage('A notification has been sent to the delegate.');
+        } else if (msg === 'DECLINED_RELATIONSHIP') {
+            this.addGlobalMessage('You have declined the relationship.');
+        } else if (msg === 'ACCEPTED_RELATIONSHIP') {
+            this.addGlobalMessage('You have accepted the relationship.');
+        }
+
         // identity in focus
-        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+        this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
+            this.identity = identity;
+        });
 
         // party types
         this.rest.listPartyTypes().subscribe((partyTypeRefs) => {
@@ -114,7 +127,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
                 subjectGroupWithRelationshipsToAddTo.relationshipRefs.push(relationshipRef);
             }
         }, (err) => {
-            alert(JSON.stringify(err, null, 4));
+            this.addGlobalMessages(this.rest.extractErrorMessages(err));
             this._isLoading = false;
         });
 
@@ -142,7 +155,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
         if (subject) {
             if (subject && subject.identities && subject.identities.length > 0) {
                 for (const identityHrefValue of subject.identities) {
-                    providerNames.push(identityHrefValue.value.profile.provider);
+                    let label = this.modelHelper.profileProviderLabel(this.profileProviderRefs, identityHrefValue.value.profile.provider);
+                    providerNames.push(label);
                 }
             }
         }

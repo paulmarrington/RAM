@@ -67,8 +67,8 @@ export class IdentityType extends RAMEnum {
 
     public buildIdValue:(identity:IIdentity) => String;
 
-    constructor(name:string, decodeText:string) {
-        super(name, decodeText);
+    constructor(name:string, shortDecodeText:string) {
+        super(name, shortDecodeText);
     }
 
     public withIdValueBuilder(builder:(identity:IIdentity) => String):IdentityType {
@@ -89,8 +89,8 @@ export class IdentityInvitationCodeStatus extends RAMEnum {
         IdentityInvitationCodeStatus.Rejected
     ];
 
-    constructor(name:string, decodeText:string) {
-        super(name, decodeText);
+    constructor(name:string, shortDecodeText:string) {
+        super(name, shortDecodeText);
     }
 }
 
@@ -102,8 +102,8 @@ export class IdentityAgencyScheme extends RAMEnum {
         IdentityAgencyScheme.Medicare
     ];
 
-    constructor(name:string, decodeText:string) {
-        super(name, decodeText);
+    constructor(name:string, shortDecodeText:string) {
+        super(name, shortDecodeText);
     }
 }
 
@@ -115,8 +115,8 @@ export class IdentityPublicIdentifierScheme extends RAMEnum {
         IdentityPublicIdentifierScheme.ABN
     ];
 
-    constructor(name:string, decodeText:string) {
-        super(name, decodeText);
+    constructor(name:string, shortDecodeText:string) {
+        super(name, shortDecodeText);
     }
 }
 
@@ -132,8 +132,8 @@ export class IdentityLinkIdScheme extends RAMEnum {
         IdentityLinkIdScheme.MyGov
     ];
 
-    constructor(name:string, decodeText:string) {
-        super(name, decodeText);
+    constructor(name:string, shortDecodeText:string) {
+        super(name, shortDecodeText);
     }
 }
 
@@ -285,7 +285,7 @@ export interface IIdentityModel extends mongoose.Model<IIdentity> {
     findPendingByInvitationCodeInDateRange:(invitationCode:string, date:Date) => Promise<IIdentity>;
     findDefaultByPartyId:(partyId:string) => Promise<IIdentity>;
     listByPartyId:(partyId:string) => Promise<IIdentity[]>;
-    search:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
+    searchLinkIds:(page:number, pageSize:number) => Promise<SearchResult<IIdentity>>;
 }
 
 // instance methods ...................................................................................................
@@ -411,7 +411,7 @@ IdentitySchema.static('listByPartyId', (partyId:string) => {
         .exec();
 });
 
-IdentitySchema.static('search', (page:number, reqPageSize:number) => {
+IdentitySchema.static('searchLinkIds', (page:number, reqPageSize:number) => {
     return new Promise<SearchResult<IIdentity>>(async (resolve, reject) => {
         const pageSize:number = reqPageSize ? Math.min(reqPageSize, MAX_PAGE_SIZE) : MAX_PAGE_SIZE;
         try {
@@ -456,7 +456,7 @@ IdentitySchema.static('createInvitationCodeIdentity',
             undefined,
             undefined,
             undefined,
-            ProfileProvider.Temp.name
+            ProfileProvider.Invitation.name
         ));
 });
 
