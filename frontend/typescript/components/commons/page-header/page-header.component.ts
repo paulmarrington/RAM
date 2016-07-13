@@ -49,4 +49,14 @@ export class PageHeaderComponent {
         }
     };
 
+    public goToLoginsPage = () => {
+        // todo logins page
+        alert('TODO: MANAGE LOGINS');
+    }
+
+    public goToRolesPage = () => {
+        // todo roles page
+        alert('TODO: MANAGE ROLES');
+    }
+
 }
