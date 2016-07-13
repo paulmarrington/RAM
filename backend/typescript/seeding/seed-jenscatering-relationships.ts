@@ -19,10 +19,10 @@ const lpad = (value: Object, size: number, char: string) => {
 /* tslint:disable:max-func-body-length */
 export class JensCateringRelationshipsSeeder {
 
-    private static async load_jenniferMaxim_associate() {
+    private static async load_jennifermaxims_associate() {
         try {
 
-            Seeder.log('\nInserting Sample Relationship - Jen\'s Catering Pty Ltd / Jennifer Maxim:\n'.underline);
+            Seeder.log('\nInserting Sample Relationship - Jen\'s Catering Pty Ltd / Jennifer Maxims:\n'.underline);
 
             if (!conf.devMode) {
 
@@ -30,7 +30,7 @@ export class JensCateringRelationshipsSeeder {
 
             } else {
 
-                Seeder.jenscatering_and_jennifermaxim_relationship = await Seeder.createRelationshipModel({
+                Seeder.jenscatering_and_jennifermaxims_relationship = await Seeder.createRelationshipModel({
                     relationshipType: Seeder.associate_delegate_relationshipType,
                     subject: Seeder.jenscatering_party,
                     subjectNickName: Seeder.jenscatering_name,
@@ -45,6 +45,55 @@ export class JensCateringRelationshipsSeeder {
                         } as any),
                         await Seeder.createRelationshipAttributeModel({
                             value: true,
+                            attributeName: Seeder.delegateManageAuthorisationAllowedInd_attributeName
+                        } as any),
+                        await Seeder.createRelationshipAttributeModel({
+                            value: true,
+                            attributeName: Seeder.delegateRelationshipTypeDeclaration_attributeName
+                        } as any),
+                        await Seeder.createRelationshipAttributeModel({
+                            value: true,
+                            attributeName: Seeder.subjectRelationshipTypeDeclaration_attributeName
+                        } as any)
+                    ]
+                } as any);
+
+                Seeder.log('');
+
+            }
+
+        } catch (e) {
+            Seeder.log('Seeding failed!');
+            Seeder.log(e);
+        }
+    }
+
+    private static async load_johnmaxims_custom() {
+        try {
+
+            Seeder.log('\nInserting Sample Relationship - Jen\'s Catering Pty Ltd / John Maxims:\n'.underline);
+
+            if (!conf.devMode) {
+
+                Seeder.log('Skipped in prod mode'.gray);
+
+            } else {
+
+                Seeder.jenscatering_and_johnmaxims_relationship = await Seeder.createRelationshipModel({
+                    relationshipType: Seeder.custom_delegate_relationshipType,
+                    subject: Seeder.jenscatering_party,
+                    subjectNickName: Seeder.jenscatering_name,
+                    delegate: Seeder.johnmaxims_party,
+                    delegateNickName: Seeder.johnmaxims_name,
+                    startTimestamp: new Date(),
+                    status: RelationshipStatus.Active.name,
+                    attributes: [
+                        await Seeder.createRelationshipAttributeModel({
+                            value: true,
+                            attributeName: Seeder.permissionCustomisationAllowedInd_attributeName
+                        } as any),
+                        await Seeder.createRelationshipAttributeModel({
+                            value: false,
                             attributeName: Seeder.delegateManageAuthorisationAllowedInd_attributeName
                         } as any),
                         await Seeder.createRelationshipAttributeModel({
@@ -192,7 +241,7 @@ export class JensCateringRelationshipsSeeder {
 
                 Seeder.log('');
 
-                Seeder.jennifermaxim_and_fredjohnson_relationship = await Seeder.createRelationshipModel({
+                Seeder.jenscatering_and_fredjohnson_relationship = await Seeder.createRelationshipModel({
                     relationshipType: Seeder.custom_delegate_relationshipType,
                     subject: Seeder.jenscatering_party,
                     subjectNickName: Seeder.jenscatering_name,
@@ -315,7 +364,8 @@ export class JensCateringRelationshipsSeeder {
     }
 
     public static async load() {
-        await JensCateringRelationshipsSeeder.load_jenniferMaxim_associate();
+        await JensCateringRelationshipsSeeder.load_jennifermaxims_associate();
+        await JensCateringRelationshipsSeeder.load_johnmaxims_custom();
         await JensCateringRelationshipsSeeder.load_robertsmith_invitationCode();
         await JensCateringRelationshipsSeeder.load_fredjohnson_invitationCode();
         await JensCateringRelationshipsSeeder.load_zoezombies();
