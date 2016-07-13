@@ -24,9 +24,6 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
     /* tslint:disable:max-func-body-length */
     public ngOnInit() {
 
-        // clear global messages
-        this.clearGlobalMessages();
-
         // subscribe to path and query params
         this.subscribeToPathAndQueryParams();
 
@@ -43,6 +40,12 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
             this.queryParamSub.unsubscribe();
         }
         this.onDestroy();
+    }
+
+    /* tslint:disable:no-empty */
+    public onPreInit(params: {path: Params, query: Params}) {
+        this.clearGlobalMessages();
+        this.onInit(params);
     }
 
     /* tslint:disable:no-empty */
@@ -70,7 +73,7 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
                 } else if (!queryParams) {
                     this.log('[i] QUERY = ' + JSON.stringify(params));
                     queryParams = params;
-                    this.onInit({path: pathParams, query: queryParams});
+                    this.onPreInit({path: pathParams, query: queryParams});
                 } else if (this.mergedParamSub) {
                     this.log('-----------');
                     this.log('Unsubscribing from merged observable ...');
@@ -82,7 +85,7 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
                             this.log('[p] PARAMS = ' + JSON.stringify(params));
                             this.log('[p] PATH   = ' + JSON.stringify(pathParams));
                             this.log('[p] QUERY  = ' + JSON.stringify(queryParams));
-                            this.onInit({path: pathParams, query: queryParams});
+                            this.onPreInit({path: pathParams, query: queryParams});
                         }
                     });
                     this.queryParamSub = queryParams$.subscribe((params) => {
@@ -92,7 +95,7 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
                             this.log('[p] PARAMS = ' + JSON.stringify(params));
                             this.log('[p] PATH   = ' + JSON.stringify(pathParams));
                             this.log('[p] QUERY  = ' + JSON.stringify(queryParams));
-                            this.onInit({path: pathParams, query: queryParams});
+                            this.onPreInit({path: pathParams, query: queryParams});
                         }
                     });
                 }
