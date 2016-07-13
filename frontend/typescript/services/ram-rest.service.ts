@@ -21,19 +21,19 @@ import {
 @Injectable()
 export class RAMRestService {
 
-    constructor(private http:Http,
-                private modelHelper:RAMModelHelper) {
+    constructor(private http: Http,
+                private modelHelper: RAMModelHelper) {
     }
 
     // TODO remove temporary api
     // A call external to RAM to get organisation name from ABN
-    public getOrganisationNameFromABN(abn:string) {
+    public getOrganisationNameFromABN(abn: string) {
         // This is temporary until we can talk to the server
         // How about mocking framework?
         return Promise.resolve('The End of Time Pty Limited');
     }
 
-    private extractData(res:Response) {
+    private extractData(res: Response) {
         if (res.status < 200 || res.status >= 300) {
             throw new Error('Status code is:' + res.status);
         }
@@ -41,25 +41,25 @@ export class RAMRestService {
         return body || {};
     }
 
-    public findMyIdentity():Rx.Observable<IIdentity> {
+    public findMyIdentity(): Rx.Observable<IIdentity> {
         return this.http
             .get(`/api/v1/identity/me`)
             .map(this.extractData);
     }
 
-    public findIdentityByValue(identityValue:string):Rx.Observable<IIdentity> {
+    public findIdentityByValue(identityValue: string): Rx.Observable<IIdentity> {
         return this.http
             .get(`/api/v1/identity/${identityValue}`)
             .map(this.extractData);
     }
 
-    public findIdentityByHref(href:string):Rx.Observable<IIdentity> {
+    public findIdentityByHref(href: string): Rx.Observable<IIdentity> {
         return this.http
             .get(href)
             .map(this.extractData);
     }
 
-    public listRelationshipStatuses():Rx.Observable<IHrefValue<IRelationshipStatus>[]> {
+    public listRelationshipStatuses(): Rx.Observable<IHrefValue<IRelationshipStatus>[]> {
         return this.http
             .get('/api/v1/relationshipStatuses')
             .map(this.extractData);
@@ -80,7 +80,7 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public listPartyTypes():Rx.Observable<IHrefValue<IPartyType>[]> {
+    public listPartyTypes(): Rx.Observable<IHrefValue<IPartyType>[]> {
         return this.http
             .get('/api/v1/partyTypes')
             .map(this.extractData);
@@ -92,19 +92,19 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public findRelationshipTypeByCode(code:string):Rx.Observable<IRelationshipType> {
+    public findRelationshipTypeByCode(code: string): Rx.Observable<IRelationshipType> {
         return this.http
             .get(`/api/v1/relationshipType/${code}`)
             .map(this.extractData);
     }
 
-    public listRelationshipTypes():Rx.Observable<IHrefValue<IRelationshipType>[]> {
+    public listRelationshipTypes(): Rx.Observable<IHrefValue<IRelationshipType>[]> {
         return this.http
             .get('/api/v1/relationshipTypes')
             .map(this.extractData);
     }
 
-    public findRelationshipTypeByHref(href:string):Rx.Observable<IRelationshipType> {
+    public findRelationshipTypeByHref(href: string): Rx.Observable<IRelationshipType> {
         return this.http
             .get(href)
             .map(this.extractData);
@@ -122,13 +122,13 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public acceptPendingRelationshipByInvitationCode(relationship:IRelationship):Rx.Observable<IRelationship> {
+    public acceptPendingRelationshipByInvitationCode(relationship: IRelationship): Rx.Observable<IRelationship> {
         return this.http
             .post(this.modelHelper.linkByType('accept', relationship._links).href, '')
             .map(this.extractData);
     }
 
-    public rejectPendingRelationshipByInvitationCode(relationship:IRelationship):Rx.Observable<IRelationship> {
+    public rejectPendingRelationshipByInvitationCode(relationship: IRelationship): Rx.Observable<IRelationship> {
         return this.http
             .post(this.modelHelper.linkByType('reject', relationship._links).href, '')
             .map(this.extractData);
@@ -142,7 +142,7 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public createRelationship(relationship:IRelationshipAddDTO):Rx.Observable<IRelationship> {
+    public createRelationship(relationship: IRelationshipAddDTO): Rx.Observable<IRelationship> {
         return this.http
             .post(`/api/v1/relationship`, JSON.stringify(relationship), {
                 headers: this.headersForJson()
@@ -150,9 +150,18 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
+    public extractErrorMessages(response: Response): string[] {
+        const json = response.json();
+        if (json && json.alert && json.alert.messages) {
+            return json.alert.messages;
+        }
+        return ['An unknown error has occurred.'];
+    }
+
     private headersForJson() {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         return headers;
     }
+
 }

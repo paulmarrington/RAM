@@ -107,6 +107,14 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
         this.globalMessages.push(message);
     }
 
+    protected addGlobalMessages(messages: string[]) {
+        if (messages) {
+            for (let message of messages) {
+                this.globalMessages.push(message);
+            }
+        }
+    }
+
     protected clearGlobalMessages() {
         this.globalMessages = [];
     }

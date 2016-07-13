@@ -59,8 +59,12 @@ export class EnterInvitationCodeComponent extends AbstractPageComponent {
                     this.form.controls['relationshipCode'].value
                 );
             }, (err) => {
-                // TODO
-                alert(JSON.stringify(err, null, 2));
+                const status = err.status;
+                if (status === 404) {
+                    this.addGlobalMessage('The code you have entered does not exist or is invalid.');
+                } else {
+                    this.addGlobalMessages(this.rest.extractErrorMessages(err));
+                }
             });
 
         event.stopPropagation();
