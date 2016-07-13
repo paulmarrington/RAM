@@ -129,7 +129,7 @@ export class RelationshipsComponent extends AbstractPageComponent {
                 subjectGroupWithRelationshipsToAddTo.relationshipRefs.push(relationshipRef);
             }
         }, (err) => {
-            alert(JSON.stringify(err, null, 4));
+            this.addGlobalMessages(this.rest.extractErrorMessages(err));
             this._isLoading = false;
         });
 
