@@ -28,10 +28,10 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
     public idValue: string;
     public code: string;
 
-    public identity$: Rx.Observable<IIdentity>;
     public relationship$: Rx.Observable<IRelationship>;
     public relationshipType$: Rx.Observable<IRelationshipType>;
 
+    public identity: IIdentity;
     public relationship: IRelationship;
     public delegateManageAuthorisationAllowedIndAttribute: IRelationshipAttribute;
     public delegateRelationshipTypeDeclarationAttributeUsage: IRelationshipAttributeNameUsage;
@@ -52,7 +52,9 @@ export class AcceptAuthorisationComponent extends AbstractPageComponent {
         this.code = decodeURIComponent(params.path['invitationCode']);
 
         // identity in focus
-        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+        this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
+            this.identity = identity;
+        });
 
         // relationship
         this.relationship$ = this.rest.findPendingRelationshipByInvitationCode(this.code);

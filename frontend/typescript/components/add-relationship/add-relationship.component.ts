@@ -55,9 +55,9 @@ export class AddRelationshipComponent extends AbstractPageComponent {
 
     public idValue: string;
 
-    public identity$: Rx.Observable<IIdentity>;
     public relationshipTypes$: Rx.Observable<IHrefValue<IRelationshipType>[]>;
 
+    public identity: IIdentity;
     public manageAuthAttribute: IRelationshipAttributeNameUsage;
 
     public newRelationship: AddRelationshipComponentData = {
@@ -96,10 +96,20 @@ export class AddRelationshipComponent extends AbstractPageComponent {
     }
 
     public onInit(params: {path: Params, query: Params}) {
+
         this.idValue = decodeURIComponent(params.path['idValue']);
-        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+
+        // identity in focus
+        this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
+            this.identity = identity;
+        });
+
+        // relationship types
         this.relationshipTypes$ = this.rest.listRelationshipTypes();
+
+        // delegate managed attribute
         this.resolveManageAuthAttribute('UNIVERSAL_REPRESENTATIVE', 'DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND');
+
     }
 
     public back = () => {

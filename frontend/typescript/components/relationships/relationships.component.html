@@ -1,6 +1,6 @@
 <div class="col-lg-12 col-md-12 col-sm-12">
 
-    <page-header [identity]="identity$|async" tab="MANAGE_AUTHORISATIONS" [messages]="globalMessages"></page-header>
+    <page-header [identity]="identity" tab="MANAGE_AUTHORISATIONS" [messages]="globalMessages"></page-header>
 
     <form [formGroup]=form>
         <div class="panel panel-default container-fluid">
@@ -125,7 +125,7 @@
             </div>
             <div class="col-sm-4">
                 <br/>
-                <a (click)="goToRelationshipAddPage()" class="btn btn-sm btn-primary">Give authorisation</a>
+                <a (click)="goToRelationshipAddPage()" class="btn btn-sm btn-primary" [class.disabled]="!giveAuthorisationsEnabled">Give authorisation</a>
                 &nbsp;
                 <a (click)="goToRelationshipEnterCodePage()" class="btn btn-sm btn-primary">Get authorised</a>
                 <br/>

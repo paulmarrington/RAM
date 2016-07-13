@@ -39,6 +39,8 @@ export class RelationshipsComponent extends AbstractPageComponent {
     public identity$: Rx.Observable<IIdentity>;
     public relationships$: Rx.Observable<ISearchResult<IHrefValue<IRelationship>>>;
 
+    public giveAuthorisationsEnabled: boolean;
+    public identity: IIdentity;
     public partyTypeRefs: IHrefValue<IPartyType>[];
     public profileProviderRefs: IHrefValue<IProfileProvider>[];
     public relationshipStatusRefs: IHrefValue<IRelationshipStatus>[];
@@ -71,7 +73,9 @@ export class RelationshipsComponent extends AbstractPageComponent {
         this.page = params.query['page'] ? +params.query['page'] : 1;
 
         // identity in focus
-        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+        this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
+            this.identity = identity;
+        });
 
         // party types
         this.rest.listPartyTypes().subscribe((partyTypeRefs) => {

@@ -26,7 +26,7 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
     public code: string;
     public displayName: string;
 
-    public identity$: Rx.Observable<IIdentity>;
+    public identity: IIdentity;
 
     public form: FormGroup;
     public formUdn: FormGroup;
@@ -48,7 +48,9 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
         this.displayName = decodeURIComponent(params.path['displayName']);
 
         // identity in focus
-        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+        this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
+            this.identity = identity;
+        });
 
         // forms
         this.form = this._fb.group({
