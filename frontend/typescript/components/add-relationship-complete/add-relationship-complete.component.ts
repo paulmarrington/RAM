@@ -76,7 +76,12 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
         this.rest.notifyDelegateByInvitationCode(this.code, notifyDelegateDTO).subscribe((relationship) => {
             this.routeHelper.goToRelationshipsPage(this.idValue, null, 1, 'DELEGATE_NOTIFIED');
         }, (err) => {
-            this.addGlobalMessages(this.rest.extractErrorMessages(err));
+            const status = err.status;
+            if (status === 404) {
+                this.addGlobalMessage('The code you have entered does not exist or is invalid.');
+            } else {
+                this.addGlobalMessages(this.rest.extractErrorMessages(err));
+            }
         });
         return false;
     };
