@@ -22,18 +22,18 @@ export class ProfileProvider extends RAMEnum {
 
     public static ABR = new ProfileProvider('ABR', 'ABR');
     public static AuthenticatorApp = new ProfileProvider('AUTHENTICATOR_APP', 'Authenticator App');
+    public static Invitation = new ProfileProvider('INVITATION', 'Invitation'); // TODO validate for temp identities
     public static MyGov = new ProfileProvider('MY_GOV', 'myGov');
     public static SelfAsserted = new ProfileProvider('SELF_ASSERTED', 'Self Asserted');
     public static Vanguard = new ProfileProvider('VANGUARD', 'Vanguard');
-    public static Temp = new ProfileProvider('TEMP', 'Temp'); // TODO validate what this value should be for temp identities
 
     protected static AllValues = [
         ProfileProvider.ABR,
         ProfileProvider.AuthenticatorApp,
+        ProfileProvider.Invitation,
         ProfileProvider.MyGov,
         ProfileProvider.SelfAsserted,
-        ProfileProvider.Vanguard,
-        ProfileProvider.Temp
+        ProfileProvider.Vanguard
     ];
 
     constructor(public name:string, decodeText:string) {
