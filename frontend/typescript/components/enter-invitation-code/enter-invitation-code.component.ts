@@ -1,7 +1,6 @@
-import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
-import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES } from '@angular/forms';
+import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES} from '@angular/forms';
 
 import {AbstractPageComponent} from '../abstract-page/abstract-page.component';
 import {PageHeaderComponent} from '../commons/page-header/page-header.component';
@@ -21,7 +20,8 @@ export class EnterInvitationCodeComponent extends AbstractPageComponent {
 
     public idValue: string;
 
-    public identity$: Rx.Observable<IIdentity>;
+    public giveAuthorisationsEnabled: boolean = true; // todo need to set this
+    public identity: IIdentity;
 
     public form: FormGroup;
 
@@ -34,13 +34,21 @@ export class EnterInvitationCodeComponent extends AbstractPageComponent {
         super(route, router, rest, modelHelper, routeHelper);
     }
 
-    public onInit(params: {path: Params, query: Params}) {
+    public onInit(params: {path:Params, query:Params}) {
 
         // extract path and query parameters
         this.idValue = decodeURIComponent(params.path['idValue']);
 
+        // message
+        const msg = params.query['msg'];
+        if (msg === 'INVALID_CODE') {
+            this.addGlobalMessage('The code you have entered does not exist or is invalid.');
+        }
+
         // identity in focus
-        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+        this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
+            this.identity = identity;
+        });
 
         // forms
         this.form = this._fb.group({
@@ -51,14 +59,23 @@ export class EnterInvitationCodeComponent extends AbstractPageComponent {
 
     public activateCode(event: Event) {
 
-        this.routeHelper.goToRelationshipAcceptPage(
-            this.idValue,
-            this.form.controls['relationshipCode'].value
-        );
+        this.rest.claimRelationshipByInvitationCode(this.form.controls['relationshipCode'].value)
+            .subscribe((relationship) => {
+                this.routeHelper.goToRelationshipAcceptPage(
+                    this.idValue,
+                    this.form.controls['relationshipCode'].value
+                );
+            }, (err) => {
+                const status = err.status;
+                if (status === 404) {
+                    this.addGlobalMessage('The code you have entered does not exist or is invalid.');
+                } else {
+                    this.addGlobalMessages(this.rest.extractErrorMessages(err));
+                }
+            });
 
         event.stopPropagation();
         return false;
-
     }
 
     public goToRelationshipsPage() {

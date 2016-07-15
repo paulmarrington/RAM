@@ -459,7 +459,7 @@ describe('RAM Identity', () => {
 
     it('search should be populated', async (done) => {
         try {
-            const searchResult = await IdentityModel.search(1, 10);
+            const searchResult = await IdentityModel.searchLinkIds(1, 10);
             expect(searchResult.list[0].idValue).toBe(identity1.idValue);
             expect(searchResult.list[0].party.partyType).toBe(party1.partyType);
             done();
@@ -487,7 +487,7 @@ describe('RAM Identity', () => {
                 undefined,
                 undefined,
                 undefined,
-                ProfileProvider.Temp.name);
+                ProfileProvider.Invitation.name);
 
             // Create new temp identity for invitation code
             const tempIdentity = await IdentityModel.createFromDTO(identityDTO);

@@ -58,7 +58,9 @@ import {CakeryBakeryRelationshipsSeeder} from './seed-cakerybakery-relationships
 import {JMFoodPackagingIdentitySeeder} from './seed-jmfoodpackaging-identity';
 import {JMFoodPackagingRelationshipsSeeder} from './seed-jmfoodpackaging-relationships';
 
-import {JenniferMaximIdentitySeeder} from './seed-jennifermaxim-identity';
+import {JenniferMaximsIdentitySeeder} from './seed-jennifermaxims-identity';
+
+import {JohnMaximsIdentitySeeder} from './seed-johnmaxims-identity';
 
 import {JensCateringIdentitySeeder} from './seed-jenscatering-identity';
 import {JensCateringRelationshipsSeeder} from './seed-jenscatering-relationships';
@@ -122,7 +124,6 @@ export class Seeder {
 
     // individual identity
     public static jmfoodpackaging_name:IName;
-    public static jmfoodpackaging_dob:ISharedSecret;
     public static jmfoodpackaging_profile:IProfile;
     public static jmfoodpackaging_party:IParty;
     public static jmfoodpackaging_identity_1:IIdentity;
@@ -133,6 +134,13 @@ export class Seeder {
     public static jennifermaxims_profile:IProfile;
     public static jennifermaxims_party:IParty;
     public static jennifermaxims_identity_1:IIdentity;
+
+    // individual identity
+    public static johnmaxims_name:IName;
+    public static johnmaxims_dob:ISharedSecret;
+    public static johnmaxims_profile:IProfile;
+    public static johnmaxims_party:IParty;
+    public static johnmaxims_identity_1:IIdentity;
 
     // invitation identity
     public static robertsmith_name:IName;
@@ -149,10 +157,11 @@ export class Seeder {
     public static fredjohnson_identity_1:IIdentity;
 
     // relationships
-    public static cakerybakery_and_jennifermaxim_relationship:IRelationship;
-    public static jenscatering_and_jennifermaxim_relationship:IRelationship;
+    public static cakerybakery_and_jennifermaxims_relationship:IRelationship;
+    public static jenscatering_and_jennifermaxims_relationship:IRelationship;
+    public static jenscatering_and_johnmaxims_relationship:IRelationship;
     public static jenscatering_and_robertsmith_relationship:IRelationship;
-    public static jennifermaxim_and_fredjohnson_relationship:IRelationship;
+    public static jenscatering_and_fredjohnson_relationship:IRelationship;
     public static jmfoodpackaging_and_jenscatering_relationship:IRelationship;
 
     public static log(msg:String) {
@@ -632,7 +641,8 @@ export class Seeder {
             // identities
             .then(BobSmithIdentitySeeder.load)
             .then(CakeryBakeryIdentitySeeder.load)
-            .then(JenniferMaximIdentitySeeder.load)
+            .then(JenniferMaximsIdentitySeeder.load)
+            .then(JohnMaximsIdentitySeeder.load)
             .then(JMFoodPackagingIdentitySeeder.load)
             .then(JensCateringIdentitySeeder.load)
 
@@ -644,6 +654,3 @@ export class Seeder {
     }
 
 }
-
-// rock and roll ......................................................................................................
-

@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "RAM",
-		"_postman_id": "b0937ed2-808b-0a03-1f83-59d3c489139d",
+		"_postman_id": "2d155066-70df-4179-3b52-972c43db7039",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -531,6 +531,107 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "List types",
+					"request": {
+						"url": "{{host}}/api/v1/partyTypes",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get type (INDIVIDUAL)",
+					"request": {
+						"url": "{{host}}/api/v1/partyType/INDIVIDUAL",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile",
+			"description": "",
+			"item": [
+				{
+					"name": "List profile providers",
+					"request": {
+						"url": "{{host}}/api/v1/profileProviders",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get profile provider (MY_GOV)",
+					"request": {
+						"url": "{{host}}/api/v1/profileProvider/MY_GOV",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},
@@ -702,6 +803,47 @@
 					"response": []
 				},
 				{
+					"name": "List statuses",
+					"request": {
+						"url": "{{host}}/api/v1/relationshipStatuses",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "credentials",
+									"value": "LINK_ID:MY_GOV:jennifermaxims_identity_1",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get status (ACTIVE)",
+					"request": {
+						"url": "{{host}}/api/v1/relationshipStatus/ACTIVE",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
 					"name": "Create",
 					"request": {
 						"url": "{{host}}/api/v1/relationship",
@@ -715,7 +857,33 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"relationshipType\": \"CUSTOM_REPRESENTATIVE\",\n  \"subject\": \"PUBLIC_IDENTIFIER:ABN:jenscatering_identity_1\",\n  \"delegate\": {\n    \"partyType\": \"INDIVIDUAL\",\n    \"givenName\": \"a\",\n    \"familyName\": \"b\",\n    \"unstructuredName\": \"\",\n    \"sharedSecret\": {\n      \"code\": \"DATE_OF_BIRTH\",\n      \"value\": \"2016-06-15\"\n    }\n  },\n  \"startTimestamp\": \"2016-06-15T03:49:06.682Z\",\n  \"endTimestamp\": \"2017-06-15T03:49:06.682Z\",\n  \"attributes\": [\n    {\n      \"code\": \"PERMISSION_CUSTOMISATION_ALLOWED_IND\",\n      \"value\": \"true\"\n    }\n  ]\n}"
+							"raw": "{\n  \"relationshipType\": \"UNIVERSAL_REPRESENTATIVE\",\n  \"subjectIdValue\": \"LINK_ID:MY_GOV:jennifermaxims_identity_1\",\n  \"delegate\": {\n    \"partyType\": \"INDIVIDUAL\",\n    \"givenName\": \"Bob\",\n    \"familyName\": \"Smith\",\n    \"sharedSecretTypeCode\": \"DATE_OF_BIRTH\",\n    \"sharedSecretValue\": \" \",\n    \"identityType\": \"INVITATION_CODE\"\n  },\n  \"startTimestamp\": \"2016-07-11\",\n  \"endTimestamp\": null,\n  \"attributes\": [\n    {\n      \"code\": \"DELEGATE_MANAGE_AUTHORISATION_ALLOWED_IND\",\n      \"value\": \"\"\n    }\n  ]\n}"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Claim By Invitation Code",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/claim",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept By Invitation Code",
+					"request": {
+						"url": "{{host}}/api/v1/relationship/invitationCode/{{invitationCode}}/accept",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
 						}
 					},
 					"response": []

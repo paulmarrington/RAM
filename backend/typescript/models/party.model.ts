@@ -4,10 +4,11 @@ import {IIdentity, IdentityModel} from './identity.model';
 import {
     HrefValue,
     Party as DTO,
+    PartyType as PartyTypeDTO,
     Identity as IdentityDTO,
     RelationshipAddDTO
 } from '../../../commons/RamAPI';
-import {RelationshipModel, RelationshipStatus, IRelationship} from './relationship.model';
+import {RelationshipModel, IRelationship} from './relationship.model';
 import {RelationshipTypeModel} from './relationshipType.model';
 import {RelationshipAttributeModel, IRelationshipAttribute} from './relationshipAttribute.model';
 import {RelationshipAttributeNameModel} from './relationshipAttributeName.model';
@@ -16,16 +17,27 @@ import {RelationshipAttributeNameModel} from './relationshipAttributeName.model'
 
 export class PartyType extends RAMEnum {
 
-    public static ABN = new PartyType('ABN');
-    public static Individual = new PartyType('INDIVIDUAL');
+    public static ABN = new PartyType('ABN', 'ABN');
+    public static Individual = new PartyType('INDIVIDUAL', 'Individual');
 
     protected static AllValues = [
         PartyType.ABN,
         PartyType.Individual,
     ];
 
-    constructor(name:string) {
-        super(name);
+    constructor(name:string, shortDecodeText:string) {
+        super(name, shortDecodeText);
+    }
+
+    public toHrefValue(includeValue:boolean): HrefValue<PartyTypeDTO> {
+        return new HrefValue(
+            '/api/v1/partyType/' + this.name,
+            includeValue ? this.toDTO() : undefined
+        );
+    }
+
+    public toDTO(): PartyTypeDTO {
+        return new PartyTypeDTO(this.name, this.shortDecodeText);
     }
 }
 
@@ -98,7 +110,11 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
     const subjectIdentity = await IdentityModel.findByIdValue(dto.subjectIdValue);
 
     // create the temp identity for the invitation code
-    const temporaryDelegateIdentity = await IdentityModel.createFromDTO(dto.delegate);
+    const temporaryDelegateIdentity = await IdentityModel.createInvitationCodeIdentity(
+        dto.delegate.givenName,
+        dto.delegate.familyName,
+        dto.delegate.sharedSecretValue
+    );
 
     const attributes:IRelationshipAttribute[] = [];
 
@@ -113,17 +129,15 @@ PartySchema.method('addRelationship', async (dto:RelationshipAddDTO) => {
     }
 
     // create the relationship
-    const relationship = await RelationshipModel.create({
-        relationshipType: relationshipType,
-        subject: subjectIdentity.party,
-        subjectNickName: subjectIdentity.profile.name,
-        delegate: temporaryDelegateIdentity.party,
-        delegateNickName: temporaryDelegateIdentity.profile.name,
-        startTimestamp: dto.startTimestamp,
-        endTimestamp: dto.endTimestamp,
-        status: RelationshipStatus.Pending.name,
-        attributes: attributes
-    });
+    const relationship = await RelationshipModel.add(
+        relationshipType,
+        subjectIdentity.party,
+        subjectIdentity.profile.name,
+        temporaryDelegateIdentity,
+        dto.startTimestamp,
+        dto.endTimestamp,
+        attributes
+    );
 
     return relationship;
 

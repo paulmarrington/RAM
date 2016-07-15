@@ -1,10 +1,11 @@
 import {Router, Request, Response} from 'express';
 import {security} from './security.middleware';
 import {
-    sendError, sendNotFoundError, validateReqSchema, sendResource, sendSearchResult, REGULAR_CHARS
+    sendResource, sendList, sendSearchResult, sendError, sendNotFoundError, validateReqSchema, REGULAR_CHARS
 } from './helpers';
-import {IRelationshipModel} from '../models/relationship.model';
-import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO, Link} from '../../../commons/RamAPI';
+import {IRelationshipModel, RelationshipStatus} from '../models/relationship.model';
+import {RelationshipAddDTO, CreateIdentityDTO, AttributeDTO} from '../../../commons/RamAPI';
+import {FilterParams} from '../../../commons/RamAPI2';
 import {PartyModel} from '../models/party.model';
 import {ProfileProvider} from '../models/profile.model';
 import {IdentityType} from '../models/identity.model';
@@ -25,12 +26,13 @@ export class RelationshipController {
         };
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findByIdentifier(req.params.identifier))
-            .then((model) => model ? model.toDTO() : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then((model) => model ? model.toDTO(null) : null)
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
-    private findPendingByInvitationCodeInDateRange = async(req:Request, res:Response) => {
+    private findByInvitationCode = async(req:Request, res:Response) => {
         const schema = {
             'invitationCode': {
                 notEmpty: true,
@@ -39,10 +41,28 @@ export class RelationshipController {
         };
         const invitationCode = req.params.invitationCode;
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(invitationCode, new Date()))
+            .then((req:Request) => this.relationshipModel.findByInvitationCode(invitationCode))
             .then((model) => model ? model.toDTO(invitationCode) : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
+    };
+
+    private claimByInvitationCode = async(req:Request, res:Response) => {
+        const schema = {
+            'invitationCode': {
+                notEmpty: true,
+                errorMessage: 'Invitation Code is not valid'
+            }
+        };
+        const invitationCode = req.params.invitationCode;
+        validateReqSchema(req, schema)
+            .then((req:Request) => this.relationshipModel.findByInvitationCode(invitationCode))
+            .then((model) => model ? model.claimPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
+            .then((model) => model ? model.toDTO(invitationCode) : null)
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     private acceptByInvitationCode = async(req:Request, res:Response) => {
@@ -53,11 +73,16 @@ export class RelationshipController {
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
+            .then((req:Request) => this.relationshipModel.findByInvitationCode(req.params.invitationCode))
+            .then((model) => {
+                console.log('model ', model);
+                return model;
+            })
             .then((model) => model ? model.acceptPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
-            .then((model) => model ? model.toDTO() : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then((model) => model ? model.toDTO(null) : null)
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     private rejectByInvitationCode = async(req:Request, res:Response) => {
@@ -68,11 +93,12 @@ export class RelationshipController {
             }
         };
         validateReqSchema(req, schema)
-            .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
-            .then((model) => model ? model.rejectPendingInvitation() : null)
+            .then((req:Request) => this.relationshipModel.findByInvitationCode(req.params.invitationCode))
+            .then((model) => model ? model.rejectPendingInvitation(security.getAuthenticatedIdentity(res)) : null)
             .then((model) => model ? Promise.resolve({}) : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     private notifyDelegateByInvitationCode = async(req:Request, res:Response) => {
@@ -93,10 +119,11 @@ export class RelationshipController {
 
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.findPendingByInvitationCodeInDateRange(req.params.invitationCode, new Date()))
-            .then((model) => model ? model.notifyDelegate(req.body.email) : null)
-            .then((model) => model ? model.toDTO() : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then((model) => model ? model.notifyDelegate(req.body.email, security.getAuthenticatedIdentity(res)) : null)
+            .then((model) => model ? model.toDTO(null) : null)
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     /* tslint:disable:max-func-body-length */
@@ -140,8 +167,9 @@ export class RelationshipController {
                 req.query.pageSize ? parseInt(req.query.pageSize) : null)
             )
             .then((results) => (results.map((model) => model.toHrefValue(true))))
-            .then(sendSearchResult(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendSearchResult(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     /* tslint:disable:max-func-body-length */
@@ -151,6 +179,9 @@ export class RelationshipController {
                 in: 'params',
                 notEmpty: true,
                 errorMessage: 'Identity Id is not valid'
+            },
+            'filter': {
+                in: 'query'
             },
             'page': {
                 in: 'query',
@@ -167,15 +198,23 @@ export class RelationshipController {
                 }
             }
         };
+        const filterParams = FilterParams.decode(req.query.filter);
         validateReqSchema(req, schema)
             .then((req:Request) => this.relationshipModel.searchByIdentity(
                 req.params.identity_id,
+                filterParams.get('partyType'),
+                filterParams.get('relationshipType'),
+                filterParams.get('profileProvider'),
+                filterParams.get('status'),
+                filterParams.get('text'),
+                filterParams.get('sort'),
                 parseInt(req.query.page),
                 req.query.pageSize ? parseInt(req.query.pageSize) : null)
             )
             .then((results) => (results.map((model) => model.toHrefValue(true))))
-            .then(sendSearchResult(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendSearchResult(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
     //
     // private searchDistinctSubjectsBySubjectOrDelegateIdentity = async (req:Request, res:Response) => {
@@ -307,7 +346,7 @@ export class RelationshipController {
                         undefined,
                         undefined,
                         undefined,
-                        ProfileProvider.Temp.name
+                        ProfileProvider.Invitation.name
                     ),
                     req.body.startTimestamp ? new Date(req.body.startTimestamp) : undefined,
                     req.body.endTimestamp ? new Date(req.body.endTimestamp) : undefined,
@@ -315,9 +354,36 @@ export class RelationshipController {
                 );
                 return subjectParty.addRelationship(relationshipAddDTO);
             })
+            .then((model) => model ? model.toDTO(null) : null)
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
+    };
+
+    private findStatusByName = (req:Request, res:Response) => {
+        const schema = {
+            'name': {
+                in: 'params',
+                notEmpty: true,
+                errorMessage: 'Name is not valid'
+            }
+        };
+        validateReqSchema(req, schema)
+            .then((req:Request) => RelationshipStatus.valueOf(req.params.name))
             .then((model) => model ? model.toDTO() : null)
-            .then(sendResource(res), sendError(res))
-            .then(sendNotFoundError(res));
+            .then(sendResource(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
+    };
+
+    private listStatuses = (req:Request, res:Response) => {
+        const schema = {};
+        validateReqSchema(req, schema)
+            .then((req:Request) => RelationshipStatus.values())
+            .then((results) => results ? results.map((model) => model.toHrefValue(true)) : null)
+            .then(sendList(res))
+            .then(sendNotFoundError(res))
+            .catch((err) => sendError(res)(err));
     };
 
     public assignRoutes = (router:Router) => {
@@ -328,7 +394,11 @@ export class RelationshipController {
 
         router.get('/v1/relationship/invitationCode/:invitationCode',
             security.isAuthenticated,
-            this.findPendingByInvitationCodeInDateRange);
+            this.findByInvitationCode);
+
+        router.post('/v1/relationship/invitationCode/:invitationCode/claim',
+            security.isAuthenticated,
+            this.claimByInvitationCode);
 
         router.post('/v1/relationship/invitationCode/:invitationCode/accept',
             security.isAuthenticated,
@@ -357,6 +427,12 @@ export class RelationshipController {
         router.post('/v1/relationship',
             security.isAuthenticated,
             this.create);
+
+        router.get('/v1/relationshipStatus/:name',
+            this.findStatusByName);
+
+        router.get('/v1/relationshipStatuses',
+            this.listStatuses);
 
         return router;
 

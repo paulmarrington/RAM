@@ -123,7 +123,7 @@ gulp.task("scss:watch", ["scss:compile"], function () {
 gulp.task("ts:lint", function () {
     return gulp.src(["typescript/{**,./}/*.ts", "test/{**,./}/*.ts"])
         .pipe(tslint())
-        .pipe(tslint.report("verbose", {
+        .pipe(tslint.report({
             emitError: false
         }));
 });

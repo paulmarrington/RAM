@@ -1,4 +1,3 @@
-import Rx from 'rxjs/Rx';
 import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES, ActivatedRoute, Router, Params} from '@angular/router';
 import {Validators, REACTIVE_FORM_DIRECTIVES, FormBuilder, FormGroup, FORM_DIRECTIVES} from '@angular/forms';
@@ -26,7 +25,8 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
     public code: string;
     public displayName: string;
 
-    public identity$: Rx.Observable<IIdentity>;
+    public giveAuthorisationsEnabled: boolean = true; // todo need to set this
+    public identity: IIdentity;
 
     public form: FormGroup;
     public formUdn: FormGroup;
@@ -48,7 +48,9 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
         this.displayName = decodeURIComponent(params.path['displayName']);
 
         // identity in focus
-        this.identity$ = this.rest.findIdentityByValue(this.idValue);
+        this.rest.findIdentityByValue(this.idValue).subscribe((identity) => {
+            this.identity = identity;
+        });
 
         // forms
         this.form = this._fb.group({
@@ -73,12 +75,14 @@ export class AddRelationshipCompleteComponent extends AbstractPageComponent {
         };
 
         this.rest.notifyDelegateByInvitationCode(this.code, notifyDelegateDTO).subscribe((relationship) => {
-            // TODO a more suitable confirmation is probably desirable
-            alert('Delegate Notification Sent');
-            this.goToRelationshipsPage();
+            this.routeHelper.goToRelationshipsPage(this.idValue, null, 1, 'DELEGATE_NOTIFIED');
         }, (err) => {
-            // TODO
-            alert(JSON.stringify(err, null, 2));
+            const status = err.status;
+            if (status === 404) {
+                this.addGlobalMessage('The code you have entered does not exist or is invalid.');
+            } else {
+                this.addGlobalMessages(this.rest.extractErrorMessages(err));
+            }
         });
         return false;
     };

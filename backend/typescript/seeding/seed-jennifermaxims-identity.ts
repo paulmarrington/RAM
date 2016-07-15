@@ -8,7 +8,7 @@ import {IdentityType, IdentityLinkIdScheme} from '../models/identity.model';
 
 /* tslint:disable:no-any */
 /* tslint:disable:max-func-body-length */
-export class JenniferMaximIdentitySeeder {
+export class JenniferMaximsIdentitySeeder {
 
     public static async load() {
         try {

@@ -19,7 +19,7 @@ export class CakeryBakeryRelationshipsSeeder {
 
             } else {
 
-                Seeder.cakerybakery_and_jennifermaxim_relationship = await Seeder.createRelationshipModel({
+                Seeder.cakerybakery_and_jennifermaxims_relationship = await Seeder.createRelationshipModel({
                     relationshipType: Seeder.custom_delegate_relationshipType,
                     subject: Seeder.cakerybakery_party,
                     subjectNickName: Seeder.cakerybakery_name,

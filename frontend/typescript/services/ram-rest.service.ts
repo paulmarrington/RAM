@@ -9,9 +9,12 @@ import {
     IHrefValue,
     IIdentity,
     IParty,
+    IPartyType,
+    IProfileProvider,
     IRelationshipAddDTO,
     IRelationship,
     IRelationshipType,
+    IRelationshipStatus,
     INotifyDelegateDTO
 } from '../../../commons/RamAPI2';
 
@@ -56,16 +59,36 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public searchRelationshipsByIdentity(idValue:string, page:number):Rx.Observable<ISearchResult<IHrefValue<IRelationship>>> {
+    public listRelationshipStatuses(): Rx.Observable<IHrefValue<IRelationshipStatus>[]> {
         return this.http
-            .get(`/api/v1/relationships/identity/${idValue}?page=${page}`)
+            .get('/api/v1/relationshipStatuses')
             .map(this.extractData);
     }
 
-    public searchDistinctSubjectsBySubjectOrDelegateIdentity(idValue:string,
-                                                             page:number):Rx.Observable<ISearchResult<IHrefValue<IParty>>> {
+    public searchRelationshipsByIdentity(idValue: string,
+                                         filter: string,
+                                         page: number): Rx.Observable<ISearchResult<IHrefValue<IRelationship>>> {
+        return this.http
+            .get(`/api/v1/relationships/identity/${idValue}?filter=${filter}&page=${page}`)
+            .map(this.extractData);
+    }
+
+    public searchDistinctSubjectsBySubjectOrDelegateIdentity(idValue: string,
+                                                             page: number): Rx.Observable<ISearchResult<IHrefValue<IParty>>> {
         return this.http
             .get(`/api/v1/relationships/identity/${idValue}/subjects?page=${page}`)
+            .map(this.extractData);
+    }
+
+    public listPartyTypes(): Rx.Observable<IHrefValue<IPartyType>[]> {
+        return this.http
+            .get('/api/v1/partyTypes')
+            .map(this.extractData);
+    }
+
+    public listProfileProviders(): Rx.Observable<IHrefValue<IProfileProvider>[]> {
+        return this.http
+            .get('/api/v1/profileProviders')
             .map(this.extractData);
     }
 
@@ -87,6 +110,12 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
+    public claimRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
+        return this.http
+            .post(`/api/v1/relationship/invitationCode/${invitationCode}/claim`, '')
+            .map(this.extractData);
+    }
+
     public findPendingRelationshipByInvitationCode(invitationCode: string): Rx.Observable<IRelationship> {
         return this.http
             .get(`/api/v1/relationship/invitationCode/${invitationCode}`)
@@ -99,7 +128,13 @@ export class RAMRestService {
             .map(this.extractData);
     }
 
-    public notifyDelegateByInvitationCode(invitationCode: string, notification:INotifyDelegateDTO): Rx.Observable<IRelationship> {
+    public rejectPendingRelationshipByInvitationCode(relationship: IRelationship): Rx.Observable<IRelationship> {
+        return this.http
+            .post(this.modelHelper.linkByType('reject', relationship._links).href, '')
+            .map(this.extractData);
+    }
+
+    public notifyDelegateByInvitationCode(invitationCode: string, notification: INotifyDelegateDTO): Rx.Observable<IRelationship> {
         return this.http
             .post(`/api/v1/relationship/invitationCode/${invitationCode}/notifyDelegate`, JSON.stringify(notification), {
                 headers: this.headersForJson()
@@ -113,6 +148,14 @@ export class RAMRestService {
                 headers: this.headersForJson()
             })
             .map(this.extractData);
+    }
+
+    public extractErrorMessages(response: Response): string[] {
+        const json = response.json();
+        if (json && json.alert && json.alert.messages) {
+            return json.alert.messages;
+        }
+        return ['An unknown error has occurred.'];
     }
 
     private headersForJson() {

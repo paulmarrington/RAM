@@ -1,12 +1,19 @@
 <div id="page-header">
 
+    <div *ngIf="hasMessages()">
+        <div class="alert alert-warning" role="alert" *ngFor="let message of messages">{{message}}</div>
+        <br/>
+    </div>
+
     <h1>{{title()}}</h1>
 
     <div>
         <ul class="nav nav-tabs">
             <li [class.active]="tab == 'MANAGE_AUTHORISATIONS'"><a href="" (click)="goToRelationshipsPage()">Manage Authorisations</a></li>
-            <li [class.active]="tab == 'GIVE_AUTHORISATION'"><a href="" (click)="goToGiveAuthorisationPage()">Give Authorisation</a></li>
+            <li [class.active]="tab == 'GIVE_AUTHORISATION'" [class.disabled]="!isGiveAuthorisationsPageEnabled()"><a href="" (click)="goToGiveAuthorisationPage()">Give Authorisation</a></li>
             <li [class.active]="tab == 'GET_AUTHORISATION'"><a href="" (click)="goToGetAuthorisationPage()">Get Authorisation</a></li>
+            <li [class.active]="tab == 'MANAGE_LOGINS'" [class.disabled]="!isLoginsPageEnabled()"><a href="" (click)="goToLoginsPage()">Manage logins</a></li>
+            <li [class.active]="tab == 'MANAGE_ROLES'" [class.disabled]="!isRolesPageEnabled()"><a href="" (click)="goToRolesPage()">Manage roles</a></li>
         </ul>
     </div>
 

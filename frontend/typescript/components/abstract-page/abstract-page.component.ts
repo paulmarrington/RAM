@@ -8,6 +8,8 @@ import {RAMRouteHelper} from '../../commons/ram-route-helper';
 
 export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
+    protected globalMessages: string[];
+
     protected mergedParamSub: Rx.Subscription;
     protected pathParamSub: Rx.Subscription;
     protected queryParamSub: Rx.Subscription;
@@ -22,48 +24,8 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
     /* tslint:disable:max-func-body-length */
     public ngOnInit() {
 
-        let pathParams: Params;
-        let queryParams: Params;
-
-        const pathParams$ = this.route.params;
-        const queryParams$ = this.router.routerState.queryParams;
-
-        this.mergedParamSub = Rx.Observable.merge(pathParams$, queryParams$)
-            .subscribe((params) => {
-                if (!pathParams) {
-                    this.log('-----------');
-                    this.log('[i] PATH  = ' + JSON.stringify(params));
-                    pathParams = params;
-                } else if (!queryParams) {
-                    this.log('[i] QUERY = ' + JSON.stringify(params));
-                    queryParams = params;
-                    this.onInit({path: pathParams, query: queryParams});
-                } else if (this.mergedParamSub) {
-                    this.log('-----------');
-                    this.log('Unsubscribing from merged observable ...');
-                    this.mergedParamSub.unsubscribe();
-                    this.pathParamSub = pathParams$.subscribe((params) => {
-                        if (!this.isEqual(pathParams, params)) {
-                            this.log('-----------');
-                            pathParams = params;
-                            this.log('[p] PARAMS = ' + JSON.stringify(params));
-                            this.log('[p] PATH   = ' + JSON.stringify(pathParams));
-                            this.log('[p] QUERY  = ' + JSON.stringify(queryParams));
-                            this.onInit({path: pathParams, query: queryParams});
-                        }
-                    });
-                    this.queryParamSub = queryParams$.subscribe((params) => {
-                        if (!this.isEqual(queryParams, params)) {
-                            this.log('-----------');
-                            queryParams = params;
-                            this.log('[p] PARAMS = ' + JSON.stringify(params));
-                            this.log('[p] PATH   = ' + JSON.stringify(pathParams));
-                            this.log('[p] QUERY  = ' + JSON.stringify(queryParams));
-                            this.onInit({path: pathParams, query: queryParams});
-                        }
-                    });
-                }
-            });
+        // subscribe to path and query params
+        this.subscribeToPathAndQueryParams();
 
     }
 
@@ -81,11 +43,80 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
     }
 
     /* tslint:disable:no-empty */
+    public onPreInit(params: {path: Params, query: Params}) {
+        this.clearGlobalMessages();
+        this.onInit(params);
+    }
+
+    /* tslint:disable:no-empty */
     public onInit(params: {path: Params, query: Params}) {
     }
 
     /* tslint:disable:no-empty */
     public onDestroy() {
+    }
+
+    private subscribeToPathAndQueryParams() {
+
+        let pathParams: Params;
+        let queryParams: Params;
+
+        const pathParams$ = this.route.params;
+        const queryParams$ = this.router.routerState.queryParams;
+
+        this.mergedParamSub = Rx.Observable.merge(pathParams$, queryParams$)
+            .subscribe((params) => {
+                if (!pathParams) {
+                    this.log('-----------');
+                    this.log('[i] PATH  = ' + JSON.stringify(params));
+                    pathParams = params;
+                } else if (!queryParams) {
+                    this.log('[i] QUERY = ' + JSON.stringify(params));
+                    queryParams = params;
+                    this.onPreInit({path: pathParams, query: queryParams});
+                } else if (this.mergedParamSub) {
+                    this.log('-----------');
+                    this.log('Unsubscribing from merged observable ...');
+                    this.mergedParamSub.unsubscribe();
+                    this.pathParamSub = pathParams$.subscribe((params) => {
+                        if (!this.isEqual(pathParams, params)) {
+                            this.log('-----------');
+                            pathParams = params;
+                            this.log('[p] PARAMS = ' + JSON.stringify(params));
+                            this.log('[p] PATH   = ' + JSON.stringify(pathParams));
+                            this.log('[p] QUERY  = ' + JSON.stringify(queryParams));
+                            this.onPreInit({path: pathParams, query: queryParams});
+                        }
+                    });
+                    this.queryParamSub = queryParams$.subscribe((params) => {
+                        if (!this.isEqual(queryParams, params)) {
+                            this.log('-----------');
+                            queryParams = params;
+                            this.log('[p] PARAMS = ' + JSON.stringify(params));
+                            this.log('[p] PATH   = ' + JSON.stringify(pathParams));
+                            this.log('[p] QUERY  = ' + JSON.stringify(queryParams));
+                            this.onPreInit({path: pathParams, query: queryParams});
+                        }
+                    });
+                }
+            });
+
+    }
+
+    protected addGlobalMessage(message: string) {
+        this.globalMessages.push(message);
+    }
+
+    protected addGlobalMessages(messages: string[]) {
+        if (messages) {
+            for (let message of messages) {
+                this.globalMessages.push(message);
+            }
+        }
+    }
+
+    protected clearGlobalMessages() {
+        this.globalMessages = [];
     }
 
     private isEqual(params1: Params, params2: Params): boolean {

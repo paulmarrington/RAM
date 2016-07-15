@@ -1,6 +1,79 @@
 <div class="col-lg-12 col-md-12 col-sm-12">
 
-    <page-header [identity]="identity$|async" tab="MANAGE_AUTHORISATIONS"></page-header>
+    <page-header [identity]="identity"
+                 tab="MANAGE_AUTHORISATIONS"
+                 [messages]="globalMessages"
+                 [giveAuthorisationsEnabled]="giveAuthorisationsEnabled"></page-header>
+
+    <form [formGroup]=form>
+        <div class="panel panel-default container-fluid">
+            <div class="panel-heading row">
+                <div class="form-group col-md-8">
+                    <h4><b>Filter by:</b></h4>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <select class="form-control" [formControl]="form.controls['partyType']">
+                                <option value="-">Party Type</option>
+                                <template ngFor let-item="$implicit" [ngForOf]="partyTypeRefs">
+                                    <option value="{{item.value.name}}">{{item.value.shortDecodeText}}</option>
+                                </template>
+                            </select>
+                        </div>
+                        &nbsp;
+                        <div class="form-group">
+                            <select class="form-control" [formControl]="form.controls['relationshipType']">
+                                <option value="-">Authorisation Type</option>
+                                <template ngFor let-item="$implicit" [ngForOf]="relationshipTypeRefs">
+                                    <option value="{{item.value.code}}">{{item.value.shortDecodeText}}</option>
+                                </template>
+                            </select>
+                        </div>
+                        &nbsp;
+                        <div class="form-group">
+                            <select class="form-control" [formControl]="form.controls['profileProvider']">
+                                <option value="-">Login Type</option>
+                                <template ngFor let-item="$implicit" [ngForOf]="profileProviderRefs">
+                                    <option value="{{item.value.name}}">{{item.value.shortDecodeText}}</option>
+                                </template>
+                            </select>
+                        </div>
+                        &nbsp;
+                        <div class="form-group">
+                            <select class="form-control" [formControl]="form.controls['status']">
+                                <option value="-">Status</option>
+                                <template ngFor let-item="$implicit" [ngForOf]="relationshipStatusRefs">
+                                    <option value="{{item.value.name}}">{{item.value.shortDecodeText}}</option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <h4><b>Sort by:</b></h4>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <select class="form-control" [formControl]="form.controls['sort']">
+                                <option value="-">Sort</option>
+                                <option value="ASC">Name (Alphabetical)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-heading row">
+                <div class="form-group col-md-8">
+                    <h4><b>Search by:</b></h4>
+                    <input type="text" class="form-control" placeholder="Your text" [formControl]="form.controls['text']"/>
+                </div>
+                <div class="form-group col-md-4">
+                    <h4><b>&nbsp;</b></h4>
+                    <button (click)="search()" class="btn btn-primary">Search Authorisations</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <br/>
 
     <table class="table">
         <thead>
@@ -16,18 +89,18 @@
             <template ngFor let-item="$implicit" [ngForOf]="subjectGroupsWithRelationships">
                 <tr class="relationship-subject-heading">
                     <td colspan="5">
-                        <div (click)="goToRelationshipsContext(item.subjectResource)" class="clickable">
-                            <h4>{{modelHelper.displayNameForParty(item.subjectResource.value)}}</h4>
-                            <h5>{{modelHelper.abnLabelForParty(item.subjectResource.value)}} /
-                                {{modelHelper.partyTypeLabelForParty(item.subjectResource.value)}}</h5>
+                        <div (click)="goToRelationshipsContext(item.subjectRef)" class="clickable">
+                            <h4>{{modelHelper.displayNameForParty(item.subjectRef.value)}}</h4>
+                            <h5>{{modelHelper.abnLabelForParty(item.subjectRef.value)}} /
+                                {{modelHelper.partyTypeLabelForParty(item.subjectRef.value)}}</h5>
                         </div>
                     </td>
                 </tr>
-                <tr *ngFor="let relationshipResource of item.relationshipResources">
-                    <td>{{modelHelper.displayName(relationshipResource.value.delegateNickName)}}</td>
-                    <td>{{commaSeparatedListOfProviderNames(relationshipResource.value.delegate.value)}}</td>
-                    <td class="hidden-xs">{{modelHelper.relationshipTypeLabel(relationshipTypes, relationshipResource.value)}}</td>
-                    <td class="hidden-xs">{{relationshipResource.value.status}}</td>
+                <tr *ngFor="let relationshipRef of item.relationshipRefs">
+                    <td>{{modelHelper.displayName(relationshipRef.value.delegateNickName)}}</td>
+                    <td>{{commaSeparatedListOfProviderNames(relationshipRef.value.delegate.value)}}</td>
+                    <td>{{modelHelper.relationshipTypeLabel(relationshipTypeRefs, relationshipRef.value)}}</td>
+                    <td>{{modelHelper.relationshipStatusLabel(relationshipStatusRefs, relationshipRef.value.status)}}</td>
                     <td></td>
                 </tr>
             </template>
@@ -47,25 +120,21 @@
     <br/>
     <br/>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-8">
-                        <h4>Did you want to give a new individual or business authorisation? Have you received an
-                            "Authorisation code" email asking you to enter a code? Use the buttons on the right to perform these tasks.</h4>
-                    </div>
-                    <div class="col-sm-4">
-                        <br/>
-                        <a (click)="goToRelationshipAddPage()" class="btn btn-sm btn-primary">Give authorisation</a>
-                        &nbsp;
-                        <a (click)="goToRelationshipEnterCodePage()" class="btn btn-sm btn-primary">Get authorised</a>
-                        <br/>
-                        <br/>
-                    </div>
-                </div>
+    <div class="panel panel-default container-fluid">
+        <div class="panel-heading row">
+            <div class="col-sm-8">
+                <h4>Did you want to give a new individual or business authorisation? Have you received an
+                    "Authorisation code" email asking you to enter a code? Use the buttons on the right to perform these tasks.</h4>
+            </div>
+            <div class="col-sm-4">
+                <br/>
+                <a (click)="goToRelationshipAddPage()" class="btn btn-sm btn-primary" [class.disabled]="!giveAuthorisationsEnabled">Give authorisation</a>
+                &nbsp;
+                <a (click)="goToRelationshipEnterCodePage()" class="btn btn-sm btn-primary">Get authorised</a>
+                <br/>
+                <br/>
             </div>
         </div>
     </div>
 
-</div>
+</form>
